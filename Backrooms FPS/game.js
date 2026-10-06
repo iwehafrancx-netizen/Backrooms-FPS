@@ -513,8 +513,16 @@ const Input = (() => {
   window.addEventListener('keyup', (e) => onKey(e, false));
   window.addEventListener('blur', () => { keys.clear(); mouseDown = false; rmb = false; st.interactHeld = false; st.sprintKey = false; });
 
+  // three.js PointerLockControls tracks lock state (its own rotation is disabled: the Player applies look).
+  // The lock request itself is made directly so a refusal (sandboxed iframe) can be caught — then we
+  // fall back to free mouse-look instead of reporting an error.
+  let plc = null;
   function requestLock() {
     if (!canvas || st.touch || lockFailed) return;
+    if (!plc && THREE.PointerLockControls) {
+      plc = new THREE.PointerLockControls(World.camera, canvas); plc.pointerSpeed = 0;
+      plc.addEventListener('unlock', () => { st.locked = false; });
+    }
     try {
       const p = canvas.requestPointerLock && canvas.requestPointerLock();
       if (p && p.catch) p.catch(() => { lockFailed = true; });
@@ -541,7 +549,10 @@ const Input = (() => {
       if (!st.enabled || st.touch) return;
       // With pointer lock: raw deltas. Without (sandboxed iframe): free-look from movement deltas.
       if (!st.locked && !lockFailed) return;
-      st.lookX += e.movementX || 0; st.lookY += e.movementY || 0;
+      const mx = e.movementX || 0, my = e.movementY || 0;
+      // Chrome can report one huge bogus delta right after pointer lock engages — drop spikes.
+      if (Math.abs(mx) > 280 || Math.abs(my) > 280) return;
+      st.lookX += mx; st.lookY += my;
     });
     c.addEventListener('wheel', (e) => { if (st.enabled) press('swap'); }, { passive: true });
   }
@@ -1320,8 +1331,9 @@ const Player = {
     a.yaw -= inp.lookX * sens;
     a.pitch -= inp.lookY * sens * (s.invert ? -1 : 1);
     // recoil recovery
-    const rec = Math.min(1, dt * 7);
-    a.pitch -= this.recoilP * rec * 0.0; this.recoilP *= 1 - rec;
+    // recoil: part of each kick is a camera punch that recovers, part is permanent climb
+    const rec = Math.min(1, dt * 6);
+    this.recoilP *= 1 - rec;
     a.pitch = clamp(a.pitch, -1.45, 1.45);
     // ---- movement ----
     const crouch = inp.crouch && this.onGround;
@@ -1477,7 +1489,8 @@ const Player = {
     if (anyHit) { this.shotsHit++; Hud.hitmarker(anyKill ? 'kill' : anyHead ? 'head' : ''); Audio.hit(anyHead); }
     // recoil
     const k = def.recoil * (a.crouching ? 0.75 : 1) * (1 - this.adsT * 0.35);
-    this.a.pitch += k * rand(0.55, 0.85); this.a.yaw += k * rand(-0.35, 0.35);
+    const climb = k * rand(0.55, 0.85);
+    this.a.pitch += climb * 0.3; this.recoilP = Math.min(0.12, this.recoilP + climb * 0.7); this.a.yaw += k * rand(-0.3, 0.3);
     this.bloom = Math.min(0.06, this.bloom + k * 0.35);
     this.kickZ += 0.045 + k; this.kickR += 0.06 + k * 2;
     Hud.weapon(); Hud.crosshairKick();
@@ -3085,7 +3098,7 @@ async function boot() {
 }
 
 // Test hook for the local Playwright harness only (tools/test); inert without ?debug.
-if (/[?&]debug\b/.test(location.search)) window.__BR = { Game, Player, Save, MISSIONS, Ui, World, Nav, Hud, Lobby, Audio, Input, Loop };
+if (/[?&]debug\b/.test(location.search)) window.__BR = { Game, Player, Save, MISSIONS, Ui, World, Nav, Hud, Lobby, Audio, Input, Loop, Combat, rayVsSoldier };
 
 boot();
 })();

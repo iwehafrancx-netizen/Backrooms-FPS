@@ -1,0 +1,136 @@
+# BACKROOMS: Level 0 Tactical Operations
+
+A lightweight 3D first-person shooter built with three.js for **YouTube Playables**, to be published through **Mediacube**.
+Everything runs offline from the game folder. The only external URL is the YouTube Playables SDK tag, which YouTube requires.
+
+- **Engine:** three.js r180 · **AI:** Yuka · **Navigation:** recast-navigation-js (Recast/Detour, WASM)
+- **Size:** 5.8 MiB unpacked (20 files), 2.7 MiB zipped
+- **Platforms:** desktop (keyboard and mouse), mobile (touch, portrait or landscape) and gamepad
+- **Languages:** English, Spanish, Portuguese and French, chosen automatically with `ytgame.system.getLanguage()`
+
+---
+
+## Folder layout
+
+```
+Backrooms FPS/            ← the game. Zip the CONTENTS of this folder for submission.
+  index.html              YouTube SDK <script> first, then the static boot screen, then game.js
+  game.js                 the whole game (single file)
+  css/style.css           all UI: menus, HUD, touch controls, transitions
+  lib/three/              three.min.js, GLTFLoader.js, PointerLockControls.js,
+                          SkeletonUtils.js, BufferGeometryUtils.js, postprocessing.js
+  lib/ai/yuka.min.js      Yuka game AI (your original file, moved here)
+  lib/navigation/recast-navigation.js   Recast/Detour navigation (official npm build, WASM inlined)
+  assets/Maps/            backroom.glb (optimized) + backroom.navmesh (pre-baked walkable area)
+  assets/NPCs/            operator.glb (optimized, animations retargeted and named)
+  assets/Guns/            pistol, shotgun, ak47, m4, sniper (.glb, optimized)
+  LICENSES.txt            licenses of the bundled libraries
+source-assets/            your original, untouched .glb files (NOT shipped)
+tools/                    developer tools (NOT shipped): builds, asset optimizer, navmesh baker, tests
+dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-ignored)
+```
+
+### Libraries and what each one does
+| File | Purpose |
+|---|---|
+| `three.min.js` | 3D rendering (three.js core, exposed as `window.THREE`) |
+| `GLTFLoader.js` | loads the `.glb` map, soldier and guns |
+| `PointerLockControls.js` | desktop mouse capture. If the YouTube iframe blocks pointer lock, the game falls back to free mouse-look automatically |
+| **`SkeletonUtils.js`** *(extra)* | clones the animated soldier correctly, so one model file can spawn up to 12 soldiers, each with its own skeleton and animation |
+| **`BufferGeometryUtils.js`** *(extra)* | the built-in three.js tool that merges and welds the map's meshes into one walkable surface for Recast. It is used if the pre-baked navmesh is ever missing |
+| **`postprocessing.js`** *(extra)* | EffectComposer + RenderPass + UnrealBloomPass + OutputPass: glow on the fluorescent lights. It is only on at **High** graphics quality, so phones stay fast |
+| `yuka.min.js` | bot brains: state machine (patrol → hunt → engage → retreat), vision cone with wall occlusion, short-term memory |
+| `recast-navigation.js` | navmesh, pathfinding and the Detour **crowd**, which steers every soldier around walls, columns and each other. It also gives the player wall collision |
+
+`recast-navigation.js` was downloaded from the official npm packages (`@recast-navigation/core`, `generators` and `wasm` 0.43.1, by Isaac Mason) and bundled into one classic script with the WebAssembly embedded. Nothing is fetched at runtime.
+
+### How the NPCs know where to walk
+1. `tools/build-navmesh.mjs` reads every floor and wall triangle of `backroom.glb` in world space. It skips the ceiling and light panels and feeds the triangles to Recast, using a 0.30 m agent radius, 0.9 m agent height and 0.3 m step height.
+2. The map's carpet and ceiling planes extend past the building into an unlit void. A **flood fill** from inside the main hall keeps only the reachable interior, so nobody can spawn or walk out there.
+3. The result is saved as `assets/Maps/backroom.navmesh` (45 KiB) and loads instantly at boot. If that file is missing, `game.js` rebuilds it at runtime from the loaded three.js meshes using `BufferGeometryUtils`.
+4. Every soldier is a Detour crowd agent. Yuka decides *where* to go (a patrol point, the last place an enemy was seen, a switch, the briefcase), and Recast finds the path and steers around walls and other soldiers.
+
+---
+
+## Missions (unlock in order: clear one to open the next)
+
+| # | Operation | Mode | Win condition |
+|---|---|---|---|
+| 1 | **Operation: Last Light** | Extermination · time trial | 3:00 on the clock. Reach 15 eliminations (★ 15 / ★★ 25 / ★★★ 35) |
+| 2 | **Operation: Yellow Halls** | Team Deathmatch · 3v3 | First team to 20 eliminations |
+| 3 | **Operation: Keymaster** | Keycard Extraction | Find 3 hidden keycards, then extract at the lift |
+| 4 | **Duel: The Mimic** | 1v1 Deathmatch | First to 15. The Mimic is armoured, regenerates, strafes and uses cover |
+| 5 | **Operation: No Second Chances** | Squads Survival · teams of 2 | One life each. Be the last duo standing (you can spectate your teammate if you fall) |
+| 6 | **Operation: Black Case** | Capture the Briefcase · time trial | Free-for-all with one life each. Be the last one standing holding the case, or hold it when 4:00 runs out |
+| 7 | **Operation: Override** | Siege · 6v6 · time trial | Hold Interact on both switches at the far ends of the enemy wing before they override yours (5:00) |
+| 8 | **Finale: Lights Out** | Keycard Extraction II | The power fails: flashlight only, hunters track your noise, the keycards are hidden deeper, and you have 3 lives |
+
+Completed operations can be replayed at any time. Clearing the finale opens **Campaign Complete**, where **Start Over** resets the campaign (settings are kept). Weapons also unlock with progress: Tri-Barrel after Op 2, M4 after Op 3 and Sniper after Op 4.
+
+**Team colours:** the soldier model ships without textures, so uniforms are tinted at runtime. Your squad is always **blue** and marked with a blue chevron. Hostiles wear navy, woodland olive, desert tan, crimson, urban grey, arctic white or black ops, depending on the mission.
+
+---
+
+## Controls
+| | Keyboard & mouse | Touch | Gamepad |
+|---|---|---|---|
+| Move / look | WASD / mouse | left stick (push to the edge = sprint) / drag the right side | left / right stick |
+| Fire / aim | LMB / RMB | ◎ button (drag it to aim while firing) / ⌖ | RT / LT |
+| Reload · jump · crouch | R · Space · C | ⟳ · ▲ · ▼ | X · A · B |
+| Sprint · swap · interact | Shift · Q/1/2/wheel · E | joystick edge · ⇄ · ✋ | L3 · Y · LB/RB |
+| Pause | Esc / P | ❚❚ | Start |
+
+Settings: sensitivity, invert Y, FOV, graphics quality (Auto/Low/Med/High), volume, ambience, aim assist, auto-fire (touch), touch button size, FPS counter and language.
+
+---
+
+## Run it locally
+```bash
+# from the repository root
+python3 -m http.server 8765
+# open http://localhost:8765/Backrooms%20FPS/index.html
+```
+Outside YouTube the SDK reports `IN_PLAYABLES_ENV = false`. The game then saves to `localStorage` and skips the SDK calls, so it is fully playable in a normal browser.
+
+## Rebuild / test (developers)
+```bash
+cd tools
+npm install
+npm run libs      # rebuild lib/ from npm (three.js, recast-navigation)
+npm run assets    # re-optimize source-assets/ → Backrooms FPS/assets/
+npm run navmesh   # re-bake the walkable area
+npm run zip       # → dist/backrooms-fps.zip + size report
+# with the local server running:
+node test/cert.mjs     # 34 automated pre-certification checks (mock SDK)
+node test/smoke.mjs    # boot → menu → missions → briefing → gameplay screenshots
+node test/modes.mjs    # plays all 8 missions headless and drives each to the end screen
+node test/mobile.mjs   # touch layouts, landscape + portrait
+```
+Screenshots go to `tools/test/out/`.
+
+---
+
+## YouTube Playables / Mediacube certification checklist
+
+| Requirement | How the game meets it | Verified by |
+|---|---|---|
+| SDK loaded first, before any game code | `<script src="https://www.youtube.com/game_api/v1">` is the first script in `<head>` | `cert.mjs` |
+| `firstFrameReady()` once the first frame is shown | called after the static boot screen paints (≈80 ms) | `cert.mjs` |
+| `gameReady()` once the game is interactive | called once, when the ENTER button appears after all assets load | `cert.mjs` |
+| Pause halts rendering, audio and gameplay | `onPause` stops the render loop and simulation, suspends the AudioContext and saves. In a mission, resuming lands on the pause menu | `cert.mjs` (0 frames while paused) |
+| Respect YouTube mute | `isAudioEnabled()` on boot and `onAudioEnabledChange` set a hard mute (all audio is generated in code, with no audio files) | `cert.mjs` |
+| Cloud save | progress, best scores and settings go through `game.loadData/saveData` (≈0.3 KiB, far below 3 MiB) | `cert.mjs` (reload restores progress) |
+| Score | `engagement.sendScore()` sends the campaign best total, which always matches the saved best | `cert.mjs` |
+| Localization | `system.getLanguage()` picks EN/ES/PT/FR, with an English fallback | `cert.mjs` (Spanish UI) |
+| Health reporting | `health.logError/logWarning` are wired to `window.onerror` and `unhandledrejection` | code |
+| No external requests or links | every asset is local and relative. No CDNs, links, ads, purchases, `alert` or `window.open` | `cert.mjs` (0 external requests) |
+| Bundle limits | 5.8 MiB total (limits: 30 MiB initial, 250 MiB total, 30 MiB per file, 8000 files) | `cert.mjs`, `npm run zip` |
+| Works on mobile and desktop | touch controls, adaptive resolution, safe-area insets, portrait and landscape | `mobile.mjs` |
+| Content | stylised combat with sparks and hit markers. No blood or gore | — |
+
+> **Note:** these checks are modelled on YouTube's published Playables requirements, run against a mock SDK. Mediacube and YouTube run their own automated and manual review, so their result is what counts. If they flag anything, send me the report and I'll fix it.
+
+### Submitting through Mediacube
+1. `cd tools && npm install && npm run zip`, or zip the **contents** of `Backrooms FPS/` yourself (`index.html` must be at the root of the zip).
+2. Upload `dist/backrooms-fps.zip` in the Mediacube / Playables portal.
+3. Suggested listing: genre *Shooter / Action*, orientation *both (landscape recommended)*, input *touch, mouse and keyboard, gamepad*.
