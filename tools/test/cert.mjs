@@ -1,0 +1,104 @@
+// Automated pre-certification checks modelled on the YouTube Playables requirements.
+// Run with a static server on :8765 (python3 -m http.server 8765 from the repo root).
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { open, sleep } from './harness.mjs';
+const here = path.dirname(fileURLToPath(import.meta.url));
+const GAME = path.resolve(here, '../../Backrooms FPS');
+const results = [];
+const check = (name, ok, info = '') => { results.push({ name, ok, info }); console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${info ? '  — ' + info : ''}`); };
+
+// --- static checks ---------------------------------------------------------
+const html = fs.readFileSync(path.join(GAME, 'index.html'), 'utf8');
+const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map((m) => m[1]);
+check('SDK <script> is the first script on the page', scripts[0] === 'https://www.youtube.com/game_api/v1', scripts.join(', '));
+const firstScriptIdx = html.search(/<script\b/), headEnd = html.indexOf('</head>');
+check('SDK is loaded in <head>', firstScriptIdx > 0 && firstScriptIdx < headEnd);
+let total = 0, count = 0, biggest = ['', 0];
+const walk = (d) => { for (const f of fs.readdirSync(d)) { const p = path.join(d, f); const st = fs.statSync(p); if (st.isDirectory()) walk(p); else { total += st.size; count++; if (st.size > biggest[1]) biggest = [path.relative(GAME, p), st.size]; } } };
+walk(GAME);
+const MiB = (b) => (b / 1048576).toFixed(2) + ' MiB';
+check('Total bundle < 250 MiB', total < 250 * 1048576, MiB(total));
+check('Initial bundle < 30 MiB (recommended < 15 MiB)', total < 15 * 1048576, MiB(total) + ' (everything is loaded before gameReady)');
+check('Every file < 30 MiB', biggest[1] < 30 * 1048576, `largest ${biggest[0]} ${MiB(biggest[1])}`);
+check('File count < 8000', count < 8000, String(count));
+const code = fs.readFileSync(path.join(GAME, 'game.js'), 'utf8');
+const externalUrls = (html + code).match(/https?:\/\/[^\s"'`)]+/g) || [];
+check('No external URLs besides the SDK', externalUrls.every((u) => u.startsWith('https://www.youtube.com/game_api/v1')), [...new Set(externalUrls)].join(' '));
+check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|window\.open\s*\(/.test(code));
+
+// --- runtime checks --------------------------------------------------------
+{
+  const { browser, page, log } = await open();
+  await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
+  const calls = await page.evaluate(() => window.__yt.calls);
+  const ffr = calls.filter((c) => c[0] === 'firstFrameReady'), gr = calls.filter((c) => c[0] === 'gameReady');
+  check('firstFrameReady called exactly once', ffr.length === 1);
+  check('gameReady called exactly once', gr.length === 1);
+  check('firstFrameReady before gameReady', ffr[0][2] < gr[0][2], `ffr ${ffr[0][2].toFixed(0)} ms, gameReady ${gr[0][2].toFixed(0)} ms (software GL)`);
+  check('loadData called before gameReady', calls.findIndex((c) => c[0] === 'loadData') < calls.findIndex((c) => c[0] === 'gameReady'));
+  for (const n of ['onPause', 'onResume', 'onAudioEnabledChange', 'isAudioEnabled', 'getLanguage']) check(`SDK ${n} wired`, calls.some((c) => c[0] === n));
+  await page.click('#boot-enter'); await sleep(800);
+  // mission lock on a fresh save
+  const locked = await page.evaluate(() => { window.__BR.Ui.show('missions'); return [...document.querySelectorAll('#missions .mcard')].map((c) => c.classList.contains('locked')); });
+  check('Fresh save: only Operation 1 is playable', locked[0] === false && locked.slice(1).every(Boolean), locked.map((l) => (l ? 'L' : 'U')).join(''));
+  await page.evaluate(() => { document.querySelectorAll('#missions .mcard')[1].click(); });
+  await sleep(500);
+  check('Clicking a locked operation does not open it', await page.evaluate(() => window.__BR.Ui.cur === 'missions'));
+  // menu pause: rendering must stop
+  const frames = async (ms) => page.evaluate((ms) => new Promise((r) => { const W = window.__BR.World; let n = 0; const o = W.render; W.render = function () { n++; return o.apply(this, arguments); }; setTimeout(() => { W.render = o; r(n); }, ms); }), ms);
+  check('Audio is running before pause (precondition)', await page.evaluate(() => window.__BR.Audio.ready));
+  await page.evaluate(() => window.__yt.pauseCbs.forEach((cb) => cb()));
+  const fPaused = await frames(800);
+  const ctxState = await page.evaluate(() => new Promise((r) => setTimeout(() => r(window.__BR.Audio.ready), 200)));
+  check('onPause halts rendering (menu)', fPaused === 0, `${fPaused} frames in 800 ms`);
+  check('onPause silences audio', ctxState === false);
+  await page.evaluate(() => window.__yt.resumeCbs.forEach((cb) => cb()));
+  const fRes = await frames(800);
+  check('onResume restarts rendering (menu)', fRes > 0, `${fRes} frames`);
+  // in-game pause
+  await page.evaluate(() => window.__BR.Game.start(0, 'ak47', 'pistol'));
+  await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
+  await page.evaluate(() => { window.__BR.Game.countdownT = 0; });
+  await sleep(1500);
+  check('Mission clock runs while playing (precondition)', await page.evaluate(() => window.__BR.Game.time > 0));
+  await page.evaluate(() => window.__yt.pauseCbs.forEach((cb) => cb()));
+  const t1 = await page.evaluate(() => window.__BR.Game.time); const gf = await frames(800); const t2 = await page.evaluate(() => window.__BR.Game.time);
+  check('onPause in a mission freezes simulation and rendering', gf === 0 && t1 === t2, `${gf} frames, time ${t1.toFixed(2)}→${t2.toFixed(2)}`);
+  await page.evaluate(() => window.__yt.resumeCbs.forEach((cb) => cb()));
+  check('onResume in a mission shows the pause menu (no surprise resume)', await page.evaluate(() => window.__BR.Game.paused && document.querySelector('#m-pause').classList.contains('active')));
+  // platform mute
+  await page.evaluate(() => window.__BR.Game.resume());
+  await page.evaluate(() => window.__yt.audioCbs.forEach((cb) => cb(false)));
+  check('onAudioEnabledChange(false) mutes audio', await page.evaluate(() => new Promise((r) => setTimeout(() => r(!window.__BR.Audio.ready), 200))));
+  await page.evaluate(() => window.__yt.audioCbs.forEach((cb) => cb(true)));
+  // win mission 1 → unlock, save, score
+  await page.evaluate(() => { const G = window.__BR.Game; G.player.kills = 16; G.finish(true, 'r_win'); });
+  await page.waitForFunction(() => window.__BR.Ui.cur === 'end', null, { timeout: 15000 });
+  const saved = await page.evaluate(() => JSON.parse(window.__yt.saved));
+  const scores = await page.evaluate(() => window.__yt.scores);
+  check('Winning Operation 1 unlocks Operation 2 and saves via saveData', saved.unlocked === 2, `unlocked=${saved.unlocked}`);
+  const best = Object.values(saved.missions).reduce((a, m) => a + (m.best || 0), 0);
+  check('sendScore value equals the best score in the save', scores.length > 0 && scores[scores.length - 1] === best, `sent ${scores.join(',')} / saved ${best}`);
+  check('Save data well under 3 MiB', JSON.stringify(saved).length < 3 * 1048576, (JSON.stringify(saved).length / 1024).toFixed(1) + ' KiB');
+  check('No requests outside the bundle', log.external.length === 0, log.external.join(' '));
+  check('No page errors / console errors', log.errors.length === 0 && !log.console.some((c) => c.startsWith('[error]')), [...log.errors, ...log.console].slice(0, 3).join(' | '));
+  var savedStr = await page.evaluate(() => window.__yt.saved);
+  await browser.close();
+}
+// --- reload with the saved data + language -------------------------------
+{
+  const { browser, page, log } = await open({ save: savedStr, lang: 'es-ES' });
+  await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
+  await page.click('#boot-enter'); await sleep(600);
+  const locked = await page.evaluate(() => { window.__BR.Ui.show('missions'); return [...document.querySelectorAll('#missions .mcard')].map((c) => c.classList.contains('locked')); });
+  check('Progress restored from loadData after reload', locked[0] === false && locked[1] === false && locked[2] === true, locked.map((l) => (l ? 'L' : 'U')).join(''));
+  const txt = await page.evaluate(() => document.querySelector('#menu [data-a=play]') ? document.querySelector('#menu [data-a=play]').textContent : document.querySelector('#missions h2').textContent);
+  check('getLanguage localizes the UI (es)', /Campaña|Elige/.test(txt), txt.trim());
+  await browser.close();
+}
+const failed = results.filter((r) => !r.ok);
+console.log(`\n${results.length - failed.length}/${results.length} checks passed`);
+fs.writeFileSync(path.join(here, 'out', 'cert-report.json'), JSON.stringify(results, null, 2));
+process.exit(failed.length ? 1 : 0);
