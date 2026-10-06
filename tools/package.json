@@ -1,0 +1,27 @@
+{
+  "name": "backrooms-fps-tools",
+  "private": true,
+  "type": "module",
+  "description": "Dev-only build tools for Backrooms FPS. Nothing in here is shipped to YouTube Playables.",
+  "scripts": {
+    "libs": "node build-libs.mjs",
+    "assets": "node optimize-assets.mjs",
+    "navmesh": "node build-navmesh.mjs",
+    "build": "node build-libs.mjs && node optimize-assets.mjs && node build-navmesh.mjs",
+    "test": "node test/smoke.mjs",
+    "zip": "node package-zip.mjs"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "@recast-navigation/core": "^0.43.1",
+    "@recast-navigation/generators": "^0.43.1",
+    "@recast-navigation/wasm": "^0.43.1",
+    "esbuild": "^0.28.2",
+    "playwright-core": "^1.63.0",
+    "recast-navigation": "^0.43.1",
+    "sharp": "^0.35.5",
+    "three": "^0.180.0"
+  }
+}
