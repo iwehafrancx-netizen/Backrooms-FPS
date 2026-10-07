@@ -824,6 +824,8 @@ const World = {
         src.emissiveMap.anisotropy = 4;
         mat = new T.MeshBasicMaterial({ map: src.emissiveMap, side: T.FrontSide });
         mat.color.setScalar(this.brightness);
+        const img = src.emissiveMap.image;
+        if (!img || !(img.width || img.videoWidth)) { mat.map = null; mat.color.set(name === 'CarpetBake4' ? 0x5a4a2c : name === 'RoofBaked' ? 0x8f8458 : 0xb3a462); }
       } else if (name === 'light') {
         mat = new T.MeshBasicMaterial({ color: new T.Color(1.6, 1.55, 1.35) });
         this.lightPanelMat = mat;
@@ -1653,20 +1655,41 @@ function defineAI() {
         b.crouchWanted = b.elite ? Math.random() < 0.35 : Math.random() < 0.12;
       }
       if (b.reactT <= 0) b.shootAt(tg);
-      if (!b.elite && b.a.hp < b.a.maxHp * 0.3 && !b.retreated && Math.random() < 0.02) { b.retreated = true; b.brain.changeTo('retreat'); }
-      if (b.elite && b.a.hp < b.a.maxHp * 0.35 && Game.time - b.lastRetreat > 8) { b.lastRetreat = Game.time; b.brain.changeTo('retreat'); }
+      if (b.shouldRetreat()) b.brain.changeTo('retreat');
     }
     exit(b) { b.faceTarget = null; b.crouchWanted = false; }
   }
+  // Hurt soldiers break off, sprint to a spot their attacker can't see, patch up, then return to the hunt.
   class Retreat extends Y.State {
     enter(b) {
-      b.setSpeed(b.runSpeed); b.retreatT = b.elite ? 2.2 : 3.5;
-      const tg = b.target || b.lastAttacker;
-      let p = null;
-      if (tg) { const dx = b.a.pos.x - tg.pos.x, dz = b.a.pos.z - tg.pos.z, L = Math.hypot(dx, dz) || 1; p = Nav.randomAround({ x: b.a.pos.x + dx / L * 8, y: 0, z: b.a.pos.z + dz / L * 8 }, 4); }
-      b.moveTo(p || Nav.randomAround(b.a.pos, 10)); b.target = null;
+      b.lastRetreat = Game.time; b.retreatT = 0; b.hiding = false; b.faceTarget = null; b.crouchWanted = false;
+      b.setSpeed(b.runSpeed);
+      const threat = (b.lastAttacker && b.lastAttacker.alive && b.lastAttacker) || b.target;
+      b.threat = threat; b.target = null;
+      b.moveTo(b.findCover(threat));
     }
-    execute(b) { b.retreatT -= b.dt; if (b.retreatT <= 0 || b.arrived(1)) b.brain.changeTo('hunt'); }
+    execute(b) {
+      b.retreatT += b.dt;
+      if (!b.hiding) {
+        // running: no shooting, face the escape direction (Bot.update faces velocity when faceTarget is null)
+        if (b.arrived(1.2) || b.retreatT > 6) {
+          b.hiding = true; b.hideT = b.elite ? rand(1.5, 2.5) : rand(3, 5);
+          if (b.agent) b.agent.resetMoveTarget();
+          b.crouchWanted = true;
+        }
+        return;
+      }
+      // in cover: patch up, fire back if found, give up hiding when cornered or recovered
+      b.hideT -= b.dt;
+      if (Game.time - b.a.lastHurt > 1.5) b.a.hp = Math.min(b.a.maxHp, b.a.hp + 5 * b.dt);
+      const tg = b.target;
+      if (tg && tg.alive) {
+        b.faceTarget = tg; b.shootAt(tg);
+        if (dist2D(tg.pos, b.a.pos) < 4) { b.brain.changeTo('engage'); return; }
+      } else b.faceTarget = null;
+      if (b.hideT <= 0 && (b.a.hp >= b.a.maxHp * 0.7 || b.hideT < -4)) b.brain.changeTo(tg ? 'engage' : 'hunt');
+    }
+    exit(b) { b.hiding = false; b.faceTarget = null; b.crouchWanted = false; b.setSpeed(b.strafeSpeed); }
   }
   class Dead extends Y.State { execute() {} }
   return { Patrol, Hunt, Engage, Retreat, Dead };
@@ -1711,7 +1734,7 @@ class Bot {
     a.alive = true; a.hp = a.maxHp; a.spawnTime = Game.time; a.pos.set(pos.x, pos.y || 0, pos.z); this.yaw = yaw; a.yaw = yaw;
     if (!this.agent) this.agent = Nav.crowd.addAgent(a.pos, { radius: 0.38, height: 1.8, maxAcceleration: 16, maxSpeed: this.walkSpeed, collisionQueryRange: 2.5, pathOptimizationRange: 12, separationWeight: 1.5 });
     else this.agent.teleport(a.pos);
-    this.target = null; this.retreated = false; this.mag = WEAPONS[this.weaponId].mag; this.reloadT = 0; this.corpseT = 0;
+    this.target = null; this.lastRetreat = -99; this.mag = WEAPONS[this.weaponId].mag; this.reloadT = 0; this.corpseT = 0;
     this.memory.clear ? this.memory.clear() : (this.memory.records.length = 0, this.memory.recordsMap.clear());
     this.root.visible = true; this.gun.visible = true;
     this.mixer.stopAllAction(); this.anim = null; this.play('aim_idle');
@@ -1740,6 +1763,30 @@ class Bot {
   onHurt(attacker) {
     this.lastAttacker = attacker; this.alertUntil = Game.time + 2.5;
     if (attacker && attacker.ent && attacker.alive) this.sense(attacker, false);
+    if (this.a.hp > 0 && this.shouldRetreat()) this.brain.changeTo('retreat');
+  }
+  // Below 40% health (35% for the Mimic) a soldier falls back, at most once every 8 seconds.
+  shouldRetreat() {
+    const st = this.brain.currentState;
+    if (!this.a.alive || st instanceof AI.Retreat || st instanceof AI.Dead) return false;
+    return this.a.hp < this.a.maxHp * (this.elite ? 0.35 : 0.4) && Game.time - this.lastRetreat > 8;
+  }
+  // Nearest reachable spot 6-14 m away, away from the threat, that the threat has no line of sight to.
+  findCover(threat) {
+    const a = this.a.pos, eye = threat ? threat.eye(new THREE.Vector3()) : null, probe = new THREE.Vector3();
+    const away = threat ? Math.atan2(a.x - threat.pos.x, a.z - threat.pos.z) : rand(0, Math.PI * 2);
+    let best = null, bestScore = Infinity;
+    for (let i = 0; i < 8; i++) {
+      const ang = away + rand(-1.2, 1.2), r = rand(6, 14);
+      const c = Nav.closest({ x: a.x + Math.sin(ang) * r, y: 0, z: a.z + Math.cos(ang) * r });
+      if (!c) continue;
+      probe.set(c.x, 1.3, c.z);
+      const hidden = !eye || !World.los(eye, probe);
+      const closer = threat && dist2D(c, threat.pos) < dist2D(a, threat.pos);
+      const score = dist2D(c, a) + (hidden ? 0 : 100) + (closer ? 50 : 0);
+      if (score < bestScore) { bestScore = score; best = c; }
+    }
+    return best || Nav.randomAround(a, 10);
   }
   sense(actor, visible) {
     let r = this.memory.getRecord(actor.ent);
@@ -3057,6 +3104,13 @@ async function boot() {
     Input.attach(World.renderer.domElement);
     setStatus('assets');
     const loader = new THREE.GLTFLoader();
+    // Decode embedded textures through <img> (TextureLoader) instead of ImageBitmapLoader. ImageBitmapLoader
+    // reads blob: URLs with fetch(), which strict hosts (CSP connect-src) refuse, leaving every texture blank.
+    loader.register((parser) => {
+      parser.textureLoader = new THREE.TextureLoader(parser.options.manager);
+      parser.textureLoader.setCrossOrigin(parser.options.crossOrigin);
+      return { name: 'backrooms_img_textures' };
+    });
     const parse = (buf) => new Promise((res, rej) => loader.parse(buf, '', res, rej));
     const entries = Object.entries(ASSET_FILES);
     const bufs = await Promise.all(entries.map(([k, [url, kb]]) => Loader.binary(url, kb).then((b) => [k, b])));
