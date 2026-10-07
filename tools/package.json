@@ -9,7 +9,9 @@
     "navmesh": "node build-navmesh.mjs",
     "build": "node build-libs.mjs && node optimize-assets.mjs && node build-navmesh.mjs",
     "test": "node test/smoke.mjs",
-    "zip": "node package-zip.mjs"
+    "zip": "node package-zip.mjs",
+    "standalone": "node build-standalone.mjs",
+    "web-demo": "node build-standalone.mjs && node build-web-demo.mjs"
   },
   "devDependencies": {
     "@gltf-transform/core": "^4.5.1",

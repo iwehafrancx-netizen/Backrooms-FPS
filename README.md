@@ -13,7 +13,7 @@ Everything runs offline from the game folder. The only external URL is the YouTu
 ## Folder layout
 
 ```
-Backrooms FPS/            ← the game. Zip the CONTENTS of this folder for submission.
+Backrooms FPS/            ← the YouTube Playables game. Zip the CONTENTS of this folder for submission.
   index.html              YouTube SDK <script> first, then the static boot screen, then game.js
   game.js                 the whole game (single file)
   css/style.css           all UI: menus, HUD, touch controls, transitions
@@ -25,6 +25,7 @@ Backrooms FPS/            ← the game. Zip the CONTENTS of this folder for subm
   assets/NPCs/            operator.glb (optimized, animations retargeted and named)
   assets/Guns/            pistol, shotgun, ak47, m4, sniper (.glb, optimized)
   LICENSES.txt            licenses of the bundled libraries
+Backrooms FPS Standalone/ ← the same game without any YouTube integration (generated, see below)
 source-assets/            your original, untouched .glb files (NOT shipped)
 tools/                    developer tools (NOT shipped): builds, asset optimizer, navmesh baker, tests
 dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-ignored)
@@ -49,6 +50,19 @@ dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-igno
 2. The map's carpet and ceiling planes extend past the building into an unlit void. A **flood fill** from inside the main hall keeps only the reachable interior, so nobody can spawn or walk out there.
 3. The result is saved as `assets/Maps/backroom.navmesh` (45 KiB) and loads instantly at boot. If that file is missing, `game.js` rebuilds it at runtime from the loaded three.js meshes using `BufferGeometryUtils`.
 4. Every soldier is a Detour crowd agent. Yuka decides *where* to go (a patrol point, the last place an enemy was seen, a switch, the briefcase), and Recast finds the path and steers around walls and other soldiers.
+
+---
+
+## Two versions
+
+| Folder | Use it for | YouTube integration |
+|---|---|---|
+| `Backrooms FPS/` | **Mediacube / YouTube Playables submission** (`npm run zip` packages this one) | full SDK integration, certification-tested |
+| `Backrooms FPS Standalone/` | play-testing, your own website, itch.io, anywhere else | none: no SDK tag, saves stay in the browser (localStorage), language follows the browser |
+
+The standalone folder is **generated** from the Playables folder, so make game changes in `Backrooms FPS/` and then run `cd tools && npm run standalone`. Don't edit the standalone copy by hand.
+
+**Browser test link:** `cd tools && npm run web-demo` builds `dist/web-demo/` from the standalone copy. That's the version published as the private claude.ai test link. It only adds what that host needs: the page skeleton is removed and the CSS inlined, and the `.glb`/`.navmesh` files ship as base64 text because the host won't serve `.glb`.
 
 ---
 
