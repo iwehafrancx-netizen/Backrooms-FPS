@@ -1,5 +1,3 @@
-// Minimal stand-in for https://www.youtube.com/game_api/v1 used by the local test harness.
-// Records every SDK call on window.__yt so tests can assert certification behaviour.
 (function () {
   const log = (window.__yt = { calls: [], saved: window.__ytInitialSave || '', scores: [], pauseCbs: [], resumeCbs: [], audioCbs: [], audio: true });
   const rec = (n, a) => log.calls.push([n, a, performance.now()]);

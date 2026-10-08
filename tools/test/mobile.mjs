@@ -1,4 +1,3 @@
-// Touch-device screenshots in landscape and portrait (menu, missions, briefing, HUD with touch controls).
 import { open, shot, sleep } from './harness.mjs';
 for (const [w, h, tag] of [[844, 390, 'land'], [390, 844, 'port']]) {
   const { browser, page, log } = await open({ width: w, height: h, touch: true });

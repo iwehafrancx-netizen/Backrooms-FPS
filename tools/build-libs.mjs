@@ -1,13 +1,3 @@
-// Builds the offline, global-script libraries used by the game into "Backrooms FPS/lib/".
-// No CDN, no import maps: every file is a classic <script> that attaches to window.
-//   lib/three/three.min.js            -> window.THREE (core)
-//   lib/three/GLTFLoader.js           -> THREE.GLTFLoader
-//   lib/three/PointerLockControls.js  -> THREE.PointerLockControls
-//   lib/three/SkeletonUtils.js        -> THREE.SkeletonUtils
-//   lib/three/BufferGeometryUtils.js  -> THREE.BufferGeometryUtils
-//   lib/three/postprocessing.js       -> THREE.EffectComposer / RenderPass / UnrealBloomPass / OutputPass
-//   lib/navigation/recast-navigation.js -> window.Recast (core + generators, WASM inlined)
-//   lib/ai/yuka.min.js                -> window.YUKA (copied from the repo's original file)
 import * as esbuild from 'esbuild';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -21,7 +11,6 @@ const jsm = path.join(nm, 'three/examples/jsm');
 
 for (const d of ['three', 'navigation', 'ai']) fs.mkdirSync(path.join(lib, d), { recursive: true });
 
-// Resolve `import ... from 'three'` inside addons to the already-loaded window.THREE.
 const threeGlobal = {
   name: 'three-global',
   setup(b) {
@@ -48,7 +37,6 @@ async function bundle(entryContents, outfile, { plugins = [threeGlobal], name } 
   console.log('built', path.relative(game, outfile), (fs.statSync(outfile).size / 1024).toFixed(0) + ' KiB');
 }
 
-// Core: plain re-export of three onto window.THREE.
 await bundle(`import * as T from 'three'; window.THREE = Object.assign({}, T);`, path.join(lib, 'three/three.min.js'), { plugins: [], name: 'three.min.js' });
 
 const addon = (file, names) =>
@@ -57,7 +45,6 @@ const addon = (file, names) =>
 await bundle(addon('loaders/GLTFLoader.js', ['GLTFLoader']), path.join(lib, 'three/GLTFLoader.js'), { name: 'GLTFLoader.js' });
 await bundle(addon('controls/PointerLockControls.js', ['PointerLockControls']), path.join(lib, 'three/PointerLockControls.js'), { name: 'PointerLockControls.js' });
 await bundle(`import * as S from '${path.join(jsm, 'utils/SkeletonUtils.js')}'; window.THREE.SkeletonUtils = S;`, path.join(lib, 'three/SkeletonUtils.js'), { name: 'SkeletonUtils.js' });
-await bundle(`import * as B from '${path.join(jsm, 'utils/BufferGeometryUtils.js')}'; window.THREE.BufferGeometryUtils = B;`, path.join(lib, 'three/BufferGeometryUtils.js'), { name: 'BufferGeometryUtils.js' });
 await bundle(
   [
     `import { EffectComposer } from '${path.join(jsm, 'postprocessing/EffectComposer.js')}';`,
@@ -70,8 +57,6 @@ await bundle(
   { name: 'postprocessing.js' },
 );
 
-// Recast Navigation (official npm packages by isaac-mason, MIT). The "wasm-compat" build embeds the
-// WASM binary as base64, so nothing is fetched at runtime.
 await esbuild.build({
   stdin: {
     contents: `import * as core from '@recast-navigation/core'; import * as gen from '@recast-navigation/generators'; window.Recast = Object.assign({}, core, gen);`,
@@ -91,7 +76,6 @@ await esbuild.build({
 });
 console.log('built lib/navigation/recast-navigation.js', (fs.statSync(path.join(lib, 'navigation/recast-navigation.js')).size / 1024).toFixed(0) + ' KiB');
 
-// Yuka: the user's original file, moved into lib/ai.
 const yukaSrc = [path.join(game, 'js/yuka.min.js'), path.join(lib, 'ai/yuka.min.js')].find((p) => fs.existsSync(p));
 if (yukaSrc && yukaSrc !== path.join(lib, 'ai/yuka.min.js')) fs.copyFileSync(yukaSrc, path.join(lib, 'ai/yuka.min.js'));
 console.log('yuka at lib/ai/yuka.min.js');

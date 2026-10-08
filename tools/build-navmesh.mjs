@@ -1,6 +1,3 @@
-// Bakes the walkable area of the Backrooms map into a Recast/Detour navmesh binary
-// ("Backrooms FPS/assets/Maps/backroom.navmesh") so the game boots instantly (no runtime generation).
-// The game uses the SAME parameters to regenerate at runtime if the file is ever missing.
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { init, exportNavMesh, NavMeshQuery, floodFillPruneNavMesh } from '@recast-navigation/core';
@@ -46,7 +43,6 @@ for (const node of doc.getRoot().listNodes()) {
       minY = Math.min(minY, w[1]); maxY = Math.max(maxY, w[1]);
     }
     report.push(`${name.padEnd(20)} y ${minY.toFixed(2)}..${maxY.toFixed(2)}`);
-    // The ceiling, ceiling lights and plugs can't be walked on — keep only geometry that touches the floor.
     if (minY > 1.0) continue;
     if (/^(light|Lightsurround|RoofBaked)$/.test(name) && maxY - minY < 0.3 && minY > 1) continue;
     const base = positions.length / 3;
@@ -60,8 +56,6 @@ console.log(report.join('\n'));
 await init();
 const { success, navMesh, error } = generateSoloNavMesh(new Float32Array(positions), new Uint32Array(indices), NAV_CONFIG);
 if (!success) throw new Error('navmesh generation failed: ' + error);
-// The model's carpet/ceiling planes extend past the building into an unlit void. Keep only the
-// polygons connected to the interior (flood fill from a point inside the main hall).
 export const INTERIOR_SEED = { x: 5, y: 0, z: 15 };
 const q = new NavMeshQuery(navMesh);
 const seed = q.findNearestPoly(INTERIOR_SEED, { halfExtents: { x: 2, y: 2, z: 2 } });

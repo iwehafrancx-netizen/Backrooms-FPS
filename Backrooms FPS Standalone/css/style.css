@@ -1,21 +1,12 @@
-/* =====================================================================
-   BACKROOMS — UI / HUD stylesheet
-   Palette: fluorescent wallpaper yellow, caution amber, tactical blue/red.
-   No external fonts or images: everything is CSS, gradients and inline SVG.
-   ===================================================================== */
 :root {
   --ink: #0b0a07;
-  --ink-2: #15130c;
   --paper: #e9dca4;
   --paper-dim: #b7ab78;
   --yellow: #f2c230;
-  --amber: #ffb000;
   --blue: #3d8bff;
-  --blue-dim: #1f4f9e;
   --red: #ff4a3d;
   --green: #5bd16a;
   --glass: rgba(14, 12, 6, 0.74);
-  --glass-2: rgba(30, 26, 14, 0.82);
   --line: rgba(233, 220, 164, 0.18);
   --f-display: "Bahnschrift", "DIN Condensed", "Roboto Condensed", "Arial Narrow", "Helvetica Neue", Impact, sans-serif;
   --f-body: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -43,7 +34,6 @@ body.ingame #view canvas { cursor: none; }
 #ui > * { pointer-events: auto; }
 #ui > .passthrough { pointer-events: none; }
 
-/* ---------- screens & transitions ---------- */
 .screen {
   position: fixed; inset: 0; display: none; z-index: 10;
   padding: calc(18px + var(--safe-t)) calc(22px + var(--safe-r)) calc(18px + var(--safe-b)) calc(22px + var(--safe-l));
@@ -61,7 +51,6 @@ body.ingame #view canvas { cursor: none; }
 .stagger > *:nth-child(9) { animation-delay: .45s }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
-/* caution-tape wipe used between scenes */
 #wipe {
   position: fixed; inset: 0; z-index: 90; pointer-events: none; transform: translateX(-105%);
   background: repeating-linear-gradient(-45deg, var(--yellow) 0 34px, var(--ink) 34px 68px);
@@ -76,7 +65,6 @@ body.ingame #view canvas { cursor: none; }
   font: 700 clamp(18px, 3.4vw, 34px)/1 var(--f-display); letter-spacing: .35em; padding: 16px 28px; white-space: nowrap;
 }
 
-/* film grain + vignette overlay (cheap atmosphere, all quality levels) */
 #atmo { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
 #atmo::before {
   content: ""; position: absolute; inset: 0;
@@ -89,7 +77,6 @@ body.ingame #view canvas { cursor: none; }
 }
 @keyframes grain { 0% { transform: translate(0,0) } 25% { transform: translate(-3%,2%) } 50% { transform: translate(2%,-3%) } 75% { transform: translate(-2%,-1%) } }
 
-/* ---------- boot ---------- */
 #boot { align-items: center; justify-content: center; background: radial-gradient(ellipse at 50% 30%, #2a2512 0%, #0b0a07 70%); overflow: hidden; z-index: 80; }
 #boot .fluoro { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,240,170,.08), transparent 40%); animation: flicker 4s infinite; }
 @keyframes flicker { 0%, 100% { opacity: 1 } 7% { opacity: .4 } 8% { opacity: 1 } 46% { opacity: .9 } 47% { opacity: .2 } 49% { opacity: 1 } 80% { opacity: .85 } }
@@ -118,7 +105,6 @@ body.ingame #view canvas { cursor: none; }
 @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,194,48,.0); filter: brightness(1); } 50% { filter: brightness(1.15); } }
 .boot-tip { position: absolute; bottom: calc(22px + var(--safe-b)); left: 0; right: 0; text-align: center; font: 12px/1.4 var(--f-mono); color: var(--paper-dim); letter-spacing: .08em; padding: 0 20px; }
 
-/* ---------- shared widgets ---------- */
 .btn {
   --c: var(--paper); display: flex; align-items: center; gap: 12px; position: relative; cursor: pointer; text-align: left;
   padding: 13px 22px 13px 18px; min-height: 48px; background: var(--glass); border: 1px solid var(--line); color: var(--c);
@@ -145,7 +131,6 @@ body.ingame #view canvas { cursor: none; }
 .muted { color: var(--paper-dim); }
 .row { display: flex; gap: 12px; align-items: center; }
 .col { display: flex; flex-direction: column; gap: 10px; }
-.spacer { flex: 1; }
 .scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
 .scroll::-webkit-scrollbar { width: 6px; } .scroll::-webkit-scrollbar-thumb { background: var(--line); }
 
@@ -154,7 +139,6 @@ body.ingame #view canvas { cursor: none; }
 .back { width: 46px; height: 46px; display: grid; place-items: center; background: var(--glass); border: 1px solid var(--line); cursor: pointer; flex: none; }
 .back:hover { background: rgba(242,194,48,.18); }
 
-/* ---------- main menu ---------- */
 #menu { align-items: stretch; background: linear-gradient(90deg, rgba(11,10,7,.92) 0%, rgba(11,10,7,.55) 38%, rgba(11,10,7,0) 62%); }
 .menu-left { display: flex; flex-direction: column; justify-content: center; gap: 10px; width: min(380px, 46vw); }
 .menu-logo { font: 800 clamp(38px, 7vw, 78px)/0.88 var(--f-display); letter-spacing: .06em; color: var(--paper); text-shadow: 0 0 22px rgba(242,194,48,.35); margin-bottom: 4px; position: relative; }
@@ -170,7 +154,6 @@ body.ingame #view canvas { cursor: none; }
 .ticker { font: 11px/1.3 var(--f-mono); color: var(--paper-dim); letter-spacing: .14em; max-width: min(300px, 40vw); text-align: right; }
 .ticker b { color: var(--yellow); font-weight: 600; }
 
-/* ---------- mission select ---------- */
 #missions { flex-direction: column; background: radial-gradient(ellipse at 70% 0%, rgba(42,37,18,.85), rgba(11,10,7,.96) 70%); }
 #missions .grid { margin-top: calc(64px + var(--safe-t)); display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); gap: 12px; padding-bottom: 16px; flex: 1; align-content: start; }
 .mcard { position: relative; padding: 14px 14px 12px; min-height: 150px; cursor: pointer; overflow: hidden; display: flex; flex-direction: column; gap: 6px;
@@ -196,7 +179,6 @@ body.ingame #view canvas { cursor: none; }
 .shake { animation: shake .4s; }
 @keyframes shake { 20%, 60% { transform: translateX(-6px) } 40%, 80% { transform: translateX(6px) } }
 
-/* ---------- briefing ---------- */
 #briefing { background: linear-gradient(90deg, rgba(11,10,7,.95) 0%, rgba(11,10,7,.82) 55%, rgba(11,10,7,.6) 100%); flex-direction: column; }
 #briefing .wrap { margin-top: calc(60px + var(--safe-t)); display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; flex: 1; min-height: 0; overflow-y: auto; align-content: start; touch-action: pan-y; }
 .brief-left { display: flex; flex-direction: column; gap: 10px; }
@@ -224,13 +206,11 @@ body.ingame #view canvas { cursor: none; }
 .deploy-row { display: flex; gap: 10px; margin-top: auto; padding-top: 6px; }
 .deploy-row .btn { flex: 1; justify-content: center; }
 
-/* ---------- deploy transition ---------- */
 #deploy { background: #000; align-items: center; justify-content: center; z-index: 70; }
 #deploy .radio { font: 600 clamp(13px, 2vw, 17px)/1.8 var(--f-mono); letter-spacing: .14em; color: var(--yellow); white-space: pre-wrap; width: min(640px, 90vw); }
 #deploy .radio .dim { color: var(--paper-dim); }
 #deploy .scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, transparent 1px 3px); pointer-events: none; }
 
-/* ---------- HUD ---------- */
 #hud { position: fixed; inset: 0; z-index: 20; pointer-events: none; display: none; font-family: var(--f-display); }
 #hud.on { display: block; }
 .hud-pad { position: absolute; inset: calc(12px + var(--safe-t)) calc(16px + var(--safe-r)) calc(12px + var(--safe-b)) calc(16px + var(--safe-l)); }
@@ -299,7 +279,6 @@ body.ingame #view canvas { cursor: none; }
 
 .radar { position: absolute; left: 0; top: 0; width: 132px; height: 132px; border-radius: 50%; overflow: hidden; background: rgba(11,10,7,.6); border: 1px solid var(--line); box-shadow: 0 6px 18px rgba(0,0,0,.35); }
 .radar canvas { width: 100%; height: 100%; }
-.compass { position: absolute; left: 50%; top: 0; transform: translateX(-50%); }
 
 .popups { position: absolute; left: 50%; top: 62%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .pop { font: 800 20px/1 var(--f-display); letter-spacing: .12em; text-shadow: 0 2px 10px rgba(0,0,0,.7); animation: popIn 1.4s ease-out forwards; white-space: nowrap; }
@@ -345,7 +324,6 @@ body.ingame #view canvas { cursor: none; }
 .hud-pause { position: absolute; right: 0; top: 0; width: 42px; height: 42px; pointer-events: auto; display: grid; place-items: center; background: rgba(11,10,7,.6); border: 1px solid var(--line); cursor: pointer; }
 body.touch .killfeed { top: 52px; }
 
-/* ---------- touch controls ---------- */
 #touch { position: fixed; inset: 0; z-index: 21; display: none; pointer-events: none; }
 body.touch.ingame #touch { display: block; }
 .joy { position: absolute; left: calc(24px + var(--safe-l)); bottom: calc(26px + var(--safe-b)); width: calc(150px * var(--touch-scale)); height: calc(150px * var(--touch-scale)); pointer-events: auto; border-radius: 50%; background: rgba(11,10,7,.28); border: 1.5px solid rgba(233,220,164,.25); }
@@ -366,7 +344,6 @@ body.touch.ingame #touch { display: block; }
 .tbtn.swap { right: calc(100px * var(--touch-scale) + 10px + var(--safe-r)); bottom: calc(190px * var(--touch-scale) + var(--safe-b)); width: calc(48px * var(--touch-scale)); height: calc(48px * var(--touch-scale)); }
 .tbtn.use { right: 50%; margin-right: -32px; bottom: calc(110px + var(--safe-b)); width: 64px; height: 64px; background: rgba(242,194,48,.5); color: var(--ink); display: none; }
 .tbtn.use.on { display: grid; animation: rise .2s; }
-/* touch, landscape: vitals + ammo sit bottom-centre between the stick and the buttons */
 body.touch .vitals { left: 50%; bottom: 0; width: min(190px, 22vw); transform: translateX(-104%); }
 body.touch .vitals .hpnum { font-size: 24px; }
 body.touch .ammo { right: auto; left: 50%; bottom: 0; transform: translateX(4%) scale(.72); transform-origin: left bottom; text-align: left; }
@@ -386,7 +363,6 @@ body.paused .crosshair, body.paused .hitmarker { display: none; }
   .scorebar { font-size: 18px; } .scorebar > div { padding: 6px 10px; }
 }
 
-/* ---------- pause / modal ---------- */
 .modal { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center; background: rgba(5,5,3,.72); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
   padding: calc(16px + var(--safe-t)) calc(16px + var(--safe-r)) calc(16px + var(--safe-b)) calc(16px + var(--safe-l)); }
 .modal.active { display: flex; animation: fadeIn .25s ease-out; }
@@ -411,7 +387,6 @@ input[type=range]::-moz-range-thumb { width: 18px; height: 18px; background: var
 .kv kbd { font: 700 11px/1 var(--f-mono); background: rgba(255,255,255,.1); padding: 4px 6px; white-space: nowrap; }
 .confirm-text { font-size: 15px; line-height: 1.5; }
 
-/* ---------- end screen ---------- */
 #end { align-items: center; justify-content: center; background: radial-gradient(ellipse at center, rgba(11,10,7,.6), rgba(11,10,7,.96) 75%); z-index: 50; }
 .end-box { width: min(680px, 100%); text-align: center; }
 .end-title { font: 800 clamp(48px, 10vw, 110px)/0.9 var(--f-display); letter-spacing: .12em; animation: slam .6s cubic-bezier(.2,1.4,.4,1) both; }
@@ -434,7 +409,6 @@ input[type=range]::-moz-range-thumb { width: 18px; height: 18px; background: var
 #complete { align-items: center; justify-content: center; text-align: center; background: radial-gradient(ellipse at center, #2a2512, #0b0a07 70%); z-index: 55; }
 #complete .medal { width: 120px; height: 120px; margin: 0 auto 10px; animation: slam .8s cubic-bezier(.2,1.4,.4,1) both; }
 
-/* ---------- layout adaptations ---------- */
 @media (max-width: 760px), (max-height: 480px) {
   .menu-left { width: min(330px, 60vw); }
   .rankcard { width: min(240px, 36vw); padding: 10px 12px; }
@@ -459,7 +433,6 @@ input[type=range]::-moz-range-thumb { width: 18px; height: 18px; background: var
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
-/* ---------- world markers (objectives, exits, briefcase) ---------- */
 .wm { position: absolute; left: 0; top: 0; transform-origin: 0 0; margin: -38px 0 0 -40px; width: 80px; text-align: center; pointer-events: none;
   font: 800 11px/1.2 var(--f-mono); letter-spacing: .12em; color: #fff; text-shadow: 0 1px 3px #000; }
 .wm::before { content: ""; display: block; width: 18px; height: 18px; margin: 0 auto 3px; transform: rotate(45deg); border: 2.5px solid currentColor; background: rgba(0,0,0,.35); }

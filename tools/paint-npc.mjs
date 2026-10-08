@@ -1,8 +1,3 @@
-// Paints soldier textures for the NPC model (which ships with UVs but no images).
-// Every triangle is rasterised into its material's UV space; each texel is coloured from the interpolated
-// bind-pose position (front = +Z, height 0..1.40) and normal, so the paint follows the model's own seams.
-// Look: khaki uniform, coyote plate carrier with pouches, olive backpack, black gloves, brown combat boots,
-// olive-drab helmet, dark balaclava.
 import sharp from 'sharp';
 
 const C = {
@@ -11,7 +6,6 @@ const C = {
   helmet: [94, 96, 68], helmetD: [70, 72, 52], belt: [58, 54, 41], buckle: [128, 126, 116], knee: [72, 68, 52],
 };
 
-// cheap deterministic value noise
 const hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
 function vnoise(x, y) {
   const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
@@ -37,16 +31,16 @@ function torso(p, n) {
   if (ax > 0.2) return [ax > 0.37 ? C.khakiD : C.khaki, 'cloth'];
   if (p[1] > 1.18) return [C.balaclava, 'cloth'];
   if (p[1] > 0.84) {
-    if (n[2] < -0.4 && p[1] < 1.15) { // backpack on the back panel, with shoulder straps
+    if (n[2] < -0.4 && p[1] < 1.15) {
       if (ax > 0.07 && ax < 0.1) return [C.strap, 'webbing'];
       return [p[1] > 1.1 ? C.strap : C.bag, 'nylon'];
     }
-    if (n[2] > 0.4 && p[1] < 0.97 && ax < 0.15) { // three magazine pouches on the chest rig
+    if (n[2] > 0.4 && p[1] < 0.97 && ax < 0.15) {
       const gap = (ax % 0.065) < 0.008;
       if (gap) return [C.coyote, 'nylon'];
       return [p[1] > 0.952 ? C.strap : C.pouch, 'nylon'];
     }
-    if (Math.abs(n[0]) > 0.6) return [C.pouch, 'nylon']; // cummerbund
+    if (Math.abs(n[0]) > 0.6) return [C.pouch, 'nylon'];
     return [C.coyote, 'nylon'];
   }
   return [C.khaki, 'cloth'];
@@ -56,22 +50,22 @@ function helmet(p, n) {
   const ax = Math.abs(p[0]);
   if (p[1] > 1.285) {
     if (p[1] < 1.297) return [C.helmetD, 'shell'];
-    if (n[2] > 0.6 && ax < 0.02 && p[1] > 1.33 && p[1] < 1.37) return [C.strap, 'shell']; // NVG mount
+    if (n[2] > 0.6 && ax < 0.02 && p[1] > 1.33 && p[1] < 1.37) return [C.strap, 'shell'];
     return [C.helmet, 'shell'];
   }
-  if (ax > 0.05 && ax < 0.07 && p[1] > 1.2) return [C.strap, 'webbing']; // chin strap
+  if (ax > 0.05 && ax < 0.07 && p[1] > 1.2) return [C.strap, 'webbing'];
   return [C.balaclava, 'cloth'];
 }
 
 function texelColor(kind, base, px, py, p) {
   let k = 1;
-  if (kind === 'cloth') k = 0.94 + 0.08 * vnoise(px / 9, py / 9) + 0.025 * Math.sin(px * 1.9 + py * 1.9); // twill
+  if (kind === 'cloth') k = 0.94 + 0.08 * vnoise(px / 9, py / 9) + 0.025 * Math.sin(px * 1.9 + py * 1.9);
   else if (kind === 'nylon') k = 0.93 + 0.08 * vnoise(px / 6, py / 6) + 0.02 * ((px + py) % 3 === 0 ? -1 : 1);
   else if (kind === 'webbing') k = 0.9 + 0.08 * ((py % 4) < 2 ? 1 : 0);
   else if (kind === 'leather') k = 0.85 + 0.2 * vnoise(px / 5, py / 5);
   else if (kind === 'shell') k = 0.9 + 0.12 * vnoise(px / 14, py / 14);
   else if (kind === 'pad') k = 0.88 + 0.12 * vnoise(px / 4, py / 4);
-  const wear = p[1] < 0.3 ? 0.92 + 0.08 * (p[1] / 0.3) : 1; // dirt on the lower legs
+  const wear = p[1] < 0.3 ? 0.92 + 0.08 * (p[1] / 0.3) : 1;
   return base.map((c) => Math.max(0, Math.min(255, Math.round(c * k * wear))));
 }
 
@@ -102,7 +96,6 @@ function raster(prim, size, rule) {
       img[o] = col[0]; img[o + 1] = col[1]; img[o + 2] = col[2]; img[o + 3] = 255;
     }
   }
-  // dilate painted islands outward so filtering/mipmaps never sample the empty background
   for (let pass = 0; pass < 8; pass++) {
     const src = img.slice();
     for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
@@ -125,7 +118,7 @@ export async function paintNpc(doc) {
     const r = rules.find(([re]) => re.test(name)); if (!r) continue;
     const [, rule, size, rough] = r;
     mat.setRoughnessFactor(rough).setMetallicFactor(0);
-    if (!rule) { mat.setBaseColorFactor([0.04, 0.05, 0.06, 1]); continue; } // tinted visor glass
+    if (!rule) { mat.setBaseColorFactor([0.04, 0.05, 0.06, 1]); continue; }
     const img = raster(prim, size, rule);
     const png = await sharp(Buffer.from(img), { raw: { width: size, height: size, channels: 4 } }).removeAlpha().png().toBuffer();
     const tex = doc.createTexture(name.replace(/\W+/g, '_')).setImage(new Uint8Array(png)).setMimeType('image/png');

@@ -1,5 +1,3 @@
-// Packages "Backrooms FPS/" into dist/backrooms-fps.zip (index.html at the zip root) and prints a size report.
-// This is the file you upload to Mediacube / the YouTube Playables portal.
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';

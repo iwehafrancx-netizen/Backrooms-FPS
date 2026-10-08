@@ -1,5 +1,3 @@
-// A hostile engaging the player is shot down to 35% health: it must retreat out of the player's sight,
-// recover, and come back.
 import { open } from './harness.mjs';
 const { browser, page, log } = await open({ width: 640, height: 360 });
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
@@ -9,7 +7,6 @@ await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__
 const r = await page.evaluate(() => {
   const B = window.__BR, G = B.Game; G.countdownT = 0; G.player.armor = 0.0001; B.World.render = () => {};
   const step = (n) => { for (let i = 0; i < n; i++) G.update(1 / 30); };
-  // only one hostile and the player matter: park everyone else far away and passive
   const foes = G.actors.filter((a) => a.bot && a.team === 'B'), allies = G.actors.filter((a) => a.bot && a.team === 'A');
   for (const a of [...allies, ...foes.slice(1)]) { a.bot.brain.update = () => {}; a.bot.perceive = () => {}; a.bot.agent.teleport({ x: 27, y: 0, z: -22 }); }
   const f = foes[0], p = G.player; f.spawnTime = -99;

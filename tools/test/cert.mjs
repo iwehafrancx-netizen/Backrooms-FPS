@@ -1,5 +1,3 @@
-// Automated pre-certification checks modelled on the YouTube Playables requirements.
-// Run with a static server on :8765 (python3 -m http.server 8765 from the repo root).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +7,6 @@ const GAME = path.resolve(here, '../../Backrooms FPS');
 const results = [];
 const check = (name, ok, info = '') => { results.push({ name, ok, info }); console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${info ? '  — ' + info : ''}`); };
 
-// --- static checks ---------------------------------------------------------
 const html = fs.readFileSync(path.join(GAME, 'index.html'), 'utf8');
 const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map((m) => m[1]);
 check('SDK <script> is the first script on the page', scripts[0] === 'https://www.youtube.com/game_api/v1', scripts.join(', '));
@@ -28,7 +25,6 @@ const externalUrls = (html + code).match(/https?:\/\/[^\s"'`)]+/g) || [];
 check('No external URLs besides the SDK', externalUrls.every((u) => u.startsWith('https://www.youtube.com/game_api/v1')), [...new Set(externalUrls)].join(' '));
 check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|window\.open\s*\(/.test(code));
 
-// --- runtime checks --------------------------------------------------------
 {
   const { browser, page, log } = await open();
   await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
@@ -40,13 +36,11 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   check('loadData called before gameReady', calls.findIndex((c) => c[0] === 'loadData') < calls.findIndex((c) => c[0] === 'gameReady'));
   for (const n of ['onPause', 'onResume', 'onAudioEnabledChange', 'isAudioEnabled', 'getLanguage']) check(`SDK ${n} wired`, calls.some((c) => c[0] === n));
   await page.click('#boot-enter'); await sleep(800);
-  // mission lock on a fresh save
   const locked = await page.evaluate(() => { window.__BR.Ui.show('missions'); return [...document.querySelectorAll('#missions .mcard')].map((c) => c.classList.contains('locked')); });
   check('Fresh save: only Operation 1 is playable', locked[0] === false && locked.slice(1).every(Boolean), locked.map((l) => (l ? 'L' : 'U')).join(''));
   await page.evaluate(() => { document.querySelectorAll('#missions .mcard')[1].click(); });
   await sleep(500);
   check('Clicking a locked operation does not open it', await page.evaluate(() => window.__BR.Ui.cur === 'missions'));
-  // menu pause: rendering must stop
   const frames = async (ms) => page.evaluate((ms) => new Promise((r) => { const W = window.__BR.World; let n = 0; const o = W.render; W.render = function () { n++; return o.apply(this, arguments); }; setTimeout(() => { W.render = o; r(n); }, ms); }), ms);
   check('Audio is running before pause (precondition)', await page.evaluate(() => window.__BR.Audio.ready));
   await page.evaluate(() => window.__yt.pauseCbs.forEach((cb) => cb()));
@@ -57,7 +51,6 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   await page.evaluate(() => window.__yt.resumeCbs.forEach((cb) => cb()));
   const fRes = await frames(800);
   check('onResume restarts rendering (menu)', fRes > 0, `${fRes} frames`);
-  // in-game pause
   await page.evaluate(() => window.__BR.Game.start(0, 'ak47', 'pistol'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   await page.evaluate(() => { window.__BR.Game.countdownT = 0; });
@@ -68,12 +61,10 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   check('onPause in a mission freezes simulation and rendering', gf === 0 && t1 === t2, `${gf} frames, time ${t1.toFixed(2)}→${t2.toFixed(2)}`);
   await page.evaluate(() => window.__yt.resumeCbs.forEach((cb) => cb()));
   check('onResume in a mission shows the pause menu (no surprise resume)', await page.evaluate(() => window.__BR.Game.paused && document.querySelector('#m-pause').classList.contains('active')));
-  // platform mute
   await page.evaluate(() => window.__BR.Game.resume());
   await page.evaluate(() => window.__yt.audioCbs.forEach((cb) => cb(false)));
   check('onAudioEnabledChange(false) mutes audio', await page.evaluate(() => new Promise((r) => setTimeout(() => r(!window.__BR.Audio.ready), 200))));
   await page.evaluate(() => window.__yt.audioCbs.forEach((cb) => cb(true)));
-  // win mission 1 → unlock, save, score
   await page.evaluate(() => { const G = window.__BR.Game; G.player.kills = 16; G.finish(true, 'r_win'); });
   await page.waitForFunction(() => window.__BR.Ui.cur === 'end', null, { timeout: 15000 });
   const saved = await page.evaluate(() => JSON.parse(window.__yt.saved));
@@ -87,7 +78,6 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   var savedStr = await page.evaluate(() => window.__yt.saved);
   await browser.close();
 }
-// --- reload with the saved data + language -------------------------------
 {
   const { browser, page, log } = await open({ save: savedStr, lang: 'es-ES' });
   await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });

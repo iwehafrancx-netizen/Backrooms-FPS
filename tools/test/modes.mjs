@@ -1,4 +1,3 @@
-// Runs every mission headless for a while (bots only, player invulnerable), then drives it to an end state.
 import { open, shot } from './harness.mjs';
 const { browser, page, log } = await open({ width: 640, height: 360 });
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 60000 });
@@ -15,7 +14,6 @@ for (let mi = 0; mi < 12; mi++) {
     const kills = G.actors.reduce((a, x) => a + x.kills, 0);
     const hud = G.mode.hud();
     const mode = G.mode;
-    // drive to a win
     if (!G.over) {
       if (mode.keys) { for (const k of mode.keys) if (!k.got) mode.grab(k); G.player.pos.copy(mode.exit); const it = mode.interactable(G.player); it && it.done(); }
       else if (mode.switches) { for (const s of mode.switches) if (s.team === 'B' && !s.pressed) mode.press(s, 'A'); }
@@ -23,7 +21,6 @@ for (let mi = 0; mi < 12; mi++) {
     }
     return { mi, mode: B.MISSIONS[mi].mode, simMsPer90s: Math.round(ms), kills, over: G.over, hud: (hud.objective || '').replace(/<[^>]+>/g, ''), alive: G.actors.filter((a) => a.alive).length };
   }, mi);
-  // force-finish anything still running so the end screen renders
   await page.evaluate(() => { const G = window.__BR.Game; if (!G.over) G.finish(true, 'r_win'); });
   await page.waitForFunction(() => window.__BR.Ui.cur === 'end', null, { timeout: 15000 });
   await page.evaluate(() => window.__BR.World._render());

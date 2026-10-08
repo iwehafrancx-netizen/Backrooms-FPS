@@ -1,4 +1,3 @@
-// Screenshots of the remaining screens and objective visuals.
 import { open, shot, sleep } from './harness.mjs';
 const { browser, page, log } = await open();
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
@@ -7,21 +6,19 @@ await page.evaluate(() => window.__BR.Ui.openModal('m-settings')); await sleep(5
 await page.evaluate(() => window.__BR.Ui.openModal('m-controls')); await sleep(500); await shot(page, 's-controls');
 await page.evaluate(() => window.__BR.Ui.closeModal());
 const play = async (mi, setup) => {
-  await page.evaluate((mi) => { const B = window.__BR; B.Save.data.unlocked = 8; const m = B.MISSIONS[mi]; B.Game.start(mi, m.primary, m.secondary); }, mi);
+  await page.evaluate((mi) => { const B = window.__BR; B.Save.data.unlocked = 12; const m = B.MISSIONS[mi]; B.Game.start(mi, m.primary, m.secondary); }, mi);
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   await page.evaluate(() => { const G = window.__BR.Game; G.countdownT = 0; G.player.armor = 0.0001; });
   if (setup) await page.evaluate(setup);
   await sleep(1800);
 };
-// finale: lights out, flashlight; teleport next to a keycard
-await play(7, () => { const B = window.__BR, G = B.Game, k = G.mode.keys[0]; const p = B.Nav.randomAround(k.pos, 3); G.player.pos.set(p.x, 0, p.z); B.Player.ref = 0; G.player.yaw = Math.atan2(-(k.pos.x - p.x), -(k.pos.z - p.z)); G.player.pitch = -0.25; });
+await play(10, () => { const B = window.__BR, G = B.Game, k = G.mode.keys[0]; const p = B.Nav.randomAround(k.pos, 3); G.player.pos.set(p.x, 0, p.z); B.Player.ref = 0; G.player.yaw = Math.atan2(-(k.pos.x - p.x), -(k.pos.z - p.z)); G.player.pitch = -0.25; });
 await shot(page, 's-finale-keycard');
 await page.evaluate(() => { const G = window.__BR.Game, m = G.mode; m.keys.forEach((k) => !k.got && m.grab(k)); const ex = m.exit; const B = window.__BR; const p = B.Nav.randomAround(ex, 6); G.player.pos.set(p.x, 0, p.z); B.Player.ref = 0; G.player.yaw = Math.atan2(-(ex.x - p.x), -(ex.z - p.z)); });
 await sleep(1500); await shot(page, 's-finale-exit');
 await page.evaluate(() => { const G = window.__BR.Game; G.finish(true, 'r_extract'); });
 await page.waitForFunction(() => window.__BR.Ui.cur === 'end', null, { timeout: 15000 }); await sleep(2200); await shot(page, 's-end-win');
 await page.evaluate(() => window.__BR.Game.toMenu('complete')); await sleep(1500); await shot(page, 's-complete');
-// briefcase
 await play(5, () => { const B = window.__BR, G = B.Game, c = G.mode.casePos; const p = B.Nav.randomAround(c, 4); G.player.pos.set(p.x, 0, p.z); B.Player.ref = 0; G.player.yaw = Math.atan2(-(c.x - p.x), -(c.z - p.z)); G.player.pitch = -0.2; });
 await shot(page, 's-briefcase');
 await page.evaluate(() => { const G = window.__BR.Game; G.player.hp = 1; G.player.armor = 1; G.finish(false, 'r_dead'); });

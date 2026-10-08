@@ -1,5 +1,3 @@
-// Bot behaviour simulation: starts a mission, makes the player invulnerable and idle, and lets the AI fight.
-// usage: node test/sim.mjs <missionIndex> <seconds>
 import { open, shot, sleep } from './harness.mjs';
 const mi = +(process.argv[2] || 1), secs = +(process.argv[3] || 40);
 const { browser, page, log } = await open();
@@ -9,7 +7,6 @@ await page.evaluate((mi) => { const B = window.__BR; B.Save.data.unlocked = 8; c
 await page.waitForFunction(() => window.__BR.Game.state === 'play', null, { timeout: 30000 });
 await page.evaluate(() => {
   const B = window.__BR, G = B.Game; G.countdownT = 0; G.player.armor = 0.0001;
-  // headless fast-forward: skip rendering, step the simulation in fixed 1/30 s ticks
   B.World._render = B.World.render; B.World.render = () => {};
   window.__step = (n) => { for (let i = 0; i < n && !G.over; i++) G.update(1 / 30); };
 });

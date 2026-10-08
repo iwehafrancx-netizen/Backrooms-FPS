@@ -1,9 +1,3 @@
-// Optimizes the original assets in /source-assets into "Backrooms FPS/assets" for a small, fast bundle.
-//  - textures -> WebP (max 1024 px; the map keeps 2048 for its baked lighting)
-//  - NPC: the 15 Mixamo clips each target a duplicate armature; they are retargeted onto the real
-//    skinned armature, made "in place" (root motion removed), renamed, and the duplicates deleted.
-//  - NPC: hand-designed soldier textures painted into its UV space (tools/paint-npc.mjs).
-//  - geometry welded/pruned; no Draco/meshopt so the stock GLTFLoader needs no decoders.
 import { NodeIO, PropertyType } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { dedup, prune, weld, textureCompress, resample } from '@gltf-transform/functions';
@@ -18,8 +12,6 @@ const src = path.resolve(here, '../source-assets');
 const out = path.resolve(here, '../Backrooms FPS/assets');
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS);
 
-// Clip index (1-based, as authored) -> gameplay name. Classified from hip root motion
-// (forward = +Y in armature space, left = +X) and verified visually in the browser.
 const CLIP_NAMES = {
   1: 'aim_idle', 2: 'run_back', 3: 'run', 4: 'idle', 5: 'sprint', 6: 'run_back_fast', 7: 'walk_crouch',
   8: 'walk_back', 9: 'walk_slow', 10: 'strafe_right', 11: 'strafe_left', 12: 'walk_back_slow',
@@ -51,7 +43,6 @@ function retargetNpc(doc) {
       const target = byName.get(ch.getTargetNode().getName());
       if (!target) { ch.dispose(); continue; }
       ch.setTargetNode(target);
-      // Remove root motion: hips keep their bob/height but lose horizontal travel.
       if (target.getName() === 'mixamorig:Hips' && ch.getTargetPath() === 'translation') {
         const s = ch.getSampler();
         const t = s.getInput().getArray();
@@ -79,7 +70,6 @@ for (const job of jobs) {
   const doc = await io.read(path.join(src, job.from));
   if (job.npc) { retargetNpc(doc); await paintNpc(doc); }
   await doc.transform(
-    // keep materials distinct: the NPC's 4 parts share identical params but must be tinted separately
     dedup({ propertyTypes: [PropertyType.ACCESSOR, PropertyType.MESH, PropertyType.TEXTURE] }),
     ...(job.npc ? [resample()] : [weld()]),
     textureCompress({ encoder: sharp, targetFormat: 'webp', resize: [job.size, job.size], quality: 82 }),

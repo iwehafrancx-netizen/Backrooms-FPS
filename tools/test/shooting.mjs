@@ -1,14 +1,11 @@
-// Places a hostile 7 m in front of the player and fires with the real mouse input path.
 import { open, shot, sleep } from './harness.mjs';
 const { browser, page, log } = await open({ width: 960, height: 540 });
-// note: spawn protection lasts 1.6 s of game time, so the target is moved in after the countdown
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
 await page.click('#boot-enter');
 await page.evaluate(() => window.__BR.Game.start(0, 'ak47', 'pistol'));
 await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
 const setup = await page.evaluate(() => {
   const B = window.__BR, G = B.Game; G.countdownT = 0; G.player.armor = 0.0001; G.actors.forEach((a) => { a.spawnTime = -99; });
-  // freeze all hostiles; move one in front of the player
   const foes = G.actors.filter((a) => a.bot);
   for (const f of foes) { f.bot.brain.update = () => {}; f.bot.shootAt = () => {}; }
   const f = foes[0];

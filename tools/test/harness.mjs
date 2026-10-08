@@ -1,5 +1,3 @@
-// Shared Playwright harness: serves nothing itself (expects a static server on :8765),
-// swaps the YouTube SDK for the local mock, and records every network request.
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
 import path from 'node:path';

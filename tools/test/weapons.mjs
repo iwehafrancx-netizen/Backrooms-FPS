@@ -1,4 +1,3 @@
-// Renders every weapon's viewmodel at hip and aiming down sights.
 import { open, shot, sleep } from './harness.mjs';
 const { browser, page, log } = await open();
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 60000 });

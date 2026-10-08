@@ -1,16 +1,9 @@
-// Builds the browser test link from the standalone game ("Backrooms FPS Standalone/") into dist/web-demo/, ready to publish as a
-// claude.ai Artifact. The Artifact host adds the doctype/head/body skeleton itself and does not serve .glb files,
-// so this build:
-//   - writes index.html with only a <title>, the inlined stylesheet, the body markup and game.js;
-//   - copies game.js and lib/;
-//   - stores every binary asset (.glb, .navmesh) as base64 text (<file>.b64.txt), which game.js decodes when
-//     window.BACKROOMS_WEB_DEMO.b64 is set.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const game = path.resolve(here, '../Backrooms FPS Standalone'); // run build-standalone.mjs first
+const game = path.resolve(here, '../Backrooms FPS Standalone');
 const out = path.resolve(here, '../dist/web-demo');
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });

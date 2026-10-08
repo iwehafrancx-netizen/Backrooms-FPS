@@ -1,4 +1,3 @@
-// Smoke test: boot → menu → missions → briefing → deploy mission 1, with SDK assertions.
 import { open, shot, sleep } from './harness.mjs';
 const { browser, page, log } = await open();
 const t0 = Date.now();

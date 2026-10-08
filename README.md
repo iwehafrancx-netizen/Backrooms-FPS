@@ -4,7 +4,7 @@ A lightweight 3D first-person shooter built with three.js for **YouTube Playable
 Everything runs offline from the game folder. The only external URL is the YouTube Playables SDK tag, which YouTube requires.
 
 - **Engine:** three.js r180 · **AI:** Yuka · **Navigation:** recast-navigation-js (Recast/Detour, WASM)
-- **Size:** 5.8 MiB unpacked (20 files), 2.7 MiB zipped
+- **Size:** 6.0 MiB unpacked (19 files), 2.8 MiB zipped
 - **Platforms:** desktop (keyboard and mouse), mobile (touch, portrait or landscape) and gamepad
 - **Languages:** English, Spanish, Portuguese and French, chosen automatically with `ytgame.system.getLanguage()`
 
@@ -18,7 +18,7 @@ Backrooms FPS/            ← the YouTube Playables game. Zip the CONTENTS of th
   game.js                 the whole game (single file)
   css/style.css           all UI: menus, HUD, touch controls, transitions
   lib/three/              three.min.js, GLTFLoader.js, PointerLockControls.js,
-                          SkeletonUtils.js, BufferGeometryUtils.js, postprocessing.js
+                          SkeletonUtils.js, postprocessing.js
   lib/ai/yuka.min.js      Yuka game AI (your original file, moved here)
   lib/navigation/recast-navigation.js   Recast/Detour navigation (official npm build, WASM inlined)
   assets/Maps/            backroom.glb (optimized) + backroom.navmesh (pre-baked walkable area)
@@ -38,7 +38,6 @@ dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-igno
 | `GLTFLoader.js` | loads the `.glb` map, soldier and guns |
 | `PointerLockControls.js` | desktop mouse capture. If the YouTube iframe blocks pointer lock, the game falls back to free mouse-look automatically |
 | **`SkeletonUtils.js`** *(extra)* | clones the animated soldier correctly, so one model file can spawn up to 12 soldiers, each with its own skeleton and animation |
-| **`BufferGeometryUtils.js`** *(extra)* | the built-in three.js tool that merges and welds the map's meshes into one walkable surface for Recast. It is used if the pre-baked navmesh is ever missing |
 | **`postprocessing.js`** *(extra)* | EffectComposer + RenderPass + UnrealBloomPass + OutputPass: glow on the fluorescent lights. It is only on at **High** graphics quality, so phones stay fast |
 | `yuka.min.js` | bot brains: state machine (patrol → hunt → engage → retreat), vision cone with wall occlusion, short-term memory |
 | `recast-navigation.js` | navmesh, pathfinding and the Detour **crowd**, which steers every soldier around walls, columns and each other. It also gives the player wall collision |
@@ -48,7 +47,7 @@ dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-igno
 ### How the NPCs know where to walk
 1. `tools/build-navmesh.mjs` reads every floor and wall triangle of `backroom.glb` in world space. It skips the ceiling and light panels and feeds the triangles to Recast, using a 0.30 m agent radius, 0.9 m agent height and 0.3 m step height.
 2. The map's carpet and ceiling planes extend past the building into an unlit void. A **flood fill** from inside the main hall keeps only the reachable interior, so nobody can spawn or walk out there.
-3. The result is saved as `assets/Maps/backroom.navmesh` (45 KiB) and loads instantly at boot. If that file is missing, `game.js` rebuilds it at runtime from the loaded three.js meshes using `BufferGeometryUtils`.
+3. The result is saved as `assets/Maps/backroom.navmesh` (45 KiB) and loads instantly at boot.
 4. Every soldier is a Detour crowd agent. Yuka decides *where* to go (a patrol point, the last place an enemy was seen, a switch, the briefcase), and Recast finds the path and steers around walls and other soldiers.
 
 ---
@@ -161,7 +160,7 @@ Screenshots go to `tools/test/out/`.
 | Localization | `system.getLanguage()` picks EN/ES/PT/FR, with an English fallback | `cert.mjs` (Spanish UI) |
 | Health reporting | `health.logError/logWarning` are wired to `window.onerror` and `unhandledrejection` | code |
 | No external requests or links | every asset is local and relative. No CDNs, links, ads, purchases, `alert` or `window.open` | `cert.mjs` (0 external requests) |
-| Bundle limits | 5.8 MiB total (limits: 30 MiB initial, 250 MiB total, 30 MiB per file, 8000 files) | `cert.mjs`, `npm run zip` |
+| Bundle limits | 6.0 MiB total (limits: 30 MiB initial, 250 MiB total, 30 MiB per file, 8000 files) | `cert.mjs`, `npm run zip` |
 | Works on mobile and desktop | touch controls, adaptive resolution, safe-area insets, portrait and landscape | `mobile.mjs` |
 | Content | stylised combat with sparks and hit markers. No blood or gore | — |
 
