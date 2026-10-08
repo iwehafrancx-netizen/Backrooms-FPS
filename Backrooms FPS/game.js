@@ -143,7 +143,7 @@ const STR = {
     o_surv: 'SQUADS REMAINING — <b>{n}</b>', o_brief: '<b>{h}</b> HAS THE BRIEFCASE — TAKE IT BACK', o_briefNone: 'GRAB THE BRIEFCASE', o_briefYou: '<b>YOU HAVE THE BRIEFCASE</b> — HOLD IT UNTIL TIME RUNS OUT',
     o_siege: 'OVERRIDE BOTH ENEMY SWITCHES — <b>{a}</b> / 2', o_defend: 'DEFEND YOUR SWITCHES',
     b_key: 'KEYCARD RECOVERED', b_exit: 'EXIT UNLOCKED', b_button: 'SWITCH OVERRIDDEN', b_lost: 'SWITCH LOST', b_case: 'BRIEFCASE SECURED', b_caseLost: 'BRIEFCASE DROPPED', b_lights: 'POWER FAILURE', b_squadOut: 'SQUAD ELIMINATED', b_lead: 'TAKING THE LEAD', b_hunt: 'THEY CAN HEAR YOU',
-    r_time: 'TIME EXPIRED', r_dead: 'YOUR SQUAD WAS WIPED OUT', r_win: 'OPERATION SUCCESSFUL', r_score: 'TARGET NOT REACHED', r_enemyWin: 'THE ENEMY WON THE ROUND', r_case: 'LAST ONE STANDING WITH THE CASE', r_extract: 'EXTRACTED FROM LEVEL 0', r_siegeLost: 'THEY OVERRODE YOUR SWITCHES', o_wave: 'WAVE <b>{w}</b> / {t} — {n} HOSTILES LEFT', o_waveBreak: 'NEXT WAVE IN <b>{s}</b>', b_wave: 'WAVE {w}', b_waveClear: 'WAVE CLEARED', o_ghost: 'ELIMINATE THE OFFICERS — <b>{k}</b> / 3', b_alarm: 'ALARM RAISED', b_alarmSub: 'REINFORCEMENTS INBOUND', b_officer: 'OFFICER DOWN', o_hp: 'HOLD THE HARDPOINT — FIRST TO <b>{t}</b>', o_hpContest: '<b>HARDPOINT CONTESTED</b>', b_hpMove: 'HARDPOINT MOVED', o_boss: 'HUNT DOWN THE MIMIC', o_bossExit: 'THE MIMIC IS DOWN — <b>REACH THE LIFT</b>', b_boss: 'THE MIMIC IS DOWN', r_waves: 'ALL WAVES SURVIVED', r_ghost: 'ALL OFFICERS ELIMINATED', r_boss: 'THE MIMIC IS DEAD — EXTRACTED',
+    r_time: 'TIME EXPIRED', r_dead: 'YOUR SQUAD WAS WIPED OUT', r_win: 'OPERATION SUCCESSFUL', r_score: 'TARGET NOT REACHED', r_enemyWin: 'THE ENEMY WON THE ROUND', r_case: 'LAST ONE STANDING WITH THE CASE', r_extract: 'EXTRACTED FROM LEVEL 0', r_siegeLost: 'THEY OVERRODE YOUR SWITCHES', o_wave: 'WAVE <b>{w}</b> / {t} — {n} HOSTILES LEFT', o_waveBreak: 'NEXT WAVE IN <b>{s}</b>', b_wave: 'WAVE {w}', b_waveClear: 'WAVE CLEARED', o_ghost: 'ELIMINATE THE OFFICERS — <b>{k}</b> / 3', b_alarm: 'ALARM RAISED', b_alarmSub: 'REINFORCEMENTS INBOUND', b_officer: 'OFFICER DOWN', o_hp: 'HOLD THE HARDPOINT — FIRST TO <b>{t}</b>', o_hpContest: '<b>HARDPOINT CONTESTED</b>', b_hpMove: 'HARDPOINT MOVED', o_boss: 'HUNT DOWN THE MIMIC', o_bossExit: 'THE MIMIC IS DOWN — <b>REACH THE LIFT</b>', b_boss: 'THE MIMIC IS DOWN', r_waves: 'ALL WAVES SURVIVED', r_ghost: 'ALL OFFICERS ELIMINATED', r_boss: 'THE MIMIC IS DEAD — EXTRACTED', md_double: 'DOUBLE KILL', md_triple: 'TRIPLE KILL', md_multi: 'MULTI KILL', md_long: 'LONGSHOT', md_silent: 'SILENT KILL', md_revenge: 'REVENGE', md_first: 'FIRST BLOOD', md_comeback: 'COMEBACK', rw_recon: 'RECON PULSE', rw_adrenaline: 'ADRENALINE', rw_overdrive: 'OVERDRIVE', rw_recon_d: 'ALL HOSTILES ON RADAR', rw_adrenaline_d: 'FULL HEALTH · FASTER MOVES', rw_overdrive_d: 'DAMAGE ×1.5', streak: 'STREAK', plusAmmo: '+ AMMO', plusHealth: '+ HEALTH', daily: 'DAILY CHALLENGES', chDone: 'CHALLENGE COMPLETE', mastery: 'MASTERY', lv: 'LV {n}', xpMission: 'OPERATION XP', xpMedals: 'MEDALS', xpChallenges: 'CHALLENGES', rankUp: 'RANK UP', tapToContinue: 'TAP TO CONTINUE', dmgNumbers: 'Damage numbers', ch_kills: 'Get {n} eliminations', ch_head: 'Get {n} headshot kills', ch_silent: 'Get {n} silent kills (crouched, unseen)', ch_win: 'Win {n} operations', ch_shotgun: 'Get {n} Tri-Barrel kills', ch_sniper: 'Get {n} sniper kills', ch_long: 'Get {n} longshot kills (30 m+)', ch_multi: 'Get {n} multi-kills', ch_loot: 'Collect {n} supply drops', ch_streak: 'Reach a 5-kill streak',
     tips: ['TIP: Headshots deal heavy bonus damage.', 'TIP: Crouching tightens your spread.', 'TIP: Hostiles hear gunfire. Pick your fights.', 'TIP: Blue chevrons mark your squad. Every other colour is hostile.', 'TIP: Keycards beep louder as you get closer.', 'TIP: Health regenerates after a few seconds out of combat.'],
   },
   es: {
@@ -165,7 +165,7 @@ const STR = {
     o_ext: 'ELIMINA HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PRIMER EQUIPO EN <b>{t}</b> BAJAS', o_key: 'RECUPERA TARJETAS — <b>{k}</b> / 3', o_exit: 'TARJETAS LISTAS — <b>LLEGA AL ASCENSOR</b>', o_duel: 'PRIMERO A <b>{t}</b> — DERRIBA AL MIMIC',
     o_surv: 'EQUIPOS RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> TIENE EL MALETÍN — RECUPÉRALO', o_briefNone: 'COGE EL MALETÍN', o_briefYou: '<b>TIENES EL MALETÍN</b> — AGUANTA HASTA QUE ACABE EL TIEMPO', o_siege: 'ANULA LOS DOS INTERRUPTORES ENEMIGOS — <b>{a}</b> / 2', o_defend: 'DEFIENDE TUS INTERRUPTORES',
     b_key: 'TARJETA RECUPERADA', b_exit: 'SALIDA DESBLOQUEADA', b_button: 'INTERRUPTOR ANULADO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETÍN ASEGURADO', b_caseLost: 'MALETÍN PERDIDO', b_lights: 'APAGÓN', b_squadOut: 'EQUIPO ELIMINADO', b_lead: 'TOMAS LA DELANTERA', b_hunt: 'TE PUEDEN OÍR',
-    r_time: 'TIEMPO AGOTADO', r_dead: 'TU EQUIPO FUE ELIMINADO', r_win: 'OPERACIÓN EXITOSA', r_score: 'OBJETIVO NO ALCANZADO', r_enemyWin: 'EL ENEMIGO GANÓ LA RONDA', r_case: 'ÚLTIMO EN PIE CON EL MALETÍN', r_extract: 'EXTRAÍDO DEL NIVEL 0', r_siegeLost: 'ANULARON TUS INTERRUPTORES', o_wave: 'OLEADA <b>{w}</b> / {t} — QUEDAN {n} HOSTILES', o_waveBreak: 'SIGUIENTE OLEADA EN <b>{s}</b>', b_wave: 'OLEADA {w}', b_waveClear: 'OLEADA SUPERADA', o_ghost: 'ELIMINA A LOS OFICIALES — <b>{k}</b> / 3', b_alarm: 'ALARMA ACTIVADA', b_alarmSub: 'LLEGAN REFUERZOS', b_officer: 'OFICIAL ABATIDO', o_hp: 'MANTÉN LA ZONA — PRIMERO A <b>{t}</b>', o_hpContest: '<b>ZONA DISPUTADA</b>', b_hpMove: 'LA ZONA SE MOVIÓ', o_boss: 'CAZA AL MIMIC', o_bossExit: 'EL MIMIC HA CAÍDO — <b>LLEGA AL ASCENSOR</b>', b_boss: 'EL MIMIC HA CAÍDO', r_waves: 'SOBREVIVISTE A TODAS LAS OLEADAS', r_ghost: 'OFICIALES ELIMINADOS', r_boss: 'EL MIMIC HA MUERTO — EXTRAÍDO',
+    r_time: 'TIEMPO AGOTADO', r_dead: 'TU EQUIPO FUE ELIMINADO', r_win: 'OPERACIÓN EXITOSA', r_score: 'OBJETIVO NO ALCANZADO', r_enemyWin: 'EL ENEMIGO GANÓ LA RONDA', r_case: 'ÚLTIMO EN PIE CON EL MALETÍN', r_extract: 'EXTRAÍDO DEL NIVEL 0', r_siegeLost: 'ANULARON TUS INTERRUPTORES', o_wave: 'OLEADA <b>{w}</b> / {t} — QUEDAN {n} HOSTILES', o_waveBreak: 'SIGUIENTE OLEADA EN <b>{s}</b>', b_wave: 'OLEADA {w}', b_waveClear: 'OLEADA SUPERADA', o_ghost: 'ELIMINA A LOS OFICIALES — <b>{k}</b> / 3', b_alarm: 'ALARMA ACTIVADA', b_alarmSub: 'LLEGAN REFUERZOS', b_officer: 'OFICIAL ABATIDO', o_hp: 'MANTÉN LA ZONA — PRIMERO A <b>{t}</b>', o_hpContest: '<b>ZONA DISPUTADA</b>', b_hpMove: 'LA ZONA SE MOVIÓ', o_boss: 'CAZA AL MIMIC', o_bossExit: 'EL MIMIC HA CAÍDO — <b>LLEGA AL ASCENSOR</b>', b_boss: 'EL MIMIC HA CAÍDO', r_waves: 'SOBREVIVISTE A TODAS LAS OLEADAS', r_ghost: 'OFICIALES ELIMINADOS', r_boss: 'EL MIMIC HA MUERTO — EXTRAÍDO', md_double: 'DOBLE BAJA', md_triple: 'TRIPLE BAJA', md_multi: 'MULTIBAJA', md_long: 'TIRO LEJANO', md_silent: 'BAJA SILENCIOSA', md_revenge: 'VENGANZA', md_first: 'PRIMERA SANGRE', md_comeback: 'REMONTADA', rw_recon: 'PULSO DE RECONOCIMIENTO', rw_adrenaline: 'ADRENALINA', rw_overdrive: 'SOBRECARGA', rw_recon_d: 'TODOS LOS HOSTILES EN EL RADAR', rw_adrenaline_d: 'SALUD COMPLETA · MÁS VELOCIDAD', rw_overdrive_d: 'DAÑO ×1.5', streak: 'RACHA', plusAmmo: '+ MUNICIÓN', plusHealth: '+ SALUD', daily: 'DESAFÍOS DIARIOS', chDone: 'DESAFÍO COMPLETADO', mastery: 'MAESTRÍA', lv: 'NV {n}', xpMission: 'XP DE OPERACIÓN', xpMedals: 'MEDALLAS', xpChallenges: 'DESAFÍOS', rankUp: 'ASCENSO', tapToContinue: 'TOCA PARA CONTINUAR', dmgNumbers: 'Números de daño', ch_kills: 'Consigue {n} bajas', ch_head: 'Consigue {n} bajas a la cabeza', ch_silent: 'Consigue {n} bajas silenciosas (agachado, sin ser visto)', ch_win: 'Gana {n} operaciones', ch_shotgun: 'Consigue {n} bajas con la Tri-Barrel', ch_sniper: 'Consigue {n} bajas con francotirador', ch_long: 'Consigue {n} bajas lejanas (30 m+)', ch_multi: 'Consigue {n} multibajas', ch_loot: 'Recoge {n} suministros', ch_streak: 'Logra una racha de 5 bajas',
     tips: ['CONSEJO: Los tiros a la cabeza hacen mucho más daño.', 'CONSEJO: Agacharte reduce la dispersión.', 'CONSEJO: Los hostiles oyen los disparos.', 'CONSEJO: Los chevrones azules marcan a tu equipo.', 'CONSEJO: Las tarjetas pitan más fuerte al acercarte.', 'CONSEJO: La salud se regenera fuera de combate.'],
   },
   pt: {
@@ -187,7 +187,7 @@ const STR = {
     o_ext: 'ELIMINE HOSTIS — <b>{k}</b> / {t}', o_tdm: 'PRIMEIRA EQUIPE A <b>{t}</b> ABATES', o_key: 'RECUPERE CARTÕES — <b>{k}</b> / 3', o_exit: 'CARTÕES OK — <b>VÁ ATÉ O ELEVADOR</b>', o_duel: 'PRIMEIRO A <b>{t}</b> — DERRUBE O MIMIC',
     o_surv: 'ESQUADRÕES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> ESTÁ COM A MALETA — RECUPERE', o_briefNone: 'PEGUE A MALETA', o_briefYou: '<b>VOCÊ ESTÁ COM A MALETA</b> — SEGURE ATÉ O TEMPO ACABAR', o_siege: 'SOBRESCREVA OS DOIS INTERRUPTORES INIMIGOS — <b>{a}</b> / 2', o_defend: 'DEFENDA SEUS INTERRUPTORES',
     b_key: 'CARTÃO RECUPERADO', b_exit: 'SAÍDA LIBERADA', b_button: 'INTERRUPTOR SOBRESCRITO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETA GARANTIDA', b_caseLost: 'MALETA PERDIDA', b_lights: 'QUEDA DE ENERGIA', b_squadOut: 'ESQUADRÃO ELIMINADO', b_lead: 'NA LIDERANÇA', b_hunt: 'ELES PODEM TE OUVIR',
-    r_time: 'TEMPO ESGOTADO', r_dead: 'SEU ESQUADRÃO FOI ELIMINADO', r_win: 'OPERAÇÃO BEM-SUCEDIDA', r_score: 'META NÃO ATINGIDA', r_enemyWin: 'O INIMIGO VENCEU A RODADA', r_case: 'ÚLTIMO DE PÉ COM A MALETA', r_extract: 'EXTRAÍDO DO NÍVEL 0', r_siegeLost: 'SOBRESCREVERAM SEUS INTERRUPTORES', o_wave: 'ONDA <b>{w}</b> / {t} — RESTAM {n} HOSTIS', o_waveBreak: 'PRÓXIMA ONDA EM <b>{s}</b>', b_wave: 'ONDA {w}', b_waveClear: 'ONDA SUPERADA', o_ghost: 'ELIMINE OS OFICIAIS — <b>{k}</b> / 3', b_alarm: 'ALARME DISPARADO', b_alarmSub: 'REFORÇOS A CAMINHO', b_officer: 'OFICIAL ABATIDO', o_hp: 'SEGURE A ZONA — PRIMEIRO A <b>{t}</b>', o_hpContest: '<b>ZONA DISPUTADA</b>', b_hpMove: 'A ZONA MUDOU', o_boss: 'CACE O MIMIC', o_bossExit: 'O MIMIC CAIU — <b>VÁ ATÉ O ELEVADOR</b>', b_boss: 'O MIMIC CAIU', r_waves: 'TODAS AS ONDAS SUPERADAS', r_ghost: 'OFICIAIS ELIMINADOS', r_boss: 'O MIMIC MORREU — EXTRAÍDO',
+    r_time: 'TEMPO ESGOTADO', r_dead: 'SEU ESQUADRÃO FOI ELIMINADO', r_win: 'OPERAÇÃO BEM-SUCEDIDA', r_score: 'META NÃO ATINGIDA', r_enemyWin: 'O INIMIGO VENCEU A RODADA', r_case: 'ÚLTIMO DE PÉ COM A MALETA', r_extract: 'EXTRAÍDO DO NÍVEL 0', r_siegeLost: 'SOBRESCREVERAM SEUS INTERRUPTORES', o_wave: 'ONDA <b>{w}</b> / {t} — RESTAM {n} HOSTIS', o_waveBreak: 'PRÓXIMA ONDA EM <b>{s}</b>', b_wave: 'ONDA {w}', b_waveClear: 'ONDA SUPERADA', o_ghost: 'ELIMINE OS OFICIAIS — <b>{k}</b> / 3', b_alarm: 'ALARME DISPARADO', b_alarmSub: 'REFORÇOS A CAMINHO', b_officer: 'OFICIAL ABATIDO', o_hp: 'SEGURE A ZONA — PRIMEIRO A <b>{t}</b>', o_hpContest: '<b>ZONA DISPUTADA</b>', b_hpMove: 'A ZONA MUDOU', o_boss: 'CACE O MIMIC', o_bossExit: 'O MIMIC CAIU — <b>VÁ ATÉ O ELEVADOR</b>', b_boss: 'O MIMIC CAIU', r_waves: 'TODAS AS ONDAS SUPERADAS', r_ghost: 'OFICIAIS ELIMINADOS', r_boss: 'O MIMIC MORREU — EXTRAÍDO', md_double: 'ABATE DUPLO', md_triple: 'ABATE TRIPLO', md_multi: 'MULTIABATE', md_long: 'TIRO LONGO', md_silent: 'ABATE SILENCIOSO', md_revenge: 'VINGANÇA', md_first: 'PRIMEIRO SANGUE', md_comeback: 'VIRADA', rw_recon: 'PULSO DE RECONHECIMENTO', rw_adrenaline: 'ADRENALINA', rw_overdrive: 'SOBRECARGA', rw_recon_d: 'TODOS OS HOSTIS NO RADAR', rw_adrenaline_d: 'VIDA CHEIA · MAIS VELOCIDADE', rw_overdrive_d: 'DANO ×1.5', streak: 'SEQUÊNCIA', plusAmmo: '+ MUNIÇÃO', plusHealth: '+ VIDA', daily: 'DESAFIOS DIÁRIOS', chDone: 'DESAFIO CONCLUÍDO', mastery: 'MAESTRIA', lv: 'NV {n}', xpMission: 'XP DA OPERAÇÃO', xpMedals: 'MEDALHAS', xpChallenges: 'DESAFIOS', rankUp: 'PROMOÇÃO', tapToContinue: 'TOQUE PARA CONTINUAR', dmgNumbers: 'Números de dano', ch_kills: 'Faça {n} abates', ch_head: 'Faça {n} abates na cabeça', ch_silent: 'Faça {n} abates silenciosos (agachado, sem ser visto)', ch_win: 'Vença {n} operações', ch_shotgun: 'Faça {n} abates com a Tri-Barrel', ch_sniper: 'Faça {n} abates com sniper', ch_long: 'Faça {n} abates de longe (30 m+)', ch_multi: 'Faça {n} multiabates', ch_loot: 'Pegue {n} suprimentos', ch_streak: 'Alcance uma sequência de 5 abates',
     tips: ['DICA: Tiros na cabeça causam muito mais dano.', 'DICA: Agachar reduz a dispersão.', 'DICA: Os hostis ouvem tiros.', 'DICA: Divisas azuis marcam seu esquadrão.', 'DICA: Os cartões apitam mais alto quando você se aproxima.', 'DICA: A vida regenera fora de combate.'],
   },
   fr: {
@@ -209,7 +209,7 @@ const STR = {
     o_ext: 'ÉLIMINEZ LES HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PREMIÈRE ÉQUIPE À <b>{t}</b> ÉLIMINATIONS', o_key: 'RÉCUPÉREZ LES CARTES — <b>{k}</b> / 3', o_exit: 'CARTES OK — <b>REJOIGNEZ L’ASCENSEUR</b>', o_duel: 'PREMIER À <b>{t}</b> — ABATTEZ LE MIMIC',
     o_surv: 'ESCOUADES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> A LA MALLETTE — REPRENEZ-LA', o_briefNone: 'PRENEZ LA MALLETTE', o_briefYou: '<b>VOUS AVEZ LA MALLETTE</b> — GARDEZ-LA JUSQU’À LA FIN DU TEMPS', o_siege: 'FORCEZ LES DEUX INTERRUPTEURS ENNEMIS — <b>{a}</b> / 2', o_defend: 'DÉFENDEZ VOS INTERRUPTEURS',
     b_key: 'CARTE RÉCUPÉRÉE', b_exit: 'SORTIE DÉVERROUILLÉE', b_button: 'INTERRUPTEUR FORCÉ', b_lost: 'INTERRUPTEUR PERDU', b_case: 'MALLETTE SÉCURISÉE', b_caseLost: 'MALLETTE PERDUE', b_lights: 'PANNE DE COURANT', b_squadOut: 'ESCOUADE ÉLIMINÉE', b_lead: 'VOUS MENEZ', b_hunt: 'ILS VOUS ENTENDENT',
-    r_time: 'TEMPS ÉCOULÉ', r_dead: 'VOTRE ESCOUADE A ÉTÉ ANÉANTIE', r_win: 'OPÉRATION RÉUSSIE', r_score: 'OBJECTIF NON ATTEINT', r_enemyWin: 'L’ENNEMI A GAGNÉ LA MANCHE', r_case: 'DERNIER DEBOUT AVEC LA MALLETTE', r_extract: 'EXTRAIT DU NIVEAU 0', r_siegeLost: 'ILS ONT FORCÉ VOS INTERRUPTEURS', o_wave: 'VAGUE <b>{w}</b> / {t} — {n} HOSTILES RESTANTS', o_waveBreak: 'PROCHAINE VAGUE DANS <b>{s}</b>', b_wave: 'VAGUE {w}', b_waveClear: 'VAGUE REPOUSSÉE', o_ghost: 'ÉLIMINEZ LES OFFICIERS — <b>{k}</b> / 3', b_alarm: 'ALERTE DÉCLENCHÉE', b_alarmSub: 'RENFORTS EN APPROCHE', b_officer: 'OFFICIER ÉLIMINÉ', o_hp: 'TENEZ LA ZONE — PREMIER À <b>{t}</b>', o_hpContest: '<b>ZONE CONTESTÉE</b>', b_hpMove: 'LA ZONE S’EST DÉPLACÉE', o_boss: 'TRAQUEZ LE MIMIC', o_bossExit: 'LE MIMIC EST TOMBÉ — <b>REJOIGNEZ L’ASCENSEUR</b>', b_boss: 'LE MIMIC EST TOMBÉ', r_waves: 'TOUTES LES VAGUES REPOUSSÉES', r_ghost: 'OFFICIERS ÉLIMINÉS', r_boss: 'LE MIMIC EST MORT — EXTRAIT',
+    r_time: 'TEMPS ÉCOULÉ', r_dead: 'VOTRE ESCOUADE A ÉTÉ ANÉANTIE', r_win: 'OPÉRATION RÉUSSIE', r_score: 'OBJECTIF NON ATTEINT', r_enemyWin: 'L’ENNEMI A GAGNÉ LA MANCHE', r_case: 'DERNIER DEBOUT AVEC LA MALLETTE', r_extract: 'EXTRAIT DU NIVEAU 0', r_siegeLost: 'ILS ONT FORCÉ VOS INTERRUPTEURS', o_wave: 'VAGUE <b>{w}</b> / {t} — {n} HOSTILES RESTANTS', o_waveBreak: 'PROCHAINE VAGUE DANS <b>{s}</b>', b_wave: 'VAGUE {w}', b_waveClear: 'VAGUE REPOUSSÉE', o_ghost: 'ÉLIMINEZ LES OFFICIERS — <b>{k}</b> / 3', b_alarm: 'ALERTE DÉCLENCHÉE', b_alarmSub: 'RENFORTS EN APPROCHE', b_officer: 'OFFICIER ÉLIMINÉ', o_hp: 'TENEZ LA ZONE — PREMIER À <b>{t}</b>', o_hpContest: '<b>ZONE CONTESTÉE</b>', b_hpMove: 'LA ZONE S’EST DÉPLACÉE', o_boss: 'TRAQUEZ LE MIMIC', o_bossExit: 'LE MIMIC EST TOMBÉ — <b>REJOIGNEZ L’ASCENSEUR</b>', b_boss: 'LE MIMIC EST TOMBÉ', r_waves: 'TOUTES LES VAGUES REPOUSSÉES', r_ghost: 'OFFICIERS ÉLIMINÉS', r_boss: 'LE MIMIC EST MORT — EXTRAIT', md_double: 'DOUBLÉ', md_triple: 'TRIPLÉ', md_multi: 'MULTI-ÉLIMINATION', md_long: 'TIR LOINTAIN', md_silent: 'ÉLIMINATION SILENCIEUSE', md_revenge: 'VENGEANCE', md_first: 'PREMIER SANG', md_comeback: 'RETOUR', rw_recon: 'IMPULSION RADAR', rw_adrenaline: 'ADRÉNALINE', rw_overdrive: 'SURCHARGE', rw_recon_d: 'TOUS LES HOSTILES SUR LE RADAR', rw_adrenaline_d: 'SANTÉ PLEINE · PLUS RAPIDE', rw_overdrive_d: 'DÉGÂTS ×1.5', streak: 'SÉRIE', plusAmmo: '+ MUNITIONS', plusHealth: '+ SANTÉ', daily: 'DÉFIS DU JOUR', chDone: 'DÉFI RÉUSSI', mastery: 'MAÎTRISE', lv: 'NIV {n}', xpMission: 'XP D’OPÉRATION', xpMedals: 'MÉDAILLES', xpChallenges: 'DÉFIS', rankUp: 'PROMOTION', tapToContinue: 'TOUCHEZ POUR CONTINUER', dmgNumbers: 'Chiffres de dégâts', ch_kills: 'Faites {n} éliminations', ch_head: 'Faites {n} éliminations à la tête', ch_silent: 'Faites {n} éliminations silencieuses (accroupi, sans être vu)', ch_win: 'Gagnez {n} opérations', ch_shotgun: 'Faites {n} éliminations au Tri-Barrel', ch_sniper: 'Faites {n} éliminations au sniper', ch_long: 'Faites {n} éliminations lointaines (30 m+)', ch_multi: 'Faites {n} multi-éliminations', ch_loot: 'Ramassez {n} ravitaillements', ch_streak: 'Atteignez une série de 5',
     tips: ['ASTUCE : Les tirs à la tête infligent beaucoup plus de dégâts.', 'ASTUCE : S’accroupir réduit la dispersion.', 'ASTUCE : Les hostiles entendent les tirs.', 'ASTUCE : Les chevrons bleus marquent votre escouade.', 'ASTUCE : Les cartes bipent plus fort quand vous approchez.', 'ASTUCE : La santé se régénère hors combat.'],
   },
 };
@@ -320,9 +320,9 @@ const Platform = (() => {
 /* ---------------------------------------------------------------------------
    4. SAVE DATA — progress, best scores, settings (ytgame.game.saveData)
    --------------------------------------------------------------------------- */
-const DEFAULT_SETTINGS = { sens: 1, invert: false, fov: 80, quality: 'auto', volume: 0.8, music: 0.5, lang: 'auto', fps: false, touchScale: 1, aimAssist: true, autoFire: false };
+const DEFAULT_SETTINGS = { sens: 1, invert: false, fov: 80, quality: 'auto', volume: 0.8, music: 0.5, lang: 'auto', fps: false, touchScale: 1, aimAssist: true, autoFire: false, dmgNumbers: true };
 const Save = {
-  data: { v: 1, unlocked: 1, missions: {}, settings: { ...DEFAULT_SETTINGS }, loadout: { primary: 'ak47', secondary: 'pistol' }, xp: 0, completedOnce: false, sentScore: 0 },
+  data: { v: 1, unlocked: 1, missions: {}, settings: { ...DEFAULT_SETTINGS }, loadout: { primary: 'ak47', secondary: 'pistol' }, xp: 0, completedOnce: false, sentScore: 0, mastery: {}, daily: null },
   async load() {
     try {
       const raw = await Platform.loadData();
@@ -1370,7 +1370,7 @@ const Player = {
     const c = Nav.closest(pos); this.ref = c ? c.ref : 0;
     this.vel.set(0, 0, 0); this.vy = 0; this.jumpY = 0; this.onGround = true; this.reloadT = 0; this.switchT = 0; this.bloom = 0; this.recoilP = this.recoilY = 0;
     this.deathT = 0; this.interactT = 0;
-    for (const s of this.slots) { const d = WEAPONS[s.id]; s.mag = d.mag; s.reserve = d.reserve; }
+    for (const s of this.slots) { const d = WEAPONS[s.id]; s.mag = Meta.magSize(s.id); s.reserve = d.reserve; }
     if (!this.agent) this.agent = Nav.crowd.addAgent(pos, { radius: 0.4, height: 1.8, maxSpeed: 0, maxAcceleration: 0, separationWeight: 0, updateFlags: 0 });
     else this.agent.teleport(pos);
     this.equip(this.cur, true);
@@ -1386,6 +1386,7 @@ const Player = {
     this.cur = i;
     if (this.vmGun) this.vmRoot.remove(this.vmGun);
     this.vmGun = Models.gun(this.slots[i].id);
+    if (Meta.perks(this.slots[i].id).gold) this.vmGun.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.lerp(new THREE.Color(0xd4a43a), 0.75); o.material.metalness = 0.9; o.material.roughness = 0.3; } });
     this.vmRoot.add(this.vmGun);
     const def = this.weapon, b = this.vmGun.userData.box;
     const isPistol = def.slot === 'secondary';
@@ -1401,8 +1402,8 @@ const Player = {
   },
   startReload() {
     const s = this.slot, d = this.weapon;
-    if (this.reloadT > 0 || s.mag >= d.mag || s.reserve <= 0 || this.switchT > 0) return;
-    this.reloadT = d.reload; Audio.reload(d.id); Hud.weapon();
+    if (this.reloadT > 0 || s.mag >= Meta.magSize(d.id) || s.reserve <= 0 || this.switchT > 0) return;
+    this.reloadT = this.reloadDur = d.reload * Meta.perks(d.id).reload * (Meta.adrenT > 0 ? 0.75 : 1); Audio.reload(d.id); Hud.weapon();
   },
   update(dt, inp) {
     const a = this.a, T = THREE;
@@ -1429,6 +1430,7 @@ const Player = {
     let speed = this.sprinting ? 5.4 : crouch ? 2.2 : 4.2;
     if (inp.ads || this.adsT > 0.5) speed = Math.min(speed, def.scope ? 2.0 : 2.8);
     if (a.carrying) speed *= 0.9;
+    if (Meta.adrenT > 0) speed *= 1.25;
     const sy = Math.sin(a.yaw), cy = Math.cos(a.yaw);
     // forward = (-sin yaw, -cos yaw); right = (cos yaw, -sin yaw)
     const wx = (-sy * inp.my + cy * inp.mx) * speed, wz = (-cy * inp.my - sy * inp.mx) * speed;
@@ -1473,7 +1475,7 @@ const Player = {
     }
     if (this.reloadT > 0) {
       this.reloadT -= dt;
-      if (this.reloadT <= 0) { const need = def.mag - slot.mag, take = Math.min(need, slot.reserve); slot.mag += take; slot.reserve -= take; Hud.weapon(); }
+      if (this.reloadT <= 0) { const need = Meta.magSize(def.id) - slot.mag, take = Math.min(need, slot.reserve); slot.mag += take; slot.reserve -= take; Hud.weapon(); }
     }
     const canAds = !this.sprinting && this.reloadT <= 0 && this.switchT <= 0;
     this.adsT = damp(this.adsT, inp.ads && canAds ? 1 : 0, def.scope ? 14 : 18, dt);
@@ -1559,7 +1561,7 @@ const Player = {
       if (p === 0 || pellets < 4 || p % 3 === 0) FX.tracer(muzzleWorld, end, pellets > 1 ? 0.008 : 0.011);
       if (best) {
         const falloff = def.pellets ? clamp(1.2 - best.t / def.range, 0.5, 1) : best.t > def.range * 0.6 ? 0.8 : 1;
-        const dmg = def.dmg * falloff * (best.head ? def.head : 1);
+        const dmg = def.dmg * falloff * (best.head ? def.head : 1) * (Meta.overT > 0 ? 1.5 : 1);
         hitAcc.set(bestA, (hitAcc.get(bestA) || 0) + dmg); if (best.head) anyHead = true;
         FX.spark(end, dir.clone().negate(), 4);
       } else if (wall) {
@@ -1570,12 +1572,13 @@ const Player = {
     }
     for (const [b, dmg] of hitAcc) {
       anyHit = true;
+      if (Save.settings.dmgNumbers) Hud.dmgNumber(b, dmg, anyHead);
       const killed = Combat.damage(b, dmg, a, anyHead, def.id);
       if (killed) anyKill = true;
     }
     if (anyHit) { this.shotsHit++; Hud.hitmarker(anyKill ? 'kill' : anyHead ? 'head' : ''); Audio.hit(anyHead); }
     // recoil
-    const k = def.recoil * (a.crouching ? 0.75 : 1) * (1 - this.adsT * 0.35);
+    const k = def.recoil * Meta.perks(def.id).recoil * (a.crouching ? 0.75 : 1) * (1 - this.adsT * 0.35);
     const climb = k * rand(0.55, 0.85);
     this.a.pitch += climb * 0.3; this.recoilP = Math.min(0.12, this.recoilP + climb * 0.7); this.a.yaw += k * rand(-0.3, 0.3);
     this.bloom = Math.min(0.06, this.bloom + k * 0.35);
@@ -1595,7 +1598,7 @@ const Player = {
     let z = lerp(hip[2], ads[2], t) + this.kickZ;
     let rx = this.kickR * (1 - t * 0.5), ry = 0, rz = 0;
     if (this.sprinting) { x -= 0.06; y -= 0.05; ry = 0.5; rz = 0.25; rx -= 0.15; }
-    if (this.reloadT > 0) { const p = 1 - this.reloadT / def.reload; const k = Math.sin(clamp(p, 0, 1) * Math.PI); y -= 0.12 * k; rx -= 0.5 * k; rz += 0.35 * k; }
+    if (this.reloadT > 0) { const p = 1 - this.reloadT / (this.reloadDur || def.reload); const k = Math.sin(clamp(p, 0, 1) * Math.PI); y -= 0.12 * k; rx -= 0.5 * k; rz += 0.35 * k; }
     if (this.switchT > 0) { const k = Math.sin(clamp(this.switchT / 0.42, 0, 1) * Math.PI); y -= 0.28 * k; rx -= 0.6 * k; }
     this.vmPose = this.vmPose || { x, y, z, rx, ry, rz };
     const P = this.vmPose, L = 18;
@@ -1608,7 +1611,7 @@ const Player = {
     const isPistol = def.slot === 'secondary';
     this.armL.position.copy(g.position).add(new THREE.Vector3(isPistol ? -0.02 : -0.035, -0.06, isPistol ? g.userData.box.max.z * 0.35 : g.userData.box.min.z * 0.3));
     this.armL.rotation.set(P.rx + 0.3, P.ry + (isPistol ? 0.3 : 0.5), P.rz);
-    if (this.reloadT > 0) this.armL.position.y -= 0.05 * Math.sin((1 - this.reloadT / def.reload) * Math.PI);
+    if (this.reloadT > 0) this.armL.position.y -= 0.05 * Math.sin((1 - this.reloadT / (this.reloadDur || def.reload)) * Math.PI);
   },
   updateInteract(dt, inp) {
     const it = Game.mode.interactable ? Game.mode.interactable(this.a) : null;
@@ -1665,12 +1668,152 @@ const Combat = {
     if (attacker && attacker !== victim) { attacker.kills++; if (head) attacker.headshots++; }
     if (victim.carrying) Game.mode.dropCarry && Game.mode.dropCarry(victim);
     if (victim.bot) victim.bot.die();
-    if (victim.isPlayer) Player.die(attacker);
+    if (victim.isPlayer) { Player.die(attacker); Meta.onPlayerDeath(attacker); }
+    if (attacker && attacker.isPlayer && victim !== attacker) Meta.onPlayerKill(victim, head, weaponId);
+    if (victim.bot && Game.player && victim.team !== Game.player.team) Drops.spawn(victim.pos);
     Hud.killfeed(attacker, victim, weaponId, head);
     if (attacker && attacker.isPlayer) { Hud.pop(head ? t('headshot') : t('eliminated'), head ? 150 : 100, head); Audio.kill(); }
     Game.mode.onKill(attacker, victim, head);
     return true;
   },
+};
+
+/* ---------------------------------------------------------------------------
+   13b. PROGRESSION — kill streaks, medals, loot drops, weapon mastery, daily challenges
+   --------------------------------------------------------------------------- */
+const MASTERY_XP = [0, 1000, 2500, 5000, 9000]; // XP needed for levels 1..5
+const STREAK_REWARDS = [{ n: 3, id: 'recon', dur: 8 }, { n: 5, id: 'adrenaline', dur: 10 }, { n: 7, id: 'overdrive', dur: 12 }];
+const CHALLENGES = [
+  { key: 'kills', ev: 'kill', goal: 25 }, { key: 'head', ev: 'head', goal: 10 }, { key: 'silent', ev: 'silent', goal: 3 },
+  { key: 'win', ev: 'win', goal: 2 }, { key: 'shotgun', ev: 'kill_shotgun', goal: 5 }, { key: 'sniper', ev: 'kill_sniper', goal: 5 },
+  { key: 'long', ev: 'longshot', goal: 3 }, { key: 'multi', ev: 'multi', goal: 3 }, { key: 'loot', ev: 'loot', goal: 6 }, { key: 'streak', ev: 'streak5', goal: 1 },
+];
+const CHALLENGE_XP = 1000;
+
+const Meta = {
+  // ---- weapon mastery ----
+  mxp(wid) { return (Save.data.mastery && Save.data.mastery[wid]) || 0; },
+  level(wid) { const xp = this.mxp(wid); let lv = 1; for (let i = 1; i < MASTERY_XP.length; i++) if (xp >= MASTERY_XP[i]) lv = i + 1; return lv; },
+  levelFrac(wid) { const lv = this.level(wid); if (lv >= MASTERY_XP.length) return 1; const a = MASTERY_XP[lv - 1], b = MASTERY_XP[lv]; return clamp((this.mxp(wid) - a) / (b - a), 0, 1); },
+  perks(wid) { const lv = this.level(wid); return { reload: lv >= 2 ? 0.9 : 1, recoil: lv >= 3 ? 0.85 : 1, mag: lv >= 4 ? 1.2 : 1, gold: lv >= 5 }; },
+  magSize(wid) { return Math.round(WEAPONS[wid].mag * this.perks(wid).mag); },
+  // ---- daily challenges (3 per local day, seeded by the date) ----
+  dayKey() { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; },
+  daily() {
+    const key = this.dayKey(); let d = Save.data.daily;
+    if (!d || d.day !== key) {
+      let seed = 0; for (const c of key) seed = (seed * 31 + c.charCodeAt(0)) >>> 0;
+      const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+      const pool = CHALLENGES.map((c) => c.key), picks = [];
+      while (picks.length < 3) { const i = Math.floor(rnd() * pool.length); picks.push(pool.splice(i, 1)[0]); }
+      d = Save.data.daily = { day: key, list: picks, prog: {}, done: {} };
+    }
+    return d;
+  },
+  challengeDefs() { return this.daily().list.map((k) => CHALLENGES.find((c) => c.key === k)); },
+  // ---- per-mission state ----
+  start() {
+    this.streak = 0; this.multi = 0; this.lastKillT = -99; this.medalXp = 0; this.medals = []; this.challengeXp = 0;
+    this.firstBlood = false; this.lastKiller = null; this.deathsSinceKill = 0;
+    this.reconT = 0; this.adrenT = 0; this.overT = 0; this.weaponXp = {};
+    Drops.clear(); Hud.streak && Hud.streak(0);
+  },
+  event(ev, n = 1) {
+    const d = this.daily();
+    for (const c of this.challengeDefs()) {
+      if (c.ev !== ev || d.done[c.key]) continue;
+      d.prog[c.key] = Math.min(c.goal, (d.prog[c.key] || 0) + n);
+      if (d.prog[c.key] >= c.goal) { d.done[c.key] = true; this.challengeXp += CHALLENGE_XP; Hud.banner(t('chDone'), `${t('ch_' + c.key, { n: c.goal })} · +${CHALLENGE_XP} XP`); Audio.pickup(); }
+    }
+  },
+  medal(id, xp) { this.medals.push(id); this.medalXp += xp; Hud.medal(t('md_' + id), xp); },
+  onPlayerKill(victim, head, wid) {
+    const p = Game.player, now = Game.time;
+    this.weaponXp[wid] = (this.weaponXp[wid] || 0) + 100 + (head ? 50 : 0);
+    // multi-kills (within 4 s of each other)
+    this.multi = now - this.lastKillT < 4 ? this.multi + 1 : 1; this.lastKillT = now;
+    if (this.multi === 2) this.medal('double', 100); else if (this.multi === 3) this.medal('triple', 200); else if (this.multi >= 4) this.medal('multi', 300);
+    if (this.multi === 2) this.event('multi');
+    if (!this.firstBlood) { this.firstBlood = true; this.medal('first', 100); }
+    if (dist2D(p.pos, victim.pos) > 30) { this.medal('long', 100); this.event('longshot'); }
+    if (p.crouching && victim.bot && victim.bot.target !== p) { this.medal('silent', 150); this.event('silent'); }
+    if (victim === this.lastKiller) { this.medal('revenge', 100); this.lastKiller = null; }
+    if (this.deathsSinceKill >= 3) this.medal('comeback', 150);
+    this.deathsSinceKill = 0;
+    this.event('kill'); if (head) this.event('head');
+    if (wid === 'shotgun') this.event('kill_shotgun'); if (wid === 'sniper') this.event('kill_sniper');
+    // kill streak rewards
+    this.streak++;
+    const r = STREAK_REWARDS.find((x) => x.n === this.streak);
+    if (r) this.reward(r);
+    if (this.streak === 5) this.event('streak5');
+    Hud.streak(this.streak);
+  },
+  reward(r) {
+    const p = Game.player;
+    if (r.id === 'recon') this.reconT = r.dur;
+    if (r.id === 'adrenaline') { this.adrenT = r.dur; p.hp = p.maxHp; }
+    if (r.id === 'overdrive') this.overT = r.dur;
+    Hud.banner(t('rw_' + r.id), t('rw_' + r.id + '_d')); Audio.alarm();
+  },
+  onPlayerDeath(killer) { this.streak = 0; this.deathsSinceKill++; this.lastKiller = killer && killer !== Game.player ? killer : null; this.adrenT = 0; this.overT = 0; Hud.streak(0); },
+  update(dt) {
+    this.reconT = Math.max(0, this.reconT - dt); this.adrenT = Math.max(0, this.adrenT - dt); this.overT = Math.max(0, this.overT - dt);
+    $('#overdrive').classList.toggle('on', this.overT > 0);
+    Drops.update(dt);
+  },
+  // Writes mastery, medal and challenge XP into the save at the end of a mission; returns the breakdown.
+  commit(won) {
+    if (won) this.event('win');
+    const m = Save.data.mastery || (Save.data.mastery = {}), before = {}, after = {};
+    for (const [w, xp] of Object.entries(this.weaponXp)) { before[w] = this.level(w); m[w] = (m[w] || 0) + xp; after[w] = this.level(w); }
+    Save.data.xp += this.medalXp + this.challengeXp;
+    return { medalXp: this.medalXp, challengeXp: this.challengeXp, medals: this.medals.slice(), weaponXp: { ...this.weaponXp }, levelUps: Object.keys(after).filter((w) => after[w] > before[w]) };
+  },
+};
+
+// Supply drops from fallen hostiles: an ammo box always, a medkit one time in four. Walk over to collect.
+const Drops = {
+  list: [],
+  mesh(kind) {
+    const T = THREE, g = new T.Group();
+    if (kind === 'ammo') {
+      const box = new T.Mesh(new T.BoxGeometry(0.34, 0.18, 0.2), new T.MeshStandardMaterial({ color: 0x4a5032, roughness: 0.7, metalness: 0.2 }));
+      const band = new T.Mesh(new T.BoxGeometry(0.345, 0.04, 0.205), new T.MeshBasicMaterial({ color: 0xf2c230 }));
+      g.add(box, band);
+    } else {
+      const box = new T.Mesh(new T.BoxGeometry(0.3, 0.2, 0.2), new T.MeshStandardMaterial({ color: 0xeeeeea, roughness: 0.5 }));
+      const c1 = new T.Mesh(new T.BoxGeometry(0.16, 0.05, 0.205), new T.MeshBasicMaterial({ color: 0xd8262c }));
+      const c2 = new T.Mesh(new T.BoxGeometry(0.05, 0.15, 0.205), new T.MeshBasicMaterial({ color: 0xd8262c }));
+      g.add(box, c1, c2);
+    }
+    const glow = new T.Sprite(new T.SpriteMaterial({ map: Tex.glow, color: kind === 'ammo' ? 0xf2c230 : 0x5cff8a, blending: T.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.6 }));
+    glow.scale.setScalar(0.8); g.add(glow);
+    return g;
+  },
+  spawn(pos) {
+    const add = (kind, dx) => {
+      const g = this.mesh(kind); g.position.set(pos.x + dx, 0.15, pos.z); World.scene.add(g);
+      this.list.push({ g, kind, t: 20, x: pos.x + dx, z: pos.z });
+      while (this.list.length > 14) { const o = this.list.shift(); World.scene.remove(o.g); }
+    };
+    add('ammo', 0); if (Math.random() < 0.25) add('med', 0.45);
+  },
+  update(dt) {
+    const p = Game.player;
+    for (let i = this.list.length - 1; i >= 0; i--) {
+      const d = this.list[i]; d.t -= dt;
+      d.g.rotation.y += dt * 1.5; d.g.position.y = 0.15 + Math.sin(Game.time * 3 + i) * 0.04;
+      let take = false;
+      if (p && p.alive && Math.hypot(p.pos.x - d.x, p.pos.z - d.z) < 1.2) {
+        if (d.kind === 'ammo') { for (const s of Player.slots) s.reserve = Math.min(WEAPONS[s.id].reserve * 1.5, s.reserve + Meta.magSize(s.id)); Hud.pop(t('plusAmmo'), 0, false); Hud.weapon(); take = true; }
+        else if (p.hp < p.maxHp) { p.hp = Math.min(p.maxHp, p.hp + 50); Hud.pop(t('plusHealth'), 0, false); take = true; }
+        if (take) { Audio.pickup(); Meta.event('loot'); }
+      }
+      if (take || d.t <= 0) { World.scene.remove(d.g); this.list.splice(i, 1); }
+    }
+  },
+  clear() { for (const d of this.list) World.scene.remove(d.g); this.list.length = 0; },
 };
 
 /* ---------------------------------------------------------------------------
@@ -1789,18 +1932,14 @@ class Bot {
     this.patrolZone = opts.zone || null;
     this.walkSpeed = 1.6; this.runSpeed = this.elite ? 4.6 : 3.9; this.strafeSpeed = this.elite ? 3.4 : 2.5;
     this.dmgMul = opts.dmgMul ?? 1; this.visionRange = opts.visionRange || 42; this.hearMul = opts.hearMul || 1;
-    const s = Models.soldier(actor.color);
-    this.model = s.model; this.hand = s.hand; this.headBone = s.head; this.soldier = s;
-    this.root = new T.Group(); this.root.add(this.model); World.scene.add(this.root);
-    const blob = new T.Mesh(new T.PlaneGeometry(1.1, 1.1), new T.MeshBasicMaterial({ map: Tex.blob, transparent: true, depthWrite: false }));
-    blob.rotation.x = -Math.PI / 2; blob.position.y = 0.015; this.root.add(blob);
-    this.gun = Models.gun(this.weaponId); World.scene.add(this.gun);
+    // Two bodies: when a soldier dies, that body stays behind as the corpse (death fall, then it sinks away)
+    // while the soldier respawns in the other one — so a corpse never stands back up.
+    this.bodies = [this.makeBody(), this.makeBody()];
+    this.body = this.bodies[0]; this.corpse = null;
+    this.bodies[1].root.visible = false; this.bodies[1].gun.visible = false;
     this.marker = new T.Sprite(new T.SpriteMaterial({ map: Tex.chevron, depthTest: false, transparent: true }));
     this.marker.scale.setScalar(0.24); this.marker.position.y = 2.05; this.marker.renderOrder = 10; this.marker.visible = false; this.root.add(this.marker);
-    this.mixer = new T.AnimationMixer(this.model); this.actions = {};
-    for (const clip of Assets.npc.animations) this.actions[clip.name] = this.mixer.clipAction(clip);
-    const death = this.actions.death; death.setLoop(T.LoopOnce, 1); death.clampWhenFinished = true;
-    this.anim = null; this.mixAcc = 0;
+    this.mixAcc = 0;
     // Yuka: entity (pose), vision cone with wall occlusion, short-term memory, state machine
     this.ent = actor.ent = new Y.GameEntity();
     this.vision = new Y.Vision(this.ent); this.vision.range = this.visionRange; this.vision.fieldOfView = Math.PI * (this.elite ? 0.8 : 0.66); this.vision.addObstacle(WallObstacle);
@@ -1815,7 +1954,33 @@ class Bot {
     this._yv = new Y.Vector3();
   }
   get pos() { return this.a.pos; }
+  makeBody() {
+    const T = THREE, s = Models.soldier(this.a.color);
+    const root = new T.Group(); root.add(s.model); World.scene.add(root);
+    const blob = new T.Mesh(new T.PlaneGeometry(1.1, 1.1), new T.MeshBasicMaterial({ map: Tex.blob, transparent: true, depthWrite: false }));
+    blob.rotation.x = -Math.PI / 2; blob.position.y = 0.015; root.add(blob);
+    const gun = Models.gun(this.weaponId); World.scene.add(gun);
+    const mixer = new T.AnimationMixer(s.model), actions = {};
+    for (const clip of Assets.npc.animations) actions[clip.name] = mixer.clipAction(clip);
+    actions.death.setLoop(T.LoopOnce, 1); actions.death.clampWhenFinished = true;
+    return { root, model: s.model, hand: s.hand, head: s.head, soldier: s, gun, mixer, actions, anim: null, corpseT: 0 };
+  }
+  // the active body (everything below works on it)
+  get root() { return this.body.root; } get model() { return this.body.model; } get hand() { return this.body.hand; }
+  get headBone() { return this.body.head; } get soldier() { return this.body.soldier; } get gun() { return this.body.gun; }
+  get mixer() { return this.body.mixer; } get actions() { return this.body.actions; }
+  get anim() { return this.body.anim; } set anim(v) { this.body.anim = v; }
+  updateCorpse(dt) {
+    const c = this.corpse; c.corpseT += dt;
+    c.mixer.update(dt); this.placeGunOn(c, false);
+    if (c.corpseT > 4) c.root.position.y -= dt * 0.75; // sink through the carpet
+    if (c.corpseT > 4.8) { c.root.visible = false; c.gun.visible = false; c.root.position.y = 0; this.corpse = null; }
+  }
   spawn(pos, yaw = rand(0, 6.28)) {
+    // respawn in the spare body if this one is still lying around as a corpse
+    if (this.corpse === this.body) { this.body = this.bodies[this.bodies.indexOf(this.body) ^ 1]; this.root.add(this.marker); }
+    if (this.corpse === this.body) { this.corpse.root.visible = false; this.corpse.gun.visible = false; this.corpse = null; }
+    this.root.position.set(pos.x, pos.y || 0, pos.z); this.root.rotation.y = yaw;
     const a = this.a;
     a.alive = true; a.hp = a.maxHp; a.spawnTime = Game.time; a.pos.set(pos.x, pos.y || 0, pos.z); this.yaw = yaw; a.yaw = yaw;
     if (!this.agent) this.agent = Nav.crowd.addAgent(a.pos, { radius: 0.38, height: 1.8, maxAcceleration: 16, maxSpeed: this.walkSpeed, collisionQueryRange: 2.5, pathOptimizationRange: 12, separationWeight: 1.5 });
@@ -1827,16 +1992,20 @@ class Bot {
     this.brain.currentState = null; this.brain.changeTo('patrol');
     this.marker.visible = Game.player && a.team === Game.player.team;
     Models.setArmLight(this.soldier, !!(Game.player && a.team === Game.player.team));
+    for (const l of this.soldier.armLights) { l.band.visible = true; l.halo.visible = true; }
     this.lastPos.copy(a.pos);
   }
   die() {
     this.brain.changeTo('dead');
     if (this.agent) { Nav.crowd.removeAgent(this.agent); this.agent = null; }
     this.play('death', 0.12); this.target = null; this.marker.visible = false; this.corpseT = 0;
+    if (this.corpse && this.corpse !== this.body) { this.corpse.root.visible = false; this.corpse.gun.visible = false; }
+    this.corpse = this.body; this.body.corpseT = 0;
+    for (const l of this.soldier.armLights) { l.band.visible = false; l.halo.visible = false; } // a dead soldier's light goes out
   }
   despawn() {
     if (this.agent) { Nav.crowd.removeAgent(this.agent); this.agent = null; }
-    World.scene.remove(this.root); World.scene.remove(this.gun);
+    for (const b of this.bodies) { World.scene.remove(b.root); World.scene.remove(b.gun); }
   }
   setSpeed(v) { if (this.agent) this.agent.maxSpeed = v; }
   moveTo(p) { if (!this.agent || !p) return; this.agent.requestMoveTarget(p); this.dest = { x: p.x, z: p.z }; }
@@ -1966,13 +2135,8 @@ class Bot {
   }
   update(dt, camPos) {
     const a = this.a; this.dt = dt;
-    if (!a.alive) {
-      this.corpseT += dt;
-      this.mixer.update(dt);
-      this.placeGun();
-      if (this.corpseT > 6) { this.root.visible = false; this.gun.visible = false; }
-      return;
-    }
+    if (this.corpse) this.updateCorpse(dt);
+    if (!a.alive) return;
     if (this.agent) { const p = this.agent.position(); a.pos.set(p.x, p.y, p.z); }
     this.repathT -= dt; this.fireCd -= dt; if (this.reloadT > 0) this.reloadT -= dt;
     this.perceiveT -= dt;
@@ -2018,18 +2182,19 @@ class Bot {
     this.stepAcc += a.pos.distanceTo(this.lastPos); this.lastPos.copy(a.pos);
     if (this.stepAcc > (speed > 3 ? 2.0 : 1.5)) { this.stepAcc = 0; Audio.step(a.pos, false, a.crouching); }
   }
-  placeGun() {
-    if (!this.hand) return;
-    const p = this.hand.getWorldPosition(TMP.e || (TMP.e = new THREE.Vector3()));
-    const g = this.gun;
+  placeGun() { this.placeGunOn(this.body, this.a.alive); }
+  placeGunOn(body, alive) {
+    if (!body.hand) return;
+    const p = body.hand.getWorldPosition(TMP.e || (TMP.e = new THREE.Vector3()));
+    const g = body.gun;
     g.position.copy(p);
     g.rotation.order = 'YXZ';
-    if (this.a.alive) {
+    if (alive) {
       g.rotation.set(this.aimPitch, this.yaw + Math.PI, 0);
       const len = g.userData.box.max.z - g.userData.box.min.z;
       g.translateZ(-len * 0.18); g.translateY(0.03);
     } else {
-      const q = this.hand.getWorldQuaternion(new THREE.Quaternion()); g.quaternion.copy(q);
+      const q = body.hand.getWorldQuaternion(new THREE.Quaternion()); g.quaternion.copy(q);
     }
   }
 }
@@ -2662,6 +2827,7 @@ const Hud = {
         <div class="ammo"><div class="wname"></div><div class="count">30<small>/ 90</small></div><div class="pips"></div><div class="reload"></div><div class="alt"></div></div>
         <div class="hud-pause">${ICONS.pause}</div>
         <div class="fps hidden"></div>
+        <div class="streak"><div class="sk-n"></div><div class="sk-pips">${STREAK_REWARDS.map((r) => `<i data-n="${r.n}"><b>${r.n}</b><span></span></i>`).join('')}</div></div>
       </div>
       <div class="markers passthrough" style="position:absolute;inset:0"></div>
       <div class="crosshair"><i></i><i></i><i></i><i></i><b></b></div>
@@ -2709,15 +2875,16 @@ const Hud = {
     this.els.death.classList.remove('on'); this.els.spec.classList.remove('on');
     this.els.markers.innerHTML = ''; this.markerEls.clear();
     $('#vignette').style.opacity = 0;
-    this.keys(); this.weapon();
+    this.keys(); this.weapon(); this.streak(0);
   },
   weapon() {
     if (!Player.slots.length) return;
     const d = Player.weapon, s = Player.slot, e = this.els;
     e.wname.textContent = d.name;
     e.count.innerHTML = `${s.mag}<small>/ ${s.reserve}</small>`;
-    e.count.classList.toggle('low', s.mag <= Math.ceil(d.mag * 0.25));
-    if (e.pips.childElementCount !== d.mag) { e.pips.innerHTML = ''; for (let i = 0; i < d.mag; i++) e.pips.appendChild(el('i')); }
+    const magN = Meta.magSize(d.id);
+    e.count.classList.toggle('low', s.mag <= Math.ceil(magN * 0.25));
+    if (e.pips.childElementCount !== magN) { e.pips.innerHTML = ''; for (let i = 0; i < magN; i++) e.pips.appendChild(el('i')); }
     const pips = e.pips.children; for (let i = 0; i < pips.length; i++) pips[i].classList.toggle('spent', i >= s.mag);
     e.reload.textContent = Player.reloadT > 0 ? t('reloading') : s.mag === 0 && s.reserve === 0 ? t('noAmmo') : '';
     const other = Player.slots[1 - Player.cur];
@@ -2747,6 +2914,29 @@ const Hud = {
     this.els.feed.prepend(row);
     while (this.els.feed.childElementCount > 5) this.els.feed.lastChild.remove();
     setTimeout(() => { row.classList.add('fade'); setTimeout(() => row.remove(), 650); }, 4500);
+  },
+  streak(n) {
+    const root = $('.streak', this.root); if (!root) return;
+    $('.sk-n', root).textContent = n > 0 ? `${t('streak')} ${n}` : '';
+    $$('.sk-pips i', root).forEach((i, k) => { const r = STREAK_REWARDS[k]; i.classList.toggle('got', n >= r.n); $('span', i).textContent = t('rw_' + r.id); });
+    root.classList.toggle('on', n > 0);
+  },
+  // medals queue up so several earned on one kill read one after another
+  medal(text, xp) {
+    const at = Math.max(performance.now(), this._medalAt || 0) + 260; this._medalAt = at;
+    setTimeout(() => {
+      const m = el('div', 'pop medal', `<i></i>${esc(text)}<small>+${xp} XP</small>`);
+      this.els.pops.appendChild(m); setTimeout(() => m.remove(), 1600);
+      while (this.els.pops.childElementCount > 4) this.els.pops.firstChild.remove();
+      Audio.hit(true);
+    }, at - performance.now());
+  },
+  dmgNumber(actor, dmg, head) {
+    const v = actor.chest(new THREE.Vector3()); v.y += 0.4; v.project(World.camera);
+    if (v.z > 1) return;
+    const n = el('div', 'dmgnum' + (head ? ' head' : ''), String(Math.round(dmg)));
+    n.style.left = ((v.x * 0.5 + 0.5) * innerWidth + rand(-14, 14)) + 'px'; n.style.top = ((-v.y * 0.5 + 0.5) * innerHeight) + 'px';
+    this.els.markers.appendChild(n); setTimeout(() => n.remove(), 750);
   },
   pop(text, pts, head) {
     const p = el('div', 'pop' + (head ? ' head' : ''), `${esc(text)}${pts ? `<small>+${pts}</small>` : ''}`);
@@ -2818,14 +3008,14 @@ const Hud = {
     for (const a of Game.actors) {
       if (!a.alive || a === p) continue;
       if (a.team === p.team) dot(a.pos.x, a.pos.z, '#3d8bff');
-      else if (Game.mode.revealHostiles) continue; // drawn below, pinned to the rim when far away
+      else if (Game.mode.revealHostiles || Meta.reconT > 0) continue; // drawn below, pinned to the rim when far away
       else if (a.bot && (Game.time - (a.bot.lastShot || -9) < 1.2 || a.carrying)) dot(a.pos.x, a.pos.z, a.carrying ? '#f2c230' : '#ff4a3d');
     }
     const ms = Game.mode.markersNow ? Game.mode.markersNow() : [];
     for (const mk of ms) dot(mk.pos.x, mk.pos.z, mk.cls === 'exit' ? '#3df27a' : mk.cls === 'case' ? '#f2c230' : mk.cls === 'own' ? '#3d8bff' : '#ff4a3d', 9);
     g.restore();
     // keycard missions: every living hostile is on the map; far ones sit on the rim to show direction
-    if (Game.mode.revealHostiles) {
+    if (Game.mode.revealHostiles || Meta.reconT > 0) {
       const k = R.S * scale, rim = W / 2 - 30, c = Math.cos(camYaw), sn = Math.sin(camYaw);
       for (const a of Game.actors) {
         if (!a.alive || a.team === p.team) continue;
@@ -2918,6 +3108,8 @@ const Ui = {
       <div id="scope" class="passthrough"></div>
       <div id="vignette" class="passthrough"></div>
       <div id="flash" class="passthrough"></div>
+      <div id="overdrive" class="passthrough"></div>
+      <div id="rankup" class="screen"></div>
       <section id="menu" class="screen"></section>
       <section id="missions" class="screen"></section>
       <section id="briefing" class="screen"></section>
@@ -2985,6 +3177,7 @@ const Ui = {
       </div>
       <div class="menu-right stagger">
         <div class="ticker">${t('totalScore')} <b>${fmtNum(Save.totalScore())}</b></div>
+        ${this.dailyPanel()}
         <div class="panel rankcard">
           <div class="rk">${this.badge(r.level)}<div><div class="h-kicker">${t('rank')} ${r.level}</div><div class="name">${r.name}</div></div></div>
           <div class="xp"><i style="transform:scaleX(0)"></i></div>
@@ -2995,6 +3188,12 @@ const Ui = {
     $('[data-a=play]', s).onclick = () => this.show('missions', { wipe: true });
     $('[data-a=settings]', s).onclick = () => this.openModal('m-settings');
     $('[data-a=controls]', s).onclick = () => this.openModal('m-controls');
+  },
+  dailyPanel() {
+    const d = Meta.daily();
+    const rows = Meta.challengeDefs().map((c) => { const n = d.prog[c.key] || 0, done = !!d.done[c.key];
+      return `<div class="ch${done ? ' done' : ''}"><div class="ch-t"><span>${esc(t('ch_' + c.key, { n: c.goal }))}</span><b>${done ? '✓' : `${n}/${c.goal}`}</b></div><em><i style="transform:scaleX(${n / c.goal})"></i></em></div>`; }).join('');
+    return `<div class="panel daily"><div class="h-kicker">${t('daily')} <span class="muted">+${CHALLENGE_XP} XP</span></div>${rows}</div>`;
   },
   render_missions() {
     const s = $('#missions'); const un = Save.data.unlocked;
@@ -3028,7 +3227,7 @@ const Ui = {
     const wcard = (id) => {
       const w = WEAPONS[id], un = Save.weaponUnlocked(id), sel = this.loadout[w.slot] === id;
       const lbl = [t('dmg'), t('rof'), t('acc'), t('mob')];
-      return `<div class="wcard${sel ? ' sel' : ''}${un ? '' : ' locked'}" data-w="${id}">${un ? '' : `<span class="wl">${t('unlockAt', { n: w.unlock })}</span>`}<div class="wn">${w.name}</div><div class="wt">${w.cls}</div>${w.stats.map((v, k) => `<div class="statbar"><span>${lbl[k]}</span><i style="--v:${v * 100}%"></i></div>`).join('')}</div>`;
+      return `<div class="wcard${sel ? ' sel' : ''}${un ? '' : ' locked'}" data-w="${id}">${un ? '' : `<span class="wl">${t('unlockAt', { n: w.unlock })}</span>`}<div class="wn">${w.name}</div><div class="wt">${w.cls} · ${t('lv', { n: Meta.level(id) })}</div><div class="wmast"><i style="transform:scaleX(${Meta.levelFrac(id)})"></i></div>${w.stats.map((v, k) => `<div class="statbar"><span>${lbl[k]}</span><i style="--v:${v * 100}%"></i></div>`).join('')}</div>`;
     };
     s.innerHTML = `
       <div class="topbar"><button class="back" aria-label="${t('back')}">${ICONS.back}</button><div><div class="h-kicker">${t('briefing')} · OP ${String(i + 1).padStart(2, '0')}</div><h2 class="h-display" style="font-size:clamp(22px,4.4vw,44px)">${esc(tx[0])}</h2></div></div>
@@ -3078,6 +3277,7 @@ const Ui = {
         <div class="end-score">0</div>
         <div class="end-best">${res.newBest ? t('newBest') : ''}</div>
         <div class="end-stats stagger">${stat(t('kills'), res.kills)}${stat(t('deaths'), res.deaths)}${stat(t('accuracy'), res.acc + '%')}${stat(t('headshots'), res.head)}${stat(t('time'), fmtTime(res.time))}</div>
+        ${this.xpBreakdown(res)}
         <div class="end-actions">
           ${hasNext ? `<button class="btn primary" data-a="next">${ICONS.play}${t('next')}</button>` : ''}
           ${res.won && isLast ? `<button class="btn primary" data-a="complete">${t('campaignComplete')}</button>` : ''}
@@ -3097,6 +3297,27 @@ const Ui = {
       else Game.toMenu('missions');
     };
     $$('[data-a]', s).forEach((b) => b.onclick = () => go(b.dataset.a));
+    $$('.xp-row b', s).forEach((b, i) => { const v = +b.dataset.v; const t1 = performance.now() + 600 + i * 250; const step = (now) => { const k = clamp((now - t1) / 700, 0, 1); b.textContent = '+' + fmtNum(v * k); if (k < 1 && this.cur === 'end') requestAnimationFrame(step); }; requestAnimationFrame(step); });
+    $$('.mastery-row i', s).forEach((i) => setTimeout(() => { i.style.transform = `scaleX(${i.dataset.f})`; }, 900));
+    if (res.rankUp) setTimeout(() => this.rankUp(res.rankUp), 2400);
+  },
+  xpBreakdown(res) {
+    const m = res.meta || { medalXp: 0, challengeXp: 0, medals: [], weaponXp: {} };
+    const counts = {}; for (const id of m.medals) counts[id] = (counts[id] || 0) + 1;
+    const chips = Object.entries(counts).map(([id, n]) => `<span class="medal-chip">${esc(t('md_' + id))}${n > 1 ? ` ×${n}` : ''}</span>`).join('');
+    const mastery = Object.keys(m.weaponXp).map((w) => `<div class="mastery-row"><span>${WEAPONS[w].name} · ${t('mastery')} ${t('lv', { n: Meta.level(w) })}${(m.levelUps || []).includes(w) ? ' ▲' : ''}</span><em><i data-f="${Meta.levelFrac(w)}"></i></em><small>+${fmtNum(m.weaponXp[w])}</small></div>`).join('');
+    return `<div class="xp-box panel">
+      <div class="xp-row"><span>${t('xpMission')}</span><b data-v="${res.missionXp || 0}">+0</b></div>
+      <div class="xp-row"><span>${t('xpMedals')}</span><b data-v="${m.medalXp}">+0</b></div>
+      ${m.challengeXp ? `<div class="xp-row"><span>${t('xpChallenges')}</span><b data-v="${m.challengeXp}">+0</b></div>` : ''}
+      ${chips ? `<div class="medal-chips">${chips}</div>` : ''}${mastery}</div>`;
+  },
+  rankUp(r) {
+    const s = $('#rankup');
+    s.innerHTML = `<div class="rankup-box"><div class="rk-badge">${this.badge(r.level)}</div><div class="h-kicker">${t('rankUp')}</div><div class="end-title win" style="font-size:clamp(40px,8vw,84px)">${esc(r.name)}</div><div class="muted">${t('rank')} ${r.level} · ${fmtNum(r.xp)} XP</div><div class="muted tap">${t('tapToContinue')}</div></div>`;
+    s.classList.add('active'); Audio.sting(true);
+    const close = () => { s.classList.remove('active'); s.onclick = null; };
+    s.onclick = close; setTimeout(close, 4200);
   },
   render_complete() {
     const s = $('#complete');
@@ -3151,6 +3372,7 @@ const Ui = {
         <div class="setting"><span>${t('autoFire')}</span>${tog('autoFire')}</div>
         <div class="setting"><span>${t('touchSize')}</span>${range('touchScale', 0.8, 1.3, 0.05, (v) => Math.round(v * 100) + '%')}</div>
         <div class="setting"><span>${t('showFps')}</span>${tog('fps')}</div>
+        <div class="setting"><span>${t('dmgNumbers')}</span>${tog('dmgNumbers')}</div>
         <div class="setting"><span>${t('language')}</span>${seg('lang', [['auto', t('auto')], ['en', 'EN'], ['es', 'ES'], ['pt', 'PT'], ['fr', 'FR']])}</div>
         ${Game.state !== 'play' ? `<div class="setting"><span>${t('resetCampaign')}</span><button class="btn small danger" data-a="reset">${t('resetCampaign')}</button></div>` : ''}
       </div></div>`;
@@ -3220,7 +3442,7 @@ const Game = {
       this.mode = new (MODES[m.mode])(m, index);
       this.mode.setup();
       for (const a of this.actors) if (a.bot) a.bot.marker.visible = a.team === player.team && a.alive;
-      Hud.reset(); Hud.show(true);
+      Hud.reset(); Hud.show(true); Meta.start();
       Input.resetToggles();
       this.countdownT = 3.2; this.lastCount = 4;
       this.state = 'play'; this.active = true; this.paused = false;
@@ -3256,6 +3478,7 @@ const Game = {
     const camPos = World.camera.position;
     for (const a of this.actors) if (a.bot) a.bot.update(dt, camPos);
     this.mode.update(dt);
+    Meta.update(dt);
     FX.update(dt);
     World.updateFlicker(dt);
     Hud.update(dt);
@@ -3268,13 +3491,17 @@ const Game = {
     const stars = mode.stars(won);
     const score = Math.max(0, Math.round(mode.finalScore(won)));
     const before = Object.keys(WEAPONS).filter((w) => Save.weaponUnlocked(w));
+    const rankBefore = Ui.rank().level, xp0 = Save.data.xp;
     const rec = Save.record(this.missionIndex, { won, score, stars });
+    const missionXp = Save.data.xp - xp0;
+    const meta = Meta.commit(won); Save.persist(true);
     const after = Object.keys(WEAPONS).filter((w) => Save.weaponUnlocked(w));
     this.result = {
       won, reason, score, stars, newBest: rec.newBest, unlockedNext: rec.unlockedNext,
       weapons: after.filter((w) => !before.includes(w)),
       kills: p.kills, deaths: p.deaths, head: p.headshots, time: mode.elapsed != null ? mode.elapsed : this.time,
       acc: Player.shotsFired ? Math.round((Player.shotsHit / Player.shotsFired) * 100) : 0,
+      missionXp, meta, rankUp: Ui.rank().level > rankBefore ? Ui.rank() : null,
     };
     Hud.banner(won ? t('victory') : t('defeat'), t(reason));
     Audio.sting(won);
@@ -3312,7 +3539,7 @@ const Game = {
     if (this.mode) this.mode.dispose();
     if (Player.agent) Player.agent.teleport({ x: 0, y: -50, z: 0 });
     this.actors = []; this.mode = null; this.active = false;
-    FX.clear(); World.vmVisible = false; $('#scope').classList.remove('on');
+    FX.clear(); Drops.clear(); World.vmVisible = false; $('#scope').classList.remove('on');
     World.setLightsOut && World.lightsOut && World.setLightsOut(false);
     World.camera.fov = Save.settings.fov; World.camera.updateProjectionMatrix();
   },
@@ -3454,7 +3681,7 @@ async function boot() {
 }
 
 // Test hook for the local Playwright harness only (tools/test); inert without ?debug.
-if (/[?&]debug\b/.test(location.search)) window.__BR = { Game, Player, Save, MISSIONS, Ui, World, Nav, Hud, Lobby, Audio, Input, Loop, Combat, rayVsSoldier, FX };
+if (/[?&]debug\b/.test(location.search)) window.__BR = { Game, Player, Save, MISSIONS, Ui, World, Nav, Hud, Lobby, Audio, Input, Loop, Combat, rayVsSoldier, FX, Meta, Drops };
 
 boot();
 })();

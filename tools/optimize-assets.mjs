@@ -2,11 +2,13 @@
 //  - textures -> WebP (max 1024 px; the map keeps 2048 for its baked lighting)
 //  - NPC: the 15 Mixamo clips each target a duplicate armature; they are retargeted onto the real
 //    skinned armature, made "in place" (root motion removed), renamed, and the duplicates deleted.
+//  - NPC: hand-designed soldier textures painted into its UV space (tools/paint-npc.mjs).
 //  - geometry welded/pruned; no Draco/meshopt so the stock GLTFLoader needs no decoders.
 import { NodeIO, PropertyType } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { dedup, prune, weld, textureCompress, resample } from '@gltf-transform/functions';
 import sharp from 'sharp';
+import { paintNpc } from './paint-npc.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -26,7 +28,7 @@ const CLIP_NAMES = {
 
 const jobs = [
   { from: 'Maps/backroom-2nd.glb', to: 'Maps/backroom.glb', size: 2048 },
-  { from: 'NPCs/2nd-character-skin.glb', to: 'NPCs/operator.glb', size: 512, npc: true },
+  { from: 'NPCs/2nd-character-skin.glb', to: 'NPCs/operator.glb', size: 1024, npc: true },
   { from: 'Guns/Pistol.glb', to: 'Guns/pistol.glb', size: 512 },
   { from: 'Guns/triple_barrel_shotgun_pistol.glb', to: 'Guns/shotgun.glb', size: 512 },
   { from: 'Guns/AK47.glb', to: 'Guns/ak47.glb', size: 1024 },
@@ -75,7 +77,7 @@ function retargetNpc(doc) {
 let total = 0;
 for (const job of jobs) {
   const doc = await io.read(path.join(src, job.from));
-  if (job.npc) retargetNpc(doc);
+  if (job.npc) { retargetNpc(doc); await paintNpc(doc); }
   await doc.transform(
     // keep materials distinct: the NPC's 4 parts share identical params but must be tinted separately
     dedup({ propertyTypes: [PropertyType.ACCESSOR, PropertyType.MESH, PropertyType.TEXTURE] }),
