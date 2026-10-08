@@ -63,15 +63,13 @@ const TEAMS = {
   blackops: { torso: 0x1b1b1e, legs: 0x121214, helmet: 0x060607, camo: 0x2a2a2f, ui: '#c0c0c8' },
 };
 const ENEMY_COLORS = ['navy', 'olive', 'tan', 'crimson', 'urban', 'arctic', 'blackops'];
-// The one uniform everybody wears (team colours now only drive UI accents).
-const UNIFORM = { torso: 0x3b3f44, legs: 0x2e3236, helmet: 0x1d1f22 };
 
 const WEAPONS = {
   ak47:    { id: 'ak47', name: 'AK-47', cls: 'ASSAULT RIFLE', slot: 'primary', model: 'ak47', axis: '+x', len: 0.86, auto: true,  dmg: 31, head: 2.2, rpm: 600, mag: 30, reserve: 150, reload: 2.4, spread: 0.024, adsSpread: 0.005, recoil: 0.030, range: 90, zoom: 1.45, unlock: 0, snd: 'ak',      stats: [0.78, 0.62, 0.55, 0.7] },
   m4:      { id: 'm4',   name: 'M4 CARBINE', cls: 'ASSAULT RIFLE', slot: 'primary', model: 'm4', axis: '+x', len: 0.84, auto: true, dmg: 25, head: 2.2, rpm: 780, mag: 30, reserve: 180, reload: 2.0, spread: 0.017, adsSpread: 0.0035, recoil: 0.021, range: 95, zoom: 1.55, unlock: 3, snd: 'm4', stats: [0.64, 0.82, 0.75, 0.74] },
   sniper:  { id: 'sniper', name: 'BOLT SNIPER', cls: 'MARKSMAN', slot: 'primary', model: 'sniper', axis: '+z', len: 1.1, auto: false, dmg: 105, head: 3, rpm: 46, mag: 5, reserve: 25, reload: 3.0, spread: 0.07, adsSpread: 0.0, recoil: 0.09, range: 160, zoom: 4.5, scope: true, unlock: 4, snd: 'sniper', stats: [1.0, 0.15, 0.95, 0.45] },
   pistol:  { id: 'pistol', name: 'M9 SIDEARM', cls: 'PISTOL', slot: 'secondary', model: 'pistol', axis: '-x', len: 0.24, auto: false, dmg: 28, head: 2.0, rpm: 380, mag: 12, reserve: 72, reload: 1.35, spread: 0.011, adsSpread: 0.0035, recoil: 0.018, range: 70, zoom: 1.25, unlock: 0, snd: 'pistol', stats: [0.45, 0.6, 0.6, 0.95] },
-  shotgun: { id: 'shotgun', name: 'TRI-BARREL', cls: 'SHOTGUN', slot: 'secondary', model: 'shotgun', axis: '+x', len: 0.46, auto: false, pellets: 9, dmg: 14, head: 1.5, rpm: 110, mag: 3, reserve: 30, reload: 2.1, spread: 0.075, adsSpread: 0.058, recoil: 0.065, range: 28, zoom: 1.15, unlock: 2, snd: 'shotgun', stats: [0.95, 0.3, 0.2, 0.85] },
+  shotgun: { id: 'shotgun', name: 'TRI-BARREL', cls: 'SHOTGUN', slot: 'secondary', model: 'shotgun', axis: '+x', len: 0.46, auto: false, pellets: 9, dmg: 19, botDmg: 14, head: 1.5, rpm: 110, mag: 3, reserve: 30, reload: 2.1, spread: 0.055, adsSpread: 0.04, recoil: 0.065, range: 32, zoom: 1.15, unlock: 2, snd: 'shotgun', stats: [0.95, 0.3, 0.2, 0.85] },
 };
 const PRIMARIES = ['ak47', 'm4', 'sniper'];
 const SECONDARIES = ['pistol', 'shotgun'];
@@ -1006,12 +1004,41 @@ function canvasTex(w, h, draw, srgb = true) {
 }
 const Tex = {};
 function buildTextures() {
-  Tex.flash = canvasTex(128, 128, (g, w, h) => {
-    const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
-    gr.addColorStop(0, 'rgba(255,255,240,1)'); gr.addColorStop(0.18, 'rgba(255,220,120,0.95)'); gr.addColorStop(0.5, 'rgba(255,150,40,0.35)'); gr.addColorStop(1, 'rgba(255,120,0,0)');
-    g.fillStyle = gr; g.fillRect(0, 0, w, h);
-    g.globalCompositeOperation = 'lighter'; g.fillStyle = 'rgba(255,230,160,0.8)';
-    for (let i = 0; i < 6; i++) { g.save(); g.translate(64, 64); g.rotate((i / 6) * Math.PI * 2 + 0.3); g.beginPath(); g.moveTo(0, -4); g.lineTo(60, 0); g.lineTo(0, 4); g.fill(); g.restore(); }
+  // Muzzle flash, front view: small hot core with a few uneven petals (3 variants so shots differ).
+  Tex.flashCore = [0, 1, 2].map(() => canvasTex(128, 128, (g) => {
+    g.translate(64, 64);
+    g.globalCompositeOperation = 'lighter';
+    const n = randi(4, 6), off = rand(0, 6.28);
+    for (let i = 0; i < n; i++) {
+      const ang = off + (i / n) * Math.PI * 2 + rand(-0.25, 0.25), len = rand(30, 60), wid = rand(5, 11);
+      g.save(); g.rotate(ang);
+      const gr = g.createLinearGradient(0, 0, len, 0);
+      gr.addColorStop(0, 'rgba(255,240,200,0.95)'); gr.addColorStop(0.35, 'rgba(255,170,60,0.7)'); gr.addColorStop(1, 'rgba(255,90,10,0)');
+      g.fillStyle = gr; g.beginPath(); g.moveTo(0, -wid); g.quadraticCurveTo(len * 0.45, -wid * 0.6, len, 0); g.quadraticCurveTo(len * 0.45, wid * 0.6, 0, wid); g.closePath(); g.fill();
+      g.restore();
+    }
+    const core = g.createRadialGradient(0, 0, 0, 0, 0, 26);
+    core.addColorStop(0, 'rgba(255,255,245,1)'); core.addColorStop(0.35, 'rgba(255,225,140,0.9)'); core.addColorStop(0.7, 'rgba(255,140,40,0.35)'); core.addColorStop(1, 'rgba(255,100,20,0)');
+    g.fillStyle = core; g.beginPath(); g.arc(0, 0, 26, 0, Math.PI * 2); g.fill();
+  }));
+  // Muzzle flash, side view: a flame streak, brightest at the muzzle (u = 0), ragged and tapering forward.
+  Tex.flashSide = canvasTex(128, 32, (g, w, h) => {
+    g.globalCompositeOperation = 'lighter';
+    for (let x = 0; x < w; x++) {
+      const t = x / w, half = (h / 2) * Math.pow(Math.sin(Math.PI * Math.min(1, t * 1.6 + 0.08)), 0.8) * (1 - t * 0.55) * rand(0.75, 1.1);
+      const a = (1 - t) * 0.85;
+      const gr = g.createLinearGradient(0, h / 2 - half, 0, h / 2 + half);
+      gr.addColorStop(0, 'rgba(255,120,20,0)'); gr.addColorStop(0.5, `rgba(255,${Math.round(230 - t * 110)},${Math.round(170 - t * 150)},${a})`); gr.addColorStop(1, 'rgba(255,120,20,0)');
+      g.fillStyle = gr; g.fillRect(x, h / 2 - half, 1, half * 2);
+    }
+  });
+  Tex.smoke = canvasTex(64, 64, (g) => {
+    for (let i = 0; i < 6; i++) {
+      const x = 32 + rand(-9, 9), y = 32 + rand(-9, 9), r = rand(12, 22);
+      const gr = g.createRadialGradient(x, y, 0, x, y, r);
+      gr.addColorStop(0, 'rgba(200,196,186,0.35)'); gr.addColorStop(1, 'rgba(200,196,186,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+    }
   });
   Tex.hole = canvasTex(64, 64, (g) => {
     const gr = g.createRadialGradient(32, 32, 0, 32, 32, 30);
@@ -1047,7 +1074,7 @@ function buildTextures() {
 }
 
 const FX = {
-  tracers: [], flashes: [], decals: [], sparks: null, sparkData: null, vmFlash: null, vmLight: null, di: 0, fi: 0, ti: 0,
+  tracers: [], flashes: [], decals: [], smokes: [], sparks: null, sparkData: null, vmFlash: null, vmLight: null, di: 0, fi: 0, ti: 0, si: 0,
   init() {
     const T = THREE, S = World.scene;
     const tg = new T.BoxGeometry(1, 1, 1); tg.translate(0, 0, 0.5); // +Z faces the target after lookAt
@@ -1055,8 +1082,11 @@ const FX = {
       const m = new T.Mesh(tg, new T.MeshBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, fog: false }));
       m.visible = false; m.frustumCulled = false; S.add(m); this.tracers.push({ m, life: 0 });
     }
-    const fm = new T.SpriteMaterial({ map: Tex.flash, blending: T.AdditiveBlending, depthWrite: false, transparent: true, fog: false });
-    for (let i = 0; i < 14; i++) { const s = new T.Sprite(fm.clone()); s.visible = false; S.add(s); this.flashes.push({ s, life: 0 }); }
+    for (let i = 0; i < 14; i++) { const u = this.flashUnit(true); S.add(u.g); this.flashes.push(u); }
+    for (let i = 0; i < 24; i++) {
+      const sp = new T.Sprite(new T.SpriteMaterial({ map: Tex.smoke, transparent: true, depthWrite: false, opacity: 0 }));
+      sp.visible = false; S.add(sp); this.smokes.push({ s: sp, life: 0, max: 0.5, vy: 0, grow: 0 });
+    }
     const dg = new T.PlaneGeometry(0.11, 0.11);
     const dm = new T.MeshBasicMaterial({ map: Tex.hole, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -4 });
     for (let i = 0; i < 48; i++) { const d = new T.Mesh(dg, dm); d.visible = false; S.add(d); this.decals.push(d); }
@@ -1065,8 +1095,7 @@ const FX = {
     this.sparks = new T.Points(geo, new T.PointsMaterial({ color: 0xffd27a, size: 0.045, transparent: true, blending: T.AdditiveBlending, depthWrite: false }));
     this.sparks.frustumCulled = false; S.add(this.sparks);
     this.sparkData = Array.from({ length: N }, () => ({ life: 0, vx: 0, vy: 0, vz: 0 }));
-    this.vmFlash = new T.Sprite(new T.SpriteMaterial({ map: Tex.flash, blending: T.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true }));
-    this.vmFlash.visible = false; World.vmScene.add(this.vmFlash);
+    this.vmFlash = this.flashUnit(false); World.vmScene.add(this.vmFlash.g);
     this.vmLight = new T.PointLight(0xffc870, 0, 3, 2); World.vmScene.add(this.vmLight);
     this.worldLight = new T.PointLight(0xffc870, 0, 7, 2); S.add(this.worldLight);
   },
@@ -1075,10 +1104,35 @@ const FX = {
     const len = from.distanceTo(to); if (len < 0.5) return;
     t.m.position.copy(from); t.m.lookAt(to); t.m.scale.set(w, w, len); t.m.visible = true; t.life = 0.07; t.m.material.opacity = 0.85;
   },
-  flash(pos, size = 0.45) {
-    const f = this.flashes[this.fi++ % this.flashes.length];
-    f.s.position.copy(pos); f.s.scale.setScalar(size * rand(0.8, 1.2)); f.s.material.rotation = rand(0, 6.28); f.s.visible = true; f.life = 0.05;
+  // One muzzle flash: a front burst sprite plus two crossed side-flame planes reaching forward (-Z) from the muzzle.
+  flashUnit(depthTest) {
+    const T = THREE, g = new T.Group();
+    const add = { blending: T.AdditiveBlending, depthWrite: false, depthTest, transparent: true, fog: false };
+    const front = new T.Sprite(new T.SpriteMaterial({ map: Tex.flashCore[0], ...add }));
+    const sideMat = new T.MeshBasicMaterial({ map: Tex.flashSide, side: T.DoubleSide, ...add });
+    const geo = this._sideGeo || (this._sideGeo = new T.PlaneGeometry(1, 1).rotateY(Math.PI / 2).translate(0, 0, -0.5));
+    const s1 = new T.Mesh(geo, sideMat), s2 = new T.Mesh(geo, sideMat); s2.rotation.z = Math.PI / 2;
+    const sides = new T.Group(); sides.add(s1, s2);
+    g.add(front, sides); g.visible = false;
+    return { g, front, sides, life: 0, fresh: false };
+  },
+  fire(u, pos, quat, size) {
+    u.g.position.copy(pos); if (quat) u.g.quaternion.copy(quat);
+    u.front.material.map = pick(Tex.flashCore); u.front.material.rotation = rand(0, 6.28);
+    u.front.scale.setScalar(size * rand(0.7, 1.1));
+    const len = size * rand(1.3, 2.2), wid = size * rand(0.45, 0.7);
+    u.sides.scale.set(wid, wid, len); u.sides.rotation.z = rand(0, Math.PI);
+    u.g.visible = true; u.life = rand(0.03, 0.045); u.fresh = true;
+  },
+  flash(pos, size = 0.45, quat = null) {
+    this.fire(this.flashes[this.fi++ % this.flashes.length], pos, quat, size * 0.6);
     this.worldLight.position.copy(pos); this.worldLight.intensity = 6; this.worldLightLife = 0.05;
+    this.smoke(pos, size * 0.5);
+  },
+  smoke(pos, size = 0.2) {
+    const p = this.smokes[this.si++ % this.smokes.length];
+    p.s.position.copy(pos); p.s.scale.setScalar(size); p.s.material.rotation = rand(0, 6.28);
+    p.life = p.max = rand(0.45, 0.65); p.vy = rand(0.25, 0.45); p.grow = size * 2.2; p.s.visible = true;
   },
   decal(point, normal) {
     const d = this.decals[this.di++ % this.decals.length];
@@ -1096,11 +1150,20 @@ const FX = {
     }
     pos.needsUpdate = true;
   },
-  muzzleVM(pos) { this.vmFlash.position.copy(pos); this.vmFlash.scale.setScalar(rand(0.16, 0.24)); this.vmFlash.material.rotation = rand(0, 6.28); this.vmFlash.visible = true; this.vmFlashLife = 0.045; this.vmLight.position.copy(pos); this.vmLight.intensity = 4; },
+  muzzleVM(pos, quat, size = 0.09) { this.fire(this.vmFlash, pos, quat, size); this.vmLight.position.copy(pos); this.vmLight.intensity = 4; },
   update(dt) {
     for (const t of this.tracers) if (t.m.visible) { t.life -= dt; t.m.material.opacity = Math.max(0, t.life / 0.07) * 0.85; if (t.life <= 0) t.m.visible = false; }
-    for (const f of this.flashes) if (f.s.visible) { f.life -= dt; if (f.life <= 0) f.s.visible = false; }
-    if (this.vmFlash.visible) { this.vmFlashLife -= dt; if (this.vmFlashLife <= 0) { this.vmFlash.visible = false; this.vmLight.intensity = 0; } }
+    for (const f of [...this.flashes, this.vmFlash]) {
+      if (!f.g.visible) continue;
+      if (f.fresh) { f.fresh = false; continue; } // always shown for at least one rendered frame
+      f.life -= dt; if (f.life <= 0) { f.g.visible = false; if (f === this.vmFlash) this.vmLight.intensity = 0; }
+    }
+    for (const p of this.smokes) {
+      if (!p.s.visible) continue;
+      p.life -= dt; if (p.life <= 0) { p.s.visible = false; continue; }
+      const k = p.life / p.max;
+      p.s.position.y += p.vy * dt; p.s.scale.addScalar(p.grow * dt); p.s.material.opacity = 0.35 * k * k;
+    }
     if (this.worldLight.intensity > 0) { this.worldLightLife -= dt; if (this.worldLightLife <= 0) this.worldLight.intensity = 0; }
     const pos = this.sparks.geometry.attributes.position; let any = false;
     for (let i = 0; i < this.sparkData.length; i++) {
@@ -1122,7 +1185,7 @@ const FX = {
    --------------------------------------------------------------------------- */
 const Assets = { map: null, npc: null, guns: {}, nav: null };
 const Models = {
-  gunCache: {}, teamMats: {},
+  gunCache: {},
   // Wraps a gun so its muzzle points down -Z, centred on the receiver and scaled to a real length.
   gun(id) {
     const T = THREE, def = WEAPONS[id];
@@ -1151,30 +1214,13 @@ const Models = {
     g.userData.muzzle = new T.Vector3(0, b.max.y * 0.35, b.min.z - 0.02);
     return g;
   },
-  // Every soldier wears the same charcoal gear; sides are told apart by the light band on the upper arm.
-  teamMaterials() {
-    if (this.teamMats.std) return this.teamMats.std;
-    const T = THREE, c = UNIFORM;
-    const lowQ = World.qualityLevel === 'low';
-    const M = (color, opts = {}) => lowQ ? new T.MeshLambertMaterial({ color, ...opts }) : new T.MeshStandardMaterial({ color, roughness: 0.82, metalness: 0.0, ...opts });
-    const mats = {
-      torso: M(c.torso, { map: Tex.camo }),
-      legs: M(c.legs, { map: Tex.camo }),
-      helmet: M(c.helmet, lowQ ? {} : { roughness: 0.55, metalness: 0.15 }),
-      glass: lowQ ? new T.MeshLambertMaterial({ color: 0x0a0c10 }) : new T.MeshStandardMaterial({ color: 0x0a0c10, roughness: 0.15, metalness: 0.6 }),
-    };
-    this.teamMats.std = mats;
-    return mats;
-  },
   soldier(team) {
     const T = THREE;
+    // The soldier keeps the materials it ships with; only the arm lights below are added.
     const model = T.SkeletonUtils.clone(Assets.npc.scene);
-    const mats = this.teamMaterials();
     let hand = null, head = null, spine = null; const upperArms = [];
     model.traverse((o) => {
       if (o.isMesh) {
-        const n = o.material.name || '';
-        o.material = n.includes('Torso') ? mats.torso : n.includes('Legs') ? mats.legs : n.includes('Glass') ? mats.glass : mats.helmet;
         o.frustumCulled = false; // skinned bounds are unreliable; there are few soldiers
       }
       if (o.isBone) {
@@ -1207,14 +1253,6 @@ const Models = {
   setArmLight(soldier, ally) {
     const m = this.armLightMats()[ally ? 'ally' : 'enemy'];
     for (const l of soldier.armLights || []) { l.band.material = m.band; l.halo.material = m.halo; }
-  },
-  setTeam(soldier) {
-    const mats = this.teamMaterials();
-    soldier.model.traverse((o) => {
-      if (!o.isMesh) return;
-      const old = o.userData.part || (o.userData.part = o.material.name.includes('Torso') ? 'torso' : o.material.name.includes('Legs') ? 'legs' : o.material.name.includes('Glass') ? 'glass' : 'helmet');
-      o.material = mats[old];
-    });
   },
   briefcase() {
     const T = THREE, g = new T.Group();
@@ -1388,7 +1426,7 @@ const Player = {
     this.crouchT = damp(this.crouchT, crouch ? 1 : 0, 12, dt); a.crouching = this.crouchT > 0.5;
     const wantSprint = inp.sprint && inp.my > 0.3 && !crouch && this.reloadT <= 0 && !inp.ads;
     this.sprinting = !!(wantSprint && (inp.mx || inp.my));
-    let speed = this.sprinting ? 6.3 : crouch ? 2.2 : 4.2;
+    let speed = this.sprinting ? 5.4 : crouch ? 2.2 : 4.2;
     if (inp.ads || this.adsT > 0.5) speed = Math.min(speed, def.scope ? 2.0 : 2.8);
     if (a.carrying) speed *= 0.9;
     const sy = Math.sin(a.yaw), cy = Math.cos(a.yaw);
@@ -1503,7 +1541,8 @@ const Player = {
     // muzzle position (world) for the tracer
     this.vmGun.updateMatrixWorld(true); const mz = this.vmGun.userData.muzzle.clone(); this.vmGun.localToWorld(mz);
     const muzzleWorld = origin.clone().addScaledVector(right, mz.x * 1.0).addScaledVector(up, mz.y * 1.0).addScaledVector(fwd, -mz.z * 1.0);
-    FX.muzzleVM(mz);
+    FX.muzzleVM(mz, this.vmGun.getWorldQuaternion(new T.Quaternion()), def.pellets ? 0.13 : def.scope ? 0.12 : def.slot === 'secondary' ? 0.075 : 0.095);
+    FX.smoke(muzzleWorld, def.pellets ? 0.16 : 0.1);
     const hitAcc = new Map();
     for (let p = 0; p < pellets; p++) {
       const sp = this.spreadNow; const ang = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random()) * sp;
@@ -1519,7 +1558,7 @@ const Player = {
       const end = origin.clone().addScaledVector(dir, best ? best.t : wallT);
       if (p === 0 || pellets < 4 || p % 3 === 0) FX.tracer(muzzleWorld, end, pellets > 1 ? 0.008 : 0.011);
       if (best) {
-        const falloff = def.pellets ? clamp(1.15 - best.t / def.range, 0.35, 1) : best.t > def.range * 0.6 ? 0.8 : 1;
+        const falloff = def.pellets ? clamp(1.2 - best.t / def.range, 0.5, 1) : best.t > def.range * 0.6 ? 0.8 : 1;
         const dmg = def.dmg * falloff * (best.head ? def.head : 1);
         hitAcc.set(bestA, (hitAcc.get(bestA) || 0) + dmg); if (best.head) anyHead = true;
         FX.spark(end, dir.clone().negate(), 4);
@@ -1889,7 +1928,7 @@ class Bot {
     if (def.auto) { if (this.burst <= 0) this.burst = randi(3, this.elite ? 8 : 6); this.burst--; this.fireCd = 60 / def.rpm * 1.05; if (this.burst <= 0) this.fireCd += rand(0.25, 0.7) * (1.3 - this.skill); }
     else this.fireCd = 60 / def.rpm * rand(1.25, 1.8) + (1 - this.skill) * 0.25;
     this.placeGun(); this.gun.updateMatrixWorld(true); const muzzle = this.gun.userData.muzzle.clone(); this.gun.localToWorld(muzzle);
-    FX.flash(muzzle, def.pellets ? 0.6 : 0.42);
+    FX.flash(muzzle, def.pellets ? 0.6 : 0.42, this.gun.quaternion);
     Audio.shot(def.snd, this.a.pos);
     Game.noise(this.a, 12);
     const d = dist2D(this.a.pos, tg.pos);
@@ -1910,7 +1949,7 @@ class Bot {
     for (let i = 0; i < pellets; i++) {
       if (Math.random() < p * (def.pellets ? 0.8 : 1)) {
         const h = Math.random() < 0.06 + this.skill * 0.1;
-        total += def.dmg * (h ? (tg.isPlayer ? 1.5 : def.head) : 1); if (h) head = true;
+        total += (def.botDmg || def.dmg) * (h ? (tg.isPlayer ? 1.5 : def.head) : 1); if (h) head = true;
       }
     }
     if (total > 0) {
@@ -2008,7 +2047,7 @@ class Mode {
   get timeLeft() { return Math.max(0, this.timeLimit - Game.time); }
   callsign() { return CALLSIGNS[(this.callIdx++) % CALLSIGNS.length]; }
   makeBot(team, color, opts = {}) {
-    const actor = new Actor({ name: opts.name || this.callsign(), team, color, hp: opts.hp || 100 });
+    const actor = new Actor({ name: opts.name || this.callsign(), team, color, hp: opts.hp || 125 });
     if (opts.armor) actor.armor = opts.armor;
     new Bot(actor, { skill: this.m.skill, ...opts });
     Game.actors.push(actor);
@@ -2127,13 +2166,13 @@ class TeamDeathmatch extends Mode {
 class Duel extends TeamDeathmatch {
   setup() {
     const p = Game.player; p.team = 'A'; p.color = 'blue'; p.lives = Infinity;
-    const boss = this.makeBot('B', 'blackops', { name: 'THE MIMIC', weapon: 'm4', elite: true, hp: 220, armor: 0.85, skill: 0.95, dmgMul: 0.85, visionRange: 60, hearMul: 1.5 });
+    const boss = this.makeBot('B', 'blackops', { name: 'THE MIMIC', weapon: 'm4', elite: true, hp: 300, armor: 0.8, skill: 1.0, dmgMul: 1.0, visionRange: 60, hearMul: 1.5 });
     boss.lives = Infinity;
     this.boss = boss;
     this.score = { A: 0, B: 0 };
     this.spawnActor(p, Nav.randomInZone(MAP.zones.west));
     this.spawnActor(boss, Nav.randomInZone(MAP.zones.east));
-    this.respawnDelay = 3; this.botDamageMul = 0.62; this.sweep = 0.9;
+    this.respawnDelay = 3; this.botDamageMul = 0.72; this.sweep = 0.9;
   }
   respawnActor(a) { this.spawnActor(a, this.safeSpawn(a, null, 18)); }
   hud() { return { ally: this.score.A, enemy: this.score.B, clock: this.timeLeft, objective: t('o_duel', { t: this.m.target }) }; }
@@ -2146,7 +2185,7 @@ class Keycard extends Mode {
   setup() {
     const p = Game.player; p.team = 'A'; p.color = 'blue';
     const fin = !!this.m.finale;
-    this.revealHostiles = true; // NPC positions are shown on the radar in keycard missions
+    this.revealHostiles = !fin; // NPC positions are shown on the radar in the first keycard mission only
     p.lives = fin ? this.m.lives : Infinity;
     this.respawnDelay = 4; this.regen = fin ? 10 : 18; this.botDamageMul = fin ? 0.6 : 0.5; this.sweep = fin ? 0.3 : 0.12;
     const start = Nav.randomInZone(MAP.zones.west);
@@ -3415,7 +3454,7 @@ async function boot() {
 }
 
 // Test hook for the local Playwright harness only (tools/test); inert without ?debug.
-if (/[?&]debug\b/.test(location.search)) window.__BR = { Game, Player, Save, MISSIONS, Ui, World, Nav, Hud, Lobby, Audio, Input, Loop, Combat, rayVsSoldier };
+if (/[?&]debug\b/.test(location.search)) window.__BR = { Game, Player, Save, MISSIONS, Ui, World, Nav, Hud, Lobby, Audio, Input, Loop, Combat, rayVsSoldier, FX };
 
 boot();
 })();

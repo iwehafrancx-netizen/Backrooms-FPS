@@ -85,7 +85,7 @@ The standalone folder is **generated** from the Playables folder, so make game c
 
 Completed operations can be replayed at any time. Clearing the finale (Op 12) opens **Campaign Complete**, where **Start Over** resets the campaign (settings are kept). Weapons also unlock with progress: Tri-Barrel after Op 2, M4 after Op 3 and Sniper after Op 4.
 
-**Telling sides apart:** every soldier wears the same charcoal gear. A glowing band on the upper arm shows the side: **blue = your squad, red = hostile** (Call of Duty Mobile style). Teammates also have a blue chevron overhead.
+**Telling sides apart:** soldiers use the NPC model exactly as supplied (its file has no texture images, so it renders in its plain default material, with no colour added). A glowing band on the upper arm shows the side: **blue = your squad, red = hostile** (Call of Duty Mobile style). Teammates also have a blue chevron overhead.
 
 **How NPCs notice you:** they see in a 120° cone in front of them (walls block sight) and hear noise only nearby: your gunshots carry 14 m (sniper 18 m), NPC gunfire 12 m, walking 5 m, sprinting 10 m, landing a jump 6 m. Walls halve those distances, and **crouch-walking is silent**, so you can sneak up behind them.
 
