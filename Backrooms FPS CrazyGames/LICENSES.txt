@@ -1,3 +1,16 @@
+3D models in assets/
+====================
+
+Level 0 map (assets/Maps/backroom.glb): <model name> by <author>, <link>, <license>
+Soldier (assets/NPCs/operator.glb): <model name> by <author>, <link>, <license>
+Pistol (assets/Guns/pistol.glb): <model name> by <author>, <link>, <license>
+Tri-Barrel shotgun (assets/Guns/shotgun.glb): <model name> by <author>, <link>, <license>
+AK-47 (assets/Guns/ak47.glb): <model name> by <author>, <link>, <license>
+M4 Carbine (assets/Guns/m4.glb): <model name> by <author>, <link>, <license>
+Bolt Sniper (assets/Guns/sniper.glb): <model name> by <author>, <link>, <license>
+
+------------------------------------------------------------------------
+
 Third-party software bundled in lib/
 ====================================
 

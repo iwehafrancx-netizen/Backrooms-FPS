@@ -536,7 +536,7 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
 .wbuy.solo { grid-template-columns: 1fr; }
 .wb { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 0; padding: 6px 4px; cursor: pointer; border: 1px solid rgba(242,194,48,.7); background: rgba(11,10,7,.55); color: var(--paper); font-family: var(--f-mono); }
 .wb b { font: 800 11px/1 var(--f-display); letter-spacing: .1em; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
-.wb small { font: 600 8.5px/1 var(--f-mono); letter-spacing: .06em; color: var(--paper-dim); white-space: nowrap; }
+.wb small { font: 600 9.5px/1 var(--f-mono); letter-spacing: .06em; color: var(--paper-dim); white-space: nowrap; }
 .wb.buy small { color: var(--yellow); }
 .wb.buy.cant { opacity: .55; }
 .wb.buy.confirm { background: var(--green); border-color: var(--green); color: var(--ink); }
@@ -551,5 +551,5 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
 .offer-buy .wb b { font-size: 15px; }
 .offer-buy .wb small { font-size: 10px; }
 .wcard .wbuy { grid-template-columns: 1fr; gap: 3px; margin-top: 8px; }
-.wcard .wbuy .or { text-align: center; font-size: 8.5px; }
+.wcard .wbuy .or { text-align: center; font-size: 9px; }
 .wcard .wb { padding: 5px 8px; gap: 3px; }

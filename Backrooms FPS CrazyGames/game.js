@@ -358,9 +358,15 @@ const Save = {
         }
       }
     } catch (e) { Platform.logWarning(); }
-    this.data.unlocked = clamp(this.data.unlocked | 0, 1, MISSIONS.length);
-    if (!Array.isArray(this.data.owned)) this.data.owned = [];
-    this.data.cp = Math.max(0, this.data.cp | 0);
+    const d = this.data, obj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+    d.unlocked = clamp(d.unlocked | 0, 1, MISSIONS.length);
+    if (!obj(d.missions)) d.missions = {};
+    for (const k in d.missions) if (!obj(d.missions[k])) delete d.missions[k];
+    d.owned = Array.isArray(d.owned) ? d.owned.filter((id) => SHOP[id]) : [];
+    for (const k of ['cp', 'xp', 'played', 'sentScore', 'offerIdx']) d[k] = Math.max(0, d[k] | 0);
+    for (const k in DEFAULT_SETTINGS) if (typeof d.settings[k] !== typeof DEFAULT_SETTINGS[k]) d.settings[k] = DEFAULT_SETTINGS[k];
+    if (d.loadout.primary !== 'none' && !WEAPONS[d.loadout.primary]) d.loadout.primary = 'none';
+    if (!WEAPONS[d.loadout.secondary]) d.loadout.secondary = 'pistol';
   },
   _timer: 0,
   persist(now = false) {
@@ -427,6 +433,7 @@ const Audio = (() => {
     noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
     const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     applyVolume();
+    if (!platformOn || suspended) ctx.suspend().catch(() => {});
     return ctx;
   }
   function applyVolume() {
@@ -1016,6 +1023,16 @@ function canvasTex(w, h, draw, srgb = true) {
   return tx;
 }
 const Tex = {};
+function disposeTree(root) {
+  const keep = new Set(Object.values(Tex).flat());
+  root.traverse((o) => {
+    if (o.geometry) o.geometry.dispose();
+    for (const m of [].concat(o.material || [])) {
+      for (const k in m) if (m[k] && m[k].isTexture && !keep.has(m[k])) m[k].dispose();
+      m.dispose();
+    }
+  });
+}
 function buildTextures() {
   Tex.flashCore = [0, 1, 2].map(() => canvasTex(128, 128, (g) => {
     g.translate(64, 64);
@@ -1520,7 +1537,7 @@ const Player = {
   },
   fire() {
     const a = this.a, def = this.weapon, slot = this.slot, cam = World.camera, T = THREE;
-    slot.mag--; this.fireCd = 60 / def.rpm; this.shotsFired++; this.lastFireTime = Game.time;
+    slot.mag--; this.fireCd = Math.max(this.fireCd, -0.05) + 60 / def.rpm; this.shotsFired++; this.lastFireTime = Game.time;
     Audio.shot(def.snd, null, true);
     Game.noise(a, def.id === 'sniper' ? 18 : 14);
     const origin = cam.position.clone();
@@ -1850,7 +1867,7 @@ class Bot {
     const mixer = new T.AnimationMixer(s.model), actions = {};
     for (const clip of Assets.npc.animations) actions[clip.name] = mixer.clipAction(clip);
     actions.death.setLoop(T.LoopOnce, 1); actions.death.clampWhenFinished = true;
-    return { root, model: s.model, hand: s.hand, soldier: s, gun, mixer, actions, anim: null, corpseT: 0 };
+    return { root, model: s.model, hand: s.hand, soldier: s, gun, blob, mixer, actions, anim: null, corpseT: 0 };
   }
   get root() { return this.body.root; } get model() { return this.body.model; } get hand() { return this.body.hand; }
   get soldier() { return this.body.soldier; } get gun() { return this.body.gun; }
@@ -1893,7 +1910,12 @@ class Bot {
   }
   despawn() {
     if (this.agent) { Nav.crowd.removeAgent(this.agent); this.agent = null; }
-    for (const b of this.bodies) { World.scene.remove(b.root); World.scene.remove(b.gun); }
+    for (const b of this.bodies) {
+      World.scene.remove(b.root); World.scene.remove(b.gun);
+      b.mixer.stopAllAction(); b.mixer.uncacheRoot(b.model);
+      b.model.traverse((o) => { if (o.isSkinnedMesh && o.skeleton) o.skeleton.dispose(); });
+      b.blob.geometry.dispose(); b.blob.material.dispose();
+    }
   }
   setSpeed(v) { if (this.agent) this.agent.maxSpeed = v; }
   moveTo(p) { if (!this.agent || !p) return; this.agent.requestMoveTarget(p); this.dest = { x: p.x, z: p.z }; }
@@ -2049,8 +2071,9 @@ class Bot {
     const want = Math.atan2(tg.pos.x - this.a.pos.x, tg.pos.z - this.a.pos.z);
     if (Math.abs(wrapAngle(want - this.yaw)) > 0.35) return;
     this.mag--; this.lastShot = Game.time;
-    if (def.auto) { if (this.burst <= 0) this.burst = randi(3, this.elite ? 8 : 6); this.burst--; this.fireCd = 60 / def.rpm * 1.05; if (this.burst <= 0) this.fireCd += rand(0.25, 0.7) * (1.3 - this.skill); }
-    else this.fireCd = 60 / def.rpm * rand(1.25, 1.8) + (1 - this.skill) * 0.25;
+    const carry = Math.max(this.fireCd, -0.05);
+    if (def.auto) { if (this.burst <= 0) this.burst = randi(3, this.elite ? 8 : 6); this.burst--; this.fireCd = carry + 60 / def.rpm * 1.05; if (this.burst <= 0) this.fireCd += rand(0.25, 0.7) * (1.3 - this.skill); }
+    else this.fireCd = carry + 60 / def.rpm * rand(1.25, 1.8) + (1 - this.skill) * 0.25;
     this.placeGun(); this.gun.updateMatrixWorld(true); const muzzle = this.gun.userData.muzzle.clone(); this.gun.localToWorld(muzzle);
     FX.flash(muzzle, def.pellets ? 0.6 : 0.42, this.gun.quaternion);
     Audio.shot(def.snd, this.a.pos);
@@ -2234,7 +2257,7 @@ class Mode {
     const p = Game.player;
     return p.kills * 100 + p.headshots * 50 + this.objectiveScore + (won ? 1000 : 0);
   }
-  dispose() { World.scene.remove(this.props); }
+  dispose() { World.scene.remove(this.props); disposeTree(this.props); }
   intel() { return { teams: '—', time: this.timeLimit ? fmtTime(this.timeLimit) : '∞' }; }
 }
 

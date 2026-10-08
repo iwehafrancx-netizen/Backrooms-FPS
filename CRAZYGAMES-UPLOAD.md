@@ -13,7 +13,7 @@
 
 | Field | What to enter |
 |---|---|
-| Title | Backrooms: Level 0 Tactical Operations (or just Backrooms) |
+| Title | Backrooms - FPS (the browser tab uses the same name). CrazyGames asks for names that stand out from existing games, and many titles there start with "Backrooms", so QA may ask for something more distinctive |
 | Category | Shooting · FPS |
 | Tags | 3D, first person shooter, backrooms, tactical, stealth, campaign, mobile |
 | Controls | Desktop: WASD move, mouse aim, left click fire, right click aim, R reload, Space jump, C crouch, Shift sprint, Q swap, E interact, Esc pause and release the mouse. Mobile: left stick move, drag to look, on-screen buttons |
@@ -22,15 +22,18 @@
 | Languages | English, Spanish, Portuguese, French (follows the CrazyGames locale) |
 | Age / content | PEGI 12 style: shooting at human-like soldiers, no blood or gore |
 
-3. **Covers** (your own artwork, not a plain screenshot with the name on it):
+3. **Credits:** fill in the 3D model lines at the top of `Backrooms FPS CrazyGames/LICENSES.txt` (model name, author, link, license) before uploading. If a license is CC-BY, the author must be credited where players can see it.
+4. **Covers** (your own artwork, not a plain screenshot with the name on it):
    - Landscape 16:9: **1920 × 1080**
    - Portrait 2:3: **800 × 1200**
    - Square 1:1: **800 × 800**
    - Optional: a short preview video.
-4. **Before submitting,** open the portal's **Preview / QA tool**. It runs the game inside a real CrazyGames page. Check that:
+5. **Before submitting,** open the portal's **Preview / QA tool**. It runs the game inside a real CrazyGames page. Check that:
    - the game loads, and a new player clicks **PLAY** once and is in Operation 1;
    - ads show when leaving a results screen, on RESTART, on REVIVE, on GET AMMO and on gun rentals;
    - the game keeps working when an ad fails or the ad blocker is on.
+
+**Automated QA:** `cd tools && npm run qa-crazygames` rebuilds the zip and runs every check in `CRAZYGAMES-QA-REPORT.md` on it, inside an iframe like the CrazyGames page.
 
 ## 3. Launch stages
 - **Basic Launch (first 7–21 days):** CrazyGames turns all ads off. The game handles this:
