@@ -68,7 +68,7 @@ The standalone folder is **generated** from the Playables folder, so make game c
 ### CrazyGames edition
 - A separate copy of the game. Edit it directly; it is not generated, and the YouTube folder is left untouched.
 - **Platform layer:** the CrazyGames SDK v3 (init, loading and gameplay events, happytime, Data module saves, muteAudio, locale).
-- **Ads:** midgame ads at breaks; rewarded ads for **REVIVE** and for using a locked gun for one mission.
+- **Ads:** midgame ads at breaks; rewarded ads for **REVIVE**, **GET AMMO** (HUD button or G key), and for trying a locked gun for one mission. The in-match gun offer is a small pop-up after the countdown, every other mission.
 - **Shop:** guns are bought with **Combat Points (CP)**.
 - **First play:** new players go straight into Operation 1 with one click.
 - Upload steps, portal fields and the full rules checklist are in [CRAZYGAMES-UPLOAD.md](CRAZYGAMES-UPLOAD.md).

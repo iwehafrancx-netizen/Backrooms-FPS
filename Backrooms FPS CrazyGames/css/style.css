@@ -498,3 +498,31 @@ body.offer-open .screen.active { visibility: hidden; }
 #adblock.on { display: grid; }
 #toast { position: fixed; left: 50%; bottom: calc(24px + var(--safe-b)); transform: translate(-50%, 20px); z-index: 95; opacity: 0; pointer-events: none; padding: 10px 16px; background: rgba(11,10,7,.92); border: 1px solid var(--line); font: 12px/1.4 var(--f-mono); letter-spacing: .08em; color: var(--paper); transition: opacity .25s, transform .25s; max-width: calc(100% - 32px); text-align: center; }
 #toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+.modal.mini { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; align-items: center; justify-content: center; padding-top: 18vh; }
+.mini-box { width: min(340px, 92vw); display: flex; flex-direction: column; gap: 0; background: none !important; border: 1px solid rgba(242,194,48,.55); box-shadow: 0 10px 40px rgba(0,0,0,.45); animation: rise .3s cubic-bezier(.2,.8,.2,1); backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.mini-box > :not(.mini-view) { background: rgba(11,10,7,.92); padding: 0 14px; }
+.mini-box > .h-kicker { color: var(--yellow); padding-top: 11px; padding-bottom: 8px; }
+.mini-view { height: 96px; margin: 0; box-shadow: inset 0 0 0 1px rgba(242,194,48,.25), inset 0 0 0 14px rgba(11,10,7,.92); background: radial-gradient(closest-side, rgba(242,194,48,.12), rgba(0,0,0,0)); }
+.mini-name { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-top: 6px !important; }
+.mini-name b { font: 800 22px/1 var(--f-display); letter-spacing: .06em; }
+.mini-name span { font: 10px/1 var(--f-mono); letter-spacing: .16em; color: var(--paper-dim); }
+.mini-stats { display: flex; gap: 12px; font: 10px/1 var(--f-mono); letter-spacing: .12em; color: var(--paper-dim); padding-top: 8px !important; padding-bottom: 10px !important; }
+.mini-stats b { color: var(--paper); font-size: 12px; }
+.mini-actions { display: flex; gap: 8px; padding-bottom: 14px !important; }
+.mini-actions .btn { flex: 1; justify-content: center; padding: 9px 8px; font-size: 14px; letter-spacing: .08em; min-width: 0; white-space: nowrap; }
+.adb { display: inline-block; font: 800 9px/1 var(--f-mono); letter-spacing: .1em; padding: 3px 4px; margin-right: 6px; background: var(--ink); color: var(--yellow); border: 1px solid currentColor; vertical-align: middle; }
+.btn.primary .adb { background: var(--ink); color: var(--yellow); }
+@media (max-height: 420px) { .modal.mini { padding-top: 8vh; } .mini-view { height: 64px; } }
+
+.ammo-ad { pointer-events: auto; margin: 8px auto 0; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; cursor: pointer; background: rgba(11,10,7,.7); border: 1px solid rgba(242,194,48,.6); color: var(--paper); font: 700 11px/1 var(--f-mono); letter-spacing: .14em; }
+.ammo-ad.hidden { display: none; }
+.ammo-ad .ico { color: var(--yellow); font-size: 10px; }
+.ammo-ad kbd { font: 700 10px/1 var(--f-mono); padding: 2px 5px; border: 1px solid var(--line); color: var(--paper-dim); }
+.ammo-ad.touch kbd { display: none; }
+.ammo-ad.low { background: var(--yellow); color: var(--ink); animation: ammoPulse 1s ease-in-out infinite; }
+.ammo-ad.low .ico { color: var(--ink); }
+.ammo-ad.low kbd { color: var(--ink); border-color: rgba(11,10,7,.5); }
+@keyframes ammoPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,194,48,.6); } 50% { box-shadow: 0 0 0 6px rgba(242,194,48,0); } }
+
+body:not(.ingame) #hud .crosshair { opacity: 0; }

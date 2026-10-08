@@ -112,26 +112,67 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   const saved = await page.evaluate(() => JSON.parse(window.__cg.data['backrooms.save']));
   check('purchase persisted in the save', saved.owned.includes('ak47'), JSON.stringify(saved.owned));
 
-  const offer = await page.evaluate(() => {
-    const B = window.__BR, U = B.Ui, m = B.MISSIONS[4];
-    U.deploys = 5; U.lastOffer = null; const a = U.offerPick(m);
-    U.lastOffer = 5; U.deploys = 6; const b = U.offerPick(m);
-    U.deploys = 7; const c = U.offerPick(m);
-    return { a, b, c };
-  });
-  check('gun offer: shows, skips the next deploy, then shows again (every other mission)', !!offer.a && offer.b === null && !!offer.c, JSON.stringify(offer));
-  await page.evaluate(() => { const U = window.__BR.Ui; U.selMission = 4; U.show('briefing'); });
-  await sleep(500);
   check('after an ad error, ad buttons stay hidden for 2 minutes', !(await page.evaluate(() => window.__BR.Platform.ads.canReward())));
   await page.evaluate(() => { const now = performance.now.bind(performance); performance.now = () => now() + 125000; });
-  await page.evaluate(() => { window.__BR.Ui.gunOffer('m4', 4); });
-  await sleep(700);
-  await shot(page, 'cg-offer');
-  await page.click('#m-offer [data-a=ad]');
-  await page.waitForFunction(() => !window.__BR.Ui.modal, null, { timeout: 8000 });
-  check('WATCH AD in the offer rents the gun for this mission', await page.evaluate(() => window.__BR.Arsenal.usable('m4') && !window.__BR.Arsenal.owns('m4')));
-  await sleep(400);
-  await shot(page, 'cg-briefing');
+  const offer = await page.evaluate(() => {
+    const B = window.__BR, U = B.Ui, m = B.MISSIONS[4];
+    U.lastOffer = null; const a = U.offerPick(m, 5);
+    U.lastOffer = 5; const b = U.offerPick(m, 6);
+    const c = U.offerPick(m, 7);
+    return { a, b, c };
+  });
+  check('gun offer: shows, skips the next mission, then shows again (every other mission)', !!offer.a && offer.b === null && !!offer.c, JSON.stringify(offer));
+
+  await page.evaluate(() => { const U = window.__BR.Ui; U.lastOffer = null; U.selMission = 4; U.show('briefing'); });
+  await sleep(600);
+  await page.click('#briefing [data-a=deploy]');
+  await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
+  const atStart = await page.evaluate(() => ({ modal: window.__BR.Ui.modal, gun: window.__BR.Game.offerGun }));
+  check('DEPLOY goes straight into the mission (no offer on the mission screen)', !atStart.modal && !!atStart.gun, JSON.stringify(atStart));
+  await page.evaluate(() => {
+    const B = window.__BR, G = B.Game; G.countdownT = 0;
+    const real = B.Input.sample; window.__realSample = real;
+    B.Input.sample = (dt) => ({ ...real(dt), my: 1 });
+  });
+  await page.waitForFunction(() => window.__BR.Ui.modal === 'm-mini', null, { timeout: 8000 });
+  await page.evaluate(() => { window.__BR.Input.sample = window.__realSample; });
+  n = await names(page);
+  const mini = await page.evaluate(() => {
+    const box = document.querySelector('#m-mini .mini-box').getBoundingClientRect();
+    return { paused: window.__BR.Game.paused, w: Math.round(box.width), h: Math.round(box.height), sw: innerWidth, sh: innerHeight, buttons: [...document.querySelectorAll('#m-mini .btn')].map((b) => b.dataset.a).join(), gun: !!window.__BR.Lobby.display };
+  });
+  check('in the mission: first move pauses the game and pops a small offer box', mini.paused && n[n.length - 1] === 'gameplayStop' && mini.w < mini.sw * 0.5 && mini.h < mini.sh * 0.75 && mini.gun, JSON.stringify(mini));
+  check('the box shows WATCH AD and NO THANKS', mini.buttons === 'ad,no', mini.buttons);
+  await sleep(500);
+  await shot(page, 'cg-mini-offer');
+  const want = await page.evaluate(() => window.__BR.Ui.lastOffer && document.querySelector('#m-mini .mini-name b').textContent);
+  await page.click('#m-mini [data-a=ad]');
+  await page.waitForFunction(() => !window.__BR.Ui.modal && !window.__BR.Game.paused, null, { timeout: 8000 });
+  const after = await page.evaluate(() => ({ slots: window.__BR.Player.slots.map((s) => s.id + ':' + s.mag).join(), cur: window.__BR.Player.weapon.name }));
+  n = await names(page);
+  check('WATCH AD puts the gun in your hands with full ammo, game resumes', after.cur === want && n[n.length - 1] === 'gameplayStart', JSON.stringify(after) + ' wanted ' + want);
+  await page.evaluate(() => window.__BR.Game.start(4, 'none', 'pistol'));
+  await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
+  check('next mission: no offer (every other mission)', await page.evaluate(() => window.__BR.Game.offerGun === null));
+
+  await page.evaluate(() => { const G = window.__BR.Game; G.countdownT = 0; for (const s of window.__BR.Player.slots) { s.mag = 0; s.reserve = 0; } window.__BR.Hud.weapon(); });
+  await sleep(500);
+  const btn = await page.evaluate(() => { const b = document.querySelector('#hud .ammo-ad'); return { shown: !b.classList.contains('hidden'), low: b.classList.contains('low'), text: b.textContent, hint: document.querySelector('#hud .ammo .reload').textContent }; });
+  check('GET AMMO button with an AD badge is on screen, glowing when out of ammo', btn.shown && btn.low && /AD/.test(btn.text) && /GET AMMO/.test(btn.text), JSON.stringify(btn));
+  await shot(page, 'cg-ammo-button');
+  await page.keyboard.press('g');
+  await page.waitForFunction(() => window.__BR.Player.slots.every((s) => s.mag > 0) && !window.__BR.Game.paused, null, { timeout: 8000 });
+  n = await names(page);
+  const ammoAd = await page.evaluate(() => window.__adStates[window.__adStates.length - 1]);
+  check('pressing G: rewarded ad, all guns refilled, game resumes', ammoAd[0] === 'rewarded' && n[n.length - 1] === 'gameplayStart', JSON.stringify(ammoAd));
+  await page.evaluate(() => { for (const s of window.__BR.Player.slots) { s.mag = 0; s.reserve = 0; } window.__cg.next = 'error'; });
+  await page.evaluate(() => window.__BR.Game.getAmmo());
+  await sleep(500);
+  const fail = await page.evaluate(() => ({ mag: window.__BR.Player.slot.mag, paused: window.__BR.Game.paused, toast: document.querySelector('#toast').textContent }));
+  check('ad fails: no ammo given, a message, game keeps going', fail.mag === 0 && !fail.paused && fail.toast.length > 0, JSON.stringify(fail));
+  await sleep(300);
+  check('GET AMMO hides while ads are unavailable', await page.evaluate(() => document.querySelector('#hud .ammo-ad').classList.contains('hidden')));
+  await page.evaluate(() => { window.__cg.next = 'finish'; });
   check('no page errors', !log.errors.length, log.errors.join(' | '));
   await browser.close();
 }

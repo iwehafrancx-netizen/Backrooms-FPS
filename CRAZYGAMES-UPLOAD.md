@@ -29,7 +29,7 @@
    - Optional: a short preview video.
 4. **Before submitting,** open the portal's **Preview / QA tool**. It runs the game inside a real CrazyGames page. Check that:
    - the game loads, and a new player clicks **PLAY** once and is in Operation 1;
-   - ads show when leaving a results screen, on RESTART, on REVIVE and on gun rentals;
+   - ads show when leaving a results screen, on RESTART, on REVIVE, on GET AMMO and on gun rentals;
    - the game keeps working when an ad fails or the ad blocker is on.
 
 ## 3. Launch stages
@@ -94,6 +94,8 @@ The score-race missions have no limit.
 
 **CP earned per mission:** 20% of the score on a win (7% on a loss), +15 per headshot, +30 per multi-kill.
 
-**Gun offer:** before every other mission, a gun you don't own appears, with BUY, WATCH AD or NO THANKS.
+**Gun offer:** in every other mission, after the 3-2-1 countdown, the first time the player moves, the game pauses. A small box pops up with a gun they don't own (turning in 3D) and two buttons, WATCH AD (use it this mission) and NO THANKS. The gun goes straight into their hands. Locked guns can also be bought with CP on the loadout screen.
+
+**GET AMMO:** a button at the top of the gameplay screen (AD badge; G key on desktop, tap on mobile). It plays a rewarded ad, then refills every gun the player carries. It glows when they're low on ammo and only shows when an ad can play.
 
 **Midgame ad** when leaving the results screen.
