@@ -122,6 +122,8 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
     return { a, b, c };
   });
   check('gun offer: shows, skips the next mission, then shows again (every other mission)', !!offer.a && offer.b === null && !!offer.c, JSON.stringify(offer));
+  const rot = await page.evaluate(() => { const B = window.__BR, U = B.Ui, m = B.MISSIONS[4], got = []; for (let k = 0; k < 4; k++) { U.lastOffer = null; got.push(U.offerPick(m, 10 + k)); } return [...new Set(got.filter(Boolean))].sort().join(); });
+  check('offer rotation includes every locked gun, Sniper too', rot === 'm4,shotgun,sniper', rot);
 
   await page.evaluate(() => { const U = window.__BR.Ui; U.lastOffer = null; U.selMission = 4; U.show('briefing'); });
   await sleep(600);
@@ -143,6 +145,8 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   });
   check('in the mission: first move pauses the game and pops a small offer box', mini.paused && n[n.length - 1] === 'gameplayStop' && mini.w < mini.sw * 0.5 && mini.h < mini.sh * 0.75 && mini.gun, JSON.stringify(mini));
   check('the box shows WATCH AD and NO THANKS', mini.buttons === 'ad,no', mini.buttons);
+  const eq = await page.evaluate(() => document.querySelector('#m-mini [data-a=ad]').innerText.replace(/\s+/g, ' ').trim());
+  check('main button reads EQUIP with a small "Watch an ad" under it', /^EQUIP AD ▶ Watch an ad$/.test(eq), eq);
   await sleep(500);
   await shot(page, 'cg-mini-offer');
   const want = await page.evaluate(() => window.__BR.Ui.lastOffer && document.querySelector('#m-mini .mini-name b').textContent);
@@ -159,6 +163,8 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   await sleep(500);
   const btn = await page.evaluate(() => { const b = document.querySelector('#hud .ammo-ad'); return { shown: !b.classList.contains('hidden'), low: b.classList.contains('low'), text: b.textContent, hint: document.querySelector('#hud .ammo .reload').textContent }; });
   check('GET AMMO button with an AD badge is on screen, glowing when out of ammo', btn.shown && btn.low && /AD/.test(btn.text) && /GET AMMO/.test(btn.text), JSON.stringify(btn));
+  const place = await page.evaluate(() => { const a = document.querySelector('#hud .ammo-ad').getBoundingClientRect(), p = document.querySelector('#hud .hud-pause').getBoundingClientRect(); return { right: Math.round(a.right), pauseLeft: Math.round(p.left), top: Math.round(a.top), pTop: Math.round(p.top) }; });
+  check('GET AMMO sits at the top right, just left of the pause button', place.right <= place.pauseLeft && place.pauseLeft - place.right < 16 && Math.abs(place.top - place.pTop) < 4, JSON.stringify(place));
   await shot(page, 'cg-ammo-button');
   await page.keyboard.press('g');
   await page.waitForFunction(() => window.__BR.Player.slots.every((s) => s.mag > 0) && !window.__BR.Game.paused, null, { timeout: 8000 });

@@ -349,7 +349,7 @@ body.touch .vitals .hpnum { font-size: 24px; }
 body.touch .ammo { right: auto; left: 50%; bottom: 0; transform: translateX(4%) scale(.72); transform-origin: left bottom; text-align: left; }
 body.touch .ammo .pips { justify-content: flex-start; margin-left: 0; }
 body.touch .radar { width: 96px; height: 96px; }
-body.touch .killfeed { top: 0; right: 52px; max-width: 40vw; }
+body.touch .killfeed { top: 38px; right: 52px; max-width: 40vw; }
 body.touch .killfeed .kf:nth-child(n+4) { display: none; }
 body.touch .kf { font-size: 11px; padding: 5px 8px; }
 body.paused .crosshair, body.paused .hitmarker { display: none; }
@@ -511,11 +511,18 @@ body.offer-open .screen.active { visibility: hidden; }
 .mini-stats b { color: var(--paper); font-size: 12px; }
 .mini-actions { display: flex; gap: 8px; padding-bottom: 14px !important; }
 .mini-actions .btn { flex: 1; justify-content: center; padding: 9px 8px; font-size: 14px; letter-spacing: .08em; min-width: 0; white-space: nowrap; }
+.mini-actions .btn.equip { flex-direction: column; gap: 4px; padding: 7px 8px; }
+.btn.equip .eq { font: 800 17px/1 var(--f-display); letter-spacing: .12em; }
+.btn.equip .eq-sub { font: 700 9px/1 var(--f-mono); letter-spacing: .08em; text-transform: none; display: inline-flex; align-items: center; gap: 4px; opacity: .85; }
+.btn.equip .eq-sub .adb { font-size: 7px; padding: 2px 3px; margin-right: 0; }
 .adb { display: inline-block; font: 800 9px/1 var(--f-mono); letter-spacing: .1em; padding: 3px 4px; margin-right: 6px; background: var(--ink); color: var(--yellow); border: 1px solid currentColor; vertical-align: middle; }
 .btn.primary .adb { background: var(--ink); color: var(--yellow); }
 @media (max-height: 420px) { .modal.mini { padding-top: 8vh; } .mini-view { height: 64px; } }
 
-.ammo-ad { pointer-events: auto; margin: 8px auto 0; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; cursor: pointer; background: rgba(11,10,7,.7); border: 1px solid rgba(242,194,48,.6); color: var(--paper); font: 700 11px/1 var(--f-mono); letter-spacing: .14em; }
+.ammo-ad { position: absolute; right: 50px; top: 0; height: 42px; pointer-events: auto; display: inline-flex; align-items: center; gap: 6px; padding: 0 10px; cursor: pointer; background: rgba(11,10,7,.6); border: 1px solid rgba(242,194,48,.6); color: var(--paper); font: 700 11px/1 var(--f-mono); letter-spacing: .12em; white-space: nowrap; }
+.ammo-ad.touch { height: 30px; padding: 0 7px; gap: 4px; font-size: 8.5px; letter-spacing: .08em; }
+.ammo-ad.touch .adb { font-size: 7px; padding: 2px 3px; margin-right: 0; }
+.ammo-ad.touch .ico { font-size: 7px; }
 .ammo-ad.hidden { display: none; }
 .ammo-ad .ico { color: var(--yellow); font-size: 10px; }
 .ammo-ad kbd { font: 700 10px/1 var(--f-mono); padding: 2px 5px; border: 1px solid var(--line); color: var(--paper-dim); }
