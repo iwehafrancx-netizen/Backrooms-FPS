@@ -178,7 +178,9 @@ if (run('A')) {
   check('no blood or gore in the game code', !/blood|gore|dismember|decapitat/i.test(js));
   const lic = fs.readFileSync(path.join(GAME_DIR, 'LICENSES.txt'), 'utf8');
   check('LICENSES.txt ships with library credits', /three\.js/.test(lic) && /Yuka/.test(lic) && /recast/i.test(lic));
-  if (/<model name>/.test(lic)) { todo.push('3D model credits in LICENSES.txt are placeholders: send the model names, authors, links and licenses'); console.log('TODO  [A package] 3D model credits in LICENSES.txt (from you)'); }
+  const ccby = [...lic.matchAll(/: "([^"]+)" by ([^(\n]+?) \(https[^\n]*\n[^\n]*\n\s*License: CC BY/g)].map((m) => m[2].trim());
+  check('every CC BY model author is credited in the game (Settings > Credits)', ccby.length > 0 && ccby.every((a) => js.includes(a)), ccby.join(', '));
+  if (/<model name>/.test(lic)) { todo.push('3D model credits for the map, M4 and sniper are still placeholders in LICENSES.txt: send their Sketchfab links'); console.log('TODO  [A package] 3D model credits in LICENSES.txt (from you)'); }
   else check('3D model credits filled in', true);
 }
 
@@ -252,6 +254,7 @@ if (run('D')) {
     };
   });
   await startMission(f, 2, 'none', 'pistol');
+  await f.evaluate(() => { for (const a of window.__BR.Game.actors) if (a.bot) { a.bot.brain.update = () => {}; a.bot.perceive = () => {}; a.bot.shootAt = () => {}; } });
   check('gameplayStart when the mission starts', (await lastGameplay(f)) === 'gameplayStart');
   await f.evaluate(() => window.__BR.Game.openPause());
   check('gameplayStop on pause', (await lastGameplay(f)) === 'gameplayStop');
@@ -290,7 +293,7 @@ if (run('D')) {
   await f.evaluate(() => { const s = window.__BR.Player.slot; s.mag = 0; s.reserve = 0; window.__cg.next = 'error'; });
   await pressG(f);
   await sleep(600);
-  const err = await f.evaluate(() => ({ mag: window.__BR.Player.slot.mag, toast: document.getElementById('toast').textContent, loop: window.__BR.Loop.running, paused: window.__BR.Game.paused, btnHidden: document.querySelector('#hud .ammo-ad').classList.contains('hidden'), canReward: window.__BR.Platform.ads.canReward() }));
+  const err = await f.evaluate(() => ({ alive: window.__BR.Game.player.alive, mag: window.__BR.Player.slot.mag, toast: document.getElementById('toast').textContent, loop: window.__BR.Loop.running, paused: window.__BR.Game.paused, btnHidden: document.querySelector('#hud .ammo-ad').classList.contains('hidden'), canReward: window.__BR.Platform.ads.canReward() }));
   check('ad error: no reward, a message, game resumes, ad button hides (no dead button)', err.mag === 0 && err.toast.length > 0 && err.loop && !err.paused && err.btnHidden && !err.canReward, JSON.stringify(err));
   await f.evaluate(() => { window.__cg.next = 'finish'; const now = performance.now.bind(performance); performance.now = () => now() + 125000; });
 
