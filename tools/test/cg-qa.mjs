@@ -291,8 +291,10 @@ if (run('D')) {
   check('after a rewarded ad: reward given (ammo), game resumes, sound back, gameplayStart', after.loop && !after.paused && after.muted === false && after.mag > 0 && !after.adblock && (await lastGameplay(f)) === 'gameplayStart', JSON.stringify(after));
 
   await f.evaluate(() => { const s = window.__BR.Player.slot; s.mag = 0; s.reserve = 0; window.__cg.next = 'error'; });
+  const reqs = await f.evaluate(() => window.__ads.length);
   await pressG(f);
-  await sleep(600);
+  await f.waitForFunction((n) => window.__ads.length > n && !window.__BR.Platform.ads.canReward() && window.__BR.Loop.running, reqs, { timeout: 15000 }).catch(() => {});
+  await sleep(300);
   const err = await f.evaluate(() => ({ alive: window.__BR.Game.player.alive, mag: window.__BR.Player.slot.mag, toast: document.getElementById('toast').textContent, loop: window.__BR.Loop.running, paused: window.__BR.Game.paused, btnHidden: document.querySelector('#hud .ammo-ad').classList.contains('hidden'), canReward: window.__BR.Platform.ads.canReward() }));
   check('ad error: no reward, a message, game resumes, ad button hides (no dead button)', err.mag === 0 && err.toast.length > 0 && err.loop && !err.paused && err.btnHidden && !err.canReward, JSON.stringify(err));
   await f.evaluate(() => { window.__cg.next = 'finish'; const now = performance.now.bind(performance); performance.now = () => now() + 125000; });
