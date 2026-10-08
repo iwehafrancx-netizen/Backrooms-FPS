@@ -3,8 +3,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const game = path.resolve(here, '../Backrooms FPS Standalone');
-const out = path.resolve(here, '../dist/web-demo');
+const cg = process.argv[2] === 'crazygames';
+const game = path.resolve(here, cg ? '../Backrooms FPS CrazyGames' : '../Backrooms FPS Standalone');
+const out = path.resolve(here, cg ? '../dist/web-demo-crazygames' : '../dist/web-demo');
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
 
@@ -17,6 +18,7 @@ const page = `<title>Backrooms</title>
 ${css}
 </style>
 <script>window.BACKROOMS_WEB_DEMO = { b64: true };</script>
+${cg ? '<script src="crazygames-test-sdk.js"></script>' : ''}
 ${body}
 `;
 if (/youtube\.com|<html|<head|<body|<!doctype/i.test(page)) throw new Error('web demo page must not contain the SDK tag or document skeleton');
@@ -32,8 +34,24 @@ const walk = (dir) => {
     else { fs.copyFileSync(src, path.join(out, rel)); files.push(rel); }
   }
 };
-fs.copyFileSync(path.join(game, 'game.js'), path.join(out, 'game.js')); files.push('game.js');
+let js = fs.readFileSync(path.join(game, 'game.js'), 'utf8');
+if (cg) {
+  const from = `  async binary(url, kb) {
+    const r = await fetch(url);`;
+  if (!js.includes(from)) throw new Error('loader marker not found');
+  js = js.replace(from, `  async binary(url, kb) {
+    if (window.BACKROOMS_WEB_DEMO && window.BACKROOMS_WEB_DEMO.b64) {
+      const r = await fetch(url + '.b64.txt');
+      if (!r.ok) throw new Error('Failed to load ' + url);
+      const bin = atob((await r.text()).trim()); const out = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      this.bump(kb); return out.buffer;
+    }
+    const r = await fetch(url);`);
+  fs.copyFileSync(path.join(here, 'crazygames-test-sdk.js'), path.join(out, 'crazygames-test-sdk.js')); files.push('crazygames-test-sdk.js');
+}
+fs.writeFileSync(path.join(out, 'game.js'), js); files.push('game.js');
 walk('lib'); walk('assets');
 let total = 0; for (const f of files) total += fs.statSync(path.join(out, f)).size;
-console.log(`dist/web-demo: ${files.length} files, ${(total / 1048576).toFixed(2)} MiB`);
+console.log(`${path.relative(path.resolve(here, '..'), out)}: ${files.length} files, ${(total / 1048576).toFixed(2)} MiB`);
 console.log(JSON.stringify(files.filter((f) => f !== 'index.html')));

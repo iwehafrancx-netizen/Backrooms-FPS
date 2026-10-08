@@ -28,7 +28,7 @@ for (let mi = 0; mi < 12; mi++) {
   results.push(r);
   console.log(JSON.stringify(r));
 }
-const save = await page.evaluate(() => JSON.parse(window.__yt.saved));
-console.log('save unlocked', save.unlocked, 'missions', Object.keys(save.missions).length, 'scores sent', await page.evaluate(() => window.__yt.scores.slice(-3)));
+const save = await page.evaluate(() => JSON.parse(window.__cg ? window.__cg.data['backrooms.save'] : window.__yt.saved));
+console.log('save unlocked', save.unlocked, 'missions', Object.keys(save.missions).length, 'scores sent', await page.evaluate(() => (window.__yt.scores || []).slice(-3)));
 console.log('errors', log.errors, log.console.slice(0, 10));
 await browser.close();

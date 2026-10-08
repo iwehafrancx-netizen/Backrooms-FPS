@@ -26,6 +26,7 @@ Backrooms FPS/            ← the YouTube Playables game. Zip the CONTENTS of th
   assets/Guns/            pistol, shotgun, ak47, m4, sniper (.glb, optimized)
   LICENSES.txt            licenses of the bundled libraries
 Backrooms FPS Standalone/ ← the same game without any YouTube integration (generated, see below)
+Backrooms FPS CrazyGames/ ← the CrazyGames edition (its own copy: CrazyGames SDK v3, ads, gun shop)
 source-assets/            your original, untouched .glb files (NOT shipped)
 tools/                    developer tools (NOT shipped): builds, asset optimizer, navmesh baker, tests
 dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-ignored)
@@ -58,10 +59,21 @@ dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-igno
 |---|---|---|
 | `Backrooms FPS/` | **Mediacube / YouTube Playables submission** (`npm run zip` packages this one) | full SDK integration, certification-tested |
 | `Backrooms FPS Standalone/` | play-testing, your own website, itch.io, anywhere else | none: no SDK tag, saves stay in the browser (localStorage), language follows the browser |
+| `Backrooms FPS CrazyGames/` | **CrazyGames upload** (`npm run zip-crazygames` → `dist/backrooms-crazygames.zip`) | CrazyGames SDK v3. Details below |
 
 The standalone folder is **generated** from the Playables folder, so make game changes in `Backrooms FPS/` and then run `cd tools && npm run standalone`. Don't edit the standalone copy by hand.
 
 **Browser test link:** `cd tools && npm run web-demo` builds `dist/web-demo/` from the standalone copy. That's the version published as the private claude.ai test link. It only adds what that host needs: the page skeleton is removed and the CSS inlined, and the `.glb`/`.navmesh` files ship as base64 text because the host won't serve `.glb`.
+
+### CrazyGames edition
+- A separate copy of the game. Edit it directly; it is not generated, and the YouTube folder is left untouched.
+- **Platform layer:** the CrazyGames SDK v3 (init, loading and gameplay events, happytime, Data module saves, muteAudio, locale).
+- **Ads:** midgame ads at breaks; rewarded ads for **REVIVE** and for using a locked gun for one mission.
+- **Shop:** guns are bought with **Combat Points (CP)**.
+- **First play:** new players go straight into Operation 1 with one click.
+- Upload steps, portal fields and the full rules checklist are in [CRAZYGAMES-UPLOAD.md](CRAZYGAMES-UPLOAD.md).
+- **Test link:** `npm run web-demo-crazygames` builds `dist/web-demo-crazygames/`. It uses `tools/crazygames-test-sdk.js`, a local stand-in for the SDK that shows a labelled **TEST AD** screen instead of real ads. The real game loads the official SDK from CrazyGames.
+- **Tests:** `GAME=crazygames node test/crazygames.mjs`. Any other test also runs against this copy with `GAME=crazygames`.
 
 ---
 
