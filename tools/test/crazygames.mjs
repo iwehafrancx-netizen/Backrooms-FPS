@@ -19,7 +19,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 20000 });
   const st = await page.evaluate(() => ({ mi: window.__BR.Game.missionIndex, menu: window.__BR.Ui.cur, slots: window.__BR.Player.slots.map((s) => s.id) }));
   check('new player: one click goes straight into Operation 1', st.mi === 0 && !st.menu, `button "${label}" → mission ${st.mi + 1}, screen ${st.menu}`);
-  check('starts with the pistol only', st.slots.join() === 'pistol', st.slots.join());
+  check('first quick-play mission: AK-47 + pistol', st.slots.join() === 'ak47,pistol', st.slots.join());
   check('gameplayStart when the mission is playable', (await names(page)).includes('gameplayStart'));
   await page.evaluate(() => { const G = window.__BR.Game; G.countdownT = 0; G.openPause(); });
   n = await names(page);
@@ -28,6 +28,9 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   n = await names(page);
   check('gameplayStart on resume', n[n.length - 1] === 'gameplayStart');
   await shot(page, 'cg-quickplay');
+  await page.evaluate(() => window.__BR.Game.toMenu('menu'));
+  await page.waitForFunction(() => window.__BR.Ui.cur === 'menu', null, { timeout: 15000 });
+  check('after leaving that mission the AK-47 is locked again', await page.evaluate(() => !window.__BR.Arsenal.usable('ak47') && !window.__BR.Arsenal.owns('ak47')));
   check('no page errors', !log.errors.length, log.errors.join(' | '));
   await browser.close();
 }

@@ -3746,7 +3746,7 @@ async function boot() {
       if (Game.state !== 'boot') return;
       Game.state = 'menu'; Audio.unlock(); Audio.ui();
       const b = $('#boot'); b.classList.add('leaving'); setTimeout(() => b.remove(), 400);
-      if (quick) Game.start(0, 'none', 'pistol', true);
+      if (quick) { Arsenal.rent('ak47', 0); Game.start(0, 'ak47', 'pistol', true); }
       else Ui.show('menu');
     };
     btn.addEventListener('click', enter);
