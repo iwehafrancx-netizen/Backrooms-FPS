@@ -87,7 +87,7 @@ const STR = {
     play: 'Campaign', settings: 'Settings', controls: 'Controls', resume: 'Resume', restart: 'Restart', abort: 'Abort mission', back: 'Back',
     rank: 'RANK', totalScore: 'CAMPAIGN SCORE', ofMissions: '{a}/{b} MISSIONS',
     selectMission: 'Select operation', operations: 'OPERATIONS', locked: 'LOCKED', lockedHint: 'CLEAR OP {n} TO UNLOCK', best: 'BEST', newOp: 'NEW',
-    briefing: 'MISSION BRIEFING', objectives: 'OBJECTIVES', loadout: 'LOADOUT', primary: 'PRIMARY', secondary: 'SECONDARY', deploy: 'Deploy', cp: 'CP', cpBalance: 'COMBAT POINTS', cpEarned: '+{n} CP', buyFor: 'BUY · {n} CP', watchAd: 'WATCH AD', thisMission: 'THIS MISSION', noThanks: 'NO THANKS', none: 'NONE', sidearmOnly: 'SIDEARM ONLY', notEnough: 'NOT ENOUGH CP', confirmBuy: 'Unlock {w} for good for {n} CP?', bought: '{w} UNLOCKED', adUnavailable: 'No ad available right now. Try again later.', adLoading: 'LOADING AD…', offerTitle: 'WEAPON OFFER', offerText: 'Take it into this mission now, or unlock it for good with Combat Points.', outTitle: 'OUT OF LIVES', outText: 'Revive right where you fell, or restart the mission from the beginning.', revive: 'REVIVE', restartMission: 'RESTART', playNow: 'PLAY', price: 'PRICE', range: 'RANGE', rpm: 'RPM', magazine: 'MAG', earnHint: 'Earn CP from missions, headshots and multi-kills.', getAmmo: 'GET AMMO', ammoRefilled: 'AMMO REFILLED', outOfAmmoHint: 'OUT OF AMMO — GET AMMO ▶', tryWeapon: 'TRY THIS WEAPON', equip: 'EQUIP', watchAnAd: 'Watch an ad',
+    briefing: 'MISSION BRIEFING', objectives: 'OBJECTIVES', loadout: 'LOADOUT', primary: 'PRIMARY', secondary: 'SECONDARY', deploy: 'Deploy', cp: 'CP', cpBalance: 'COMBAT POINTS', cpEarned: '+{n} CP', watchAd: 'WATCH AD', thisMission: 'THIS MISSION', noThanks: 'NO THANKS', none: 'NONE', sidearmOnly: 'SIDEARM ONLY', notEnough: 'NOT ENOUGH CP', bought: '{w} UNLOCKED', adUnavailable: 'No ad available right now. Try again later.', adLoading: 'LOADING AD…', offerTitle: 'WEAPON OFFER', offerText: 'Take it into this mission now, or unlock it for good with Combat Points.', outTitle: 'OUT OF LIVES', outText: 'Revive right where you fell, or restart the mission from the beginning.', revive: 'REVIVE', restartMission: 'RESTART', playNow: 'PLAY', price: 'PRICE', range: 'RANGE', rpm: 'RPM', magazine: 'MAG', earnHint: 'Earn CP from missions, headshots and multi-kills.', getAmmo: 'GET AMMO', ammoRefilled: 'AMMO REFILLED', outOfAmmoHint: 'OUT OF AMMO — GET AMMO ▶', tryWeapon: 'TRY THIS WEAPON', equip: 'EQUIP', watchAnAd: 'Watch an ad', buy: 'BUY', or: 'OR', tapConfirm: 'TAP TO CONFIRM',
     dmg: 'DMG', rof: 'RATE', acc: 'ACC', mob: 'MOB',
     intelMode: 'MODE', intelTeams: 'SQUADS', intelTime: 'TIME',
     victory: 'VICTORY', defeat: 'DEFEAT', missionComplete: 'MISSION COMPLETE', missionFailed: 'MISSION FAILED', newBest: 'NEW PERSONAL BEST', next: 'Next mission', retry: 'Retry', menu: 'Menu',
@@ -117,7 +117,7 @@ const STR = {
     tagline: 'NIVEL 0 // OPERACIONES TÁCTICAS', play: 'Campaña', settings: 'Ajustes', controls: 'Controles', resume: 'Continuar', restart: 'Reiniciar', abort: 'Abandonar misión', back: 'Volver',
     rank: 'RANGO', totalScore: 'PUNTUACIÓN DE CAMPAÑA', ofMissions: '{a}/{b} MISIONES',
     selectMission: 'Elige operación', operations: 'OPERACIONES', locked: 'BLOQUEADA', lockedHint: 'SUPERA LA OP {n} PARA DESBLOQUEAR', best: 'RÉCORD', newOp: 'NUEVA',
-    briefing: 'INFORME DE MISIÓN', objectives: 'OBJETIVOS', loadout: 'EQUIPO', primary: 'PRINCIPAL', secondary: 'SECUNDARIA', deploy: 'Desplegar', cp: 'CP', cpBalance: 'PUNTOS DE COMBATE', cpEarned: '+{n} CP', buyFor: 'COMPRAR · {n} CP', watchAd: 'VER ANUNCIO', thisMission: 'ESTA MISIÓN', noThanks: 'NO, GRACIAS', none: 'NINGUNA', sidearmOnly: 'SOLO PISTOLA', notEnough: 'CP INSUFICIENTES', confirmBuy: '¿Desbloquear {w} para siempre por {n} CP?', bought: '{w} DESBLOQUEADA', adUnavailable: 'No hay anuncios disponibles ahora. Inténtalo más tarde.', adLoading: 'CARGANDO ANUNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Llévala a esta misión ahora o desbloquéala para siempre con Puntos de Combate.', outTitle: 'SIN VIDAS', outText: 'Revive donde caíste o reinicia la misión desde el principio.', revive: 'REVIVIR', restartMission: 'REINICIAR', playNow: 'JUGAR', price: 'PRECIO', range: 'ALCANCE', rpm: 'DPM', magazine: 'CARGADOR', earnHint: 'Gana CP con misiones, disparos a la cabeza y bajas múltiples.', getAmmo: 'MUNICIÓN', ammoRefilled: 'MUNICIÓN RECARGADA', outOfAmmoHint: 'SIN MUNICIÓN — CONSEGUIR ▶', tryWeapon: 'PRUEBA ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver un anuncio',
+    briefing: 'INFORME DE MISIÓN', objectives: 'OBJETIVOS', loadout: 'EQUIPO', primary: 'PRINCIPAL', secondary: 'SECUNDARIA', deploy: 'Desplegar', cp: 'CP', cpBalance: 'PUNTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANUNCIO', thisMission: 'ESTA MISIÓN', noThanks: 'NO, GRACIAS', none: 'NINGUNA', sidearmOnly: 'SOLO PISTOLA', notEnough: 'CP INSUFICIENTES', bought: '{w} DESBLOQUEADA', adUnavailable: 'No hay anuncios disponibles ahora. Inténtalo más tarde.', adLoading: 'CARGANDO ANUNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Llévala a esta misión ahora o desbloquéala para siempre con Puntos de Combate.', outTitle: 'SIN VIDAS', outText: 'Revive donde caíste o reinicia la misión desde el principio.', revive: 'REVIVIR', restartMission: 'REINICIAR', playNow: 'JUGAR', price: 'PRECIO', range: 'ALCANCE', rpm: 'DPM', magazine: 'CARGADOR', earnHint: 'Gana CP con misiones, disparos a la cabeza y bajas múltiples.', getAmmo: 'MUNICIÓN', ammoRefilled: 'MUNICIÓN RECARGADA', outOfAmmoHint: 'SIN MUNICIÓN — CONSEGUIR ▶', tryWeapon: 'PRUEBA ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver un anuncio', buy: 'COMPRAR', or: 'O', tapConfirm: 'TOCA PARA CONFIRMAR',
     dmg: 'DAÑO', rof: 'CAD.', acc: 'PREC.', mob: 'MOV.', intelMode: 'MODO', intelTeams: 'EQUIPOS', intelTime: 'TIEMPO',
     victory: 'VICTORIA', defeat: 'DERROTA', missionComplete: 'MISIÓN CUMPLIDA', missionFailed: 'MISIÓN FALLIDA', newBest: 'NUEVO RÉCORD PERSONAL', next: 'Siguiente misión', retry: 'Reintentar', menu: 'Menú',
     kills: 'BAJAS', deaths: 'MUERTES', accuracy: 'PRECISIÓN', headshots: 'TIROS A LA CABEZA', time: 'TIEMPO',
@@ -139,7 +139,7 @@ const STR = {
     tagline: 'NÍVEL 0 // OPERAÇÕES TÁTICAS', play: 'Campanha', settings: 'Configurações', controls: 'Controles', resume: 'Continuar', restart: 'Reiniciar', abort: 'Abandonar missão', back: 'Voltar',
     rank: 'PATENTE', totalScore: 'PONTUAÇÃO DA CAMPANHA', ofMissions: '{a}/{b} MISSÕES',
     selectMission: 'Escolha a operação', operations: 'OPERAÇÕES', locked: 'BLOQUEADA', lockedHint: 'CONCLUA A OP {n} PARA LIBERAR', best: 'RECORDE', newOp: 'NOVA',
-    briefing: 'BRIEFING DA MISSÃO', objectives: 'OBJETIVOS', loadout: 'EQUIPAMENTO', primary: 'PRIMÁRIA', secondary: 'SECUNDÁRIA', deploy: 'Implantar', cp: 'CP', cpBalance: 'PONTOS DE COMBATE', cpEarned: '+{n} CP', buyFor: 'COMPRAR · {n} CP', watchAd: 'VER ANÚNCIO', thisMission: 'ESTA MISSÃO', noThanks: 'NÃO, OBRIGADO', none: 'NENHUMA', sidearmOnly: 'SÓ PISTOLA', notEnough: 'CP INSUFICIENTE', confirmBuy: 'Desbloquear {w} para sempre por {n} CP?', bought: '{w} DESBLOQUEADA', adUnavailable: 'Nenhum anúncio disponível agora. Tente mais tarde.', adLoading: 'CARREGANDO ANÚNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Leve-a para esta missão agora ou desbloqueie-a para sempre com Pontos de Combate.', outTitle: 'SEM VIDAS', outText: 'Reviva onde caiu ou reinicie a missão do começo.', revive: 'REVIVER', restartMission: 'REINICIAR', playNow: 'JOGAR', price: 'PREÇO', range: 'ALCANCE', rpm: 'DPM', magazine: 'PENTE', earnHint: 'Ganhe CP com missões, tiros na cabeça e abates múltiplos.', getAmmo: 'MUNIÇÃO', ammoRefilled: 'MUNIÇÃO RECARREGADA', outOfAmmoHint: 'SEM MUNIÇÃO — PEGAR ▶', tryWeapon: 'EXPERIMENTE ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver um anúncio',
+    briefing: 'BRIEFING DA MISSÃO', objectives: 'OBJETIVOS', loadout: 'EQUIPAMENTO', primary: 'PRIMÁRIA', secondary: 'SECUNDÁRIA', deploy: 'Implantar', cp: 'CP', cpBalance: 'PONTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANÚNCIO', thisMission: 'ESTA MISSÃO', noThanks: 'NÃO, OBRIGADO', none: 'NENHUMA', sidearmOnly: 'SÓ PISTOLA', notEnough: 'CP INSUFICIENTE', bought: '{w} DESBLOQUEADA', adUnavailable: 'Nenhum anúncio disponível agora. Tente mais tarde.', adLoading: 'CARREGANDO ANÚNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Leve-a para esta missão agora ou desbloqueie-a para sempre com Pontos de Combate.', outTitle: 'SEM VIDAS', outText: 'Reviva onde caiu ou reinicie a missão do começo.', revive: 'REVIVER', restartMission: 'REINICIAR', playNow: 'JOGAR', price: 'PREÇO', range: 'ALCANCE', rpm: 'DPM', magazine: 'PENTE', earnHint: 'Ganhe CP com missões, tiros na cabeça e abates múltiplos.', getAmmo: 'MUNIÇÃO', ammoRefilled: 'MUNIÇÃO RECARREGADA', outOfAmmoHint: 'SEM MUNIÇÃO — PEGAR ▶', tryWeapon: 'EXPERIMENTE ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver um anúncio', buy: 'COMPRAR', or: 'OU', tapConfirm: 'TOQUE PARA CONFIRMAR',
     dmg: 'DANO', rof: 'CAD.', acc: 'PREC.', mob: 'MOB.', intelMode: 'MODO', intelTeams: 'ESQUADRÕES', intelTime: 'TEMPO',
     victory: 'VITÓRIA', defeat: 'DERROTA', missionComplete: 'MISSÃO CUMPRIDA', missionFailed: 'MISSÃO FALHOU', newBest: 'NOVO RECORDE PESSOAL', next: 'Próxima missão', retry: 'Tentar de novo', menu: 'Menu',
     kills: 'ABATES', deaths: 'MORTES', accuracy: 'PRECISÃO', headshots: 'NA CABEÇA', time: 'TEMPO',
@@ -161,7 +161,7 @@ const STR = {
     tagline: 'NIVEAU 0 // OPÉRATIONS TACTIQUES', play: 'Campagne', settings: 'Options', controls: 'Commandes', resume: 'Reprendre', restart: 'Recommencer', abort: 'Abandonner', back: 'Retour',
     rank: 'GRADE', totalScore: 'SCORE DE CAMPAGNE', ofMissions: '{a}/{b} MISSIONS',
     selectMission: 'Choisir une opération', operations: 'OPÉRATIONS', locked: 'VERROUILLÉE', lockedHint: 'TERMINEZ L’OP {n} POUR DÉBLOQUER', best: 'RECORD', newOp: 'NOUVEAU',
-    briefing: 'BRIEFING DE MISSION', objectives: 'OBJECTIFS', loadout: 'ÉQUIPEMENT', primary: 'PRINCIPALE', secondary: 'SECONDAIRE', deploy: 'Déployer', cp: 'PC', cpBalance: 'POINTS DE COMBAT', cpEarned: '+{n} PC', buyFor: 'ACHETER · {n} PC', watchAd: 'VOIR UNE PUB', thisMission: 'CETTE MISSION', noThanks: 'NON MERCI', none: 'AUCUNE', sidearmOnly: 'PISTOLET SEUL', notEnough: 'PC INSUFFISANTS', confirmBuy: 'Débloquer {w} définitivement pour {n} PC ?', bought: '{w} DÉBLOQUÉE', adUnavailable: 'Aucune pub disponible pour le moment. Réessayez plus tard.', adLoading: 'CHARGEMENT DE LA PUB…', offerTitle: 'OFFRE D’ARME', offerText: 'Emportez-la dans cette mission maintenant, ou débloquez-la pour de bon avec des Points de Combat.', outTitle: 'PLUS DE VIES', outText: 'Ressuscitez là où vous êtes tombé, ou recommencez la mission depuis le début.', revive: 'RESSUSCITER', restartMission: 'RECOMMENCER', playNow: 'JOUER', price: 'PRIX', range: 'PORTÉE', rpm: 'CPM', magazine: 'CHARGEUR', earnHint: 'Gagnez des PC avec les missions, les tirs à la tête et les éliminations multiples.', getAmmo: 'MUNITIONS', ammoRefilled: 'MUNITIONS RECHARGÉES', outOfAmmoHint: 'PLUS DE MUNITIONS — RECHARGER ▶', tryWeapon: 'ESSAYEZ CETTE ARME', equip: 'ÉQUIPER', watchAnAd: 'Voir une pub',
+    briefing: 'BRIEFING DE MISSION', objectives: 'OBJECTIFS', loadout: 'ÉQUIPEMENT', primary: 'PRINCIPALE', secondary: 'SECONDAIRE', deploy: 'Déployer', cp: 'PC', cpBalance: 'POINTS DE COMBAT', cpEarned: '+{n} PC', watchAd: 'VOIR UNE PUB', thisMission: 'CETTE MISSION', noThanks: 'NON MERCI', none: 'AUCUNE', sidearmOnly: 'PISTOLET SEUL', notEnough: 'PC INSUFFISANTS', bought: '{w} DÉBLOQUÉE', adUnavailable: 'Aucune pub disponible pour le moment. Réessayez plus tard.', adLoading: 'CHARGEMENT DE LA PUB…', offerTitle: 'OFFRE D’ARME', offerText: 'Emportez-la dans cette mission maintenant, ou débloquez-la pour de bon avec des Points de Combat.', outTitle: 'PLUS DE VIES', outText: 'Ressuscitez là où vous êtes tombé, ou recommencez la mission depuis le début.', revive: 'RESSUSCITER', restartMission: 'RECOMMENCER', playNow: 'JOUER', price: 'PRIX', range: 'PORTÉE', rpm: 'CPM', magazine: 'CHARGEUR', earnHint: 'Gagnez des PC avec les missions, les tirs à la tête et les éliminations multiples.', getAmmo: 'MUNITIONS', ammoRefilled: 'MUNITIONS RECHARGÉES', outOfAmmoHint: 'PLUS DE MUNITIONS — RECHARGER ▶', tryWeapon: 'ESSAYEZ CETTE ARME', equip: 'ÉQUIPER', watchAnAd: 'Voir une pub', buy: 'ACHETER', or: 'OU', tapConfirm: 'TOUCHEZ POUR CONFIRMER',
     dmg: 'DÉG.', rof: 'CAD.', acc: 'PRÉC.', mob: 'MOB.', intelMode: 'MODE', intelTeams: 'ESCOUADES', intelTime: 'TEMPS',
     victory: 'VICTOIRE', defeat: 'DÉFAITE', missionComplete: 'MISSION ACCOMPLIE', missionFailed: 'MISSION ÉCHOUÉE', newBest: 'NOUVEAU RECORD PERSONNEL', next: 'Mission suivante', retry: 'Réessayer', menu: 'Menu',
     kills: 'ÉLIMINATIONS', deaths: 'MORTS', accuracy: 'PRÉCISION', headshots: 'TIRS À LA TÊTE', time: 'TEMPS',
@@ -3159,7 +3159,7 @@ const Ui = {
     const lbl = [t('dmg'), t('rof'), t('acc'), t('mob')];
     const wcard = (id) => {
       const w = WEAPONS[id], un = Arsenal.usable(id), sel = this.loadout[w.slot] === id;
-      const foot = !un ? `<div class="wfoot"><span class="price">${fmtNum(Arsenal.price(id))} ${t('cp')}</span>${Platform.ads.canReward() ? `<span class="ad">▶ ${t('watchAd')}</span>` : ''}</div>` : Arsenal.owns(id) ? '' : `<div class="wfoot"><span class="rent">${t('thisMission')}</span></div>`;
+      const foot = !un ? this.buyOr(id) : Arsenal.owns(id) ? '' : `<div class="wfoot"><span class="rent">${t('thisMission')}</span></div>`;
       return `<div class="wcard${sel ? ' sel' : ''}${un ? '' : ' locked shop'}" data-w="${id}"><div class="wn">${w.name}</div><div class="wt">${w.cls}</div>${w.stats.map((v, k) => `<div class="statbar"><span>${lbl[k]}</span><i style="--v:${v * 100}%"></i></div>`).join('')}${foot}</div>`;
     };
     const none = `<div class="wcard none${this.loadout.primary === 'none' ? ' sel' : ''}" data-w="none"><div class="wn">${t('none')}</div><div class="wt">${t('sidearmOnly')}</div></div>`;
@@ -3184,14 +3184,27 @@ const Ui = {
       const slot = id === 'none' ? 'primary' : WEAPONS[id].slot; this.loadout[slot] = id;
       Save.data.loadout = { primary: this.loadout.primary, secondary: this.loadout.secondary }; Save.persist();
     };
-    $$('.wcard', s).forEach((c) => c.onclick = async () => {
+    $$('.wcard', s).forEach((c) => c.onclick = async (e) => {
       const id = c.dataset.w;
+      const b = e.target.closest && e.target.closest('[data-buy], [data-rent]');
+      if (b && b.dataset.buy) { if (this.tryBuy(b, id)) { pickW(id); this.render_briefing(); } return; }
+      if (b && b.dataset.rent) { if (await Ads.reward()) { Arsenal.rent(id, i); pickW(id); } this.render_briefing(); return; }
       if (c.classList.contains('locked')) { const r = await this.gunOffer(id, i); if (r) pickW(id); this.render_briefing(); return; }
       pickW(id);
       $$('.wcard', s).forEach((x) => x.classList.toggle('sel', x.dataset.w === this.loadout.primary || x.dataset.w === this.loadout.secondary));
     });
     $('.back', s).onclick = () => this.show('missions');
     $('[data-a=deploy]', s).onclick = () => Game.start(i, this.loadout.primary, this.loadout.secondary);
+  },
+  buyOr(id) {
+    const can = Arsenal.canBuy(id), ad = Platform.ads.canReward();
+    return `<div class="wbuy${ad ? '' : ' solo'}"><button class="wb buy${can ? '' : ' cant'}" data-buy="${id}"><b>${t('buy')}</b><small>${fmtNum(Arsenal.price(id))} ${t('cp')}</small></button>${ad ? `<span class="or">${t('or')}</span><button class="wb ad" data-rent="${id}"><b><span class="adb">AD</span>${t('watchAd')}</b><small>${t('thisMission')}</small></button>` : ''}</div>`;
+  },
+  tryBuy(btn, id) {
+    if (!Arsenal.canBuy(id)) { Audio.ui('deny'); btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake'); Ads.toast(t('notEnough')); return false; }
+    if (!btn.dataset.confirm) { btn.dataset.confirm = '1'; btn.classList.add('confirm'); $('b', btn).textContent = t('tapConfirm'); return false; }
+    Arsenal.buy(id); Ads.toast(t('bought', { w: WEAPONS[id].name }));
+    return true;
   },
   offerPick(m, n) {
     if (!(Save.data.played > 0) || (this.lastOffer != null && this.lastOffer === n - 1) || !Platform.ads.canReward()) return null;
@@ -3232,7 +3245,6 @@ const Ui = {
     const lbl = [t('dmg'), t('rof'), t('acc'), t('mob')];
     return new Promise((resolve) => {
       const render = () => {
-        const can = Arsenal.canBuy(id), ad = Platform.ads.canReward();
         m.innerHTML = `<div class="offer"><div class="offer-stage"></div><div class="box panel offer-card stagger">
           <div class="h-kicker">${t('offerTitle')}</div>
           <h2 class="h-display">${w.name}</h2><div class="wt">${w.cls}</div>
@@ -3240,20 +3252,13 @@ const Ui = {
           <div class="offer-nums"><span>${t('dmg')}<b>${w.dmg}${w.pellets ? '×' + w.pellets : ''}</b></span><span>${t('rpm')}<b>${w.rpm}</b></span><span>${t('magazine')}<b>${w.mag}</b></span><span>${t('range')}<b>${w.range}m</b></span></div>
           <p class="muted offer-text">${t('offerText')}</p>
           <div class="offer-price">${t('price')} <b>${fmtNum(Arsenal.price(id))} ${t('cp')}</b> · ${t('cpBalance')} <b>${fmtNum(Save.data.cp)}</b></div>
-          <div class="end-actions">
-            ${ad ? `<button class="btn primary" data-a="ad">${ICONS.play}${t('watchAd')}<span class="sub">${t('thisMission')}</span></button>` : ''}
-            <button class="btn${ad ? '' : ' primary'}${can ? '' : ' disabled'}" data-a="buy">${can ? t('buyFor', { n: fmtNum(Arsenal.price(id)) }) : t('notEnough')}</button>
-            <button class="btn" data-a="no">${t('noThanks')}</button>
-          </div></div></div>`;
+          <div class="offer-buy">${this.buyOr(id)}</div>
+          <div class="end-actions"><button class="btn" data-a="no">${t('noThanks')}</button></div></div></div>`;
         const close = (r) => { this._offerDone = null; Lobby.showcase(null); document.body.classList.remove('offer-open'); this.closeModal(); resolve(r); };
-        const adBtn = $('[data-a=ad]', m);
+        const adBtn = $('[data-rent]', m);
         if (adBtn) adBtn.onclick = async () => { if (await Ads.reward()) { Arsenal.rent(id, mission); close('rented'); } else render(); };
-        const buy = $('[data-a=buy]', m);
-        buy.onclick = () => {
-          if (!Arsenal.canBuy(id)) { Audio.ui('deny'); buy.classList.remove('shake'); void buy.offsetWidth; buy.classList.add('shake'); return; }
-          if (!buy.dataset.confirm) { buy.dataset.confirm = '1'; buy.textContent = t('confirmBuy', { w: w.name, n: fmtNum(Arsenal.price(id)) }); return; }
-          Arsenal.buy(id); Ads.toast(t('bought', { w: w.name })); close('bought');
-        };
+        const buy = $('[data-buy]', m);
+        buy.onclick = () => { if (this.tryBuy(buy, id)) close('bought'); };
         $('[data-a=no]', m).onclick = () => close(null);
       };
       render();

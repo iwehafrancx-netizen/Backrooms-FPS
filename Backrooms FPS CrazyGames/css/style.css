@@ -451,10 +451,8 @@ html, body { overscroll-behavior: none; }
 .cp-chip { margin-left: auto; font: 700 12px/1 var(--f-mono); letter-spacing: .16em; color: var(--yellow); border: 1px solid rgba(242,194,48,.45); padding: 7px 10px; background: rgba(242,194,48,.08); white-space: nowrap; }
 
 .wcard.locked.shop { opacity: 1; cursor: pointer; }
-.wcard.locked.shop > :not(.wfoot) { opacity: .45; }
+.wcard.locked.shop > :not(.wfoot):not(.wbuy) { opacity: .45; }
 .wfoot { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 8px; font: 700 9.5px/1 var(--f-mono); letter-spacing: .1em; }
-.wfoot .price { color: var(--yellow); }
-.wfoot .ad { color: var(--ink); background: var(--yellow); padding: 3px 5px; white-space: nowrap; }
 .wfoot .rent { color: var(--green); }
 body.offer-open .screen.active { visibility: hidden; }
 .wcard.locked.shop:hover { border-color: rgba(242,194,48,.7); }
@@ -533,3 +531,25 @@ body.offer-open .screen.active { visibility: hidden; }
 @keyframes ammoPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,194,48,.6); } 50% { box-shadow: 0 0 0 6px rgba(242,194,48,0); } }
 
 body:not(.ingame) #hud .crosshair { opacity: 0; }
+
+.wbuy { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 5px; margin-top: 9px; }
+.wbuy.solo { grid-template-columns: 1fr; }
+.wb { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 0; padding: 6px 4px; cursor: pointer; border: 1px solid rgba(242,194,48,.7); background: rgba(11,10,7,.55); color: var(--paper); font-family: var(--f-mono); }
+.wb b { font: 800 11px/1 var(--f-display); letter-spacing: .1em; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+.wb small { font: 600 8.5px/1 var(--f-mono); letter-spacing: .06em; color: var(--paper-dim); white-space: nowrap; }
+.wb.buy small { color: var(--yellow); }
+.wb.buy.cant { opacity: .55; }
+.wb.buy.confirm { background: var(--green); border-color: var(--green); color: var(--ink); }
+.wb.buy.confirm small { color: var(--ink); }
+.wb.ad { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+.wb.ad small { color: rgba(11,10,7,.75); }
+.wb.ad .adb { font-size: 7px; padding: 2px 3px; margin-right: 0; }
+.wb:hover { filter: brightness(1.12); }
+.wbuy .or { font: 700 9px/1 var(--f-mono); letter-spacing: .14em; color: var(--paper-dim); }
+.offer-buy .wbuy { margin-top: 2px; gap: 8px; }
+.offer-buy .wb { padding: 10px 6px; }
+.offer-buy .wb b { font-size: 15px; }
+.offer-buy .wb small { font-size: 10px; }
+.wcard .wbuy { grid-template-columns: 1fr; gap: 3px; margin-top: 8px; }
+.wcard .wbuy .or { text-align: center; font-size: 8.5px; }
+.wcard .wb { padding: 5px 8px; gap: 3px; }

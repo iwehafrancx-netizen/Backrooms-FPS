@@ -125,6 +125,21 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   const rot = await page.evaluate(() => { const B = window.__BR, U = B.Ui, m = B.MISSIONS[4], got = []; for (let k = 0; k < 4; k++) { U.lastOffer = null; got.push(U.offerPick(m, 10 + k)); } return [...new Set(got.filter(Boolean))].sort().join(); });
   check('offer rotation includes every locked gun, Sniper too', rot === 'm4,shotgun,sniper', rot);
 
+  await page.evaluate(() => { window.__BR.Save.data.cp = 6500; const U = window.__BR.Ui; U.selMission = 4; U.show('briefing'); });
+  await sleep(600);
+  const card = await page.evaluate(() => { const c = document.querySelector('#briefing .wcard[data-w="shotgun"] .wbuy'); return c && c.innerText.replace(/\s+/g, ' ').trim(); });
+  check('locked gun card reads BUY (price) OR WATCH AD', /^BUY 6,000 CP OR AD WATCH AD THIS MISSION$/.test(card || ''), card);
+  await shot(page, 'cg-shop-card');
+  await page.click('#briefing .wcard[data-w="shotgun"] [data-buy]');
+  const conf = await page.evaluate(() => document.querySelector('#briefing .wcard[data-w="shotgun"] [data-buy]').innerText.replace(/\s+/g, ' ').trim());
+  await page.click('#briefing .wcard[data-w="shotgun"] [data-buy]');
+  await sleep(300);
+  const bought = await page.evaluate(() => ({ owns: window.__BR.Arsenal.owns('shotgun'), cp: window.__BR.Save.data.cp, sel: window.__BR.Ui.loadout.secondary }));
+  check('BUY asks to confirm, then buys and equips the gun', /CONFIRM/.test(conf) && bought.owns && bought.cp === 500 && bought.sel === 'shotgun', conf + ' ' + JSON.stringify(bought));
+  await page.click('#briefing .wcard[data-w="sniper"] [data-rent]');
+  await page.waitForFunction(() => window.__BR.Arsenal.usable('sniper'), null, { timeout: 8000 });
+  check('WATCH AD on the card rents the gun for this mission', await page.evaluate(() => window.__BR.Ui.loadout.primary === 'sniper' && !window.__BR.Arsenal.owns('sniper')));
+  await page.evaluate(() => { window.__BR.Arsenal.leave(); });
   await page.evaluate(() => { const U = window.__BR.Ui; U.lastOffer = null; U.selMission = 4; U.show('briefing'); });
   await sleep(600);
   await page.click('#briefing [data-a=deploy]');
@@ -176,8 +191,8 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   await sleep(500);
   const fail = await page.evaluate(() => ({ mag: window.__BR.Player.slot.mag, paused: window.__BR.Game.paused, toast: document.querySelector('#toast').textContent }));
   check('ad fails: no ammo given, a message, game keeps going', fail.mag === 0 && !fail.paused && fail.toast.length > 0, JSON.stringify(fail));
-  await sleep(300);
-  check('GET AMMO hides while ads are unavailable', await page.evaluate(() => document.querySelector('#hud .ammo-ad').classList.contains('hidden')));
+  const hid = await page.waitForFunction(() => document.querySelector('#hud .ammo-ad').classList.contains('hidden'), null, { timeout: 8000 }).then(() => true, () => false);
+  check('GET AMMO hides while ads are unavailable', hid);
   await page.evaluate(() => { window.__cg.next = 'finish'; });
   check('no page errors', !log.errors.length, log.errors.join(' | '));
   await browser.close();
