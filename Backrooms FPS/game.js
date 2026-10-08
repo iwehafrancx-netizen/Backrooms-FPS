@@ -63,6 +63,8 @@ const TEAMS = {
   blackops: { torso: 0x1b1b1e, legs: 0x121214, helmet: 0x060607, camo: 0x2a2a2f, ui: '#c0c0c8' },
 };
 const ENEMY_COLORS = ['navy', 'olive', 'tan', 'crimson', 'urban', 'arctic', 'blackops'];
+// The one uniform everybody wears (team colours now only drive UI accents).
+const UNIFORM = { torso: 0x3b3f44, legs: 0x2e3236, helmet: 0x1d1f22 };
 
 const WEAPONS = {
   ak47:    { id: 'ak47', name: 'AK-47', cls: 'ASSAULT RIFLE', slot: 'primary', model: 'ak47', axis: '+x', len: 0.86, auto: true,  dmg: 31, head: 2.2, rpm: 600, mag: 30, reserve: 150, reload: 2.4, spread: 0.024, adsSpread: 0.005, recoil: 0.030, range: 90, zoom: 1.45, unlock: 0, snd: 'ak',      stats: [0.78, 0.62, 0.55, 0.7] },
@@ -97,7 +99,11 @@ const MISSIONS = [
   { id: 'm5', mode: 'survival', enemy: 'crimson', enemy2: 'tan', primary: 'm4', secondary: 'shotgun', skill: 0.6 },
   { id: 'm6', mode: 'briefcase', time: 240, ffa: 5, primary: 'm4', secondary: 'shotgun', skill: 0.6 },
   { id: 'm7', mode: 'siege', enemy: 'navy', teamSize: 6, time: 300, holdTime: 3, primary: 'm4', secondary: 'pistol', skill: 0.6 },
+  { id: 'holdout', mode: 'waves', enemy: 'olive', lives: 3, waves: [3, 4, 5, 6, 8], primary: 'm4', secondary: 'shotgun', skill: 0.55 },
+  { id: 'ghost', mode: 'assassination', enemy: 'urban', lives: 3, patrols: 6, primary: 'sniper', secondary: 'pistol', skill: 0.6 },
+  { id: 'hardpoint', mode: 'hardpoint', enemy: 'navy', teamSize: 4, target: 150, time: 600, primary: 'm4', secondary: 'pistol', skill: 0.6 },
   { id: 'm8', mode: 'keycard', finale: true, enemy: 'blackops', hostiles: 5, lives: 3, primary: 'm4', secondary: 'shotgun', skill: 0.75, stars: [480, 330] },
+  { id: 'zerohour', mode: 'zerohour', enemy: 'blackops', lives: 3, guards: 4, primary: 'm4', secondary: 'shotgun', skill: 0.85 },
 ];
 
 const RANKS = [
@@ -136,10 +142,10 @@ const STR = {
     hintClick: 'CLICK TO TAKE CONTROL', fpsWord: 'FPS',
     // HUD objective lines
     o_ext: 'ELIMINATE HOSTILES — <b>{k}</b> / {t}', o_tdm: 'FIRST TEAM TO <b>{t}</b> ELIMINATIONS', o_key: 'RECOVER KEYCARDS — <b>{k}</b> / 3', o_exit: 'KEYCARDS SECURED — <b>REACH THE LIFT</b>', o_duel: 'FIRST TO <b>{t}</b> — TAKE DOWN THE MIMIC',
-    o_surv: 'SQUADS REMAINING — <b>{n}</b>', o_brief: '<b>{h}</b> HAS THE BRIEFCASE — {n} ALIVE', o_briefNone: 'SECURE THE BRIEFCASE — {n} ALIVE', o_briefYou: '<b>YOU HAVE THE BRIEFCASE</b> — SURVIVE ({n} ALIVE)',
+    o_surv: 'SQUADS REMAINING — <b>{n}</b>', o_brief: '<b>{h}</b> HAS THE BRIEFCASE — TAKE IT BACK', o_briefNone: 'GRAB THE BRIEFCASE', o_briefYou: '<b>YOU HAVE THE BRIEFCASE</b> — HOLD IT UNTIL TIME RUNS OUT',
     o_siege: 'OVERRIDE BOTH ENEMY SWITCHES — <b>{a}</b> / 2', o_defend: 'DEFEND YOUR SWITCHES',
     b_key: 'KEYCARD RECOVERED', b_exit: 'EXIT UNLOCKED', b_button: 'SWITCH OVERRIDDEN', b_lost: 'SWITCH LOST', b_case: 'BRIEFCASE SECURED', b_caseLost: 'BRIEFCASE DROPPED', b_lights: 'POWER FAILURE', b_squadOut: 'SQUAD ELIMINATED', b_lead: 'TAKING THE LEAD', b_hunt: 'THEY CAN HEAR YOU',
-    r_time: 'TIME EXPIRED', r_dead: 'YOUR SQUAD WAS WIPED OUT', r_win: 'OPERATION SUCCESSFUL', r_score: 'TARGET NOT REACHED', r_enemyWin: 'THE ENEMY WON THE ROUND', r_case: 'LAST ONE STANDING WITH THE CASE', r_extract: 'EXTRACTED FROM LEVEL 0', r_siegeLost: 'THEY OVERRODE YOUR SWITCHES',
+    r_time: 'TIME EXPIRED', r_dead: 'YOUR SQUAD WAS WIPED OUT', r_win: 'OPERATION SUCCESSFUL', r_score: 'TARGET NOT REACHED', r_enemyWin: 'THE ENEMY WON THE ROUND', r_case: 'LAST ONE STANDING WITH THE CASE', r_extract: 'EXTRACTED FROM LEVEL 0', r_siegeLost: 'THEY OVERRODE YOUR SWITCHES', o_wave: 'WAVE <b>{w}</b> / {t} — {n} HOSTILES LEFT', o_waveBreak: 'NEXT WAVE IN <b>{s}</b>', b_wave: 'WAVE {w}', b_waveClear: 'WAVE CLEARED', o_ghost: 'ELIMINATE THE OFFICERS — <b>{k}</b> / 3', b_alarm: 'ALARM RAISED', b_alarmSub: 'REINFORCEMENTS INBOUND', b_officer: 'OFFICER DOWN', o_hp: 'HOLD THE HARDPOINT — FIRST TO <b>{t}</b>', o_hpContest: '<b>HARDPOINT CONTESTED</b>', b_hpMove: 'HARDPOINT MOVED', o_boss: 'HUNT DOWN THE MIMIC', o_bossExit: 'THE MIMIC IS DOWN — <b>REACH THE LIFT</b>', b_boss: 'THE MIMIC IS DOWN', r_waves: 'ALL WAVES SURVIVED', r_ghost: 'ALL OFFICERS ELIMINATED', r_boss: 'THE MIMIC IS DEAD — EXTRACTED',
     tips: ['TIP: Headshots deal heavy bonus damage.', 'TIP: Crouching tightens your spread.', 'TIP: Hostiles hear gunfire. Pick your fights.', 'TIP: Blue chevrons mark your squad. Every other colour is hostile.', 'TIP: Keycards beep louder as you get closer.', 'TIP: Health regenerates after a few seconds out of combat.'],
   },
   es: {
@@ -159,9 +165,9 @@ const STR = {
     eliminated: 'ELIMINADO', headshot: 'A LA CABEZA', youDied: 'CAÍDO', killedBy: 'ELIMINADO POR {n}', respawnIn: 'REAPARECES EN {s}', outOfLives: 'SIN VIDAS', spectating: 'OBSERVANDO A {n}', youAreOut: 'ESTÁS FUERA — TU EQUIPO SIGUE LUCHANDO',
     reloading: 'RECARGANDO', noAmmo: 'SIN MUNICIÓN', lives: 'VIDAS {n}', you: 'TÚ', pressHold: 'MANTÉN', pickUp: 'RECOGER', useExit: 'EXTRAER', pressButton: 'ANULAR', insertion: 'INSERCIÓN', go: 'YA', hintClick: 'HAZ CLIC PARA CONTROLAR', fpsWord: 'FPS',
     o_ext: 'ELIMINA HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PRIMER EQUIPO EN <b>{t}</b> BAJAS', o_key: 'RECUPERA TARJETAS — <b>{k}</b> / 3', o_exit: 'TARJETAS LISTAS — <b>LLEGA AL ASCENSOR</b>', o_duel: 'PRIMERO A <b>{t}</b> — DERRIBA AL MIMIC',
-    o_surv: 'EQUIPOS RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> TIENE EL MALETÍN — {n} VIVOS', o_briefNone: 'ASEGURA EL MALETÍN — {n} VIVOS', o_briefYou: '<b>TIENES EL MALETÍN</b> — SOBREVIVE ({n} VIVOS)', o_siege: 'ANULA LOS DOS INTERRUPTORES ENEMIGOS — <b>{a}</b> / 2', o_defend: 'DEFIENDE TUS INTERRUPTORES',
+    o_surv: 'EQUIPOS RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> TIENE EL MALETÍN — RECUPÉRALO', o_briefNone: 'COGE EL MALETÍN', o_briefYou: '<b>TIENES EL MALETÍN</b> — AGUANTA HASTA QUE ACABE EL TIEMPO', o_siege: 'ANULA LOS DOS INTERRUPTORES ENEMIGOS — <b>{a}</b> / 2', o_defend: 'DEFIENDE TUS INTERRUPTORES',
     b_key: 'TARJETA RECUPERADA', b_exit: 'SALIDA DESBLOQUEADA', b_button: 'INTERRUPTOR ANULADO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETÍN ASEGURADO', b_caseLost: 'MALETÍN PERDIDO', b_lights: 'APAGÓN', b_squadOut: 'EQUIPO ELIMINADO', b_lead: 'TOMAS LA DELANTERA', b_hunt: 'TE PUEDEN OÍR',
-    r_time: 'TIEMPO AGOTADO', r_dead: 'TU EQUIPO FUE ELIMINADO', r_win: 'OPERACIÓN EXITOSA', r_score: 'OBJETIVO NO ALCANZADO', r_enemyWin: 'EL ENEMIGO GANÓ LA RONDA', r_case: 'ÚLTIMO EN PIE CON EL MALETÍN', r_extract: 'EXTRAÍDO DEL NIVEL 0', r_siegeLost: 'ANULARON TUS INTERRUPTORES',
+    r_time: 'TIEMPO AGOTADO', r_dead: 'TU EQUIPO FUE ELIMINADO', r_win: 'OPERACIÓN EXITOSA', r_score: 'OBJETIVO NO ALCANZADO', r_enemyWin: 'EL ENEMIGO GANÓ LA RONDA', r_case: 'ÚLTIMO EN PIE CON EL MALETÍN', r_extract: 'EXTRAÍDO DEL NIVEL 0', r_siegeLost: 'ANULARON TUS INTERRUPTORES', o_wave: 'OLEADA <b>{w}</b> / {t} — QUEDAN {n} HOSTILES', o_waveBreak: 'SIGUIENTE OLEADA EN <b>{s}</b>', b_wave: 'OLEADA {w}', b_waveClear: 'OLEADA SUPERADA', o_ghost: 'ELIMINA A LOS OFICIALES — <b>{k}</b> / 3', b_alarm: 'ALARMA ACTIVADA', b_alarmSub: 'LLEGAN REFUERZOS', b_officer: 'OFICIAL ABATIDO', o_hp: 'MANTÉN LA ZONA — PRIMERO A <b>{t}</b>', o_hpContest: '<b>ZONA DISPUTADA</b>', b_hpMove: 'LA ZONA SE MOVIÓ', o_boss: 'CAZA AL MIMIC', o_bossExit: 'EL MIMIC HA CAÍDO — <b>LLEGA AL ASCENSOR</b>', b_boss: 'EL MIMIC HA CAÍDO', r_waves: 'SOBREVIVISTE A TODAS LAS OLEADAS', r_ghost: 'OFICIALES ELIMINADOS', r_boss: 'EL MIMIC HA MUERTO — EXTRAÍDO',
     tips: ['CONSEJO: Los tiros a la cabeza hacen mucho más daño.', 'CONSEJO: Agacharte reduce la dispersión.', 'CONSEJO: Los hostiles oyen los disparos.', 'CONSEJO: Los chevrones azules marcan a tu equipo.', 'CONSEJO: Las tarjetas pitan más fuerte al acercarte.', 'CONSEJO: La salud se regenera fuera de combate.'],
   },
   pt: {
@@ -181,9 +187,9 @@ const STR = {
     eliminated: 'ELIMINADO', headshot: 'NA CABEÇA', youDied: 'ABATIDO', killedBy: 'ABATIDO POR {n}', respawnIn: 'RETORNO EM {s}', outOfLives: 'SEM VIDAS', spectating: 'ASSISTINDO {n}', youAreOut: 'VOCÊ ESTÁ FORA — SEU ESQUADRÃO CONTINUA',
     reloading: 'RECARREGANDO', noAmmo: 'SEM MUNIÇÃO', lives: 'VIDAS {n}', you: 'VOCÊ', pressHold: 'SEGURE', pickUp: 'PEGAR', useExit: 'EXTRAIR', pressButton: 'SOBRESCREVER', insertion: 'INSERÇÃO', go: 'VAI', hintClick: 'CLIQUE PARA CONTROLAR', fpsWord: 'FPS',
     o_ext: 'ELIMINE HOSTIS — <b>{k}</b> / {t}', o_tdm: 'PRIMEIRA EQUIPE A <b>{t}</b> ABATES', o_key: 'RECUPERE CARTÕES — <b>{k}</b> / 3', o_exit: 'CARTÕES OK — <b>VÁ ATÉ O ELEVADOR</b>', o_duel: 'PRIMEIRO A <b>{t}</b> — DERRUBE O MIMIC',
-    o_surv: 'ESQUADRÕES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> ESTÁ COM A MALETA — {n} VIVOS', o_briefNone: 'PEGUE A MALETA — {n} VIVOS', o_briefYou: '<b>VOCÊ ESTÁ COM A MALETA</b> — SOBREVIVA ({n} VIVOS)', o_siege: 'SOBRESCREVA OS DOIS INTERRUPTORES INIMIGOS — <b>{a}</b> / 2', o_defend: 'DEFENDA SEUS INTERRUPTORES',
+    o_surv: 'ESQUADRÕES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> ESTÁ COM A MALETA — RECUPERE', o_briefNone: 'PEGUE A MALETA', o_briefYou: '<b>VOCÊ ESTÁ COM A MALETA</b> — SEGURE ATÉ O TEMPO ACABAR', o_siege: 'SOBRESCREVA OS DOIS INTERRUPTORES INIMIGOS — <b>{a}</b> / 2', o_defend: 'DEFENDA SEUS INTERRUPTORES',
     b_key: 'CARTÃO RECUPERADO', b_exit: 'SAÍDA LIBERADA', b_button: 'INTERRUPTOR SOBRESCRITO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETA GARANTIDA', b_caseLost: 'MALETA PERDIDA', b_lights: 'QUEDA DE ENERGIA', b_squadOut: 'ESQUADRÃO ELIMINADO', b_lead: 'NA LIDERANÇA', b_hunt: 'ELES PODEM TE OUVIR',
-    r_time: 'TEMPO ESGOTADO', r_dead: 'SEU ESQUADRÃO FOI ELIMINADO', r_win: 'OPERAÇÃO BEM-SUCEDIDA', r_score: 'META NÃO ATINGIDA', r_enemyWin: 'O INIMIGO VENCEU A RODADA', r_case: 'ÚLTIMO DE PÉ COM A MALETA', r_extract: 'EXTRAÍDO DO NÍVEL 0', r_siegeLost: 'SOBRESCREVERAM SEUS INTERRUPTORES',
+    r_time: 'TEMPO ESGOTADO', r_dead: 'SEU ESQUADRÃO FOI ELIMINADO', r_win: 'OPERAÇÃO BEM-SUCEDIDA', r_score: 'META NÃO ATINGIDA', r_enemyWin: 'O INIMIGO VENCEU A RODADA', r_case: 'ÚLTIMO DE PÉ COM A MALETA', r_extract: 'EXTRAÍDO DO NÍVEL 0', r_siegeLost: 'SOBRESCREVERAM SEUS INTERRUPTORES', o_wave: 'ONDA <b>{w}</b> / {t} — RESTAM {n} HOSTIS', o_waveBreak: 'PRÓXIMA ONDA EM <b>{s}</b>', b_wave: 'ONDA {w}', b_waveClear: 'ONDA SUPERADA', o_ghost: 'ELIMINE OS OFICIAIS — <b>{k}</b> / 3', b_alarm: 'ALARME DISPARADO', b_alarmSub: 'REFORÇOS A CAMINHO', b_officer: 'OFICIAL ABATIDO', o_hp: 'SEGURE A ZONA — PRIMEIRO A <b>{t}</b>', o_hpContest: '<b>ZONA DISPUTADA</b>', b_hpMove: 'A ZONA MUDOU', o_boss: 'CACE O MIMIC', o_bossExit: 'O MIMIC CAIU — <b>VÁ ATÉ O ELEVADOR</b>', b_boss: 'O MIMIC CAIU', r_waves: 'TODAS AS ONDAS SUPERADAS', r_ghost: 'OFICIAIS ELIMINADOS', r_boss: 'O MIMIC MORREU — EXTRAÍDO',
     tips: ['DICA: Tiros na cabeça causam muito mais dano.', 'DICA: Agachar reduz a dispersão.', 'DICA: Os hostis ouvem tiros.', 'DICA: Divisas azuis marcam seu esquadrão.', 'DICA: Os cartões apitam mais alto quando você se aproxima.', 'DICA: A vida regenera fora de combate.'],
   },
   fr: {
@@ -203,9 +209,9 @@ const STR = {
     eliminated: 'ÉLIMINÉ', headshot: 'TIR À LA TÊTE', youDied: 'TOMBÉ', killedBy: 'ÉLIMINÉ PAR {n}', respawnIn: 'RETOUR DANS {s}', outOfLives: 'PLUS DE VIES', spectating: 'SPECTATEUR : {n}', youAreOut: 'VOUS ÊTES HORS JEU — VOTRE ESCOUADE CONTINUE',
     reloading: 'RECHARGEMENT', noAmmo: 'PLUS DE MUNITIONS', lives: 'VIES {n}', you: 'VOUS', pressHold: 'MAINTENIR', pickUp: 'RAMASSER', useExit: 'EXTRAIRE', pressButton: 'FORCER', insertion: 'INSERTION', go: 'GO', hintClick: 'CLIQUEZ POUR JOUER', fpsWord: 'FPS',
     o_ext: 'ÉLIMINEZ LES HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PREMIÈRE ÉQUIPE À <b>{t}</b> ÉLIMINATIONS', o_key: 'RÉCUPÉREZ LES CARTES — <b>{k}</b> / 3', o_exit: 'CARTES OK — <b>REJOIGNEZ L’ASCENSEUR</b>', o_duel: 'PREMIER À <b>{t}</b> — ABATTEZ LE MIMIC',
-    o_surv: 'ESCOUADES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> A LA MALLETTE — {n} EN VIE', o_briefNone: 'PRENEZ LA MALLETTE — {n} EN VIE', o_briefYou: '<b>VOUS AVEZ LA MALLETTE</b> — SURVIVEZ ({n} EN VIE)', o_siege: 'FORCEZ LES DEUX INTERRUPTEURS ENNEMIS — <b>{a}</b> / 2', o_defend: 'DÉFENDEZ VOS INTERRUPTEURS',
+    o_surv: 'ESCOUADES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> A LA MALLETTE — REPRENEZ-LA', o_briefNone: 'PRENEZ LA MALLETTE', o_briefYou: '<b>VOUS AVEZ LA MALLETTE</b> — GARDEZ-LA JUSQU’À LA FIN DU TEMPS', o_siege: 'FORCEZ LES DEUX INTERRUPTEURS ENNEMIS — <b>{a}</b> / 2', o_defend: 'DÉFENDEZ VOS INTERRUPTEURS',
     b_key: 'CARTE RÉCUPÉRÉE', b_exit: 'SORTIE DÉVERROUILLÉE', b_button: 'INTERRUPTEUR FORCÉ', b_lost: 'INTERRUPTEUR PERDU', b_case: 'MALLETTE SÉCURISÉE', b_caseLost: 'MALLETTE PERDUE', b_lights: 'PANNE DE COURANT', b_squadOut: 'ESCOUADE ÉLIMINÉE', b_lead: 'VOUS MENEZ', b_hunt: 'ILS VOUS ENTENDENT',
-    r_time: 'TEMPS ÉCOULÉ', r_dead: 'VOTRE ESCOUADE A ÉTÉ ANÉANTIE', r_win: 'OPÉRATION RÉUSSIE', r_score: 'OBJECTIF NON ATTEINT', r_enemyWin: 'L’ENNEMI A GAGNÉ LA MANCHE', r_case: 'DERNIER DEBOUT AVEC LA MALLETTE', r_extract: 'EXTRAIT DU NIVEAU 0', r_siegeLost: 'ILS ONT FORCÉ VOS INTERRUPTEURS',
+    r_time: 'TEMPS ÉCOULÉ', r_dead: 'VOTRE ESCOUADE A ÉTÉ ANÉANTIE', r_win: 'OPÉRATION RÉUSSIE', r_score: 'OBJECTIF NON ATTEINT', r_enemyWin: 'L’ENNEMI A GAGNÉ LA MANCHE', r_case: 'DERNIER DEBOUT AVEC LA MALLETTE', r_extract: 'EXTRAIT DU NIVEAU 0', r_siegeLost: 'ILS ONT FORCÉ VOS INTERRUPTEURS', o_wave: 'VAGUE <b>{w}</b> / {t} — {n} HOSTILES RESTANTS', o_waveBreak: 'PROCHAINE VAGUE DANS <b>{s}</b>', b_wave: 'VAGUE {w}', b_waveClear: 'VAGUE REPOUSSÉE', o_ghost: 'ÉLIMINEZ LES OFFICIERS — <b>{k}</b> / 3', b_alarm: 'ALERTE DÉCLENCHÉE', b_alarmSub: 'RENFORTS EN APPROCHE', b_officer: 'OFFICIER ÉLIMINÉ', o_hp: 'TENEZ LA ZONE — PREMIER À <b>{t}</b>', o_hpContest: '<b>ZONE CONTESTÉE</b>', b_hpMove: 'LA ZONE S’EST DÉPLACÉE', o_boss: 'TRAQUEZ LE MIMIC', o_bossExit: 'LE MIMIC EST TOMBÉ — <b>REJOIGNEZ L’ASCENSEUR</b>', b_boss: 'LE MIMIC EST TOMBÉ', r_waves: 'TOUTES LES VAGUES REPOUSSÉES', r_ghost: 'OFFICIERS ÉLIMINÉS', r_boss: 'LE MIMIC EST MORT — EXTRAIT',
     tips: ['ASTUCE : Les tirs à la tête infligent beaucoup plus de dégâts.', 'ASTUCE : S’accroupir réduit la dispersion.', 'ASTUCE : Les hostiles entendent les tirs.', 'ASTUCE : Les chevrons bleus marquent votre escouade.', 'ASTUCE : Les cartes bipent plus fort quand vous approchez.', 'ASTUCE : La santé se régénère hors combat.'],
   },
 };
@@ -217,9 +223,13 @@ const MTEXT = {
     m3: ['OPERATION: KEYMASTER', 'KEYCARD EXTRACTION', 'Three access keycards are hidden somewhere in Level 0. Find them and get to the lift before the patrols find you.', ['Search the halls for 3 hidden keycards', 'Keycards beep louder as you get closer', 'With all 3 secured, reach the marked lift to extract']],
     m4: ['DUEL: THE MIMIC', 'DUEL · 1V1', 'Something in black has been copying our operators. It is fast, armoured and it learns. Put it down 15 times.', ['First to 15 eliminations wins', 'The Mimic is armoured, regenerates and fights from cover', 'Headshots are your best weapon']],
     m5: ['OPERATION: NO SECOND CHANCES', 'SQUADS SURVIVAL · TEAMS OF 2', 'Three duos enter. One leaves. Everyone gets exactly one life.', ['You and 1 squadmate face 2 rival duos', 'Every operator has one life. Fall and you are out', 'Be the last squad standing']],
-    m6: ['OPERATION: BLACK CASE', 'CAPTURE THE BRIEFCASE · TIME TRIAL', 'A briefcase full of something nobody should have. Six operators, one life each, and no friends.', ['Free-for-all: every other operator is hostile', 'Grab the briefcase. The holder is visible to everyone', 'Be the last one standing holding the case, or hold it when 4:00 runs out']],
+    m6: ['OPERATION: BLACK CASE', 'CAPTURE THE BRIEFCASE · TIME TRIAL', 'A briefcase full of something nobody should have. Six operators, no friends, and everyone keeps coming back.', ['Free-for-all: every other operator is hostile. Fallen operators redeploy', 'Grab the briefcase. The holder is visible to everyone and gets hunted', 'Whoever holds the case when 4:00 runs out wins']],
     m7: ['OPERATION: OVERRIDE', 'SIEGE · 6V6 · TIME TRIAL', 'Two switches guard each end of the enemy zone. Override both before they override yours.', ['Lead a squad of 6 against 6 hostiles', 'Hold Interact on both enemy switches (east wing, both ends)', 'Defend your own switches in the west wing. 5:00 on the clock']],
-    m8: ['FINALE: LIGHTS OUT', 'KEYCARD EXTRACTION II · FINALE', 'The power is failing. Hunters stalk the dark, and the keycards are buried deeper than ever. Get out of Level 0.', ['Find 3 keycards hidden in the darkest corners', 'Hunters track noise. Gunfire draws them in', 'You have 3 lives. Reach the lift to escape']],
+    holdout: ['OPERATION: HOLDOUT', 'WAVES · SURVIVAL', 'The halls are filling up. Squad after squad is coming for the central hall. Hold the line until the last wave breaks.', ['Survive 5 waves of growing hostile squads', 'Each wave must be fully eliminated before the next one arrives', 'You have 3 lives']],
+    ghost: ['OPERATION: GHOST PROTOCOL', 'STEALTH · ASSASSINATION', 'Three officers run the patrols in the east wing. Get in, take them out and stay unseen. Crouch to move silently.', ['Eliminate the 3 marked officers', 'Patrols see what is in front of them and hear footsteps and gunfire nearby. Crouching is silent', 'If they spot you, an alarm calls in reinforcements. You have 3 lives']],
+    hardpoint: ['OPERATION: HARDPOINT', 'HARDPOINT · 4V4', 'One zone matters, and it keeps moving. Take it, hold it, and move with it.', ['Stand inside the hardpoint to score while no enemy is in it', 'The hardpoint moves every 60 seconds', 'First team to 150 points wins']],
+    zerohour: ['FINALE: ZERO HOUR', 'BOSS ASSAULT · FINALE', 'The Mimic is back, stronger, with hunters at its side. End it, then walk out of Level 0 for good.', ['Hunt down and kill the Mimic. It is heavily armoured', 'Hunters guard it and hear everything you do', 'With the Mimic down, reach the lift. You have 3 lives']],
+    m8: ['OPERATION: LIGHTS OUT', 'KEYCARD EXTRACTION II', 'The power is failing. Hunters stalk the dark, and the keycards are buried deeper than ever. Get out of Level 0.', ['Find 3 keycards hidden in the darkest corners', 'Hunters track noise. Gunfire draws them in', 'You have 3 lives. Reach the lift to escape']],
   },
   es: {
     m1: ['OPERACIÓN: ÚLTIMA LUZ', 'EXTERMINIO · CONTRARRELOJ', 'Operadores hostiles invadieron los pasillos amarillos. Límpialos antes de que mueran las luces.', ['Elimina a todos los hostiles que puedas en 3:00', 'Llega a 15 bajas para superar la operación', '★ 15 · ★★ 25 · ★★★ 35 bajas']],
@@ -227,9 +237,13 @@ const MTEXT = {
     m3: ['OPERACIÓN: LLAVERO', 'EXTRACCIÓN CON TARJETAS', 'Hay tres tarjetas de acceso escondidas en el Nivel 0. Encuéntralas y llega al ascensor antes de que te encuentren las patrullas.', ['Busca 3 tarjetas escondidas', 'Las tarjetas pitan más fuerte al acercarte', 'Con las 3, llega al ascensor marcado']],
     m4: ['DUELO: EL MIMIC', 'DUELO · 1V1', 'Algo vestido de negro ha estado copiando a nuestros operadores. Es rápido, blindado y aprende. Derríbalo 15 veces.', ['Gana el primero en llegar a 15 bajas', 'El Mimic va blindado, se regenera y se cubre', 'Apunta a la cabeza']],
     m5: ['OPERACIÓN: SIN SEGUNDAS OPORTUNIDADES', 'SUPERVIVENCIA · EQUIPOS DE 2', 'Entran tres dúos. Sale uno. Cada uno tiene una sola vida.', ['Tú y 1 compañero contra 2 dúos rivales', 'Una sola vida. Si caes, quedas fuera', 'Sé el último equipo en pie']],
-    m6: ['OPERACIÓN: MALETÍN NEGRO', 'CAPTURA EL MALETÍN · CONTRARRELOJ', 'Un maletín que nadie debería tener. Seis operadores, una vida cada uno, ningún amigo.', ['Todos contra todos', 'Coge el maletín. Todos ven a quien lo lleva', 'Sé el último en pie con el maletín, o tenlo cuando acaben los 4:00']],
+    m6: ['OPERACIÓN: MALETÍN NEGRO', 'CAPTURA EL MALETÍN · CONTRARRELOJ', 'Un maletín que nadie debería tener. Seis operadores, ningún amigo, y todos vuelven a la carga.', ['Todos contra todos. Los caídos reaparecen', 'Coge el maletín. Todos ven y persiguen a quien lo lleva', 'Gana quien tenga el maletín cuando acaben los 4:00']],
     m7: ['OPERACIÓN: ANULACIÓN', 'ASEDIO · 6V6 · CONTRARRELOJ', 'Dos interruptores protegen cada extremo de la zona enemiga. Anúlalos antes que ellos los tuyos.', ['Lidera un equipo de 6 contra 6', 'Mantén Interactuar en ambos interruptores enemigos (ala este)', 'Defiende los tuyos en el ala oeste. 5:00 de reloj']],
-    m8: ['FINAL: APAGÓN', 'EXTRACCIÓN II · FINAL', 'La energía falla. Los cazadores acechan en la oscuridad y las tarjetas están mejor escondidas que nunca. Sal del Nivel 0.', ['Encuentra 3 tarjetas en los rincones más oscuros', 'Los cazadores siguen el ruido de los disparos', 'Tienes 3 vidas. Llega al ascensor para escapar']],
+    holdout: ['OPERACIÓN: RESISTENCIA', 'OLEADAS · SUPERVIVENCIA', 'Los pasillos se llenan. Escuadra tras escuadra viene a por la sala central. Resiste hasta que caiga la última oleada.', ['Sobrevive a 5 oleadas cada vez más grandes', 'Cada oleada debe ser eliminada antes de que llegue la siguiente', 'Tienes 3 vidas']],
+    ghost: ['OPERACIÓN: PROTOCOLO FANTASMA', 'SIGILO · ASESINATO', 'Tres oficiales dirigen las patrullas del ala este. Entra, elimínalos y que no te vean. Agáchate para moverte en silencio.', ['Elimina a los 3 oficiales marcados', 'Las patrullas ven lo que tienen delante y oyen pasos y disparos cercanos. Agachado no haces ruido', 'Si te ven, una alarma trae refuerzos. Tienes 3 vidas']],
+    hardpoint: ['OPERACIÓN: PUNTO CALIENTE', 'PUNTO CALIENTE · 4V4', 'Solo importa una zona, y no deja de moverse. Tómala, mantenla y síguela.', ['Quédate en la zona para puntuar mientras no haya enemigos dentro', 'La zona se mueve cada 60 segundos', 'Gana el primer equipo en llegar a 150 puntos']],
+    zerohour: ['FINAL: HORA CERO', 'ASALTO AL JEFE · FINAL', 'El Mimic ha vuelto, más fuerte y con cazadores a su lado. Acaba con él y sal del Nivel 0 para siempre.', ['Caza y abate al Mimic. Va muy blindado', 'Los cazadores lo protegen y oyen todo lo que haces', 'Con el Mimic abatido, llega al ascensor. Tienes 3 vidas']],
+    m8: ['OPERACIÓN: APAGÓN', 'EXTRACCIÓN II', 'La energía falla. Los cazadores acechan en la oscuridad y las tarjetas están mejor escondidas que nunca. Sal del Nivel 0.', ['Encuentra 3 tarjetas en los rincones más oscuros', 'Los cazadores siguen el ruido de los disparos', 'Tienes 3 vidas. Llega al ascensor para escapar']],
   },
   pt: {
     m1: ['OPERAÇÃO: ÚLTIMA LUZ', 'EXTERMÍNIO · CONTRA O TEMPO', 'Operadores hostis invadiram os corredores amarelos. Elimine todos antes que as luzes morram.', ['Elimine o máximo de hostis em 3:00', 'Chegue a 15 abates para concluir', '★ 15 · ★★ 25 · ★★★ 35 abates']],
@@ -237,9 +251,13 @@ const MTEXT = {
     m3: ['OPERAÇÃO: CHAVEIRO', 'EXTRAÇÃO COM CARTÕES', 'Três cartões de acesso estão escondidos no Nível 0. Encontre-os e chegue ao elevador antes que as patrulhas encontrem você.', ['Procure 3 cartões escondidos', 'Os cartões apitam mais alto quando você se aproxima', 'Com os 3, vá até o elevador marcado']],
     m4: ['DUELO: O MIMIC', 'DUELO · 1V1', 'Algo de preto anda copiando nossos operadores. É rápido, blindado e aprende. Derrube-o 15 vezes.', ['O primeiro a 15 abates vence', 'O Mimic é blindado, se regenera e usa cobertura', 'Mire na cabeça']],
     m5: ['OPERAÇÃO: SEM SEGUNDA CHANCE', 'SOBREVIVÊNCIA · DUPLAS', 'Três duplas entram. Uma sai. Cada um tem uma única vida.', ['Você e 1 aliado contra 2 duplas rivais', 'Uma vida só. Caiu, está fora', 'Seja o último esquadrão de pé']],
-    m6: ['OPERAÇÃO: MALETA NEGRA', 'CAPTURE A MALETA · CONTRA O TEMPO', 'Uma maleta que ninguém deveria ter. Seis operadores, uma vida cada, nenhum amigo.', ['Todos contra todos', 'Pegue a maleta. Todos veem quem está com ela', 'Seja o último de pé com a maleta, ou esteja com ela quando os 4:00 acabarem']],
+    m6: ['OPERAÇÃO: MALETA NEGRA', 'CAPTURE A MALETA · CONTRA O TEMPO', 'Uma maleta que ninguém deveria ter. Seis operadores, nenhum amigo, e todos sempre voltam.', ['Todos contra todos. Abatidos retornam', 'Pegue a maleta. Todos veem e caçam quem está com ela', 'Vence quem estiver com a maleta quando os 4:00 acabarem']],
     m7: ['OPERAÇÃO: SOBRESCRITA', 'CERCO · 6V6 · CONTRA O TEMPO', 'Dois interruptores guardam cada ponta da zona inimiga. Sobrescreva os dois antes que façam o mesmo com os seus.', ['Lidere 6 contra 6', 'Segure Interagir nos dois interruptores inimigos (ala leste)', 'Defenda os seus na ala oeste. 5:00 no relógio']],
-    m8: ['FINAL: APAGÃO', 'EXTRAÇÃO II · FINAL', 'A energia está falhando. Caçadores rondam no escuro, e os cartões estão mais escondidos do que nunca. Saia do Nível 0.', ['Encontre 3 cartões nos cantos mais escuros', 'Caçadores seguem o barulho dos tiros', 'Você tem 3 vidas. Chegue ao elevador']],
+    holdout: ['OPERAÇÃO: RESISTÊNCIA', 'ONDAS · SOBREVIVÊNCIA', 'Os corredores estão enchendo. Esquadrão após esquadrão vem para o salão central. Segure até a última onda cair.', ['Sobreviva a 5 ondas cada vez maiores', 'Cada onda precisa ser eliminada antes da próxima chegar', 'Você tem 3 vidas']],
+    ghost: ['OPERAÇÃO: PROTOCOLO FANTASMA', 'FURTIVIDADE · ASSASSINATO', 'Três oficiais comandam as patrulhas da ala leste. Entre, elimine-os e não seja visto. Agache para se mover em silêncio.', ['Elimine os 3 oficiais marcados', 'As patrulhas veem o que está à frente e ouvem passos e tiros por perto. Agachado você não faz barulho', 'Se te virem, um alarme chama reforços. Você tem 3 vidas']],
+    hardpoint: ['OPERAÇÃO: PONTO QUENTE', 'PONTO QUENTE · 4V4', 'Só uma zona importa, e ela não para de mudar. Tome, segure e acompanhe.', ['Fique dentro da zona para pontuar enquanto não houver inimigos nela', 'A zona muda a cada 60 segundos', 'A primeira equipe a 150 pontos vence']],
+    zerohour: ['FINAL: HORA ZERO', 'ATAQUE AO CHEFE · FINAL', 'O Mimic voltou, mais forte e com caçadores ao lado. Acabe com ele e saia do Nível 0 de vez.', ['Cace e derrube o Mimic. Ele é muito blindado', 'Caçadores o protegem e ouvem tudo o que você faz', 'Com o Mimic abatido, vá até o elevador. Você tem 3 vidas']],
+    m8: ['OPERAÇÃO: APAGÃO', 'EXTRAÇÃO II', 'A energia está falhando. Caçadores rondam no escuro, e os cartões estão mais escondidos do que nunca. Saia do Nível 0.', ['Encontre 3 cartões nos cantos mais escuros', 'Caçadores seguem o barulho dos tiros', 'Você tem 3 vidas. Chegue ao elevador']],
   },
   fr: {
     m1: ['OPÉRATION : DERNIÈRE LUEUR', 'EXTERMINATION · CONTRE-LA-MONTRE', 'Des opérateurs hostiles ont envahi les couloirs jaunes. Nettoyez-les avant que les néons ne meurent.', ['Éliminez un maximum d’hostiles en 3:00', 'Atteignez 15 éliminations pour réussir', '★ 15 · ★★ 25 · ★★★ 35 éliminations']],
@@ -247,9 +265,13 @@ const MTEXT = {
     m3: ['OPÉRATION : PASSE-PARTOUT', 'EXTRACTION PAR CARTES', 'Trois cartes d’accès sont cachées dans le Niveau 0. Trouvez-les et rejoignez l’ascenseur avant que les patrouilles ne vous trouvent.', ['Trouvez 3 cartes cachées', 'Les cartes bipent plus fort quand vous approchez', 'Avec les 3, rejoignez l’ascenseur indiqué']],
     m4: ['DUEL : LE MIMIC', 'DUEL · 1C1', 'Une silhouette noire copie nos opérateurs. Elle est rapide, blindée et elle apprend. Abattez-la 15 fois.', ['Premier à 15 éliminations', 'Le Mimic est blindé, se régénère et se met à couvert', 'Visez la tête']],
     m5: ['OPÉRATION : SANS SECONDE CHANCE', 'SURVIE · ÉQUIPES DE 2', 'Trois duos entrent. Un seul ressort. Chacun n’a qu’une vie.', ['Vous et 1 coéquipier contre 2 duos rivaux', 'Une seule vie : si vous tombez, vous êtes éliminé', 'Soyez la dernière escouade debout']],
-    m6: ['OPÉRATION : MALLETTE NOIRE', 'CAPTURE DE MALLETTE · CONTRE-LA-MONTRE', 'Une mallette que personne ne devrait avoir. Six opérateurs, une vie chacun, aucun ami.', ['Chacun pour soi', 'Prenez la mallette : son porteur est visible de tous', 'Soyez le dernier debout avec la mallette, ou tenez-la à la fin des 4:00']],
+    m6: ['OPÉRATION : MALLETTE NOIRE', 'CAPTURE DE MALLETTE · CONTRE-LA-MONTRE', 'Une mallette que personne ne devrait avoir. Six opérateurs, aucun ami, et tout le monde revient.', ['Chacun pour soi. Les opérateurs tombés reviennent', 'Prenez la mallette : son porteur est visible et traqué par tous', 'Celui qui tient la mallette à la fin des 4:00 gagne']],
     m7: ['OPÉRATION : PRIORITÉ', 'SIÈGE · 6C6 · CONTRE-LA-MONTRE', 'Deux interrupteurs gardent chaque extrémité de la zone ennemie. Forcez-les avant qu’ils ne forcent les vôtres.', ['Menez 6 opérateurs contre 6', 'Maintenez Interagir sur les deux interrupteurs ennemis (aile est)', 'Défendez les vôtres dans l’aile ouest. 5:00 au chrono']],
-    m8: ['FINALE : EXTINCTION', 'EXTRACTION II · FINALE', 'Le courant lâche. Des traqueurs rôdent dans le noir, et les cartes sont mieux cachées que jamais. Sortez du Niveau 0.', ['Trouvez 3 cartes dans les coins les plus sombres', 'Les traqueurs suivent le bruit des tirs', 'Vous avez 3 vies. Rejoignez l’ascenseur']],
+    holdout: ['OPÉRATION : TENIR BON', 'VAGUES · SURVIE', 'Les couloirs se remplissent. Escouade après escouade fonce vers le hall central. Tenez jusqu’à la dernière vague.', ['Survivez à 5 vagues de plus en plus nombreuses', 'Chaque vague doit être éliminée avant que la suivante n’arrive', 'Vous avez 3 vies']],
+    ghost: ['OPÉRATION : PROTOCOLE FANTÔME', 'INFILTRATION · ASSASSINAT', 'Trois officiers dirigent les patrouilles de l’aile est. Entrez, éliminez-les et restez invisible. Accroupissez-vous pour avancer sans bruit.', ['Éliminez les 3 officiers marqués', 'Les patrouilles voient devant elles et entendent les pas et les tirs proches. Accroupi, vous êtes silencieux', 'Si elles vous repèrent, une alerte appelle des renforts. Vous avez 3 vies']],
+    hardpoint: ['OPÉRATION : POINT CHAUD', 'POINT CHAUD · 4C4', 'Une seule zone compte, et elle bouge sans arrêt. Prenez-la, tenez-la, suivez-la.', ['Restez dans la zone pour marquer tant qu’aucun ennemi n’y est', 'La zone change toutes les 60 secondes', 'Première équipe à 150 points']],
+    zerohour: ['FINALE : HEURE ZÉRO', 'ASSAUT DU BOSS · FINALE', 'Le Mimic est de retour, plus fort, avec des traqueurs à ses côtés. Achevez-le, puis quittez le Niveau 0 pour de bon.', ['Traquez et abattez le Mimic. Il est lourdement blindé', 'Des traqueurs le protègent et entendent tout ce que vous faites', 'Le Mimic abattu, rejoignez l’ascenseur. Vous avez 3 vies']],
+    m8: ['OPÉRATION : EXTINCTION', 'EXTRACTION II', 'Le courant lâche. Des traqueurs rôdent dans le noir, et les cartes sont mieux cachées que jamais. Sortez du Niveau 0.', ['Trouvez 3 cartes dans les coins les plus sombres', 'Les traqueurs suivent le bruit des tirs', 'Vous avez 3 vies. Rejoignez l’ascenseur']],
   },
 };
 let LANG = 'en';
@@ -1028,7 +1050,7 @@ const FX = {
   tracers: [], flashes: [], decals: [], sparks: null, sparkData: null, vmFlash: null, vmLight: null, di: 0, fi: 0, ti: 0,
   init() {
     const T = THREE, S = World.scene;
-    const tg = new T.BoxGeometry(1, 1, 1); tg.translate(0, 0, -0.5);
+    const tg = new T.BoxGeometry(1, 1, 1); tg.translate(0, 0, 0.5); // +Z faces the target after lookAt
     for (let i = 0; i < 28; i++) {
       const m = new T.Mesh(tg, new T.MeshBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, fog: false }));
       m.visible = false; m.frustumCulled = false; S.add(m); this.tracers.push({ m, life: 0 });
@@ -1129,9 +1151,10 @@ const Models = {
     g.userData.muzzle = new T.Vector3(0, b.max.y * 0.35, b.min.z - 0.02);
     return g;
   },
-  teamMaterials(team) {
-    if (this.teamMats[team]) return this.teamMats[team];
-    const T = THREE, c = TEAMS[team];
+  // Every soldier wears the same charcoal gear; sides are told apart by the light band on the upper arm.
+  teamMaterials() {
+    if (this.teamMats.std) return this.teamMats.std;
+    const T = THREE, c = UNIFORM;
     const lowQ = World.qualityLevel === 'low';
     const M = (color, opts = {}) => lowQ ? new T.MeshLambertMaterial({ color, ...opts }) : new T.MeshStandardMaterial({ color, roughness: 0.82, metalness: 0.0, ...opts });
     const mats = {
@@ -1140,14 +1163,14 @@ const Models = {
       helmet: M(c.helmet, lowQ ? {} : { roughness: 0.55, metalness: 0.15 }),
       glass: lowQ ? new T.MeshLambertMaterial({ color: 0x0a0c10 }) : new T.MeshStandardMaterial({ color: 0x0a0c10, roughness: 0.15, metalness: 0.6 }),
     };
-    this.teamMats[team] = mats;
+    this.teamMats.std = mats;
     return mats;
   },
   soldier(team) {
     const T = THREE;
     const model = T.SkeletonUtils.clone(Assets.npc.scene);
-    const mats = this.teamMaterials(team);
-    let hand = null, head = null, spine = null;
+    const mats = this.teamMaterials();
+    let hand = null, head = null, spine = null; const upperArms = [];
     model.traverse((o) => {
       if (o.isMesh) {
         const n = o.material.name || '';
@@ -1158,12 +1181,35 @@ const Models = {
         if (!hand && /RightHand$/.test(o.name)) hand = o;
         if (!head && /Head$/.test(o.name)) head = o;
         if (!spine && /Spine2$/.test(o.name)) spine = o;
+        if (/(Left|Right)Arm$/.test(o.name)) upperArms.push(o);
       }
     });
-    return { model, hand, head, spine };
+    // Glowing band + halo on both upper arms (bone space is in centimetres: the armature is scaled x0.01).
+    const L = this.armLightMats();
+    const armLights = upperArms.map((bone) => {
+      const band = new T.Mesh(this._bandGeo || (this._bandGeo = new T.CylinderGeometry(6.6, 6.6, 6, 16, 1, true)), L.ally.band);
+      band.position.y = 11;
+      const halo = new T.Sprite(L.ally.halo); halo.scale.setScalar(44); halo.position.y = 11;
+      bone.add(band, halo);
+      return { band, halo };
+    });
+    return { model, hand, head, spine, armLights };
   },
-  setTeam(soldier, team) {
-    const mats = this.teamMaterials(team);
+  armLightMats() {
+    if (this._armMats) return this._armMats;
+    const T = THREE;
+    const mk = (hex) => ({
+      band: new T.MeshBasicMaterial({ color: new T.Color(hex).multiplyScalar(2.2), side: T.DoubleSide, toneMapped: false, fog: false }),
+      halo: new T.SpriteMaterial({ map: Tex.glow, color: hex, blending: T.AdditiveBlending, depthWrite: false, transparent: true, opacity: 1, fog: false }),
+    });
+    return (this._armMats = { ally: mk(0x2f8bff), enemy: mk(0xff2a2a) });
+  },
+  setArmLight(soldier, ally) {
+    const m = this.armLightMats()[ally ? 'ally' : 'enemy'];
+    for (const l of soldier.armLights || []) { l.band.material = m.band; l.halo.material = m.halo; }
+  },
+  setTeam(soldier) {
+    const mats = this.teamMaterials();
     soldier.model.traverse((o) => {
       if (!o.isMesh) return;
       const old = o.userData.part || (o.userData.part = o.material.name.includes('Torso') ? 'torso' : o.material.name.includes('Legs') ? 'legs' : o.material.name.includes('Glass') ? 'glass' : 'helmet');
@@ -1359,14 +1405,14 @@ const Player = {
     if (inp.pressed.has('jump') && this.onGround && !crouch) { this.vy = 4.6; this.onGround = false; }
     if (!this.onGround) {
       this.vy -= 13 * dt; this.jumpY += this.vy * dt;
-      if (this.jumpY <= 0) { this.jumpY = 0; this.vy = 0; this.onGround = true; this.landDip = 0.06; Audio.land(); }
+      if (this.jumpY <= 0) { this.jumpY = 0; this.vy = 0; this.onGround = true; this.landDip = 0.06; Audio.land(); Game.noise(a, 6); }
     }
     // head bob + footsteps
     const hSpeed = moved / Math.max(dt, 1e-4);
     this.bobAmt = damp(this.bobAmt, this.onGround ? clamp(hSpeed / 5, 0, 1.3) : 0, 10, dt);
     this.bob += dt * (this.sprinting ? 13 : 9.5);
     this.stepAcc += moved;
-    if (this.onGround && this.stepAcc > (this.sprinting ? 2.2 : 1.7)) { this.stepAcc = 0; Audio.step(null, true, crouch); if (this.sprinting) Game.noise(a, 12); }
+    if (this.onGround && this.stepAcc > (this.sprinting ? 2.2 : 1.7)) { this.stepAcc = 0; Audio.step(null, true, crouch); if (!crouch) Game.noise(a, this.sprinting ? 10 : 5); } // crouch-walking is silent
     this.landDip = damp(this.landDip, 0, 8, dt);
     // ---- camera ----
     const eye = lerp(1.62, 1.12, this.crouchT) + this.jumpY - this.landDip + Math.sin(this.bob * 2) * 0.035 * this.bobAmt * (1 - adsAmt * 0.8);
@@ -1448,14 +1494,14 @@ const Player = {
     const a = this.a, def = this.weapon, slot = this.slot, cam = World.camera, T = THREE;
     slot.mag--; this.fireCd = 60 / def.rpm; this.shotsFired++; this.lastFireTime = Game.time;
     Audio.shot(def.snd, null, true);
-    Game.noise(a, def.id === 'sniper' ? 45 : 32);
+    Game.noise(a, def.id === 'sniper' ? 18 : 14);
     const origin = cam.position.clone();
     const fwd = cam.getWorldDirection(new T.Vector3());
     const right = new T.Vector3().crossVectors(fwd, cam.up).normalize();
     const up = new T.Vector3().crossVectors(right, fwd).normalize();
     const pellets = def.pellets || 1; let anyHit = false, anyKill = false, anyHead = false;
     // muzzle position (world) for the tracer
-    const mz = this.vmGun.userData.muzzle.clone(); this.vmGun.localToWorld(mz);
+    this.vmGun.updateMatrixWorld(true); const mz = this.vmGun.userData.muzzle.clone(); this.vmGun.localToWorld(mz);
     const muzzleWorld = origin.clone().addScaledVector(right, mz.x * 1.0).addScaledVector(up, mz.y * 1.0).addScaledVector(fwd, -mz.z * 1.0);
     FX.muzzleVM(mz);
     const hitAcc = new Map();
@@ -1650,7 +1696,8 @@ function defineAI() {
         const toX = (tg.pos.x - b.a.pos.x) / (d || 1), toZ = (tg.pos.z - b.a.pos.z) / (d || 1);
         const side = Math.random() < 0.5 ? -1 : 1;
         let px = b.a.pos.x + -toZ * side * rand(1.5, 3.5), pz = b.a.pos.z + toX * side * rand(1.5, 3.5);
-        if (d > pref * 1.4) { px += toX * 3; pz += toZ * 3; } else if (d < pref * 0.55) { px -= toX * 2.5; pz -= toZ * 2.5; }
+        if (b.a.carrying) { px -= toX * rand(3, 5); pz -= toZ * rand(3, 5); } // carrying the case: fight while falling back
+        else if (d > pref * 1.4) { px += toX * 3; pz += toZ * 3; } else if (d < pref * 0.55) { px -= toX * 2.5; pz -= toZ * 2.5; }
         const p = Nav.closest({ x: px, y: 0, z: pz }); if (p) b.moveTo(p);
         b.crouchWanted = b.elite ? Math.random() < 0.35 : Math.random() < 0.12;
       }
@@ -1704,7 +1751,7 @@ class Bot {
     this.walkSpeed = 1.6; this.runSpeed = this.elite ? 4.6 : 3.9; this.strafeSpeed = this.elite ? 3.4 : 2.5;
     this.dmgMul = opts.dmgMul ?? 1; this.visionRange = opts.visionRange || 42; this.hearMul = opts.hearMul || 1;
     const s = Models.soldier(actor.color);
-    this.model = s.model; this.hand = s.hand; this.headBone = s.head;
+    this.model = s.model; this.hand = s.hand; this.headBone = s.head; this.soldier = s;
     this.root = new T.Group(); this.root.add(this.model); World.scene.add(this.root);
     const blob = new T.Mesh(new T.PlaneGeometry(1.1, 1.1), new T.MeshBasicMaterial({ map: Tex.blob, transparent: true, depthWrite: false }));
     blob.rotation.x = -Math.PI / 2; blob.position.y = 0.015; this.root.add(blob);
@@ -1740,6 +1787,7 @@ class Bot {
     this.mixer.stopAllAction(); this.anim = null; this.play('aim_idle');
     this.brain.currentState = null; this.brain.changeTo('patrol');
     this.marker.visible = Game.player && a.team === Game.player.team;
+    Models.setArmLight(this.soldier, !!(Game.player && a.team === Game.player.team));
     this.lastPos.copy(a.pos);
   }
   die() {
@@ -1818,7 +1866,7 @@ class Bot {
       if (o.isPlayer && o.crouching && Game.time - Player.lastFireTime > 2) range *= 0.6;
       if (d > range) { const r = this.memory.getRecord(o.ent); if (r) r.visible = false; continue; }
       y.set(o.pos.x, o.pos.y + (o.crouching ? 1.0 : 1.35), o.pos.z);
-      const vis = d < 2.2 || this.vision.visible(y);
+      const vis = this.vision.visible(y);
       if (vis) {
         this.sense(o, true);
         let score = d;
@@ -1840,10 +1888,10 @@ class Bot {
     this.mag--; this.lastShot = Game.time;
     if (def.auto) { if (this.burst <= 0) this.burst = randi(3, this.elite ? 8 : 6); this.burst--; this.fireCd = 60 / def.rpm * 1.05; if (this.burst <= 0) this.fireCd += rand(0.25, 0.7) * (1.3 - this.skill); }
     else this.fireCd = 60 / def.rpm * rand(1.25, 1.8) + (1 - this.skill) * 0.25;
-    const muzzle = this.gun.userData.muzzle.clone(); this.gun.localToWorld(muzzle);
+    this.placeGun(); this.gun.updateMatrixWorld(true); const muzzle = this.gun.userData.muzzle.clone(); this.gun.localToWorld(muzzle);
     FX.flash(muzzle, def.pellets ? 0.6 : 0.42);
     Audio.shot(def.snd, this.a.pos);
-    Game.noise(this.a, 30);
+    Game.noise(this.a, 12);
     const d = dist2D(this.a.pos, tg.pos);
     let p = 0.16 + 0.6 * this.skill;
     p *= clamp(1.25 - d / (def.range * 0.55), 0.18, 1);
@@ -2001,13 +2049,13 @@ class Mode {
     else { const y = this.openYaw(pos); actor.bot.spawn(pos, Math.atan2(-Math.sin(y), -Math.cos(y))); }
   }
   zoneFor(actor) { return null; }
-  // Default bot objective: sweep toward the area of a random living enemy (keeps fights flowing).
+  // Default bot objective: roam toward the enemy side of the map (team modes) or anywhere on it.
+  // Bots never get told where an enemy actually is — they find you by sight or by sound.
   botGoal(b) {
     if (Math.random() >= (this.sweep ?? 0.5)) return null;
-    const foes = Game.actors.filter((a) => a.alive && a.team !== b.a.team);
-    if (!foes.length) return null;
-    const e = foes[Math.floor(Math.random() * foes.length)];
-    return { pos: Nav.randomAround(e.pos, b.elite ? 5 : 9), run: b.elite || Math.random() < 0.35 };
+    const foe = Game.actors.find((a) => a.alive && a.team !== b.a.team);
+    const zone = foe ? this.zoneFor(foe) : null;
+    return { pos: Nav.randomInZone(zone), run: b.elite || Math.random() < 0.3 };
   }
   respawnActor(actor) { this.spawnActor(actor, this.safeSpawn(actor, this.zoneFor(actor))); }
   onKill(killer, victim) {
@@ -2079,7 +2127,7 @@ class TeamDeathmatch extends Mode {
 class Duel extends TeamDeathmatch {
   setup() {
     const p = Game.player; p.team = 'A'; p.color = 'blue'; p.lives = Infinity;
-    const boss = this.makeBot('B', 'blackops', { name: 'THE MIMIC', weapon: 'm4', elite: true, hp: 220, armor: 0.85, skill: 0.95, dmgMul: 0.85, visionRange: 60 });
+    const boss = this.makeBot('B', 'blackops', { name: 'THE MIMIC', weapon: 'm4', elite: true, hp: 220, armor: 0.85, skill: 0.95, dmgMul: 0.85, visionRange: 60, hearMul: 1.5 });
     boss.lives = Infinity;
     this.boss = boss;
     this.score = { A: 0, B: 0 };
@@ -2098,6 +2146,7 @@ class Keycard extends Mode {
   setup() {
     const p = Game.player; p.team = 'A'; p.color = 'blue';
     const fin = !!this.m.finale;
+    this.revealHostiles = true; // NPC positions are shown on the radar in keycard missions
     p.lives = fin ? this.m.lives : Infinity;
     this.respawnDelay = 4; this.regen = fin ? 10 : 18; this.botDamageMul = fin ? 0.6 : 0.5; this.sweep = fin ? 0.3 : 0.12;
     const start = Nav.randomInZone(MAP.zones.west);
@@ -2115,7 +2164,7 @@ class Keycard extends Mode {
     this.exitBeam = Models.beam(0x3df27a); this.exitBeam.position.set(c.x, 1.4, c.z); this.exitBeam.visible = false; this.props.add(this.exitBeam);
     const n = this.m.hostiles;
     for (let i = 0; i < n; i++) {
-      const b = this.makeBot('B', this.m.enemy, { weapon: pick(fin ? ['m4', 'shotgun', 'ak47'] : ['ak47', 'pistol', 'ak47']), visionRange: fin ? 20 : 32, hearMul: fin ? 1.8 : 1, elite: false, dmgMul: fin ? 0.9 : 0.8 });
+      const b = this.makeBot('B', this.m.enemy, { weapon: pick(fin ? ['m4', 'shotgun', 'ak47'] : ['ak47', 'pistol', 'ak47']), visionRange: fin ? 20 : 32, hearMul: fin ? 1.6 : 1, elite: false, dmgMul: fin ? 0.9 : 0.8 });
       b.lives = Infinity;
       this.spawnActor(b, this.safeSpawn(b, null, 18));
     }
@@ -2155,8 +2204,6 @@ class Keycard extends Mode {
       if (p.alive && d < 22 && k.beepT <= 0) { const inten = 1 - d / 22; k.beepT = lerp(1.6, 0.18, inten); Audio.beep(inten * 0.6, k.pos); }
     }
     if (this.got === 3) this.exitBeam.material.opacity = 0.16 + Math.sin(Game.time * 4) * 0.06;
-    // hunters converge on the player in the finale
-    if (this.m.finale && Math.random() < dt * 0.15) { for (const a of Game.actors) if (a.bot && a.alive && !a.bot.target) a.bot.sense(p, false); }
   }
   interactable(a) {
     if (!a.alive) return null;
@@ -2216,46 +2263,45 @@ class Survival extends Mode {
   intel() { return { teams: '2 vs 2 vs 2', time: '∞' }; }
 }
 
-// 6 — Capture the Briefcase: last one standing with the case (or holder at time-out)
+// 6 — Capture the Briefcase (time trial): everyone respawns; whoever holds the case when time runs out wins.
 class Briefcase extends Mode {
   setup() {
     const p = Game.player; p.team = 'P'; p.color = 'blue';
-    this.respawn = false; this.regen = 9; this.botDamageMul = 0.6;
+    this.respawn = true; this.respawnDelay = 4; this.regen = 9; this.botDamageMul = 0.6;
     const cols = shuffle(['olive', 'tan', 'crimson', 'urban', 'arctic', 'navy']).slice(0, this.m.ffa);
     cols.forEach((c, i) => this.makeBot('F' + i, c, { weapon: pick(['ak47', 'm4', 'shotgun', 'ak47']), dmgMul: 0.75 }));
     const spots = [];
     for (const a of Game.actors) {
-      a.lives = 1;
+      a.lives = Infinity;
       let pnt = Nav.random(), tries = 0;
       while (tries++ < 30 && spots.some((s) => dist2D(s, pnt) < 14)) pnt = Nav.random();
       spots.push(pnt); this.spawnActor(a, pnt);
     }
     this.case = Models.briefcase(); this.props.add(this.case);
-    const c = Nav.closest({ x: 7.5, y: 0, z: 4 }); this.casePos = new THREE.Vector3(c.x, 0, c.z); this.holder = null;
+    const c = Nav.closest({ x: 7.5, y: 0, z: 4 }); this.casePos = new THREE.Vector3(c.x, 0, c.z);
+    this.holder = null; this.lastHolder = null; this.holdTime = 0; this.shareT = 0;
     this.case.position.copy(this.casePos);
   }
-  aliveCount() { return Game.actors.filter((a) => a.alive).length; }
+  respawnActor(a) { this.spawnActor(a, this.safeSpawn(a, null, 14)); }
   setHolder(a) {
-    this.holder = a; if (a) a.carrying = this.case;
-    if (a && a.isPlayer) { Hud.banner(t('b_case')); Audio.pickup(); this.objectiveScore += 300; }
-    this.check();
+    this.holder = a; this.lastHolder = a; a.carrying = this.case;
+    if (a.isPlayer) { Hud.banner(t('b_case')); Audio.pickup(); this.objectiveScore += 300; }
   }
   dropCarry(a) {
     if (this.holder !== a) return; a.carrying = null; this.holder = null;
     this.casePos.set(a.pos.x, 0, a.pos.z); if (a.isPlayer) Hud.banner(t('b_caseLost'));
   }
-  onKill(k, v) { v.out = true; if (v.isPlayer) { Game.finish(false, 'r_dead'); return; } this.check(); }
-  check() {
-    const p = Game.player;
-    if (p.alive && this.holder === p && this.aliveCount() === 1) Game.finish(true, 'r_case');
-  }
-  onTimeUp() { Game.finish(this.holder === Game.player, this.holder === Game.player ? 'r_case' : 'r_time'); }
+  winner() { return this.holder || this.lastHolder; }
+  onTimeUp() { const w = this.winner() === Game.player; Game.finish(w, w ? 'r_case' : 'r_time'); }
   update(dt) {
     super.update(dt);
     if (this.holder) {
       const h = this.holder;
-      if (h.isPlayer) this.case.visible = false;
+      if (h.isPlayer) { this.case.visible = false; this.holdTime += dt; }
       else { this.case.visible = true; this.case.position.set(h.pos.x + Math.sin(h.yaw + 1.2) * 0.35, 0.75, h.pos.z + Math.cos(h.yaw + 1.2) * 0.35); this.case.rotation.y = h.yaw; }
+      // the holder is marked for everyone, so chasers always know where to run
+      this.shareT -= dt;
+      if (this.shareT <= 0) { this.shareT = 1; for (const a of Game.actors) if (a.bot && a.alive && a !== h) a.bot.sense(h, false); }
     } else {
       this.case.visible = true; this.case.position.set(this.casePos.x, 0.35 + Math.sin(Game.time * 2.5) * 0.06, this.casePos.z); this.case.rotation.y += dt;
       for (const a of Game.actors) if (a.alive && !a.isPlayer && dist2D(a.pos, this.casePos) < 1.3) { this.setHolder(a); break; }
@@ -2266,10 +2312,22 @@ class Briefcase extends Mode {
     if (dist2D(a.pos, this.casePos) < 1.4) return { label: t('pickUp'), instant: true, auto: true, done: () => this.setHolder(a) };
     return null;
   }
+  // nearest living rival of actor a
+  nearestThreat(a) {
+    let best = null, bd = Infinity;
+    for (const o of Game.actors) { if (o === a || !o.alive) continue; const d = dist2D(o.pos, a.pos); if (d < bd) { bd = d; best = o; } }
+    return best;
+  }
   botGoal(b) {
-    if (this.holder === b.a) return { pos: Nav.randomAround(b.a.pos, 10), run: true };
+    const me = b.a;
+    if (this.holder === me) {
+      // holder: stay hidden while nobody is close, otherwise slip away to cover out of the nearest rival's sight
+      const th = this.nearestThreat(me);
+      if (th && dist2D(th.pos, me.pos) > 16 && !World.los(th.eye(new THREE.Vector3()), me.chest(new THREE.Vector3()))) return { pos: me.pos, hold: true };
+      return { pos: b.findCover(th), run: true };
+    }
     if (!this.holder) return { pos: this.casePos, run: true };
-    if (this.holder.alive && Math.random() < 0.6) return { pos: this.holder.pos, run: true };
+    if (this.holder.alive) return { pos: Nav.randomAround(this.holder.pos, 2), run: true };
     return null;
   }
   markersNow() {
@@ -2277,11 +2335,11 @@ class Briefcase extends Mode {
     return [{ pos: this.holder ? this.holder.pos : this.casePos, cls: 'case', label: this.holder ? this.holder.name : 'CASE', h: this.holder ? 2.2 : 0.8 }];
   }
   hud() {
-    const n = this.aliveCount();
-    const obj = this.holder === Game.player ? t('o_briefYou', { n }) : this.holder ? t('o_brief', { h: esc(this.holder.name), n }) : t('o_briefNone', { n });
-    return { clock: this.timeLeft, objective: obj, lives: Game.player.alive ? 1 : 0 };
+    const obj = this.holder === Game.player ? t('o_briefYou') : this.holder ? t('o_brief', { h: esc(this.holder.name) }) : t('o_briefNone');
+    return { clock: this.timeLeft, objective: obj };
   }
-  stars(won) { if (!won) return 0; const k = Game.player.kills; return k >= 4 ? 3 : k >= 2 ? 2 : 1; }
+  finalScore(won) { return super.finalScore(won) + Math.round(this.holdTime * 10); }
+  stars(won) { if (!won) return 0; return this.holdTime >= 120 ? 3 : this.holdTime >= 60 ? 2 : 1; }
   intel() { return { teams: `FFA · ${this.m.ffa + 1}`, time: fmtTime(this.timeLimit) }; }
 }
 
@@ -2361,7 +2419,193 @@ class Siege extends Mode {
   intel() { return { teams: '6 vs 6', time: fmtTime(this.timeLimit) }; }
 }
 
-const MODES = { extermination: Extermination, tdm: TeamDeathmatch, keycard: Keycard, duel: Duel, survival: Survival, briefcase: Briefcase, siege: Siege };
+// Hidden reserve soldiers (spawned later by waves / alarms).
+function reserveBot(mode, team, color, opts) {
+  const a = mode.makeBot(team, color, opts);
+  a.out = true; a.lives = 1; a.bot.root.visible = false; a.bot.gun.visible = false;
+  return a;
+}
+
+// 8 — Holdout: survive 5 waves of growing squads around the central hall.
+class Waves extends Mode {
+  setup() {
+    const p = Game.player; p.team = 'A'; p.color = 'blue'; p.lives = this.m.lives;
+    this.respawnDelay = 4; this.regen = 16; this.botDamageMul = 0.55;
+    this.spawnActor(p, Nav.randomInZone(MAP.zones.central));
+    this.pool = [];
+    for (let i = 0; i < Math.max(...this.m.waves); i++) this.pool.push(reserveBot(this, 'B', this.m.enemy, { weapon: pick(['ak47', 'm4', 'shotgun', 'ak47']), dmgMul: 0.8 }));
+    this.wave = 0; this.left = 0; this.breakT = 4;
+  }
+  zoneFor(a) { return a.isPlayer ? MAP.zones.central : null; }
+  respawnActor(a) { if (a.isPlayer) this.spawnActor(a, this.safeSpawn(a, MAP.zones.central, 10)); }
+  startWave() {
+    this.wave++;
+    const n = this.m.waves[this.wave - 1];
+    for (let i = 0; i < n; i++) { const a = this.pool[i]; a.out = false; this.spawnActor(a, this.safeSpawn(a, null, 20)); }
+    this.left = n; Hud.banner(t('b_wave', { w: this.wave }), `× ${n}`); Audio.alarm();
+  }
+  onKill(k, v) {
+    if (v.isPlayer) { super.onKill(k, v); if (v.out) Game.finish(false, 'r_dead'); return; }
+    v.out = true; this.left = Math.max(0, this.left - 1);
+    if (this.left === 0) {
+      this.objectiveScore += 300 * this.wave;
+      if (this.wave >= this.m.waves.length) Game.finish(true, 'r_waves');
+      else { Hud.banner(t('b_waveClear')); this.breakT = 8; }
+    }
+  }
+  update(dt) { super.update(dt); if (this.breakT > 0) { this.breakT -= dt; if (this.breakT <= 0) this.startWave(); } }
+  // the squads push into the hall they were sent to take, not to wherever you are
+  botGoal(b) { return { pos: Nav.randomInZone(MAP.zones.central), run: Math.random() < 0.5 }; }
+  hud() {
+    const obj = this.breakT > 0 ? t('o_waveBreak', { s: Math.ceil(this.breakT) }) : t('o_wave', { w: this.wave, t: this.m.waves.length, n: this.left });
+    return { clock: Game.time, countUp: true, objective: obj, lives: Game.player.lives };
+  }
+  stars(won) { if (!won) return 0; const d = Game.player.deaths; return d === 0 ? 3 : d <= 1 ? 2 : 1; }
+  intel() { return { teams: `1 vs ${this.m.waves.reduce((a, b) => a + b, 0)}`, time: '∞' }; }
+}
+
+// 9 — Ghost Protocol: assassinate 3 officers; being spotted raises an alarm and brings reinforcements.
+class Assassination extends Mode {
+  setup() {
+    const p = Game.player; p.team = 'A'; p.color = 'blue'; p.lives = this.m.lives;
+    this.respawnDelay = 4; this.regen = 14; this.botDamageMul = 0.6; this.sweep = 0;
+    this.spawnActor(p, Nav.randomInZone(MAP.zones.west));
+    const east = MAP.zones.east, central = MAP.zones.central;
+    this.officers = ['A', 'B', 'C'].map((l) => {
+      const a = this.makeBot('B', this.m.enemy, { name: 'OFFICER ' + l, hp: 150, armor: 0.9, weapon: 'pistol', zone: east, visionRange: 26 });
+      a.officer = true; a.lives = 1; return a;
+    });
+    for (let i = 0; i < this.m.patrols; i++) { const a = this.makeBot('B', this.m.enemy, { weapon: pick(['ak47', 'm4']), zone: i % 2 ? central : east, visionRange: 28 }); a.lives = 1; }
+    for (const a of Game.actors) if (a.bot) this.spawnActor(a, this.safeSpawn(a, a.bot.patrolZone, 14));
+    this.reserve = [];
+    for (let i = 0; i < 4; i++) { const r = reserveBot(this, 'B', this.m.enemy, { weapon: pick(['ak47', 'm4', 'shotgun']), dmgMul: 0.85 }); r.reinforcement = true; this.reserve.push(r); }
+    this.killed = 0; this.alarm = false; this.spotT = 0;
+  }
+  zoneFor(a) { return a.isPlayer ? MAP.zones.west : null; }
+  respawnActor(a) { if (a.isPlayer) this.spawnActor(a, this.safeSpawn(a, MAP.zones.west, 12)); }
+  onKill(k, v) {
+    if (v.isPlayer) { super.onKill(k, v); if (v.out) Game.finish(false, 'r_dead'); return; }
+    v.out = true;
+    if (v.officer) {
+      this.killed++; this.objectiveScore += 500; Hud.banner(t('b_officer'), `${this.killed} / 3`);
+      if (this.killed >= 3) Game.finish(true, 'r_ghost');
+    }
+  }
+  update(dt) {
+    super.update(dt);
+    if (this.alarm) return;
+    // spotted = some soldier has had eyes on you for 1.5 s (vision rules only — no free knowledge)
+    const seen = Game.actors.some((a) => a.bot && a.alive && a.bot.target === Game.player);
+    this.spotT = seen ? this.spotT + dt : Math.max(0, this.spotT - dt * 0.5);
+    if (this.spotT > 1.5) this.raiseAlarm();
+  }
+  raiseAlarm() {
+    this.alarm = true; this.alarmPos = Game.player.pos.clone();
+    Hud.banner(t('b_alarm'), t('b_alarmSub')); Audio.alarm();
+    for (const a of this.reserve) { a.out = false; this.spawnActor(a, this.safeSpawn(a, MAP.zones.east, 12)); }
+  }
+  botGoal(b) { if (this.alarm && b.a.reinforcement) return { pos: Nav.randomAround(this.alarmPos, 6), run: true }; return null; }
+  markersNow() { return this.officers.filter((o) => o.alive).map((o) => ({ pos: o.pos, cls: 'enemy', label: 'TARGET', h: 2.2 })); }
+  hud() { return { clock: Game.time, countUp: true, objective: t('o_ghost', { k: this.killed }), lives: Game.player.lives }; }
+  finalScore(won) { return super.finalScore(won) + (won && !this.alarm ? 1500 : 0); }
+  stars(won) { if (!won) return 0; return !this.alarm ? 3 : Game.player.deaths <= 1 ? 2 : 1; }
+  intel() { return { teams: `1 vs ${3 + this.m.patrols}`, time: '∞' }; }
+}
+
+// 10 — Hardpoint 4v4: hold the moving zone; first team to the target score wins.
+const HARDPOINTS = [{ x: 7, z: -3, name: 'ALPHA' }, { x: -15, z: 13, name: 'BRAVO' }, { x: 23, z: -16, name: 'CHARLIE' }, { x: 23, z: 14, name: 'DELTA' }, { x: 7, z: 15, name: 'ECHO' }];
+class Hardpoint extends Mode {
+  setup() {
+    const p = Game.player; p.team = 'A'; p.color = 'blue';
+    this.respawnDelay = 4;
+    const n = this.m.teamSize;
+    for (let i = 0; i < n - 1; i++) this.makeBot('A', 'blue', { weapon: pick(['ak47', 'm4']) });
+    for (let i = 0; i < n; i++) this.makeBot('B', this.m.enemy, { weapon: pick(['ak47', 'm4', 'shotgun']), dmgMul: 0.8 });
+    for (const a of Game.actors) { a.lives = Infinity; this.spawnActor(a, Nav.randomInZone(this.zoneFor(a))); }
+    this.points = HARDPOINTS.map((h) => { const c = Nav.closest({ x: h.x, y: 0, z: h.z }); return { pos: new THREE.Vector3(c.x, 0, c.z), name: h.name }; });
+    this.idx = randi(0, this.points.length - 1); this.moveT = 60; this.score = { A: 0, B: 0 }; this.contested = false;
+    const T = THREE;
+    this.ring = new T.Group();
+    const floor = new T.Mesh(new T.RingGeometry(3.25, 3.5, 48), new T.MeshBasicMaterial({ color: 0xf2c230, transparent: true, opacity: 0.8, side: T.DoubleSide, depthWrite: false }));
+    floor.rotation.x = -Math.PI / 2; floor.position.y = 0.03;
+    const wall = new T.Mesh(new T.CylinderGeometry(3.5, 3.5, 0.7, 48, 1, true), new T.MeshBasicMaterial({ color: 0xf2c230, transparent: true, opacity: 0.12, blending: T.AdditiveBlending, side: T.DoubleSide, depthWrite: false }));
+    wall.position.y = 0.35;
+    this.ring.add(floor, wall); this.props.add(this.ring); this.placeRing();
+  }
+  get point() { return this.points[this.idx]; }
+  placeRing() { this.ring.position.copy(this.point.pos); }
+  zoneFor(a) { return a.team === 'A' ? MAP.zones.west : MAP.zones.east; }
+  update(dt) {
+    super.update(dt);
+    this.moveT -= dt;
+    if (this.moveT <= 0) { this.idx = (this.idx + 1) % this.points.length; this.moveT = 60; this.placeRing(); Hud.banner(t('b_hpMove'), this.point.name); Audio.alarm(); }
+    let A = false, B = false;
+    for (const a of Game.actors) if (a.alive && dist2D(a.pos, this.point.pos) < 3.5) { if (a.team === 'A') A = true; else B = true; }
+    this.contested = A && B;
+    if (A && !B) { this.score.A += dt; if (dist2D(Game.player.pos, this.point.pos) < 3.5 && Game.player.alive) this.objectiveScore += dt * 5; }
+    if (B && !A) this.score.B += dt;
+    this.ring.children[0].material.color.set(this.contested ? 0xffffff : A ? 0x3d8bff : B ? 0xff4a3d : 0xf2c230);
+    if (this.score.A >= this.m.target) Game.finish(true, 'r_win');
+    else if (this.score.B >= this.m.target) Game.finish(false, 'r_enemyWin');
+  }
+  botGoal(b) {
+    const d = dist2D(b.a.pos, this.point.pos);
+    if (d < 3) return { pos: b.a.pos, hold: true };
+    return { pos: Nav.randomAround(this.point.pos, 2.5), run: d > 6 };
+  }
+  markersNow() { return [{ pos: this.point.pos, cls: 'case', label: this.point.name, h: 1.2 }]; }
+  onTimeUp() { const w = this.score.A > this.score.B; Game.finish(w, w ? 'r_win' : 'r_time'); }
+  hud() { return { ally: Math.floor(this.score.A), enemy: Math.floor(this.score.B), clock: this.timeLeft, objective: this.contested ? t('o_hpContest') : t('o_hp', { t: this.m.target }) }; }
+  stars(won) { if (!won) return 0; const m = this.score.A - this.score.B; return m >= 60 ? 3 : m >= 25 ? 2 : 1; }
+  intel() { return { teams: `${this.m.teamSize} vs ${this.m.teamSize}`, time: fmtTime(this.timeLimit) }; }
+}
+
+// 12 — Zero Hour (finale): kill the armoured Mimic and its hunters' leader, then extract.
+class ZeroHour extends Mode {
+  setup() {
+    const p = Game.player; p.team = 'A'; p.color = 'blue'; p.lives = this.m.lives;
+    this.respawnDelay = 4; this.regen = 16; this.botDamageMul = 0.6; this.sweep = 0.25;
+    this.spawnActor(p, Nav.randomInZone(MAP.zones.west));
+    const east = MAP.zones.east;
+    this.boss = this.makeBot('B', 'blackops', { name: 'THE MIMIC', weapon: 'm4', elite: true, hp: 600, armor: 0.8, skill: 0.95, dmgMul: 0.85, visionRange: 50, hearMul: 1.5, zone: east });
+    this.boss.lives = 1;
+    for (let i = 0; i < this.m.guards; i++) { const g = this.makeBot('B', this.m.enemy, { weapon: pick(['m4', 'ak47', 'shotgun']), zone: east, visionRange: 30, hearMul: 1.4, dmgMul: 0.85 }); g.lives = Infinity; }
+    for (const a of Game.actors) if (a.bot) this.spawnActor(a, this.safeSpawn(a, east, 18));
+    const lift = pick(MAP.lifts), c = Nav.closest({ x: lift.x, y: 0, z: lift.z });
+    this.exit = new THREE.Vector3(c.x, 0, c.z);
+    this.exitBeam = Models.beam(0x3df27a); this.exitBeam.position.set(c.x, 1.4, c.z); this.exitBeam.visible = false; this.props.add(this.exitBeam);
+    this.bossDown = false;
+  }
+  zoneFor(a) { return a.isPlayer ? MAP.zones.west : MAP.zones.east; }
+  respawnActor(a) { this.spawnActor(a, a.isPlayer ? this.safeSpawn(a, MAP.zones.west, 12) : this.safeSpawn(a, MAP.zones.east, 18)); }
+  onKill(k, v) {
+    if (v === this.boss) {
+      v.out = true; this.bossDown = true; this.objectiveScore += 2000;
+      this.exitBeam.visible = true; Hud.banner(t('b_boss'), t('b_exit')); Audio.alarm();
+      return;
+    }
+    super.onKill(k, v);
+    if (v.isPlayer) { if (v.out) Game.finish(false, 'r_dead'); return; }
+    v.respawnAt = Game.time + 25;
+  }
+  update(dt) { super.update(dt); if (this.bossDown) this.exitBeam.material.opacity = 0.16 + Math.sin(Game.time * 4) * 0.06; }
+  // hunters stay close to their master; the Mimic patrols the east wing
+  botGoal(b) {
+    if (b.a !== this.boss && this.boss.alive) return { pos: Nav.randomAround(this.boss.pos, 6) };
+    return super.botGoal(b);
+  }
+  interactable(a) {
+    if (!a.alive || !this.bossDown || dist2D(this.exit, a.pos) > 1.8) return null;
+    return { label: t('useExit'), hold: 1.2, done: () => { this.objectiveScore += 1500; Game.finish(true, 'r_boss'); } };
+  }
+  markersNow() { return this.bossDown ? [{ pos: this.exit, cls: 'exit', label: 'EXIT' }] : this.boss.alive ? [{ pos: this.boss.pos, cls: 'enemy', label: 'MIMIC', h: 2.2 }] : []; }
+  hud() { return { clock: Game.time, countUp: true, objective: this.bossDown ? t('o_bossExit') : t('o_boss'), lives: Game.player.lives }; }
+  finalScore(won) { return super.finalScore(won) + (won ? Math.max(0, Math.round(600 - Game.time)) * 5 : 0); }
+  stars(won) { if (!won) return 0; const d = Game.player.deaths; return d === 0 ? 3 : d <= 1 ? 2 : 1; }
+  intel() { return { teams: `1 vs MIMIC + ${this.m.guards}`, time: '∞' }; }
+}
+
+const MODES = { extermination: Extermination, tdm: TeamDeathmatch, keycard: Keycard, duel: Duel, survival: Survival, briefcase: Briefcase, siege: Siege, waves: Waves, assassination: Assassination, hardpoint: Hardpoint, zerohour: ZeroHour };
 
 /* ---------------------------------------------------------------------------
    16. HUD
@@ -2488,7 +2732,7 @@ const Hud = {
     const e = this.els;
     e.death.classList.add('on');
     $('.k', e.death).textContent = t('youDied');
-    $('.by', e.death).innerHTML = killer && killer !== Game.player ? t('killedBy', { n: `<span style="color:${TEAMS[killer.color].ui}">${esc(killer.name)}</span>` }) + ` · ${WEAPONS[killer.bot ? killer.bot.weaponId : 'ak47'].name}` : '';
+    $('.by', e.death).innerHTML = killer && killer !== Game.player ? t('killedBy', { n: `<span style="color:${killer.team === Game.player.team ? '#3d8bff' : '#ff4a3d'}">${esc(killer.name)}</span>` }) + ` · ${WEAPONS[killer.bot ? killer.bot.weaponId : 'ak47'].name}` : '';
     $('.t', e.death).textContent = out ? (Game.mode.spectateTarget && Game.mode.spectateTarget() ? t('youAreOut') : t('outOfLives')) : respawnIn > 0 ? t('respawnIn', { s: Math.ceil(respawnIn) }) : '';
   },
   spectate(name) { this.els.spec.textContent = t('spectating', { n: name }); this.els.spec.classList.add('on'); },
@@ -2535,11 +2779,25 @@ const Hud = {
     for (const a of Game.actors) {
       if (!a.alive || a === p) continue;
       if (a.team === p.team) dot(a.pos.x, a.pos.z, '#3d8bff');
+      else if (Game.mode.revealHostiles) continue; // drawn below, pinned to the rim when far away
       else if (a.bot && (Game.time - (a.bot.lastShot || -9) < 1.2 || a.carrying)) dot(a.pos.x, a.pos.z, a.carrying ? '#f2c230' : '#ff4a3d');
     }
     const ms = Game.mode.markersNow ? Game.mode.markersNow() : [];
     for (const mk of ms) dot(mk.pos.x, mk.pos.z, mk.cls === 'exit' ? '#3df27a' : mk.cls === 'case' ? '#f2c230' : mk.cls === 'own' ? '#3d8bff' : '#ff4a3d', 9);
     g.restore();
+    // keycard missions: every living hostile is on the map; far ones sit on the rim to show direction
+    if (Game.mode.revealHostiles) {
+      const k = R.S * scale, rim = W / 2 - 30, c = Math.cos(camYaw), sn = Math.sin(camYaw);
+      for (const a of Game.actors) {
+        if (!a.alive || a.team === p.team) continue;
+        const dx = (a.pos.x - p.pos.x) * k, dz = (a.pos.z - p.pos.z) * k;
+        let x = dx * c - dz * sn, y = dx * sn + dz * c; const L = Math.hypot(x, y), far = L > rim;
+        if (far) { x *= rim / L; y *= rim / L; }
+        g.fillStyle = '#ff4a3d'; g.globalAlpha = far ? 0.75 : 1;
+        g.beginPath(); g.arc(W / 2 + x, W / 2 + y, far ? 5 : 7, 0, Math.PI * 2); g.fill();
+      }
+      g.globalAlpha = 1;
+    }
     // player arrow
     g.fillStyle = '#f2c230'; g.beginPath(); g.moveTo(W / 2, W / 2 - 13); g.lineTo(W / 2 + 9, W / 2 + 10); g.lineTo(W / 2, W / 2 + 5); g.lineTo(W / 2 - 9, W / 2 + 10); g.closePath(); g.fill();
     g.strokeStyle = 'rgba(233,220,164,.15)'; g.lineWidth = 2; g.beginPath(); g.arc(W / 2, W / 2, W / 2 - 30, 0, Math.PI * 2); g.stroke();
@@ -2578,7 +2836,7 @@ const Lobby = {
     const colors = ['olive', 'navy', 'blue', 'crimson', 'tan'];
     const clips = ['aim_idle', 'idle', 'aim_idle', 'idle', 'aim_idle'];
     colors.forEach((c, i) => {
-      const s = Models.soldier(c);
+      const s = Models.soldier(c); Models.setArmLight(s, i >= 1 && i <= 3); // middle three = your squad (blue), outer two = hostiles (red)
       const root = new THREE.Group(); root.add(s.model);
       const x = 5.2 + i * 1.15, z = 12.6 - Math.abs(i - 2) * 0.55;
       root.position.set(x, 0, z); root.rotation.y = (2 - i) * 0.12;
@@ -2709,13 +2967,13 @@ const Ui = {
       const tx = mt(m), rec = Save.data.missions[m.id], locked = i >= un;
       const c = el('button', 'mcard' + (locked ? ' locked' : '') + (rec && rec.cleared ? ' done' : '') + (!locked && !(rec && rec.cleared) ? ' next' : ''));
       c.innerHTML = `
-        <div class="num">0${i + 1}</div>
+        <div class="num">${String(i + 1).padStart(2, '0')}</div>
         <div class="tag mode">${esc(tx[1])}</div>
         <div class="title">${esc(tx[0])}</div>
         <div class="desc">${esc(tx[2])}</div>
         <div class="foot"><span class="stars">${[0, 1, 2].map((k) => `<i class="${rec && rec.stars > k ? 'on' : ''}"></i>`).join('')}</span><span>${rec && rec.best ? `${t('best')} ${fmtNum(rec.best)}` : locked ? '' : `<span style="color:var(--yellow)">${t('newOp')}</span>`}</span></div>
         ${locked ? `<div class="lock"><div>${ICONS.lock}<br>${t('locked')}<br><span class="muted">${t('lockedHint', { n: i })}</span></div></div>` : ''}`;
-      c.onclick = () => { if (locked) { c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); Audio.ui('deny'); return; } this.selMission = i; this.show('briefing', { wipe: true, label: `OP 0${i + 1}` }); };
+      c.onclick = () => { if (locked) { c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); Audio.ui('deny'); return; } this.selMission = i; this.show('briefing', { wipe: true, label: `OP ${String(i + 1).padStart(2, '0')}` }); };
       grid.appendChild(c);
     });
     $('.back', s).onclick = () => this.show('menu');
@@ -2734,7 +2992,7 @@ const Ui = {
       return `<div class="wcard${sel ? ' sel' : ''}${un ? '' : ' locked'}" data-w="${id}">${un ? '' : `<span class="wl">${t('unlockAt', { n: w.unlock })}</span>`}<div class="wn">${w.name}</div><div class="wt">${w.cls}</div>${w.stats.map((v, k) => `<div class="statbar"><span>${lbl[k]}</span><i style="--v:${v * 100}%"></i></div>`).join('')}</div>`;
     };
     s.innerHTML = `
-      <div class="topbar"><button class="back" aria-label="${t('back')}">${ICONS.back}</button><div><div class="h-kicker">${t('briefing')} · OP 0${i + 1}</div><h2 class="h-display" style="font-size:clamp(22px,4.4vw,44px)">${esc(tx[0])}</h2></div></div>
+      <div class="topbar"><button class="back" aria-label="${t('back')}">${ICONS.back}</button><div><div class="h-kicker">${t('briefing')} · OP ${String(i + 1).padStart(2, '0')}</div><h2 class="h-display" style="font-size:clamp(22px,4.4vw,44px)">${esc(tx[0])}</h2></div></div>
       <div class="wrap">
         <div class="brief-left stagger">
           <div class="tag" style="color:var(--yellow);align-self:flex-start">${esc(tx[1])}</div>
@@ -2823,7 +3081,7 @@ const Ui = {
   render_modal_pause() {
     const m = $('#m-pause'), mi = MISSIONS[Game.missionIndex];
     m.innerHTML = `<div class="box panel stagger">
-      <div class="h-kicker">${t('paused')} · OP 0${Game.missionIndex + 1}</div>
+      <div class="h-kicker">${t('paused')} · OP ${String(Game.missionIndex + 1).padStart(2, '0')}</div>
       <h2 class="h-display" style="font-size:28px">${esc(mt(mi)[0])}</h2>
       <button class="btn primary" data-a="resume">${ICONS.play}${t('resume')}</button>
       <button class="btn" data-a="restart">${t('restart')}</button>
@@ -2892,11 +3150,16 @@ const Ui = {
 const Game = {
   state: 'boot', actors: [], player: null, mode: null, missionIndex: 0, time: 0, active: false, over: false, paused: false,
   countdownT: 0, slowmo: 1, result: null, starting: false,
+  // Only NPCs inside the radius hear a noise; a wall in between halves the distance it carries.
   noise(src, radius) {
+    if (radius <= 0) return;
+    const from = src.chest(TMP.n1 || (TMP.n1 = new THREE.Vector3())), to = TMP.n2 || (TMP.n2 = new THREE.Vector3());
     for (const a of this.actors) {
       if (!a.bot || !a.alive || a.team === src.team) continue;
-      const r = radius * (a.bot.hearMul || 1);
-      if (dist2D(a.pos, src.pos) < r) a.bot.sense(src, false);
+      const r = radius * (a.bot.hearMul || 1), d = dist2D(a.pos, src.pos);
+      if (d >= r) continue;
+      if (d >= r * 0.5 && !World.los(from, a.eye(to))) continue;
+      a.bot.sense(src, false);
     }
   },
   async start(index, primary, secondary) {

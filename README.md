@@ -72,16 +72,22 @@ The standalone folder is **generated** from the Playables folder, so make game c
 |---|---|---|---|
 | 1 | **Operation: Last Light** | Extermination · time trial | 3:00 on the clock. Reach 15 eliminations (★ 15 / ★★ 25 / ★★★ 35) |
 | 2 | **Operation: Yellow Halls** | Team Deathmatch · 3v3 | First team to 20 eliminations |
-| 3 | **Operation: Keymaster** | Keycard Extraction | Find 3 hidden keycards, then extract at the lift |
+| 3 | **Operation: Keymaster** | Keycard Extraction | Find 3 hidden keycards, then extract at the lift. Hostiles are shown on the radar |
 | 4 | **Duel: The Mimic** | 1v1 Deathmatch | First to 15. The Mimic is armoured, regenerates, strafes and uses cover |
 | 5 | **Operation: No Second Chances** | Squads Survival · teams of 2 | One life each. Be the last duo standing (you can spectate your teammate if you fall) |
-| 6 | **Operation: Black Case** | Capture the Briefcase · time trial | Free-for-all with one life each. Be the last one standing holding the case, or hold it when 4:00 runs out |
+| 6 | **Operation: Black Case** | Capture the Briefcase · time trial | Free-for-all with respawns. Whoever holds the case when 4:00 runs out wins; NPCs chase the holder, and an NPC holder flees and hides |
 | 7 | **Operation: Override** | Siege · 6v6 · time trial | Hold Interact on both switches at the far ends of the enemy wing before they override yours (5:00) |
-| 8 | **Finale: Lights Out** | Keycard Extraction II | The power fails: flashlight only, hunters track your noise, the keycards are hidden deeper, and you have 3 lives |
+| 8 | **Operation: Holdout** | Waves | Survive 5 waves of growing squads in the central hall, 3 lives |
+| 9 | **Operation: Ghost Protocol** | Stealth assassination | Eliminate 3 marked officers. Being spotted raises an alarm and brings reinforcements, 3 lives |
+| 10 | **Operation: Hardpoint** | Hardpoint · 4v4 | Hold the zone (it moves every 60 s); first team to 150 points |
+| 11 | **Operation: Lights Out** | Keycard Extraction II | The power fails: flashlight only, hunters track your noise, keycards hidden deeper, 3 lives. Hostiles are shown on the radar |
+| 12 | **Finale: Zero Hour** | Boss assault | Kill the armoured Mimic and its hunters, then extract at the lift, 3 lives |
 
-Completed operations can be replayed at any time. Clearing the finale opens **Campaign Complete**, where **Start Over** resets the campaign (settings are kept). Weapons also unlock with progress: Tri-Barrel after Op 2, M4 after Op 3 and Sniper after Op 4.
+Completed operations can be replayed at any time. Clearing the finale (Op 12) opens **Campaign Complete**, where **Start Over** resets the campaign (settings are kept). Weapons also unlock with progress: Tri-Barrel after Op 2, M4 after Op 3 and Sniper after Op 4.
 
-**Team colours:** the soldier model ships without textures, so uniforms are tinted at runtime. Your squad is always **blue** and marked with a blue chevron. Hostiles wear navy, woodland olive, desert tan, crimson, urban grey, arctic white or black ops, depending on the mission.
+**Telling sides apart:** every soldier wears the same charcoal gear. A glowing band on the upper arm shows the side: **blue = your squad, red = hostile** (Call of Duty Mobile style). Teammates also have a blue chevron overhead.
+
+**How NPCs notice you:** they see in a 120° cone in front of them (walls block sight) and hear noise only nearby: your gunshots carry 14 m (sniper 18 m), NPC gunfire 12 m, walking 5 m, sprinting 10 m, landing a jump 6 m. Walls halve those distances, and **crouch-walking is silent**, so you can sneak up behind them.
 
 ---
 

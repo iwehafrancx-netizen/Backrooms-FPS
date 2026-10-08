@@ -5,8 +5,8 @@ await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[
 await page.click('#boot-enter');
 await page.evaluate(() => { const B = window.__BR; B.World._render = B.World.render; B.World.render = () => {}; });
 const results = [];
-for (let mi = 0; mi < 8; mi++) {
-  await page.evaluate((mi) => { const B = window.__BR; B.Save.data.unlocked = 8; const m = B.MISSIONS[mi]; B.Game.start(mi, m.primary, m.secondary); }, mi);
+for (let mi = 0; mi < 12; mi++) {
+  await page.evaluate((mi) => { const B = window.__BR; B.Save.data.unlocked = 12; const m = B.MISSIONS[mi]; B.Game.start(mi, m.primary, m.secondary); }, mi);
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   const r = await page.evaluate(async (mi) => {
     const B = window.__BR, G = B.Game; G.countdownT = 0; G.player.armor = 0.0001;
