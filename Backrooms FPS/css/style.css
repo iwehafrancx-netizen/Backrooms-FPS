@@ -467,39 +467,3 @@ input[type=range]::-moz-range-thumb { width: 18px; height: 18px; background: var
 .wm u { display: block; height: 3px; width: 46px; margin: 3px auto 0; background: linear-gradient(90deg, currentColor calc(var(--p) * 100%), rgba(255,255,255,.2) 0); }
 .wm.exit { color: #3df27a; } .wm.case { color: var(--yellow); } .wm.own { color: var(--blue); } .wm.enemy { color: var(--red); }
 .wm.edge { opacity: .85; } .wm.edge span { display: none; }
-
-/* ---------- progression: streaks, medals, damage numbers, XP breakdown, daily challenges ---------- */
-.streak { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: .55; transition: opacity .3s; }
-.streak.on { opacity: 1; }
-.streak .sk-n { font: 800 13px/1 var(--f-mono); letter-spacing: .2em; color: var(--yellow); min-height: 13px; }
-.sk-pips { display: flex; gap: 6px; }
-.sk-pips i { display: flex; align-items: center; gap: 5px; font-style: normal; padding: 4px 8px; background: rgba(11,10,7,.6); border: 1px solid var(--line); font: 700 9.5px/1 var(--f-mono); letter-spacing: .12em; color: var(--paper-dim); }
-.sk-pips i b { font: 800 12px/1 var(--f-display); color: var(--paper); }
-.sk-pips i.got { border-color: var(--yellow); color: var(--ink); background: var(--yellow); animation: rise .3s; }
-.sk-pips i.got b { color: var(--ink); }
-body.touch .streak { bottom: auto; top: 76px; transform: translateX(-50%) scale(.85); }
-.pop.medal { color: #ffe08a; font-size: 18px; display: flex; align-items: center; gap: 8px; }
-.pop.medal i { width: 16px; height: 16px; background: var(--yellow); clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
-.dmgnum { position: absolute; transform: translate(-50%, -50%); font: 800 16px/1 var(--f-display); color: #fff; text-shadow: 0 1px 3px #000; pointer-events: none; animation: dmgUp .75s ease-out forwards; }
-.dmgnum.head { color: var(--yellow); font-size: 19px; }
-@keyframes dmgUp { from { opacity: 1; margin-top: 0; } to { opacity: 0; margin-top: -40px; } }
-#overdrive { position: fixed; inset: 0; z-index: 19; pointer-events: none; opacity: 0; transition: opacity .3s; box-shadow: inset 0 0 90px 10px rgba(255,140,30,.55); }
-#overdrive.on { opacity: 1; animation: lowhp 1s infinite; }
-.xp-box { margin: 0 auto 14px; padding: 10px 14px; max-width: 520px; text-align: left; display: flex; flex-direction: column; gap: 6px; }
-.xp-row { display: flex; justify-content: space-between; font: 700 12px/1.2 var(--f-mono); letter-spacing: .16em; }
-.xp-row b { color: var(--yellow); font: 800 15px/1 var(--f-display); letter-spacing: .04em; }
-.medal-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
-.medal-chip { font: 700 10px/1 var(--f-mono); letter-spacing: .12em; padding: 5px 7px; border: 1px solid rgba(242,194,48,.5); color: #ffe08a; }
-.mastery-row { display: grid; grid-template-columns: 1fr 90px auto; gap: 8px; align-items: center; font: 700 10.5px/1.2 var(--f-mono); letter-spacing: .1em; color: var(--paper-dim); }
-.mastery-row em, .wmast, .daily em { display: block; height: 4px; background: rgba(255,255,255,.1); position: relative; overflow: hidden; }
-.mastery-row i, .wmast i, .daily em i { position: absolute; inset: 0; transform-origin: left; transform: scaleX(0); background: var(--yellow); transition: transform .9s cubic-bezier(.2,.8,.2,1); }
-.wmast { margin-top: 5px; }
-.daily { padding: 10px 12px; width: min(300px, 40vw); display: flex; flex-direction: column; gap: 7px; }
-.daily .ch-t { display: flex; justify-content: space-between; gap: 8px; font-size: 11.5px; line-height: 1.3; margin-bottom: 4px; }
-.daily .ch-t b { font: 700 11px/1.3 var(--f-mono); color: var(--yellow); white-space: nowrap; }
-.daily .ch.done { opacity: .6; }
-#rankup { align-items: center; justify-content: center; text-align: center; z-index: 65; background: radial-gradient(ellipse at center, rgba(42,37,18,.92), rgba(11,10,7,.97) 70%); cursor: pointer; }
-#rankup .rk-badge svg { width: 110px; height: 110px; animation: slam .8s cubic-bezier(.2,1.4,.4,1) both; }
-#rankup .tap { margin-top: 18px; font: 600 11px/1 var(--f-mono); letter-spacing: .3em; animation: blink 1.4s steps(1) infinite; }
-@media (max-height: 480px) { .daily { display: none; } .xp-box { margin-bottom: 8px; } }
-@media (orientation: portrait) and (max-width: 700px) { .daily { width: 100%; } }

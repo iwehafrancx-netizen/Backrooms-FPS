@@ -17,7 +17,7 @@ const r = await page.evaluate(() => {
   f.bot.agent.teleport(c); p.pos.set(pc.x, 0, pc.z); B.Player.ref = 0;
   step(60);
   const before = f.bot.brain.currentState.constructor.name;
-  B.Combat.damage(f, 65, p, false, 'ak47');
+  B.Combat.damage(f, f.maxHp * 0.65, p, false, 'ak47');
   const after = f.bot.brain.currentState.constructor.name, hp0 = Math.round(f.hp);
   const trace = [];
   for (let k = 0; k < 14; k++) {

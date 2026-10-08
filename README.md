@@ -91,20 +91,19 @@ Completed operations can be replayed at any time. Clearing the finale (Op 12) op
 
 **How NPCs notice you:** they see in a 120° cone in front of them (walls block sight) and hear noise only nearby: your gunshots carry 14 m (sniper 18 m), NPC gunfire 12 m, walking 5 m, sprinting 10 m, landing a jump 6 m. Walls halve those distances, and **crouch-walking is silent**, so you can sneak up behind them.
 
----
+**What NPCs know:** only what they see or hear. A noise or a shot from someone they can't see gives them a rough spot (1 m + about 18% of the distance off), never your real position. They search that area, check a couple of nearby corners, then give up.
 
-## Progression (what keeps players coming back)
-- **Kill streaks** (per life): 3 kills = **Recon Pulse** (all hostiles on radar 8 s), 5 = **Adrenaline** (full heal, faster reload and movement 10 s), 7 = **Overdrive** (×1.5 damage 12 s).
-- **Medals:** Double / Triple / Multi Kill, Longshot (30 m+), Silent Kill (crouched, unseen), Revenge, First Blood, Comeback. Each gives bonus XP.
-- **Supply drops:** fallen hostiles drop ammo (and a medkit 25% of the time). Walk over them to collect.
-- **Weapon mastery:** every weapon levels 1→5 from its kills.
-  - Lv2: faster reload
-  - Lv3: less recoil
-  - Lv4: +20% magazine
-  - Lv5: gold finish
-- **Daily challenges:** 3 per day, +1000 XP each, shown on the main menu.
-- **End screen:** XP breakdown (operation, medals, challenges, mastery), with a rank-up celebration when you reach a new rank.
-- Floating damage numbers (Settings → Damage numbers).
+**How NPCs fight:**
+- **Hurt** (under 40% HP): run to a spot you can't see, heal, then go back to where they last saw you.
+- **Outnumbered** (two or more enemies in view, no teammate nearby, already hurt): fall back and hold the angle crouched.
+- **Empty magazine:** reload behind cover, then come back out.
+- **Shot by someone they can't see:** turn toward the shot; most of the time they duck into cover first.
+- **Pushing:** they close in when you're badly hurt, when they can hear you reloading, or when their side has more players.
+- **Fighting back:** they stand and fight when no cover is close by, or when found at close range while hiding.
+
+**Patrols:** the map is split into 5 m cells. Each squad walks to the cells it hasn't checked for the longest time, and soldiers avoid cells a squadmate is already heading to. At each stop they look left and right. Each soldier skips a few random spots every life, so not every corner gets checked every time.
+
+---
 
 Ads: see [ADS-PLAN.md](ADS-PLAN.md) (plan only, nothing implemented).
 

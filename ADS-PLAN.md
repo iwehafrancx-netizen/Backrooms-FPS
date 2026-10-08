@@ -30,8 +30,6 @@ A web game ad SDK can be used here (for example a portal's own SDK, or Google's 
 |---|---|---|
 | Interstitial | Same post-mission slot as above | Same frequency cap (1 per 2 missions, 3 min apart) |
 | **Rewarded** (opt-in) | Death card in one-life modes (Survival, Ghost Protocol, Lights Out, Zero Hour) | "Watch an ad to **revive** once per mission" |
-| **Rewarded** (opt-in) | End screen | "Watch an ad for **2× XP** on this mission" (applies to XP only, never to the leaderboard score) |
-| **Rewarded** (opt-in) | Daily challenges panel | "Watch an ad to **reroll** one daily challenge" (once per day) |
 | Banner | Main menu only (bottom corner) | Never in gameplay, briefing or HUD |
 
 Rewarded ads are always the player's choice and give something extra, never something taken away. That keeps reviews positive and stops ads from feeling forced.
@@ -41,8 +39,7 @@ Rewarded ads are always the player's choice and give something extra, never some
   - The Playables build calls `ytgame.ads.requestInterstitialAd()` when available, with no rewarded ads.
   - The standalone build calls the chosen web SDK, or no-ops when none is configured.
 - Call sites:
-  - `Ui.render_end` button handlers (interstitial, 2× XP);
-  - `Hud.death` (revive);
-  - `Ui.dailyPanel` (reroll).
+  - `Ui.render_end` button handlers (interstitial);
+  - `Hud.death` (revive).
 - The frequency cap and session state live in memory, not in the save.
 - Tests: a mock SDK checks the cap, the "never mid-mission" rule, and that a failed ad never blocks the flow.
