@@ -98,6 +98,68 @@ out.decisions = await page.evaluate(() => {
   hurt.after = st() + ' hp=' + Math.round(f.hp); r.hurt = hurt;
   return r;
 });
+
+out.reflexes = await page.evaluate(() => {
+  const B = window.__BR, G = B.Game, p = G.player; p.armor = 0.0001;
+  const step = (n) => { for (let i = 0; i < n; i++) G.update(1 / 30); };
+  const f = G.actors.find((a) => a.bot && a.team === 'B'), b = f.bot;
+  const c = B.Nav.closest({ x: 8, y: 0, z: 12 }), pc = B.Nav.closest({ x: 8, y: 0, z: 22 });
+  b.brain.changeTo('patrol'); b.agent.teleport(c); f.pos.set(c.x, c.y, c.z); f.hp = f.maxHp; b.lastRetreat = -99; b.mag = 30;
+  p.pos.set(pc.x, 0, pc.z); B.Player.ref = 0; b.yaw = Math.atan2(pc.x - c.x, pc.z - c.z);
+  step(20);
+  let dodges = 0, jumps = 0, prevD = 0, prevJ = 0, moved = 0; const start = { x: f.pos.x, z: f.pos.z };
+  for (let k = 0; k < 40; k++) {
+    p.hp = p.maxHp; f.hp = f.maxHp; b.mag = 30;
+    const eye = p.eye(new THREE.Vector3()), dir = f.chest(new THREE.Vector3()).sub(eye).normalize();
+    B.Combat.shotFired(p, eye, dir);
+    step(6);
+    if (b.dodgeT > 0 && prevD <= 0) dodges++; if (b.jumpT > 0 && prevJ <= 0) jumps++;
+    prevD = b.dodgeT; prevJ = b.jumpT; moved = Math.max(moved, Math.hypot(f.pos.x - start.x, f.pos.z - start.z));
+  }
+  return { state: b.brain.currentState.constructor.name, shotsAtHim: 40, dodges, jumps, maxSideStep: moved.toFixed(1) + 'm', hp: f.maxHp };
+});
+out.hurtInTheOpen = await page.evaluate(() => {
+  const B = window.__BR, G = B.Game, p = G.player, b = G.actors.find((a) => a.bot && a.team === 'B').bot, f = b.a;
+  const step = (n) => { for (let i = 0; i < n; i++) G.update(1 / 30); };
+  b.brain.changeTo('patrol'); b.lastRetreat = -99; f.hp = f.maxHp; step(15);
+  const real = b.findCover.bind(b); b.findCover = (tp) => { const c = real(tp); return { ...c, hidden: false, away: true }; };
+  B.Combat.damage(f, f.maxHp * 0.6, p, false, 'ak47');
+  const r = { state: b.brain.currentState.constructor.name, reason: b.retreatReason };
+  b.findCover = real; return r;
+});
+out.lowMag = await page.evaluate(() => {
+  const B = window.__BR, G = B.Game, p = G.player, b = G.actors.find((a) => a.bot && a.team === 'B').bot, f = b.a;
+  const step = (n) => { for (let i = 0; i < n; i++) G.update(1 / 30); };
+  const c = B.Nav.closest({ x: 8, y: 0, z: 12 }), pc = B.Nav.closest({ x: 8, y: 0, z: 22 });
+  b.brain.changeTo('patrol'); b.agent.teleport(c); f.pos.set(c.x, c.y, c.z); f.hp = f.maxHp; b.lastRetreat = -99; b.reloadT = 0;
+  p.pos.set(pc.x, 0, pc.z); B.Player.ref = 0; b.yaw = Math.atan2(pc.x - c.x, pc.z - c.z);
+  step(20); b.mag = 4; b.burst = 0; b.fireCd = 0; let st = ''; for (let i = 0; i < 30 && !st.startsWith('Retreat'); i++) { step(1); st = b.brain.currentState.constructor.name; }
+  const r = { magBefore: 4, state: st, reason: b.retreatReason };
+  b.brain.changeTo('patrol'); b.target = null; b.memory.records.forEach((x) => b.forget(x)); b.mag = 10; b.reloadT = 0; b.brain.update(); r.patrolTopUp = 'mag ' + b.mag + ' reloading=' + (b.reloadT > 0);
+  return r;
+});
+await start(0);
+out.shotgunTwoShots = await page.evaluate(() => {
+  const B = window.__BR, G = B.Game, p = G.player, P = B.Player; G.countdownT = 0; B.World.render = () => {}; p.armor = 0.0001;
+  const step = (n) => { for (let i = 0; i < n; i++) G.update(1 / 30); };
+  const foes = G.actors.filter((a) => a.bot); for (const a of foes) { a.bot.brain.update = () => {}; a.bot.perceive = () => { a.bot.target = null; }; }
+  const f = foes[0], b = f.bot; G.mode.m = Object.assign({}, G.mode.m, { target: 1e9 }); P.setLoadout('ak47', 'shotgun'); P.equip(1, true); step(20);
+  const res = {};
+  for (const d of [4, 6, 8, 10]) {
+    let kills = 0;
+    for (let k = 0; k < 20; k++) {
+      for (const a of foes) if (a !== f) { a.bot.agent.teleport({ x: 27, y: 0, z: -22 }); a.pos.set(27, 0, -22); }
+      const pp = B.Nav.closest({ x: 8, y: 0, z: 12 }), fp = B.Nav.closest({ x: 8, y: 0, z: 12 + d });
+      if (!f.alive) b.spawn(fp); f.spawnTime = -99; f.hp = f.maxHp; b.agent.teleport(fp); f.pos.set(fp.x, fp.y, fp.z); b.jumpT = 0; f.crouching = false;
+      p.pos.set(pp.x, 0, pp.z); P.ref = 0; p.hp = p.maxHp; p.crouching = false;
+      const cam = B.World.camera; cam.position.copy(p.eye(new THREE.Vector3())); cam.lookAt(f.chest(new THREE.Vector3())); cam.updateMatrixWorld(true);
+      for (let s = 0; s < 2 && f.alive; s++) { P.slot.mag = 3; P.fireCd = 0; P.bloom = 0; P.fire(); }
+      if (!f.alive) kills++;
+    }
+    res[d + 'm'] = kills * 5 + '%';
+  }
+  return res;
+});
 console.log(JSON.stringify(out, null, 1));
 console.log('errors', log.errors);
 await browser.close();

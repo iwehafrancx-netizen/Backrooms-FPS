@@ -1464,6 +1464,7 @@ const Player = {
       const killed = Combat.damage(b, dmg, a, anyHead, def.id);
       if (killed) anyKill = true;
     }
+    Combat.shotFired(a, origin, fwd);
     if (anyHit) { this.shotsHit++; Hud.hitmarker(anyKill ? 'kill' : anyHead ? 'head' : ''); Audio.hit(anyHead); }
     const k = def.recoil * (a.crouching ? 0.75 : 1) * (1 - this.adsT * 0.35);
     const climb = k * rand(0.55, 0.85);
@@ -1539,6 +1540,14 @@ const Player = {
 };
 
 const Combat = {
+  shotFired(shooter, origin, dir) {
+    for (const o of Game.actors) {
+      if (!o.bot || !o.alive || o.team === shooter.team) continue;
+      const dx = o.pos.x - origin.x, dy = o.pos.y + 1.2 - origin.y, dz = o.pos.z - origin.z, L = Math.hypot(dx, dy, dz);
+      if (L > 60 || (dx * dir.x + dy * dir.y + dz * dir.z) / L < 0.985) continue;
+      o.bot.underFire(shooter);
+    }
+  },
   damage(victim, amount, attacker, head, weaponId) {
     if (!victim.alive || Game.over) return false;
     if (victim.protectedNow) return false;
@@ -1580,6 +1589,7 @@ function defineAI() {
       if (b.target) { b.brain.changeTo('engage'); return; }
       const heard = b.bestMemory();
       if (heard) { b.brain.changeTo('hunt'); return; }
+      b.topUp();
       if (b.pauseT > 0) { b.pauseT -= b.dt; b.scan(); if (b.pauseT > 0) return; b.goalT = 0; }
       b.goalT -= b.dt;
       const v = b.agent ? b.agent.velocity() : { x: 0, z: 0 };
@@ -1622,6 +1632,7 @@ function defineAI() {
         }
       }
       if (b.huntT > 30) { b.forget(m); b.brain.changeTo('patrol'); }
+      if (b.searchT > 0) b.topUp();
     }
     exit(b) { b.crouchWanted = false; }
   }
@@ -1635,7 +1646,8 @@ function defineAI() {
       b.reactT -= b.dt;
       b.assessT -= b.dt;
       if (b.assessT <= 0) { b.assessT = 0.4; if (b.assess(tg, d)) return; }
-      if (b.mag <= 0 && b.reloadT <= 0 && d > 6 && Game.time - b.lastRetreat > 4 && b.tryRetreat('reload', tg)) return;
+      const lowMag = b.mag <= 0 || (def.mag > 5 && b.mag <= def.mag * 0.2 && b.fireCd <= 0 && b.burst <= 0);
+      if (lowMag && b.reloadT <= 0 && d > 6 && Game.time - b.lastRetreat > 4 && b.tryRetreat('reload', tg)) return;
       const pref = def.pellets ? 5 : def.scope ? 22 : b.elite ? 9 : 12;
       b.strafeT -= b.dt;
       if (b.strafeT <= 0) {
@@ -1648,8 +1660,9 @@ function defineAI() {
         else if (d > pref * 1.4) { px += toX * 3; pz += toZ * 3; } else if (d < pref * 0.55) { px -= toX * 2.5; pz -= toZ * 2.5; }
         const p = Nav.closest({ x: px, y: 0, z: pz }); if (p) b.moveTo(p);
         b.crouchWanted = b.push ? false : b.elite ? Math.random() < 0.35 : Math.random() < 0.12;
+        if (!b.crouchWanted && Math.random() < (b.elite ? 0.18 : 0.08)) b.jump();
       }
-      b.setSpeed(b.push ? b.runSpeed * 0.8 : b.strafeSpeed);
+      b.setSpeed(b.dodgeT > 0 ? b.runSpeed : b.push ? b.runSpeed * 0.8 : b.strafeSpeed);
       if (b.reactT <= 0) b.shootAt(tg);
     }
     exit(b) { b.faceTarget = null; b.crouchWanted = false; b.push = false; }
@@ -1721,6 +1734,7 @@ class Bot {
     this.fireCd = 0; this.burst = 0; this.mag = WEAPONS[this.weaponId].mag; this.reloadT = 0; this.repathT = 0; this.lastRetreat = -99;
     this.stepAcc = 0; this.lastPos = new T.Vector3(); this.corpseT = 0;
     this.lookYaw = 0; this.lookUntil = 0; this.scanBase = 0; this.scanT0 = 0; this.pauseT = 0; this.patrolCell = -1; this.goalIsPatrol = false; this.skipCells = new Set(); this.cellT = 0; this.push = false;
+    this.jumpT = 0; this.jumpY = 0; this.jumpV = 0; this.dodgeT = 0; this.dodgeCd = 0; this.lastUnderFire = -99;
     this._yv = new Y.Vector3();
   }
   get pos() { return this.a.pos; }
@@ -1758,6 +1772,7 @@ class Bot {
     this.root.visible = true; this.gun.visible = true;
     this.mixer.stopAllAction(); this.anim = null; this.play('aim_idle');
     this.lookUntil = 0; this.pauseT = 0; this.patrolCell = -1; this.goalIsPatrol = false; this.push = false; this.lastAttacker = null;
+    this.jumpT = 0; this.jumpY = 0; this.dodgeT = 0; this.dodgeCd = 0; this.lastUnderFire = -99;
     this.skipCells.clear(); if (Nav.cells) for (let i = 0; i < Nav.cells.length; i++) if (Math.random() < 0.12) this.skipCells.add(i);
     this.brain.currentState = null; this.brain.changeTo('patrol');
     this.marker.visible = Game.player && a.team === Game.player.team;
@@ -1796,14 +1811,35 @@ class Bot {
       const q = rec.lastSensedPosition;
       this.lookYaw = Math.atan2(q.x - this.a.pos.x, q.z - this.a.pos.z); this.lookUntil = Game.time + 1.2;
     }
-    if (this.shouldRetreat()) { this.tryRetreat('hurt', seen ? attacker : null); return; }
+    if (this.shouldRetreat() && this.tryRetreat('hurt', seen ? attacker : null)) return;
+    if (seen) this.underFire(attacker);
     const st = this.brain.currentState;
     if (!seen && rec && !(st instanceof AI.Retreat) && !(st instanceof AI.Engage) && Game.time - this.lastRetreat > 5 && Math.random() < (this.elite ? 0.45 : 0.7)) this.tryRetreat('ambushed', null);
   }
   shouldRetreat() {
     const st = this.brain.currentState;
     if (!this.a.alive || st instanceof AI.Retreat || st instanceof AI.Dead) return false;
-    return this.a.hp < this.a.maxHp * (this.elite ? 0.35 : 0.4) && Game.time - this.lastRetreat > 8;
+    return this.a.hp < this.a.maxHp * (this.elite ? 0.35 : 0.45) && Game.time - this.lastRetreat > 6;
+  }
+  underFire(shooter) {
+    this.lastUnderFire = Game.time;
+    if (!this.a.alive || this.target !== shooter || Game.time < this.dodgeCd) return;
+    this.dodgeCd = Game.time + (this.elite ? rand(0.5, 1.0) : rand(0.8, 1.6));
+    if (Math.random() > 0.45 + this.skill * 0.4 + (this.elite ? 0.15 : 0)) return;
+    if (this.brain.currentState instanceof AI.Retreat) { if (!this.hiding && Math.random() < 0.5) this.jump(); return; }
+    this.dodge(shooter);
+  }
+  dodge(shooter) {
+    const a = this.a.pos, dx = shooter.pos.x - a.x, dz = shooter.pos.z - a.z, d = Math.hypot(dx, dz) || 1;
+    const side = Math.random() < 0.5 ? -1 : 1, r = rand(2, 3.5);
+    const p = Nav.closest({ x: a.x - (dz / d) * side * r, y: 0, z: a.z + (dx / d) * side * r });
+    if (p) { this.moveTo(p); this.dodgeT = 0.7; this.strafeT = Math.max(this.strafeT || 0, 0.7); this.crouchWanted = false; }
+    if (Math.random() < (this.elite ? 0.45 : 0.3)) this.jump();
+  }
+  jump() {
+    if (this.jumpT > 0) return;
+    this.crouchWanted = false; this.a.crouching = false;
+    this.jumpT = 1e-4; this.jumpV = rand(3.6, 4.3);
   }
   threatPosOf(actor) {
     if (!actor) { const m = this.bestMemory(); return m ? m.lastSensedPosition : null; }
@@ -1816,7 +1852,7 @@ class Bot {
     if (st instanceof AI.Retreat || st instanceof AI.Dead) return false;
     const tp = this.threatPosOf(threat || this.lastAttacker);
     const c = this.findCover(tp);
-    if (!c.hidden) { this.lastRetreat = Game.time; return false; }
+    if (!c.hidden && !(reason === 'hurt' && c.away)) { this.lastRetreat = Game.time; return false; }
     this.retreatReason = reason; this.coverPos = c.pos; this.threatPos = tp ? { x: tp.x, y: tp.y, z: tp.z } : null;
     this.brain.changeTo('retreat');
     return true;
@@ -1827,9 +1863,13 @@ class Bot {
     for (const o of Game.actors) if (o !== a && o.alive && o.team === a.team && dist2D(o.pos, a.pos) < 12) allies++;
     const hp = a.hp / a.maxHp;
     if (foes >= 2 && allies === 0 && hp < 0.75 && Game.time - this.lastRetreat > 6 && this.tryRetreat('outnumbered', tg)) return true;
-    const tgReloading = d < 15 && (tg.isPlayer ? Player.reloadT > 0 : !!(tg.bot && tg.bot.reloadT > 0));
+    const tgReloading = d < 18 && (tg.isPlayer ? Player.reloadT > 0 || Player.switchT > 0 : !!(tg.bot && tg.bot.reloadT > 0));
     this.push = !a.carrying && (tg.hp < tg.maxHp * 0.35 || tgReloading || (allies >= foes + 1 && hp > 0.6));
     return false;
+  }
+  topUp() {
+    const def = WEAPONS[this.weaponId];
+    if (this.reloadT <= 0 && this.mag < def.mag * 0.6) { this.reloadT = def.reload * 1.15; this.mag = def.mag; }
   }
   startScan() { this.scanBase = this.yaw; this.scanT0 = Game.time; }
   scan() { this.lookYaw = this.scanBase + Math.sin((Game.time - this.scanT0) * 1.7) * 1.2; this.lookUntil = Game.time + 0.15; }
@@ -1837,8 +1877,8 @@ class Bot {
     const a = this.a.pos, eye = tp ? new THREE.Vector3(tp.x, (tp.y || 0) + 1.5, tp.z) : null, probe = new THREE.Vector3();
     const away = tp ? Math.atan2(a.x - tp.x, a.z - tp.z) : rand(0, Math.PI * 2);
     let best = null, bestScore = Infinity;
-    for (let i = 0; i < 10; i++) {
-      const ang = away + rand(-1.3, 1.3), r = rand(5, 14);
+    for (let i = 0; i < 14; i++) {
+      const ang = away + rand(-1.3, 1.3), r = rand(5, 16);
       const c = Nav.closest({ x: a.x + Math.sin(ang) * r, y: 0, z: a.z + Math.cos(ang) * r });
       if (!c) continue;
       probe.set(c.x, 1.3, c.z);
@@ -1847,7 +1887,8 @@ class Bot {
       const score = dist2D(c, a) + (hidden ? 0 : 100) + (closer ? 50 : 0);
       if (score < bestScore) { bestScore = score; best = c; }
     }
-    return best ? { pos: best, hidden: bestScore < 100 } : { pos: Nav.randomAround(a, 10), hidden: false };
+    if (!best) return { pos: Nav.randomAround(a, 10), hidden: false, away: false };
+    return { pos: best, hidden: bestScore < 100, away: !tp || dist2D(best, tp) > dist2D(a, tp) + 4 };
   }
   sense(actor, visible, exact) {
     let r = this.memory.getRecord(actor.ent);
@@ -1922,6 +1963,7 @@ class Bot {
     }
     const bv = this.agent ? this.agent.velocity() : { x: 0, z: 0 };
     if (Math.hypot(bv.x, bv.z) > 1) p *= this.elite ? 0.92 : 0.78;
+    if (this.jumpT > 0) p *= 0.55;
     const rec = tg.ent && this.memory.getRecord(tg.ent);
     if (rec && Game.time - rec.timeBecameVisible < 0.6) p *= 0.5;
     const chest = tg.chest(new THREE.Vector3());
@@ -1936,6 +1978,7 @@ class Bot {
       FX.tracer(muzzle, chest.clone().add(new THREE.Vector3(rand(-0.15, 0.15), rand(-0.2, 0.2), rand(-0.15, 0.15))));
       Combat.damage(tg, total * (tg.isPlayer ? this.dmgMul * Game.mode.botDamageMul : 1), this.a, head, this.weaponId);
     } else {
+      if (tg.bot && tg.alive) tg.bot.underFire(this.a);
       const miss = chest.clone().add(new THREE.Vector3(rand(-1.2, 1.2), rand(-0.6, 1.0), rand(-1.2, 1.2)));
       const dir = miss.clone().sub(muzzle).normalize();
       const hit = World.rayWalls(muzzle, dir, 60, World.mapMeshes);
@@ -1949,6 +1992,11 @@ class Bot {
     if (this.corpse) this.updateCorpse(dt);
     if (!a.alive) return;
     if (this.agent) { const p = this.agent.position(); a.pos.set(p.x, p.y, p.z); }
+    if (this.jumpT > 0) {
+      this.jumpT += dt; this.jumpY = this.jumpV * this.jumpT - 7 * this.jumpT * this.jumpT;
+      if (this.jumpY <= 0) { this.jumpT = 0; this.jumpY = 0; Audio.step(a.pos, false, false); } else a.pos.y += this.jumpY;
+    }
+    if (this.dodgeT > 0) this.dodgeT -= dt;
     this.repathT -= dt; this.fireCd -= dt; if (this.reloadT > 0) this.reloadT -= dt;
     this.perceiveT -= dt;
     if (this.perceiveT <= 0) { this.perceiveT = this.elite ? 0.12 : 0.2; this.perceive(); }
@@ -1983,6 +2031,7 @@ class Bot {
         else { if (speed > 2.2) { anim = 'run_back'; ts = speed / 1.5; } else { anim = 'walk_back'; ts = speed / 0.7; } }
       } else { anim = side > 0 ? 'strafe_right' : 'strafe_left'; ts = speed / 2.3; }
     } else if (a.crouching) { anim = 'walk_crouch'; ts = 0.0001; }
+    if (this.jumpT > 0) { anim = 'run'; ts = 0.08; }
     this.play(anim);
     if (this.anim) this.anim.timeScale = clamp(ts, 0.0001, 1.8);
     const far = camPos && a.pos.distanceToSquared(camPos) > 30 * 30;
@@ -2018,7 +2067,7 @@ class Mode {
   get timeLeft() { return Math.max(0, this.timeLimit - Game.time); }
   callsign() { return CALLSIGNS[(this.callIdx++) % CALLSIGNS.length]; }
   makeBot(team, opts = {}) {
-    const actor = new Actor({ name: opts.name || this.callsign(), team, hp: opts.hp || 125 });
+    const actor = new Actor({ name: opts.name || this.callsign(), team, hp: opts.hp || 160 });
     if (opts.armor) actor.armor = opts.armor;
     new Bot(actor, { skill: this.m.skill, ...opts });
     Game.actors.push(actor);
@@ -2460,7 +2509,7 @@ class Assassination extends Mode {
     this.spawnActor(p, Nav.randomInZone(MAP.zones.west));
     const east = MAP.zones.east, central = MAP.zones.central;
     this.officers = ['A', 'B', 'C'].map((l) => {
-      const a = this.makeBot('B', { name: 'OFFICER ' + l, hp: 150, armor: 0.9, weapon: 'pistol', zone: east, visionRange: 26 });
+      const a = this.makeBot('B', { name: 'OFFICER ' + l, hp: 190, armor: 0.9, weapon: 'pistol', zone: east, visionRange: 26 });
       a.officer = true; a.lives = 1; return a;
     });
     for (let i = 0; i < this.m.patrols; i++) { const a = this.makeBot('B', { weapon: pick(['ak47', 'm4']), zone: i % 2 ? central : east, visionRange: 28 }); a.lives = 1; }
