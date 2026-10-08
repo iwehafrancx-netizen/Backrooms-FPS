@@ -42,6 +42,12 @@ const WEAPONS = {
   pistol:  { id: 'pistol', name: 'M9 SIDEARM', cls: 'PISTOL', slot: 'secondary', model: 'pistol', axis: '-x', len: 0.24, auto: false, dmg: 28, head: 2.0, rpm: 380, mag: 12, reserve: 72, reload: 1.35, spread: 0.011, adsSpread: 0.0035, recoil: 0.018, range: 70, zoom: 1.25, snd: 'pistol', stats: [0.45, 0.6, 0.6, 0.95] },
   shotgun: { id: 'shotgun', name: 'TRI-BARREL', cls: 'SHOTGUN', slot: 'secondary', model: 'shotgun', axis: '+x', len: 0.46, auto: false, pellets: 9, dmg: 19, botDmg: 14, head: 1.5, rpm: 110, mag: 3, reserve: 30, reload: 2.1, spread: 0.055, adsSpread: 0.04, recoil: 0.065, range: 32, zoom: 1.15, snd: 'shotgun', stats: [0.95, 0.3, 0.2, 0.85] },
 };
+const CREDITS = [
+  '"Weathered AK47" by mikelkel2, CC BY 4.0, sketchfab.com/mikelkel2',
+  '"9mm Pistol" by TORI106, CC BY 4.0, sketchfab.com/TORI106',
+  '"Triple barrel shotgun pistol" by Long Nguyễn, CC BY 4.0, sketchfab.com/LongNguyen89',
+  'three.js, Yuka, recast-navigation: MIT License',
+];
 const PRIMARIES = ['ak47', 'm4', 'sniper'];
 const SECONDARIES = ['pistol', 'shotgun'];
 const SHOP = { shotgun: 6000, ak47: 10000, m4: 15000, sniper: 22000 };
@@ -96,7 +102,7 @@ const STR = {
     campaignComplete: 'CAMPAIGN COMPLETE', campaignText: 'You walked out of Level 0. Every operation is cleared and every mission stays open to replay. Want the full climb again?', startOver: 'Start over', keepPlaying: 'Keep playing',
     confirmReset: 'Reset the campaign? Mission progress and best scores are wiped. Settings are kept.', yes: 'Yes, reset', cancel: 'Cancel',
     paused: 'PAUSED',
-    sens: 'Look sensitivity', invert: 'Invert look (Y)', fov: 'Field of view', quality: 'Graphics quality', volume: 'Master volume', music: 'Ambience volume', language: 'Language', showFps: 'Show FPS', touchSize: 'Touch button size', aimAssist: 'Aim assist (touch/gamepad)', autoFire: 'Auto-fire (touch)', resetCampaign: 'Reset campaign', auto: 'AUTO', low: 'LOW', med: 'MED', high: 'HIGH',
+    sens: 'Look sensitivity', invert: 'Invert look (Y)', fov: 'Field of view', quality: 'Graphics quality', volume: 'Master volume', music: 'Ambience volume', language: 'Language', credits: 'Credits', showFps: 'Show FPS', touchSize: 'Touch button size', aimAssist: 'Aim assist (touch/gamepad)', autoFire: 'Auto-fire (touch)', resetCampaign: 'Reset campaign', auto: 'AUTO', low: 'LOW', med: 'MED', high: 'HIGH',
     ctlDesktop: 'KEYBOARD & MOUSE', ctlTouch: 'TOUCH', ctlPad: 'GAMEPAD',
     move: 'Move', look: 'Look', fire: 'Fire', aim: 'Aim down sights', reload: 'Reload', jump: 'Jump', crouch: 'Crouch', sprint: 'Sprint', swap: 'Swap weapon', interact: 'Interact / hold', pauseK: 'Pause',
     leftStick: 'Left stick', rightStick: 'Right stick', dragRight: 'Drag right side', joystick: 'Left joystick (push to edge = sprint)',
@@ -123,7 +129,7 @@ const STR = {
     kills: 'BAJAS', deaths: 'MUERTES', accuracy: 'PRECISIÓN', headshots: 'TIROS A LA CABEZA', time: 'TIEMPO',
     unlocked: 'NUEVA OPERACIÓN DESBLOQUEADA', campaignComplete: 'CAMPAÑA COMPLETADA', campaignText: 'Escapaste del Nivel 0. Todas las operaciones superadas, y puedes repetir cualquier misión. ¿Empezar la escalada otra vez?', startOver: 'Empezar de nuevo', keepPlaying: 'Seguir jugando',
     confirmReset: '¿Reiniciar la campaña? Se borran el progreso y los récords. Los ajustes se conservan.', yes: 'Sí, reiniciar', cancel: 'Cancelar', paused: 'PAUSA',
-    sens: 'Sensibilidad', invert: 'Invertir eje Y', fov: 'Campo de visión', quality: 'Calidad gráfica', volume: 'Volumen general', music: 'Volumen ambiente', language: 'Idioma', showFps: 'Mostrar FPS', touchSize: 'Tamaño de botones', aimAssist: 'Asistencia de apuntado', autoFire: 'Disparo automático (táctil)', resetCampaign: 'Reiniciar campaña', auto: 'AUTO', low: 'BAJA', med: 'MEDIA', high: 'ALTA',
+    sens: 'Sensibilidad', invert: 'Invertir eje Y', fov: 'Campo de visión', quality: 'Calidad gráfica', volume: 'Volumen general', music: 'Volumen ambiente', language: 'Idioma', credits: 'Créditos', showFps: 'Mostrar FPS', touchSize: 'Tamaño de botones', aimAssist: 'Asistencia de apuntado', autoFire: 'Disparo automático (táctil)', resetCampaign: 'Reiniciar campaña', auto: 'AUTO', low: 'BAJA', med: 'MEDIA', high: 'ALTA',
     ctlDesktop: 'TECLADO Y RATÓN', ctlTouch: 'TÁCTIL', ctlPad: 'MANDO', move: 'Mover', look: 'Mirar', fire: 'Disparar', aim: 'Apuntar', reload: 'Recargar', jump: 'Saltar', crouch: 'Agacharse', sprint: 'Correr', swap: 'Cambiar arma', interact: 'Interactuar / mantener', pauseK: 'Pausa',
     leftStick: 'Stick izquierdo', rightStick: 'Stick derecho', dragRight: 'Arrastra a la derecha', joystick: 'Joystick izquierdo (al borde = correr)',
     eliminated: 'ELIMINADO', headshot: 'A LA CABEZA', youDied: 'CAÍDO', killedBy: 'ELIMINADO POR {n}', respawnIn: 'REAPARECES EN {s}', outOfLives: 'SIN VIDAS', spectating: 'OBSERVANDO A {n}', youAreOut: 'ESTÁS FUERA — TU EQUIPO SIGUE LUCHANDO',
@@ -145,7 +151,7 @@ const STR = {
     kills: 'ABATES', deaths: 'MORTES', accuracy: 'PRECISÃO', headshots: 'NA CABEÇA', time: 'TEMPO',
     unlocked: 'NOVA OPERAÇÃO LIBERADA', campaignComplete: 'CAMPANHA CONCLUÍDA', campaignText: 'Você saiu do Nível 0. Todas as operações foram concluídas e qualquer missão pode ser jogada de novo. Encarar a subida outra vez?', startOver: 'Recomeçar', keepPlaying: 'Continuar jogando',
     confirmReset: 'Reiniciar a campanha? O progresso e os recordes serão apagados. As configurações são mantidas.', yes: 'Sim, reiniciar', cancel: 'Cancelar', paused: 'PAUSADO',
-    sens: 'Sensibilidade', invert: 'Inverter eixo Y', fov: 'Campo de visão', quality: 'Qualidade gráfica', volume: 'Volume geral', music: 'Volume ambiente', language: 'Idioma', showFps: 'Mostrar FPS', touchSize: 'Tamanho dos botões', aimAssist: 'Assistência de mira', autoFire: 'Disparo automático (toque)', resetCampaign: 'Reiniciar campanha', auto: 'AUTO', low: 'BAIXA', med: 'MÉDIA', high: 'ALTA',
+    sens: 'Sensibilidade', invert: 'Inverter eixo Y', fov: 'Campo de visão', quality: 'Qualidade gráfica', volume: 'Volume geral', music: 'Volume ambiente', language: 'Idioma', credits: 'Créditos', showFps: 'Mostrar FPS', touchSize: 'Tamanho dos botões', aimAssist: 'Assistência de mira', autoFire: 'Disparo automático (toque)', resetCampaign: 'Reiniciar campanha', auto: 'AUTO', low: 'BAIXA', med: 'MÉDIA', high: 'ALTA',
     ctlDesktop: 'TECLADO E MOUSE', ctlTouch: 'TOQUE', ctlPad: 'CONTROLE', move: 'Mover', look: 'Olhar', fire: 'Atirar', aim: 'Mirar', reload: 'Recarregar', jump: 'Pular', crouch: 'Agachar', sprint: 'Correr', swap: 'Trocar arma', interact: 'Interagir / segurar', pauseK: 'Pausar',
     leftStick: 'Analógico esquerdo', rightStick: 'Analógico direito', dragRight: 'Arraste à direita', joystick: 'Joystick esquerdo (na borda = correr)',
     eliminated: 'ELIMINADO', headshot: 'NA CABEÇA', youDied: 'ABATIDO', killedBy: 'ABATIDO POR {n}', respawnIn: 'RETORNO EM {s}', outOfLives: 'SEM VIDAS', spectating: 'ASSISTINDO {n}', youAreOut: 'VOCÊ ESTÁ FORA — SEU ESQUADRÃO CONTINUA',
@@ -167,7 +173,7 @@ const STR = {
     kills: 'ÉLIMINATIONS', deaths: 'MORTS', accuracy: 'PRÉCISION', headshots: 'TIRS À LA TÊTE', time: 'TEMPS',
     unlocked: 'NOUVELLE OPÉRATION DÉBLOQUÉE', campaignComplete: 'CAMPAGNE TERMINÉE', campaignText: 'Vous êtes sorti du Niveau 0. Toutes les opérations sont terminées et chaque mission peut être rejouée. Repartir de zéro ?', startOver: 'Recommencer', keepPlaying: 'Continuer',
     confirmReset: 'Réinitialiser la campagne ? La progression et les records seront effacés. Les options sont conservées.', yes: 'Oui, réinitialiser', cancel: 'Annuler', paused: 'PAUSE',
-    sens: 'Sensibilité', invert: 'Inverser l’axe Y', fov: 'Champ de vision', quality: 'Qualité graphique', volume: 'Volume général', music: 'Volume ambiance', language: 'Langue', showFps: 'Afficher les FPS', touchSize: 'Taille des boutons', aimAssist: 'Aide à la visée', autoFire: 'Tir automatique (tactile)', resetCampaign: 'Réinitialiser la campagne', auto: 'AUTO', low: 'BAS', med: 'MOY', high: 'HAUT',
+    sens: 'Sensibilité', invert: 'Inverser l’axe Y', fov: 'Champ de vision', quality: 'Qualité graphique', volume: 'Volume général', music: 'Volume ambiance', language: 'Langue', credits: 'Crédits', showFps: 'Afficher les FPS', touchSize: 'Taille des boutons', aimAssist: 'Aide à la visée', autoFire: 'Tir automatique (tactile)', resetCampaign: 'Réinitialiser la campagne', auto: 'AUTO', low: 'BAS', med: 'MOY', high: 'HAUT',
     ctlDesktop: 'CLAVIER ET SOURIS', ctlTouch: 'TACTILE', ctlPad: 'MANETTE', move: 'Se déplacer', look: 'Regarder', fire: 'Tirer', aim: 'Viser', reload: 'Recharger', jump: 'Sauter', crouch: 'S’accroupir', sprint: 'Sprinter', swap: 'Changer d’arme', interact: 'Interagir / maintenir', pauseK: 'Pause',
     leftStick: 'Stick gauche', rightStick: 'Stick droit', dragRight: 'Glisser à droite', joystick: 'Joystick gauche (au bord = sprint)',
     eliminated: 'ÉLIMINÉ', headshot: 'TIR À LA TÊTE', youDied: 'TOMBÉ', killedBy: 'ÉLIMINÉ PAR {n}', respawnIn: 'RETOUR DANS {s}', outOfLives: 'PLUS DE VIES', spectating: 'SPECTATEUR : {n}', youAreOut: 'VOUS ÊTES HORS JEU — VOTRE ESCOUADE CONTINUE',
@@ -3402,6 +3408,7 @@ const Ui = {
         <div class="setting"><span>${t('showFps')}</span>${tog('fps')}</div>
         <div class="setting"><span>${t('language')}</span>${seg('lang', [['auto', t('auto')], ['en', 'EN'], ['es', 'ES'], ['pt', 'PT'], ['fr', 'FR']])}</div>
         ${Game.state !== 'play' ? `<div class="setting"><span>${t('resetCampaign')}</span><button class="btn small danger" data-a="reset">${t('resetCampaign')}</button></div>` : ''}
+        <div class="credits"><span>${t('credits')}</span>${CREDITS.map((c) => `<p>${c}</p>`).join('')}</div>
       </div></div>`;
     $('[data-a=close]', m).onclick = () => this.closeModal();
     $$('input[type=range]', m).forEach((inp) => inp.oninput = () => {

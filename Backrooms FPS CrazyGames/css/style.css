@@ -371,6 +371,9 @@ body.paused .crosshair, body.paused .hitmarker { display: none; }
 .modal .box.wide { width: min(760px, 100%); }
 .modal .box .scroll { min-height: 0; }
 .setting { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.credits { padding: 12px 0 4px; font: 11px/1.5 var(--f-mono); color: var(--paper-dim); }
+.credits span { display: block; margin-bottom: 4px; color: var(--yellow); letter-spacing: .14em; text-transform: uppercase; }
+.credits p { margin: 0; }
 .setting .val { font: 12px/1 var(--f-mono); color: var(--yellow); min-width: 36px; text-align: right; }
 .seg { display: inline-flex; border: 1px solid var(--line); }
 .seg button { background: transparent; border: 0; padding: 8px 12px; cursor: pointer; font: 700 11px/1 var(--f-mono); letter-spacing: .12em; color: var(--paper-dim); }
