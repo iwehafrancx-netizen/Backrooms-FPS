@@ -297,6 +297,8 @@ body.ingame #view canvas { cursor: none; }
 
 .interact { position: absolute; left: 50%; top: 64%; transform: translateX(-50%); font: 700 13px/1 var(--f-mono); letter-spacing: .16em; background: rgba(11,10,7,.78); padding: 9px 14px; border: 1px solid var(--line); display: none; }
 .interact.on { display: block; animation: rise .25s; }
+.lock-hint { position: absolute; left: 50%; top: 58%; transform: translateX(-50%); font: 700 12px/1 var(--f-mono); letter-spacing: .2em; color: var(--ink); background: var(--yellow); padding: 9px 14px; display: none; pointer-events: none; }
+.lock-hint.on { display: block; animation: rise .25s; }
 .interact kbd { background: var(--yellow); color: var(--ink); padding: 2px 6px; margin-right: 8px; font: inherit; }
 
 .dmg-dir { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }

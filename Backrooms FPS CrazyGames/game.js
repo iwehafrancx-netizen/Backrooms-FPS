@@ -95,7 +95,7 @@ const STR = {
     play: 'Campaign', settings: 'Settings', controls: 'Controls', resume: 'Resume', restart: 'Restart', abort: 'Abort mission', back: 'Back',
     rank: 'RANK', totalScore: 'CAMPAIGN SCORE', ofMissions: '{a}/{b} MISSIONS',
     selectMission: 'Select operation', operations: 'OPERATIONS', locked: 'LOCKED', lockedHint: 'CLEAR OP {n} TO UNLOCK', best: 'BEST', newOp: 'NEW',
-    briefing: 'MISSION BRIEFING', objectives: 'OBJECTIVES', loadout: 'LOADOUT', primary: 'PRIMARY', secondary: 'SECONDARY', deploy: 'Deploy', cp: 'CP', cpBalance: 'COMBAT POINTS', cpEarned: '+{n} CP', watchAd: 'WATCH AD', thisMission: 'THIS MISSION', noThanks: 'NO THANKS', none: 'NONE', sidearmOnly: 'SIDEARM ONLY', notEnough: 'NOT ENOUGH CP', bought: '{w} UNLOCKED', adUnavailable: 'No ad available right now. Try again later.', adLoading: 'LOADING AD…', offerTitle: 'WEAPON OFFER', offerText: 'Take it into this mission now, or unlock it for good with Combat Points.', outTitle: 'OUT OF LIVES', outText: 'Revive right where you fell, or restart the mission from the beginning.', revive: 'REVIVE', restartMission: 'RESTART', playNow: 'PLAY', price: 'PRICE', range: 'RANGE', rpm: 'RPM', magazine: 'MAG', earnHint: 'Earn CP from missions, headshots and multi-kills.', getAmmo: 'GET AMMO', ammoRefilled: 'AMMO REFILLED', outOfAmmoHint: 'OUT OF AMMO — GET AMMO ▶', tryWeapon: 'TRY THIS WEAPON', equip: 'EQUIP', watchAnAd: 'Watch an ad', stronger: 'HOSTILES ARE GETTING STRONGER EVERY OPERATION', buy: 'BUY', buyNow: 'BUY NOW', or: 'OR', tapConfirm: 'TAP TO CONFIRM',
+    briefing: 'MISSION BRIEFING', objectives: 'OBJECTIVES', loadout: 'LOADOUT', primary: 'PRIMARY', secondary: 'SECONDARY', deploy: 'Deploy', cp: 'CP', cpBalance: 'COMBAT POINTS', cpEarned: '+{n} CP', watchAd: 'WATCH AD', thisMission: 'THIS MISSION', noThanks: 'NO THANKS', none: 'NONE', sidearmOnly: 'SIDEARM ONLY', notEnough: 'NOT ENOUGH CP', bought: '{w} UNLOCKED', adUnavailable: 'No ad available right now. Try again later.', adLoading: 'LOADING AD…', offerTitle: 'WEAPON OFFER', offerText: 'Take it into this mission now, or unlock it for good with Combat Points.', outTitle: 'OUT OF LIVES', outText: 'Revive right where you fell, or restart the mission from the beginning.', revive: 'REVIVE', restartMission: 'RESTART', playNow: 'PLAY', price: 'PRICE', range: 'RANGE', rpm: 'RPM', magazine: 'MAG', earnHint: 'Earn CP from missions, headshots and multi-kills.', getAmmo: 'GET AMMO', ammoRefilled: 'AMMO REFILLED', outOfAmmoHint: 'OUT OF AMMO — GET AMMO ▶', tryWeapon: 'TRY THIS WEAPON', equip: 'EQUIP', watchAnAd: 'Watch an ad', clickToAim: 'CLICK TO AIM', stronger: 'HOSTILES ARE GETTING STRONGER EVERY OPERATION', buy: 'BUY', buyNow: 'BUY NOW', or: 'OR', tapConfirm: 'TAP TO CONFIRM',
     dmg: 'DMG', rof: 'RATE', acc: 'ACC', mob: 'MOB',
     intelMode: 'MODE', intelTeams: 'SQUADS', intelTime: 'TIME',
     victory: 'VICTORY', defeat: 'DEFEAT', missionComplete: 'MISSION COMPLETE', missionFailed: 'MISSION FAILED', newBest: 'NEW PERSONAL BEST', next: 'Next mission', retry: 'Retry', menu: 'Menu',
@@ -125,7 +125,7 @@ const STR = {
     tagline: 'NIVEL 0 // OPERACIONES TÁCTICAS', play: 'Campaña', settings: 'Ajustes', controls: 'Controles', resume: 'Continuar', restart: 'Reiniciar', abort: 'Abandonar misión', back: 'Volver',
     rank: 'RANGO', totalScore: 'PUNTUACIÓN DE CAMPAÑA', ofMissions: '{a}/{b} MISIONES',
     selectMission: 'Elige operación', operations: 'OPERACIONES', locked: 'BLOQUEADA', lockedHint: 'SUPERA LA OP {n} PARA DESBLOQUEAR', best: 'RÉCORD', newOp: 'NUEVA',
-    briefing: 'INFORME DE MISIÓN', objectives: 'OBJETIVOS', loadout: 'EQUIPO', primary: 'PRINCIPAL', secondary: 'SECUNDARIA', deploy: 'Desplegar', cp: 'CP', cpBalance: 'PUNTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANUNCIO', thisMission: 'ESTA MISIÓN', noThanks: 'NO, GRACIAS', none: 'NINGUNA', sidearmOnly: 'SOLO PISTOLA', notEnough: 'CP INSUFICIENTES', bought: '{w} DESBLOQUEADA', adUnavailable: 'No hay anuncios disponibles ahora. Inténtalo más tarde.', adLoading: 'CARGANDO ANUNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Llévala a esta misión ahora o desbloquéala para siempre con Puntos de Combate.', outTitle: 'SIN VIDAS', outText: 'Revive donde caíste o reinicia la misión desde el principio.', revive: 'REVIVIR', restartMission: 'REINICIAR', playNow: 'JUGAR', price: 'PRECIO', range: 'ALCANCE', rpm: 'DPM', magazine: 'CARGADOR', earnHint: 'Gana CP con misiones, disparos a la cabeza y bajas múltiples.', getAmmo: 'MUNICIÓN', ammoRefilled: 'MUNICIÓN RECARGADA', outOfAmmoHint: 'SIN MUNICIÓN — CONSEGUIR ▶', tryWeapon: 'PRUEBA ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver un anuncio', stronger: 'LOS HOSTILES SON MÁS FUERTES EN CADA OPERACIÓN', buy: 'COMPRAR', buyNow: 'COMPRAR YA', or: 'O', tapConfirm: 'TOCA PARA CONFIRMAR',
+    briefing: 'INFORME DE MISIÓN', objectives: 'OBJETIVOS', loadout: 'EQUIPO', primary: 'PRINCIPAL', secondary: 'SECUNDARIA', deploy: 'Desplegar', cp: 'CP', cpBalance: 'PUNTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANUNCIO', thisMission: 'ESTA MISIÓN', noThanks: 'NO, GRACIAS', none: 'NINGUNA', sidearmOnly: 'SOLO PISTOLA', notEnough: 'CP INSUFICIENTES', bought: '{w} DESBLOQUEADA', adUnavailable: 'No hay anuncios disponibles ahora. Inténtalo más tarde.', adLoading: 'CARGANDO ANUNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Llévala a esta misión ahora o desbloquéala para siempre con Puntos de Combate.', outTitle: 'SIN VIDAS', outText: 'Revive donde caíste o reinicia la misión desde el principio.', revive: 'REVIVIR', restartMission: 'REINICIAR', playNow: 'JUGAR', price: 'PRECIO', range: 'ALCANCE', rpm: 'DPM', magazine: 'CARGADOR', earnHint: 'Gana CP con misiones, disparos a la cabeza y bajas múltiples.', getAmmo: 'MUNICIÓN', ammoRefilled: 'MUNICIÓN RECARGADA', outOfAmmoHint: 'SIN MUNICIÓN — CONSEGUIR ▶', tryWeapon: 'PRUEBA ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver un anuncio', clickToAim: 'HAZ CLIC PARA APUNTAR', stronger: 'LOS HOSTILES SON MÁS FUERTES EN CADA OPERACIÓN', buy: 'COMPRAR', buyNow: 'COMPRAR YA', or: 'O', tapConfirm: 'TOCA PARA CONFIRMAR',
     dmg: 'DAÑO', rof: 'CAD.', acc: 'PREC.', mob: 'MOV.', intelMode: 'MODO', intelTeams: 'EQUIPOS', intelTime: 'TIEMPO',
     victory: 'VICTORIA', defeat: 'DERROTA', missionComplete: 'MISIÓN CUMPLIDA', missionFailed: 'MISIÓN FALLIDA', newBest: 'NUEVO RÉCORD PERSONAL', next: 'Siguiente misión', retry: 'Reintentar', menu: 'Menú',
     kills: 'BAJAS', deaths: 'MUERTES', accuracy: 'PRECISIÓN', headshots: 'TIROS A LA CABEZA', time: 'TIEMPO',
@@ -147,7 +147,7 @@ const STR = {
     tagline: 'NÍVEL 0 // OPERAÇÕES TÁTICAS', play: 'Campanha', settings: 'Configurações', controls: 'Controles', resume: 'Continuar', restart: 'Reiniciar', abort: 'Abandonar missão', back: 'Voltar',
     rank: 'PATENTE', totalScore: 'PONTUAÇÃO DA CAMPANHA', ofMissions: '{a}/{b} MISSÕES',
     selectMission: 'Escolha a operação', operations: 'OPERAÇÕES', locked: 'BLOQUEADA', lockedHint: 'CONCLUA A OP {n} PARA LIBERAR', best: 'RECORDE', newOp: 'NOVA',
-    briefing: 'BRIEFING DA MISSÃO', objectives: 'OBJETIVOS', loadout: 'EQUIPAMENTO', primary: 'PRIMÁRIA', secondary: 'SECUNDÁRIA', deploy: 'Implantar', cp: 'CP', cpBalance: 'PONTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANÚNCIO', thisMission: 'ESTA MISSÃO', noThanks: 'NÃO, OBRIGADO', none: 'NENHUMA', sidearmOnly: 'SÓ PISTOLA', notEnough: 'CP INSUFICIENTE', bought: '{w} DESBLOQUEADA', adUnavailable: 'Nenhum anúncio disponível agora. Tente mais tarde.', adLoading: 'CARREGANDO ANÚNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Leve-a para esta missão agora ou desbloqueie-a para sempre com Pontos de Combate.', outTitle: 'SEM VIDAS', outText: 'Reviva onde caiu ou reinicie a missão do começo.', revive: 'REVIVER', restartMission: 'REINICIAR', playNow: 'JOGAR', price: 'PREÇO', range: 'ALCANCE', rpm: 'DPM', magazine: 'PENTE', earnHint: 'Ganhe CP com missões, tiros na cabeça e abates múltiplos.', getAmmo: 'MUNIÇÃO', ammoRefilled: 'MUNIÇÃO RECARREGADA', outOfAmmoHint: 'SEM MUNIÇÃO — PEGAR ▶', tryWeapon: 'EXPERIMENTE ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver um anúncio', stronger: 'OS HOSTIS FICAM MAIS FORTES A CADA OPERAÇÃO', buy: 'COMPRAR', buyNow: 'COMPRAR AGORA', or: 'OU', tapConfirm: 'TOQUE PARA CONFIRMAR',
+    briefing: 'BRIEFING DA MISSÃO', objectives: 'OBJETIVOS', loadout: 'EQUIPAMENTO', primary: 'PRIMÁRIA', secondary: 'SECUNDÁRIA', deploy: 'Implantar', cp: 'CP', cpBalance: 'PONTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANÚNCIO', thisMission: 'ESTA MISSÃO', noThanks: 'NÃO, OBRIGADO', none: 'NENHUMA', sidearmOnly: 'SÓ PISTOLA', notEnough: 'CP INSUFICIENTE', bought: '{w} DESBLOQUEADA', adUnavailable: 'Nenhum anúncio disponível agora. Tente mais tarde.', adLoading: 'CARREGANDO ANÚNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Leve-a para esta missão agora ou desbloqueie-a para sempre com Pontos de Combate.', outTitle: 'SEM VIDAS', outText: 'Reviva onde caiu ou reinicie a missão do começo.', revive: 'REVIVER', restartMission: 'REINICIAR', playNow: 'JOGAR', price: 'PREÇO', range: 'ALCANCE', rpm: 'DPM', magazine: 'PENTE', earnHint: 'Ganhe CP com missões, tiros na cabeça e abates múltiplos.', getAmmo: 'MUNIÇÃO', ammoRefilled: 'MUNIÇÃO RECARREGADA', outOfAmmoHint: 'SEM MUNIÇÃO — PEGAR ▶', tryWeapon: 'EXPERIMENTE ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver um anúncio', clickToAim: 'CLIQUE PARA MIRAR', stronger: 'OS HOSTIS FICAM MAIS FORTES A CADA OPERAÇÃO', buy: 'COMPRAR', buyNow: 'COMPRAR AGORA', or: 'OU', tapConfirm: 'TOQUE PARA CONFIRMAR',
     dmg: 'DANO', rof: 'CAD.', acc: 'PREC.', mob: 'MOB.', intelMode: 'MODO', intelTeams: 'ESQUADRÕES', intelTime: 'TEMPO',
     victory: 'VITÓRIA', defeat: 'DERROTA', missionComplete: 'MISSÃO CUMPRIDA', missionFailed: 'MISSÃO FALHOU', newBest: 'NOVO RECORDE PESSOAL', next: 'Próxima missão', retry: 'Tentar de novo', menu: 'Menu',
     kills: 'ABATES', deaths: 'MORTES', accuracy: 'PRECISÃO', headshots: 'NA CABEÇA', time: 'TEMPO',
@@ -169,7 +169,7 @@ const STR = {
     tagline: 'NIVEAU 0 // OPÉRATIONS TACTIQUES', play: 'Campagne', settings: 'Options', controls: 'Commandes', resume: 'Reprendre', restart: 'Recommencer', abort: 'Abandonner', back: 'Retour',
     rank: 'GRADE', totalScore: 'SCORE DE CAMPAGNE', ofMissions: '{a}/{b} MISSIONS',
     selectMission: 'Choisir une opération', operations: 'OPÉRATIONS', locked: 'VERROUILLÉE', lockedHint: 'TERMINEZ L’OP {n} POUR DÉBLOQUER', best: 'RECORD', newOp: 'NOUVEAU',
-    briefing: 'BRIEFING DE MISSION', objectives: 'OBJECTIFS', loadout: 'ÉQUIPEMENT', primary: 'PRINCIPALE', secondary: 'SECONDAIRE', deploy: 'Déployer', cp: 'PC', cpBalance: 'POINTS DE COMBAT', cpEarned: '+{n} PC', watchAd: 'VOIR UNE PUB', thisMission: 'CETTE MISSION', noThanks: 'NON MERCI', none: 'AUCUNE', sidearmOnly: 'PISTOLET SEUL', notEnough: 'PC INSUFFISANTS', bought: '{w} DÉBLOQUÉE', adUnavailable: 'Aucune pub disponible pour le moment. Réessayez plus tard.', adLoading: 'CHARGEMENT DE LA PUB…', offerTitle: 'OFFRE D’ARME', offerText: 'Emportez-la dans cette mission maintenant, ou débloquez-la pour de bon avec des Points de Combat.', outTitle: 'PLUS DE VIES', outText: 'Ressuscitez là où vous êtes tombé, ou recommencez la mission depuis le début.', revive: 'RESSUSCITER', restartMission: 'RECOMMENCER', playNow: 'JOUER', price: 'PRIX', range: 'PORTÉE', rpm: 'CPM', magazine: 'CHARGEUR', earnHint: 'Gagnez des PC avec les missions, les tirs à la tête et les éliminations multiples.', getAmmo: 'MUNITIONS', ammoRefilled: 'MUNITIONS RECHARGÉES', outOfAmmoHint: 'PLUS DE MUNITIONS — RECHARGER ▶', tryWeapon: 'ESSAYEZ CETTE ARME', equip: 'ÉQUIPER', watchAnAd: 'Voir une pub', stronger: 'LES HOSTILES SONT PLUS FORTS À CHAQUE OPÉRATION', buy: 'ACHETER', buyNow: 'ACHETER', or: 'OU', tapConfirm: 'TOUCHEZ POUR CONFIRMER',
+    briefing: 'BRIEFING DE MISSION', objectives: 'OBJECTIFS', loadout: 'ÉQUIPEMENT', primary: 'PRINCIPALE', secondary: 'SECONDAIRE', deploy: 'Déployer', cp: 'PC', cpBalance: 'POINTS DE COMBAT', cpEarned: '+{n} PC', watchAd: 'VOIR UNE PUB', thisMission: 'CETTE MISSION', noThanks: 'NON MERCI', none: 'AUCUNE', sidearmOnly: 'PISTOLET SEUL', notEnough: 'PC INSUFFISANTS', bought: '{w} DÉBLOQUÉE', adUnavailable: 'Aucune pub disponible pour le moment. Réessayez plus tard.', adLoading: 'CHARGEMENT DE LA PUB…', offerTitle: 'OFFRE D’ARME', offerText: 'Emportez-la dans cette mission maintenant, ou débloquez-la pour de bon avec des Points de Combat.', outTitle: 'PLUS DE VIES', outText: 'Ressuscitez là où vous êtes tombé, ou recommencez la mission depuis le début.', revive: 'RESSUSCITER', restartMission: 'RECOMMENCER', playNow: 'JOUER', price: 'PRIX', range: 'PORTÉE', rpm: 'CPM', magazine: 'CHARGEUR', earnHint: 'Gagnez des PC avec les missions, les tirs à la tête et les éliminations multiples.', getAmmo: 'MUNITIONS', ammoRefilled: 'MUNITIONS RECHARGÉES', outOfAmmoHint: 'PLUS DE MUNITIONS — RECHARGER ▶', tryWeapon: 'ESSAYEZ CETTE ARME', equip: 'ÉQUIPER', watchAnAd: 'Voir une pub', clickToAim: 'CLIQUEZ POUR VISER', stronger: 'LES HOSTILES SONT PLUS FORTS À CHAQUE OPÉRATION', buy: 'ACHETER', buyNow: 'ACHETER', or: 'OU', tapConfirm: 'TOUCHEZ POUR CONFIRMER',
     dmg: 'DÉG.', rof: 'CAD.', acc: 'PRÉC.', mob: 'MOB.', intelMode: 'MODE', intelTeams: 'ESCOUADES', intelTime: 'TEMPS',
     victory: 'VICTOIRE', defeat: 'DÉFAITE', missionComplete: 'MISSION ACCOMPLIE', missionFailed: 'MISSION ÉCHOUÉE', newBest: 'NOUVEAU RECORD PERSONNEL', next: 'Mission suivante', retry: 'Réessayer', menu: 'Menu',
     kills: 'ÉLIMINATIONS', deaths: 'MORTS', accuracy: 'PRÉCISION', headshots: 'TIRS À LA TÊTE', time: 'TEMPS',
@@ -570,7 +570,7 @@ const Input = (() => {
     interactHeld: false, touch: false, gamepad: false, locked: false, enabled: false,
   };
   const press = (a) => st.pressed.add(a);
-  let mouseDown = false, rmb = false, canvas = null, lockFailed = false;
+  let mouseDown = false, rmb = false, canvas = null, lockFailed = false, lockFails = 0, lockedOnce = false;
 
   function onKey(e, down) {
     if (!st.enabled) return;
@@ -596,29 +596,32 @@ const Input = (() => {
   window.addEventListener('blur', () => { keys.clear(); mouseDown = false; rmb = false; st.interactHeld = false; st.sprintKey = false; });
 
   let plc = null;
+  const lockRefused = () => { lockFails++; if (!lockedOnce && lockFails >= 3) lockFailed = true; };
   function requestLock() {
-    if (!canvas || st.touch || lockFailed) return;
+    if (!canvas || st.touch || lockFailed || st.locked) return;
+    if (!canvas.requestPointerLock) { lockFailed = true; return; }
     if (!plc && THREE.PointerLockControls) {
       plc = new THREE.PointerLockControls(World.camera, canvas); plc.pointerSpeed = 0;
       plc.addEventListener('unlock', () => { st.locked = false; });
     }
     try {
       const p = canvas.requestPointerLock && canvas.requestPointerLock();
-      if (p && p.catch) p.catch(() => { lockFailed = true; });
-    } catch (e) { lockFailed = true; }
+      if (p && p.catch) p.catch(lockRefused);
+    } catch (e) { lockRefused(); }
   }
   document.addEventListener('pointerlockchange', () => {
     const was = st.locked;
     st.locked = document.pointerLockElement === canvas;
+    if (st.locked) { lockFails = 0; lockedOnce = true; lockFailed = false; }
     if (was && !st.locked && st.enabled) press('pause');
   });
-  document.addEventListener('pointerlockerror', () => { lockFailed = true; });
+  document.addEventListener('pointerlockerror', lockRefused);
 
   function attach(c) {
     canvas = c;
     c.addEventListener('mousedown', (e) => {
       if (!st.enabled || st.touch) return;
-      if (!st.locked && !lockFailed) requestLock();
+      if (!st.locked && !lockFailed) { requestLock(); return; }
       if (e.button === 0) mouseDown = true;
       if (e.button === 2) rmb = true;
     });
@@ -740,6 +743,7 @@ const Input = (() => {
   return {
     st, attach, buildTouch, setTouch, requestLock,
     get lockFailed() { return lockFailed; },
+    get needsLock() { return !st.touch && !lockFailed && !st.locked; },
     enable(on) {
       st.enabled = on; st.pressed.clear(); st.lookX = st.lookY = 0; mouseDown = false; rmb = false;
       if (!on) { st.touchFire = false; st.touchAds = false; st.interactHeld = false; $$('#touch .tbtn').forEach((b) => b.classList.remove('on')); if (document.pointerLockElement) document.exitPointerLock(); }
@@ -2232,7 +2236,7 @@ class Mode {
   get timeLeft() { return Math.max(0, this.timeLimit - Game.time); }
   callsign() { return CALLSIGNS[(this.callIdx++) % CALLSIGNS.length]; }
   makeBot(team, opts = {}) {
-    const actor = new Actor({ name: opts.name || this.callsign(), team, hp: opts.hp || 160 });
+    const actor = new Actor({ name: opts.name || this.callsign(), team, hp: opts.hp || 125 });
     if (opts.armor) actor.armor = opts.armor;
     new Bot(actor, { skill: this.m.skill, ...opts });
     Game.actors.push(actor);
@@ -2674,7 +2678,7 @@ class Assassination extends Mode {
     this.spawnActor(p, Nav.randomInZone(MAP.zones.west));
     const east = MAP.zones.east, central = MAP.zones.central;
     this.officers = ['A', 'B', 'C'].map((l) => {
-      const a = this.makeBot('B', { name: 'OFFICER ' + l, hp: 190, armor: 0.9, weapon: 'pistol', zone: east, visionRange: 26 });
+      const a = this.makeBot('B', { name: 'OFFICER ' + l, hp: 150, armor: 0.9, weapon: 'pistol', zone: east, visionRange: 26 });
       a.officer = true; a.lives = 1; return a;
     });
     for (let i = 0; i < this.m.patrols; i++) { const a = this.makeBot('B', { weapon: pick(['ak47', 'm4']), zone: i % 2 ? central : east, visionRange: 28 }); a.lives = 1; }
@@ -2828,6 +2832,7 @@ const Hud = {
       <div class="banner"></div>
       <div class="countdown"></div>
       <div class="interact"></div>
+      <div class="lock-hint">${t('clickToAim')}</div>
       <svg class="progress-ring" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="5"/><circle class="pr" cx="32" cy="32" r="27" fill="none" stroke="#f2c230" stroke-width="5" stroke-linecap="butt" stroke-dasharray="169.6" stroke-dashoffset="169.6" transform="rotate(-90 32 32)"/></svg>
       <div class="deathcard"><div class="k"></div><div class="by"></div><div class="t"></div></div>
       <div class="spectate"></div>`;
@@ -2838,7 +2843,7 @@ const Hud = {
       hpnum: q('.hpnum'), hpbar: q('.bar.hp'), hpI: q('.bar.hp i'), hpE: q('.bar.hp em'), lives: q('.vitals .lives'),
       wname: q('.wname'), count: q('.ammo .count'), pips: q('.ammo .pips'), reload: q('.ammo .reload'), alt: q('.ammo .alt'),
       cross: q('.crosshair'), hit: q('.hitmarker'), dmg: q('.dmg-dir'), pops: q('.popups'), banner: q('.banner'), cd: q('.countdown'),
-      ammoAd: q('.ammo-ad'), interact: q('.interact'), ring: q('.progress-ring'), ringC: q('.progress-ring .pr'), death: q('.deathcard'), spec: q('.spectate'), markers: q('.markers'), fps: q('.fps'),
+      ammoAd: q('.ammo-ad'), lockHint: q('.lock-hint'), interact: q('.interact'), ring: q('.progress-ring'), ringC: q('.progress-ring .pr'), death: q('.deathcard'), spec: q('.spectate'), markers: q('.markers'), fps: q('.fps'),
     });
     q('.hud-pause').addEventListener('click', () => Game.openPause());
     this.els.ammoAd.addEventListener('click', (e) => { e.stopPropagation(); Game.getAmmo(); });
@@ -2936,6 +2941,8 @@ const Hud = {
   update(dt) {
     const p = Game.player, m = Game.mode, e = this.els;
     if (!p || !m) return;
+    const aim = Input.needsLock && Game.state === 'play' && !Game.paused && !Game.over && p.alive;
+    if (aim !== this.aimHint) { this.aimHint = aim; e.lockHint.classList.toggle('on', aim); }
     const hp = Math.max(0, p.hp), frac = hp / p.maxHp;
     if (Math.round(hp) !== this.lastHp) { this.lastHp = Math.round(hp); e.hpnum.textContent = this.lastHp; e.hpI.style.transform = `scaleX(${frac})`; e.hpE.style.transform = `scaleX(${frac})`; e.hpbar.classList.toggle('low', frac < 0.3); }
     const hd = m.hud();
@@ -3027,7 +3034,7 @@ const Hud = {
 };
 
 const Lobby = {
-  hero: null, t: 0, active: false, fov: 40, low: 0.45,
+  hero: null, t: 0, active: false, fov: 40, low: 0.45, grip: 0.15, lift: -0.01,
   init() {
     const T = THREE, s = Models.soldier();
     for (const l of s.armLights) { l.band.visible = false; l.halo.visible = false; }
@@ -3036,13 +3043,15 @@ const Lobby = {
     const blob = new T.Mesh(new T.PlaneGeometry(1.3, 1.3), new T.MeshBasicMaterial({ map: Tex.blob, transparent: true, depthWrite: false, opacity: 0.9 })); blob.rotation.x = -Math.PI / 2; blob.position.y = 0.015; root.add(blob);
     const mixer = new T.AnimationMixer(s.model);
     const act = mixer.clipAction(Assets.npc.animations.find((a) => a.name === 'idle')); act.timeScale = 0.8; act.play();
-    const arms = []; s.model.traverse((o) => { if (o.isBone && /(Left|Right)Arm$/.test(o.name)) arms.push(o); });
+    const arms = []; let left = null, right = null; s.model.traverse((o) => { if (!o.isBone) return; if (/(Left|Right)Arm$/.test(o.name)) arms.push(o); if (/LeftHandMiddle1$/.test(o.name)) left = o; if (/RightHandMiddle1$/.test(o.name)) right = o; });
     const gun = Models.gun('m4');
     const key = new T.PointLight(0xffd9a8, 0, 7, 1.6); key.position.set(6.4, 2.3, 14.3);
     const rim = new T.PointLight(0x7fb2ff, 0, 6, 1.6); rim.position.set(8.5, 2.1, 11.6);
     const fill = new T.PointLight(0xfff0d8, 0, 6, 2); fill.position.set(8.2, 1.2, 15.2);
-    World.scene.add(root, gun, key, rim, fill);
-    this.hero = { root, mixer, hand: s.hand, arms, gun, yaw: root.rotation.y, lights: [[key, 14], [rim, 22], [fill, 2]] };
+    const showKey = new T.PointLight(0xfff2c8, 0, 4, 1.2), showRim = new T.PointLight(0xf2c230, 0, 4, 1.2);
+    this.showLights = [[showKey, 3.5, new T.Vector3(0.4, 0.5, 0.9)], [showRim, 2.5, new T.Vector3(-0.6, 0.2, -0.5)]];
+    World.scene.add(root, gun, key, rim, fill, showKey, showRim);
+    this.hero = { root, mixer, hand: right || s.hand, left, arms, gun, yaw: root.rotation.y, lights: [[key, 14], [rim, 22], [fill, 2]] };
     this.show(false);
   },
   show(on) {
@@ -3054,15 +3063,15 @@ const Lobby = {
   },
   showcase(id, anchor = null) {
     if (this.display) { World.scene.remove(this.display); this.display = null; }
+    for (const [l] of this.showLights || []) l.intensity = 0;
     this.anchor = anchor;
     if (!id) return;
     const g = Models.gun(id), box = new THREE.Box3().setFromObject(g), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
     g.position.sub(c);
     const spin = new THREE.Group(); spin.add(g);
     const holder = new THREE.Group(); holder.add(spin); holder.userData.len = Math.max(size.x, size.y, size.z); holder.userData.spin = spin;
-    const key = new THREE.PointLight(0xfff2c8, 3.5, 4, 1.2); key.position.set(0.4, 0.5, 0.9); holder.add(key);
-    const rim = new THREE.PointLight(0xf2c230, 2.5, 4, 1.2); rim.position.set(-0.6, 0.2, -0.5); holder.add(rim);
     this.display = holder; this.displayT = 0; World.scene.add(holder);
+    for (const [l, k] of this.showLights) l.intensity = k;
   },
   update(dt) {
     this.t += dt;
@@ -3079,10 +3088,13 @@ const Lobby = {
       ax.set(Math.cos(h.yaw), 0, -Math.sin(h.yaw)).applyQuaternion(q.invert());
       b.quaternion.premultiply(r.setFromAxisAngle(ax, this.low));
     }
-    const tmp = TMP.l || (TMP.l = new T.Vector3());
-    h.hand.getWorldPosition(tmp);
-    h.gun.position.copy(tmp); h.gun.rotation.order = 'YXZ'; h.gun.rotation.set(-this.low, h.yaw + Math.PI, 0);
-    const len = h.gun.userData.box.max.z - h.gun.userData.box.min.z; h.gun.translateZ(-len * 0.18); h.gun.translateY(0.03);
+    const rh = TMP.l || (TMP.l = new T.Vector3()), lh = TMP.lh || (TMP.lh = new T.Vector3()), dir = TMP.ld || (TMP.ld = new T.Vector3());
+    h.hand.getWorldPosition(rh); h.left.getWorldPosition(lh);
+    dir.subVectors(lh, rh).normalize();
+    const b = h.gun.userData.box, len = b.max.z - b.min.z;
+    h.gun.position.copy(rh).addScaledVector(dir, len * this.grip);
+    h.gun.lookAt(lh.copy(h.gun.position).sub(dir));
+    h.gun.translateY(this.lift);
     this.updateDisplay(dt);
     Audio.listener.x = cam.position.x; Audio.listener.z = cam.position.z;
   },
@@ -3106,6 +3118,7 @@ const Lobby = {
     this.display.position.copy(cam.localToWorld(new THREE.Vector3(x, y, -d)));
     this.display.quaternion.copy(cam.quaternion);
     this.display.scale.setScalar(len / this.display.userData.len);
+    for (const [l, , off] of this.showLights) l.position.copy(off).multiplyScalar(this.display.scale.x).applyQuaternion(cam.quaternion).add(this.display.position);
     const sp = this.display.userData.spin;
     sp.rotation.set(Math.sin(this.displayT * 0.6) * 0.1, Math.PI / 2 + Math.sin(this.displayT * 0.8) * 0.55, 0);
   },
@@ -3308,7 +3321,7 @@ const Ui = {
           </div></div>`;
         const adBtn = $('[data-a=ad]', m);
         if (adBtn) adBtn.onclick = async () => { Lobby.showcase(null); if (await Ads.reward('rent-' + id)) { Arsenal.rent(id, mission); close(true); } else { render(); Lobby.showcase(id, $('.mini-view', m)); } };
-        $('[data-a=no]', m).onclick = () => close(false);
+        $('[data-a=no]', m).onclick = () => { Input.requestLock(); close(false); };
       };
       render();
       this.openModal('m-mini');
@@ -3446,7 +3459,7 @@ const Ui = {
         <div class="setting"><span>${t('sens')}</span>${range('sens', 0.2, 3, 0.05, (v) => (+v).toFixed(2))}</div>
         <div class="setting"><span>${t('invert')}</span>${tog('invert')}</div>
         <div class="setting"><span>${t('fov')}</span>${range('fov', 65, 105, 1, (v) => v + '°')}</div>
-        <div class="setting"><span>${t('quality')}</span>${seg('quality', [['auto', st.quality === 'auto' ? `${t('auto')} · ${t(World.qualityLevel)}` : t('auto')], ['low', t('low')], ['med', t('med')], ['high', t('high')]])}</div>
+        <div class="setting"><span>${t('quality')}</span>${seg('quality', [['auto', t('auto')], ['low', t('low')], ['med', t('med')], ['high', t('high')]])}</div>
         <div class="setting"><span>${t('volume')}</span>${range('volume', 0, 1, 0.05, (v) => Math.round(v * 100) + '%')}</div>
         <div class="setting"><span>${t('music')}</span>${range('music', 0, 1, 0.05, (v) => Math.round(v * 100) + '%')}</div>
         <div class="setting"><span>${t('aimAssist')}</span>${tog('aimAssist')}</div>
@@ -3815,7 +3828,10 @@ async function boot() {
     wirePlatform();
     World.camera.fov = 62; World.camera.updateProjectionMatrix();
     Lobby.show(true);
+    const warm = Object.keys(WEAPONS).map((id) => Models.gun(id));
+    for (const g of warm) { g.position.copy(World.camera.position); World.scene.add(g); g.traverse((o) => { for (const m of [].concat(o.material || [])) for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'emissiveMap', 'aoMap']) if (m[k]) World.renderer.initTexture(m[k]); }); }
     Lobby.update(0.016); World.renderer.compile(World.scene, World.camera); World.render();
+    for (const g of warm) World.scene.remove(g);
     Loop.start();
     setStatus('ready'); fill.style.transform = 'scaleX(1)';
     const quick = !(Save.data.played > 0) && !Object.keys(Save.data.missions).length && !/[?&]menu=1\b/.test(location.search);

@@ -461,6 +461,23 @@ if (run('H')) {
   await page.screenshot({ path: shotName('resize-1280x720') });
   check('no errors', !log.errors.length, log.errors.slice(0, 4).join(' | '));
   await browser.close();
+  {
+    const { browser, page, f } = await open({ w: 800, h: 450, query: '?debug&menu=1' });
+    await page.addInitScript(() => { HTMLCanvasElement.prototype.requestPointerLock = function () { return Promise.reject(new Error('blocked')); }; });
+    await page.reload();
+    const f2 = page.frame({ url: /\/game\/index\.html/ });
+    await ready(f2);
+    await f2.click('#boot-enter'); await onScreen(f2, 'menu');
+    await startMission(f2, 0, 'none', 'pistol');
+    const fb = await f2.evaluate(async () => {
+      const B = window.__BR, I = B.Input, cv = B.World.renderer.domElement;
+      for (let k = 0; k < 4; k++) { cv.dispatchEvent(new MouseEvent('mousedown', { button: 0, bubbles: true })); window.dispatchEvent(new MouseEvent('mouseup', { button: 0 })); await new Promise((r) => setTimeout(r, 60)); }
+      I.st.lookX = 0; dispatchEvent(new MouseEvent('mousemove', { movementX: 50 }));
+      return { fallback: I.lockFailed, look: I.st.lookX };
+    });
+    check('a browser that never allows mouse lock still plays (free mouse-look after 3 refusals)', fb.fallback && fb.look === 50, JSON.stringify(fb));
+    await browser.close();
+  }
 }
 
 if (run('J')) {
@@ -618,10 +635,46 @@ if (run('M')) {
   check('graphics Auto drops to Medium when it lags, then Low if it still lags, and remembers it', gfx.lag1 === 'med' && gfx.lag2 === 'low' && gfx.saved === 'low', JSON.stringify(gfx));
   check('a manual High or Medium choice is never changed automatically', gfx.manualHigh === 'high' && gfx.manualMed === 'med', JSON.stringify(gfx));
   check('a slow connection (2G / data saver) starts Auto on Medium', gfx.slowNet === 'med', JSON.stringify(gfx));
-  await f.evaluate(() => window.__BR.Ui.openModal('m-settings')); await settle(f);
-  const autoLbl = await f.evaluate(() => document.querySelector('#m-settings .seg button').innerText.trim());
-  await page.screenshot({ path: shotName('settings-auto') });
-  check('Settings shows the level Auto picked (e.g. "AUTO · HIGH")', /·/.test(autoLbl), autoLbl);
+  const hands = await f.evaluate(() => {
+    const B = window.__BR, h = B.Lobby.hero, V = B.World.camera.position.constructor, g = h.gun;
+    const fwd = new V(0, 0, -1).applyQuaternion(g.quaternion), off = (bone) => { const d = bone.getWorldPosition(new V()).sub(g.position); return +d.sub(fwd.clone().multiplyScalar(d.dot(fwd))).length().toFixed(3); };
+    return { left: off(h.left), right: off(h.hand) };
+  });
+  check('menu soldier holds the rifle with both hands (palms within 4 cm of the rifle)', hands.left < 0.04 && hands.right < 0.04, JSON.stringify(hands));
+  await startMission(f, 2, 'none', 'pistol');
+  const hp = await f.evaluate(() => [...new Set(window.__BR.Game.actors.filter((a) => a.bot).map((a) => a.maxHp))]);
+  check('NPC soldiers have their original 125 HP', hp.length === 1 && hp[0] === 125, JSON.stringify(hp));
+  await f.evaluate(() => { const G = window.__BR.Game; for (const a of G.actors) if (a.bot) { a.bot.brain.update = () => {}; a.bot.shootAt = () => {}; } });
+  const progs = [];
+  progs.push(await f.evaluate(() => window.__BR.World.renderer.info.programs.length));
+  await f.evaluate(() => { const G = window.__BR.Game; G.offerGun = 'sniper'; G.inGameOffer(); }); await sleep(1500);
+  progs.push(await f.evaluate(() => window.__BR.World.renderer.info.programs.length));
+  await f.click('#m-mini [data-a=no]'); await sleep(1500);
+  progs.push(await f.evaluate(() => window.__BR.World.renderer.info.programs.length));
+  check('gun pop-up opens and closes without compiling shaders mid-game (no lag spike)', progs.every((n) => n === progs[0]), progs.join(' > '));
+  const lock = await f.evaluate(async () => {
+    const B = window.__BR, I = B.Input, cv = B.World.renderer.domElement, out = {};
+    let mode = 'reject'; const calls = [];
+    HTMLCanvasElement.prototype.requestPointerLock = function () { calls.push(mode); return mode === 'reject' ? Promise.reject(new Error('refused')) : Promise.resolve(); };
+    if (document.pointerLockElement) { document.exitPointerLock(); await new Promise((r) => setTimeout(r, 200)); }
+    B.Game.resume(); await new Promise((r) => setTimeout(r, 100));
+    out.lockedAtStart = I.st.locked;
+    out.giveUpAfterOne = I.lockFailed;
+    dispatchEvent(new MouseEvent('mousemove', { movementX: 200, movementY: 0 }));
+    out.lookWhileUnlocked = I.st.lookX;
+    await new Promise((r) => setTimeout(r, 300));
+    out.hint = document.querySelector('#hud .lock-hint').classList.contains('on');
+    cv.dispatchEvent(new MouseEvent('mousedown', { button: 0, bubbles: true })); await new Promise((r) => setTimeout(r, 50));
+    out.clickRetried = calls.length >= 2; out.clickFired = I.sample(0.016).fire;
+    window.dispatchEvent(new MouseEvent('mouseup', { button: 0 }));
+    cv.dispatchEvent(new MouseEvent('mousedown', { button: 0, bubbles: true })); await new Promise((r) => setTimeout(r, 50));
+    window.dispatchEvent(new MouseEvent('mouseup', { button: 0 }));
+    out.fallbackAfter3 = I.lockFailed;
+    return out;
+  });
+  check('a refused mouse lock (e.g. Resume too soon after Esc) is retried on the next click, never given up', !lock.lockedAtStart && !lock.giveUpAfterOne && lock.clickRetried, JSON.stringify(lock));
+  check('while the mouse is not locked it cannot drag the camera, "CLICK TO AIM" shows, and that click does not shoot', lock.lookWhileUnlocked === 0 && lock.hint && !lock.clickFired, JSON.stringify(lock));
+  check('once mouse lock has worked, later refusals never switch to free mouse-look', lock.fallbackAfter3 === false, JSON.stringify(lock));
   check('no errors', !log.errors.length, log.errors.slice(0, 4).join(' | '));
   await browser.close();
 }

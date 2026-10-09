@@ -25,7 +25,6 @@ Backrooms FPS/            ← the YouTube Playables game. Zip the CONTENTS of th
   assets/NPCs/            operator.glb (optimized, animations retargeted and named)
   assets/Guns/            pistol, shotgun, ak47, m4, sniper (.glb, optimized)
   LICENSES.txt            licenses of the bundled libraries
-Backrooms FPS Standalone/ ← the same game without any YouTube integration (generated, see below)
 Backrooms FPS CrazyGames/ ← the CrazyGames edition and the SOURCE of the game (all game changes are made here)
 source-assets/            your original, untouched .glb files (NOT shipped)
 tools/                    developer tools (NOT shipped): builds, asset optimizer, navmesh baker, tests
@@ -58,16 +57,15 @@ dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-igno
 | Folder | Use it for | YouTube integration |
 |---|---|---|
 | `Backrooms FPS/` | **Mediacube / YouTube Playables submission** (`npm run zip` syncs and packages this one) | YouTube Playables SDK (incl. `ytgame.ads` interstitial + rewarded), certification-tested |
-| `Backrooms FPS Standalone/` | play-testing, your own website, itch.io, anywhere else | none: no SDK tag, saves stay in the browser (localStorage), language follows the browser |
 | `Backrooms FPS CrazyGames/` | **CrazyGames upload** (`npm run zip-crazygames` → `dist/backrooms-crazygames.zip`) | CrazyGames SDK v3. Details below |
 
 **One game, two platforms.** All three folders are the same game. Make game changes in `Backrooms FPS CrazyGames/`, then:
 - `cd tools && npm run sync-youtube` regenerates `Backrooms FPS/`. It copies the game, CSS and assets and swaps only the platform layer for `tools/platform/youtube.js` (YouTube SDK: loading, saves, language, audio, pause, `requestInterstitialAd`, `requestRewardedAd`).
-- `npm run standalone` then regenerates `Backrooms FPS Standalone/`: no SDK, no ads, saves in localStorage.
+- `npm run web-demo` builds the browser test link from a temporary SDK-free copy (`Backrooms FPS Standalone/`, generated and not kept in the repository).
 
 Don't edit the generated copies by hand.
 
-**Browser test link:** `cd tools && npm run web-demo` builds `dist/web-demo/` from the standalone copy. That's the version published as the private claude.ai test link. It only adds what that host needs: the page skeleton is removed and the CSS inlined, and the `.glb`/`.navmesh` files ship as base64 text because the host won't serve `.glb`.
+**Browser test link:** `cd tools && npm run web-demo` builds `dist/web-demo/` from that SDK-free copy. That's the version published as the private claude.ai test link. It only adds what that host needs: the page skeleton is removed and the CSS inlined, and the `.glb`/`.navmesh` files ship as base64 text because the host won't serve `.glb`.
 
 ### What both editions have
 - **Menu:** one soldier in a close, lit, CoD-style lobby shot, with the player's own menu music (`assets/Audio/music.mp3`). The music plays in menus only.
