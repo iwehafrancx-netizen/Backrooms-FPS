@@ -656,8 +656,9 @@ if (run('M')) {
     const B = window.__BR, I = B.Input, cv = B.World.renderer.domElement, out = {};
     let mode = 'reject'; const calls = [];
     HTMLCanvasElement.prototype.requestPointerLock = function () { calls.push(mode); return mode === 'reject' ? Promise.reject(new Error('refused')) : Promise.resolve(); };
-    if (document.pointerLockElement) { document.exitPointerLock(); await new Promise((r) => setTimeout(r, 200)); }
-    B.Game.resume(); await new Promise((r) => setTimeout(r, 100));
+    if (document.pointerLockElement) { document.exitPointerLock(); for (let k = 0; k < 60 && !B.Game.paused; k++) await new Promise((r) => setTimeout(r, 100)); }
+    if (B.Game.paused) B.Game.resume();
+    await new Promise((r) => setTimeout(r, 600));
     out.lockedAtStart = I.st.locked;
     out.giveUpAfterOne = I.lockFailed;
     dispatchEvent(new MouseEvent('mousemove', { movementX: 200, movementY: 0 }));
