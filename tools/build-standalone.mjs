@@ -24,7 +24,7 @@ const sub = (from, to) => { if (!js.includes(from)) throw new Error('text not fo
   const safe = (fn, fallback) => { try { return fn(); } catch (e) { return fallback; } };
   const noop = () => {};
   const api = {
-    id: 'web', sdkReady: false,
+    sdkReady: false,
     async init() {}, loadingStart: noop, gameReady: noop, gameplayStart: noop, gameplayStop: noop, happytime: noop,
     sendScore: noop, logError: noop, logWarning: noop, onAudioEnabledChange: noop,
     async getLanguage() { return String(navigator.language || 'en').toLowerCase().slice(0, 2); },

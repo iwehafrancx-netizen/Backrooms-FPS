@@ -259,7 +259,6 @@ const Platform = (() => {
   let SDK = null, ready = false, playing = false, adBusy = false, adCooldownUntil = 0;
   const call = (fn) => { if (ready) safe(fn); };
   const api = {
-    id: 'crazygames',
     async init() {
       SDK = window.CrazyGames && window.CrazyGames.SDK;
       if (!SDK) return;
@@ -269,7 +268,6 @@ const Platform = (() => {
       } catch (e) { ready = false; }
     },
     get sdkReady() { return ready; },
-    firstFrameReady() {},
     loadingStart() { call(() => SDK.game.loadingStart()); },
     gameReady() { call(() => SDK.game.loadingStop()); },
     gameplayStart() { if (playing) return; playing = true; call(() => SDK.game.gameplayStart()); },
@@ -422,7 +420,6 @@ const Arsenal = {
   rent(id, mission) { if (this.mission !== mission) this.rented.clear(); this.mission = mission; this.rented.add(id); },
   enter(mission) { if (this.mission !== mission) { this.rented.clear(); this.mission = mission; } },
   leave() { this.rented.clear(); this.mission = -1; },
-  missing() { return Object.keys(SHOP).filter((id) => !this.owns(id)); },
 };
 
 const Audio = (() => {

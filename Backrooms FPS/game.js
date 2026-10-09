@@ -258,7 +258,6 @@ const Platform = (() => {
   const KEY = 'backrooms.save';
   let yt = null, inPlayables = false, firstFrameSent = false, readySent = false, adBusy = false, adCooldownUntil = 0;
   const api = {
-    id: 'youtube',
     async init() {
       yt = window.ytgame || null;
       inPlayables = !!(yt && yt.IN_PLAYABLES_ENV);
@@ -407,7 +406,6 @@ const Arsenal = {
   rent(id, mission) { if (this.mission !== mission) this.rented.clear(); this.mission = mission; this.rented.add(id); },
   enter(mission) { if (this.mission !== mission) { this.rented.clear(); this.mission = mission; } },
   leave() { this.rented.clear(); this.mission = -1; },
-  missing() { return Object.keys(SHOP).filter((id) => !this.owns(id)); },
 };
 
 const Audio = (() => {

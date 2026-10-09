@@ -200,7 +200,6 @@ body.ingame #view canvas { cursor: none; }
 .wcard.locked { opacity: .4; cursor: not-allowed; }
 .wcard .wn { font: 800 16px/1 var(--f-display); letter-spacing: .1em; }
 .wcard .wt { font: 10px/1 var(--f-mono); letter-spacing: .14em; color: var(--paper-dim); margin-top: 4px; }
-.wcard .wl { position: absolute; right: 8px; top: 8px; font: 9px/1 var(--f-mono); letter-spacing: .12em; color: var(--yellow); }
 .statbar { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 6px; font: 9.5px/1 var(--f-mono); letter-spacing: .1em; color: var(--paper-dim); margin-top: 6px; }
 .statbar i { height: 4px; background: rgba(255,255,255,.08); position: relative; }
 .statbar i::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--v); background: var(--paper); }

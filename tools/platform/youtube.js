@@ -3,7 +3,6 @@ const Platform = (() => {
   const KEY = 'backrooms.save';
   let yt = null, inPlayables = false, firstFrameSent = false, readySent = false, adBusy = false, adCooldownUntil = 0;
   const api = {
-    id: 'youtube',
     async init() {
       yt = window.ytgame || null;
       inPlayables = !!(yt && yt.IN_PLAYABLES_ENV);

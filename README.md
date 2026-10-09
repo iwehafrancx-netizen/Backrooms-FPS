@@ -110,7 +110,7 @@ Completed operations can be replayed at any time. Clearing the finale (Op 12) op
 
 **What NPCs know:** only what they see or hear. A noise or a shot from someone they can't see gives them a rough spot (1 m + about 18% of the distance off), never your real position. They search that area, check a couple of nearby corners, then give up.
 
-**Toughness:** soldiers have 160 HP (6 AK body shots, 2–3 headshots); officers have 190. The triple-barrel still kills in two shots at close range.
+**Toughness:** soldiers have 125 HP (5 AK body shots, 2 headshots); officers have 150 with light armour. The triple-barrel still kills in two shots at close range.
 
 **How NPCs fight:**
 - **Hurt** (under 45% HP): run to a spot you can't see, heal, then go back to where they last saw you. If there's no cover nearby, they still fall back across open ground.
@@ -154,13 +154,16 @@ Outside YouTube the SDK reports `IN_PLAYABLES_ENV = false`. The game then saves 
 cd tools
 npm install
 npm run libs      # rebuild lib/ from npm (three.js, recast-navigation)
-npm run assets    # re-optimize source-assets/ → Backrooms FPS/assets/
+npm run assets    # re-optimize source-assets/ → Backrooms FPS CrazyGames/assets/
 npm run navmesh   # re-bake the walkable area
-npm run zip       # → dist/backrooms-fps.zip + size report
+npm run sync-youtube        # regenerate Backrooms FPS/ from the CrazyGames source
+npm run zip                 # → dist/backrooms-fps.zip (YouTube Playables)
+npm run zip-crazygames      # → dist/backrooms-crazygames.zip
 # with the local server running:
-node test/cert.mjs     # 34 automated pre-certification checks (mock SDK)
+node test/cert.mjs     # YouTube Playables pre-certification checks (mock SDK)
+npm run qa-crazygames  # CrazyGames QA on the exact zip, inside an iframe (see CRAZYGAMES-QA-REPORT.md)
 node test/smoke.mjs    # boot → menu → missions → briefing → gameplay screenshots
-node test/modes.mjs    # plays all 8 missions headless and drives each to the end screen
+node test/modes.mjs    # plays all 12 missions headless and drives each to the end screen
 node test/mobile.mjs   # touch layouts, landscape + portrait
 ```
 Screenshots go to `tools/test/out/`.
