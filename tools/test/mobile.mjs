@@ -1,6 +1,6 @@
 import { open, shot, sleep } from './harness.mjs';
 for (const [w, h, tag] of [[844, 390, 'land'], [390, 844, 'port']]) {
-  const { browser, page, log } = await open({ width: w, height: h, touch: true });
+  const { browser, page, log } = await open({ width: w, height: h, touch: true, query: '?debug&menu=1' });
   await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
   await page.tap('#boot-enter'); await sleep(1000); await shot(page, `m-${tag}-menu`);
   await page.tap('#menu [data-a=play]'); await sleep(1300); await shot(page, `m-${tag}-missions`);
