@@ -1,5 +1,5 @@
 import { open, shot } from './harness.mjs';
-const { browser, page, log } = await open({ width: 640, height: 360 });
+const { browser, page, log } = await open({ width: 640, height: 360, query: '?debug&menu=1' });
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 60000 });
 await page.click('#boot-enter');
 await page.evaluate(() => { const B = window.__BR; B.World._render = B.World.render; B.World.render = () => {}; });

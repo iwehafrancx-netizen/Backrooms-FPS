@@ -3505,6 +3505,7 @@ const Game = {
     try {
       Audio.unlock();
       Platform.gameplayStop();
+      this.state = 'loading';
       this.cleanup();
       this.missionIndex = index;
       Arsenal.enter(index);
