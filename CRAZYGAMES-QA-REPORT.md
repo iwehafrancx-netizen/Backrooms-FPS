@@ -1,4 +1,4 @@
-# Backrooms - FPS: CrazyGames QA report
+# Backrooms - FPS: QA report (CrazyGames + YouTube Playables)
 
 This is the result of the automated QA pass on the **exact upload file** `dist/backrooms-crazygames.zip`. Each check runs in a real Chromium browser, inside an `<iframe>` like the one on the CrazyGames page, using a stand-in for the CrazyGames SDK. You can re-run it with `cd tools && npm run qa-crazygames`.
 
@@ -8,8 +8,9 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 
 | | |
 |---|---|
-| Full runs on the final zip | **3 runs in a row, 143/143 each** (after the price, BUY NOW, in-air death and countdown changes). Earlier rounds: 7 full runs plus 5 extra runs of the ads section |
-| Older suites | CrazyGames edition 47/47 · screen sizes: nothing cut off at 800×450 and 907×510 · frame rate: same at 60/144/165 Hz · all 12 missions play, no errors · YouTube Playables version: 34/34, files unchanged |
+| Full runs on the final zip | **3 runs in a row, 161/161 each**, on the final `dist/backrooms-crazygames.zip` |
+| Older suites | CrazyGames edition 47/47 · nothing cut off at 800×450 and 907×510 · same fire rate and movement at 60/144/165 Hz · all 12 missions play with no errors |
+| YouTube Playables | `cert.mjs` 47/47 (SDK order, pause/resume, audio, saves, scores, quick play, interstitial + rewarded ads, no-ads fallback) · frame rate pass · all 12 missions with no errors · same game as CrazyGames (only the SDK layer differs) |
 | Note | the map, M4 and sniper have no recorded author or license (your choice to skip) |
 
 ## Problems the QA pass found, now fixed (CrazyGames copy only)
@@ -26,6 +27,14 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 7. **Cheaper guns:** Tri-Barrel 1,500 · AK-47 1,900 · M4 2,999 · Sniper 4,000 CP. When the player has enough CP, the button turns **green** and reads **BUY NOW**, with the price under it.
 8. **In-air deaths:** a soldier killed mid-jump now falls to the floor while the death animation plays (same gravity as his jump), instead of dying in mid-air.
 9. **Countdown pose:** during the 3-2-1 countdown, soldiers are animated in their gun-ready pose instead of standing in a T-pose.
+
+10. **Menu soldier:** a single soldier, close and lit in a CoD-style lobby shot, holding his rifle at low ready. All soldiers now have more detailed textures: fabric weave, seams, grime and normal maps.
+11. **Menu music:** your track replaces the fluorescent hum. It plays in menus only, and stops on mute, during ads and when the tab is hidden.
+12. **Hostiles get stronger:** from Operation 3, hostile armour soaks up more AK-47 damage each operation (down to 64%); from Operation 5, more M4 damage (down to 80%, always stronger than the AK). The Sniper, Tri-Barrel and pistol are unaffected, and NPC behaviour is unchanged. The briefing says "Hostiles are getting stronger every operation".
+13. **New prices:** Tri-Barrel 2,999 · AK-47 1,900 · M4 4,999 · Sniper 7,999 CP.
+14. **Graphics Auto:** starts on High (Medium on 2G or data-saver connections). It drops to Medium, then Low, when the game lags, and remembers the level. A manual choice is never changed.
+15. **YouTube Playables = same game:** the YouTube build is generated from the same source, with YouTube's own `ytgame.ads` (interstitial + rewarded). Ad buttons hide when ads aren't available.
+16. **Fixed during this QA:** starting a new mission now marks the game as loading first, so the previous mission can never run a frame half cleared.
 
 ## What only you can do before submitting
 
@@ -63,7 +72,8 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 | ✅ | LICENSES.txt ships with library credits |
 | ✅ | every CC BY model author is credited in the game (Settings > Credits) |
 | ✅ | LICENSES.txt has a line for every 3D model (no placeholders) |
-| ✅ | gun prices: Tri-Barrel 1,500, AK-47 1,900, M4 2,999, Sniper 4,000 CP |
+| ✅ | gun prices: Tri-Barrel 2,999, AK-47 1,900, M4 4,999, Sniper 7,999 CP |
+| ✅ | the old fluorescent hum is gone; menu music file ships in the zip |
 
 ### Loading, first click and screens (7 sizes, iframe, EN/FR/PT)
 
@@ -209,11 +219,33 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 
 | | Check |
 |---|---|
-| ✅ | 2,000 CP: AK-47 and Tri-Barrel show a green BUY NOW with the price |
-| ✅ | 2,000 CP: M4 and Sniper show a dim BUY with their price (not affordable yet) |
+| ✅ | 2,000 CP: AK-47 shows a green BUY NOW with the price |
+| ✅ | 2,000 CP: Tri-Barrel, M4 and Sniper show a dim BUY with their price (not affordable yet) |
 | ✅ | BUY NOW: confirm tap buys the AK-47 for 1,900 CP |
 | ✅ | during the 3-2-1 countdown every soldier is animated in the gun pose (no T-pose) |
 | ✅ | soldier killed mid-jump falls to the floor while dying (no floating corpse) |
+| ✅ | no errors |
+
+### Menu soldier, music, hostile armour, graphics Auto, YouTube parity
+
+| | Check |
+|---|---|
+| ✅ | YouTube Playables build is the same game (only the SDK platform layer differs) |
+| ✅ | menu shows one soldier, close to the camera, framed right of the menu |
+| ✅ | menu music is playing |
+| ✅ | music stops when the tab is hidden or CrazyGames mutes, and comes back after |
+| ✅ | music fades out when a mission starts (menus only) |
+| ✅ | music comes back in the menu after a mission |
+| ✅ | hostiles get tougher for the AK-47 every operation from Op 3 (down to 64%) |
+| ✅ | M4 weakens later and less (Op 5 on, down to 80%), always stronger than the AK-47 |
+| ✅ | Sniper, Tri-Barrel and pistol are never weakened |
+| ✅ | in Operation 9 an AK-47 hit does 64% of a Sniper hit of the same strength (NPC code untouched) |
+| ✅ | briefing warns "HOSTILES ARE GETTING STRONGER EVERY OPERATION" from Operation 3 |
+| ✅ | graphics Auto starts on High (with bloom) and stays High while smooth |
+| ✅ | graphics Auto drops to Medium when it lags, then Low if it still lags, and remembers it |
+| ✅ | a manual High or Medium choice is never changed automatically |
+| ✅ | a slow connection (2G / data saver) starts Auto on Medium |
+| ✅ | Settings shows the level Auto picked (e.g. "AUTO · HIGH") |
 | ✅ | no errors |
 
 ### Stability and performance
@@ -225,7 +257,7 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 | ✅ | same movement and fire rate at 30, 60, 144, 165 and 240 Hz |
 | ✅ | no errors |
 
-**Total: 143/143 passed** on 2026-10-09.
+**Total: 161/161 passed** on 2026-10-09.
 
 **Note:** 3 downloaded models (map, M4, sniper) have no recorded author or license (your choice to skip).
 
