@@ -8,9 +8,9 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 
 | | |
 |---|---|
-| Full runs on the final zip | 7 full runs plus 5 extra runs of the ads section. The ads check that failed in runs 3 and 5 was the test's own timing, now fixed; every other check passed on every run, including the final one below |
+| Full runs on the final zip | **3 runs in a row, 143/143 each** (after the price, BUY NOW, in-air death and countdown changes). Earlier rounds: 7 full runs plus 5 extra runs of the ads section |
 | Older suites | CrazyGames edition 47/47 · screen sizes: nothing cut off at 800×450 and 907×510 · frame rate: same at 60/144/165 Hz · all 12 missions play, no errors · YouTube Playables version: 34/34, files unchanged |
-| Left for you | the Sketchfab details for the map, the M4 and the sniper (see "What only you can do") |
+| Note | the map, M4 and sniper have no recorded author or license (your choice to skip) |
 
 ## Problems the QA pass found, now fixed (CrazyGames copy only)
 
@@ -21,9 +21,15 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 5. **Small labels on gun cards.** The CP price, OR and THIS MISSION text went from 8.5 px to 9–9.5 px. The tiny GET AMMO (mobile) and "Watch an ad" labels you asked for are unchanged.
 6. **Name and credits.** The browser tab now says **Backrooms - FPS**. The three CC BY 4.0 guns from Sketchfab are credited in **Settings → Credits** and in `LICENSES.txt`.
 
+## Gameplay changes in this version (CrazyGames copy only)
+
+7. **Cheaper guns:** Tri-Barrel 1,500 · AK-47 1,900 · M4 2,999 · Sniper 4,000 CP. When the player has enough CP, the button turns **green** and reads **BUY NOW**, with the price under it.
+8. **In-air deaths:** a soldier killed mid-jump now falls to the floor while the death animation plays (same gravity as his jump), instead of dying in mid-air.
+9. **Countdown pose:** during the 3-2-1 countdown, soldiers are animated in their gun-ready pose instead of standing in a T-pose.
+
 ## What only you can do before submitting
 
-- **Model credits:** send the Sketchfab links for the **Backrooms map**, the **M4** and the **sniper**. Their author and license details were lost when they were re-saved in Blender. If any of them is **CC BY-NC** (non-commercial), it can't be used on CrazyGames and must be replaced.
+- **Model credits:** the map, M4 and sniper are listed as Sketchfab downloads without a recorded author. If CrazyGames asks, their Sketchfab pages (or the license.txt in each original download zip) have the details.
 - **Covers:** landscape 1920×1080, portrait 800×1200, square 800×800.
 - **Real preview:** open the game once in the developer portal's **Preview / QA tool**, which uses the real CrazyGames SDK and real ads.
 - **Name:** "Backrooms - FPS" is set. Many games on CrazyGames start with "Backrooms", so QA may ask for something more distinctive.
@@ -56,6 +62,8 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 | ✅ | no blood or gore in the game code |
 | ✅ | LICENSES.txt ships with library credits |
 | ✅ | every CC BY model author is credited in the game (Settings > Credits) |
+| ✅ | LICENSES.txt has a line for every 3D model (no placeholders) |
+| ✅ | gun prices: Tri-Barrel 1,500, AK-47 1,900, M4 2,999, Sniper 4,000 CP |
 
 ### Loading, first click and screens (7 sizes, iframe, EN/FR/PT)
 
@@ -197,6 +205,17 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 | ✅ | corrupted save (bad mission records): game still starts, no errors |
 | ✅ | corrupted save (empty object): game still starts, no errors |
 
+### Shop prices, BUY NOW and soldier animation
+
+| | Check |
+|---|---|
+| ✅ | 2,000 CP: AK-47 and Tri-Barrel show a green BUY NOW with the price |
+| ✅ | 2,000 CP: M4 and Sniper show a dim BUY with their price (not affordable yet) |
+| ✅ | BUY NOW: confirm tap buys the AK-47 for 1,900 CP |
+| ✅ | during the 3-2-1 countdown every soldier is animated in the gun pose (no T-pose) |
+| ✅ | soldier killed mid-jump falls to the floor while dying (no floating corpse) |
+| ✅ | no errors |
+
 ### Stability and performance
 
 | | Check |
@@ -206,8 +225,8 @@ CrazyGames' own QA team still plays the game themselves, so their review decides
 | ✅ | same movement and fire rate at 30, 60, 144, 165 and 240 Hz |
 | ✅ | no errors |
 
-**Total: 135/135 passed** on 2026-10-08.
+**Total: 143/143 passed** on 2026-10-09.
 
-**For you:** 3D model credits for the map, M4 and sniper are still placeholders in LICENSES.txt: send their Sketchfab links.
+**Note:** 3 downloaded models (map, M4, sniper) have no recorded author or license (your choice to skip).
 
 Screenshots of every screen at every size are saved in `tools/test/out/qa/shots/` when the suite runs.
