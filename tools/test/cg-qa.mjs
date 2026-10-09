@@ -183,7 +183,8 @@ if (run('A')) {
   check('LICENSES.txt has a line for every 3D model (no placeholders)', !/<model name>/.test(lic) && ['backroom.glb', 'operator.glb', 'pistol.glb', 'shotgun.glb', 'ak47.glb', 'm4.glb', 'sniper.glb'].every((n) => lic.includes(n)));
   const unknown = (lic.match(/author details not recorded/g) || []).length;
   if (unknown) { todo.push(`${unknown} downloaded models (map, M4, sniper) have no recorded author or license (your choice to skip)`); console.log(`NOTE  [A package] ${unknown} downloaded models have no recorded author/license (owner's choice)`); }
-  check('gun prices: Tri-Barrel 1,500, AK-47 1,900, M4 2,999, Sniper 4,000 CP', /const SHOP = \{ shotgun: 1500, ak47: 1900, m4: 2999, sniper: 4000 \};/.test(js));
+  check('gun prices: Tri-Barrel 2,999, AK-47 1,900, M4 4,999, Sniper 7,999 CP', /const SHOP = \{ shotgun: 2999, ak47: 1900, m4: 4999, sniper: 7999 \};/.test(js));
+  check('the old fluorescent hum is gone; menu music file ships in the zip', !/startHum|humNodes/.test(js) && files.includes('assets/Audio/music.mp3'));
 }
 
 const SIZES = [
@@ -500,8 +501,8 @@ if (run('P')) {
   await f.evaluate(() => { const U = window.__BR.Ui; U.selMission = 2; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
   const cards = await f.evaluate(() => Object.fromEntries(['ak47', 'shotgun', 'm4', 'sniper'].map((id) => { const b = document.querySelector(`#briefing .wcard[data-w="${id}"] [data-buy]`); return [id, b ? { txt: b.innerText.replace(/\s+/g, ' ').trim(), can: b.classList.contains('can'), bg: getComputedStyle(b).backgroundColor } : null]; })));
   await page.screenshot({ path: shotName('shop-buy-now') });
-  check('2,000 CP: AK-47 and Tri-Barrel show a green BUY NOW with the price', cards.ak47 && cards.ak47.can && /^BUY NOW 1,900 CP$/.test(cards.ak47.txt) && cards.shotgun.can && /^BUY NOW 1,500 CP$/.test(cards.shotgun.txt) && cards.ak47.bg !== cards.m4.bg, JSON.stringify(cards));
-  check('2,000 CP: M4 and Sniper show a dim BUY with their price (not affordable yet)', !cards.m4.can && /^BUY 2,999 CP$/.test(cards.m4.txt) && !cards.sniper.can && /^BUY 4,000 CP$/.test(cards.sniper.txt), JSON.stringify([cards.m4, cards.sniper]));
+  check('2,000 CP: AK-47 shows a green BUY NOW with the price', cards.ak47 && cards.ak47.can && /^BUY NOW 1,900 CP$/.test(cards.ak47.txt) && cards.ak47.bg !== cards.m4.bg, JSON.stringify(cards));
+  check('2,000 CP: Tri-Barrel, M4 and Sniper show a dim BUY with their price (not affordable yet)', !cards.shotgun.can && /^BUY 2,999 CP$/.test(cards.shotgun.txt) && !cards.m4.can && /^BUY 4,999 CP$/.test(cards.m4.txt) && !cards.sniper.can && /^BUY 7,999 CP$/.test(cards.sniper.txt), JSON.stringify([cards.shotgun, cards.m4, cards.sniper]));
   await f.click('#briefing .wcard[data-w="ak47"] [data-buy]'); await f.click('#briefing .wcard[data-w="ak47"] [data-buy]'); await sleep(300);
   check('BUY NOW: confirm tap buys the AK-47 for 1,900 CP', await f.evaluate(() => window.__BR.Arsenal.owns('ak47') && window.__BR.Save.data.cp === 100));
 
@@ -533,6 +534,94 @@ if (run('P')) {
     return { ground: +ground.toFixed(3), atDeath: +atDeath.toFixed(3), end: body ? +body.root.position.y.toFixed(3) : null, ys, mono: ys.every((y, i) => !i || y <= ys[i - 1] + 1e-6) };
   });
   check('soldier killed mid-jump falls to the floor while dying (no floating corpse)', air.atDeath > air.ground + 0.2 && Math.abs(air.end - air.ground) < 0.01 && air.mono, JSON.stringify(air));
+  check('no errors', !log.errors.length, log.errors.slice(0, 4).join(' | '));
+  await browser.close();
+}
+
+if (run('M')) {
+  section = 'M menu, music, progression, graphics';
+  {
+    const strip = (src) => { const a = src.indexOf('const Platform = (() => {'), e = '\n  return api;\n})();\n', b = src.indexOf(e, a); return src.slice(0, a) + src.slice(b + e.length); };
+    const cgJs = fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames/game.js'), 'utf8'), ytJs = fs.readFileSync(path.join(ROOT, 'Backrooms FPS/game.js'), 'utf8');
+    const sameAssets = ['assets/NPCs/operator.glb', 'assets/Audio/music.mp3', 'css/style.css', 'LICENSES.txt'].every((f) => fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames', f)).equals(fs.readFileSync(path.join(ROOT, 'Backrooms FPS', f))));
+    check('YouTube Playables build is the same game (only the SDK platform layer differs)', strip(cgJs) === strip(ytJs) && sameAssets && /ytgame/.test(ytJs) && !/CrazyGames/.test(ytJs));
+  }
+  const { browser, page, f, log } = await open({ w: 1280, h: 720, query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, xp: 0, cp: 0, owned: [], played: 3 }) });
+  await ready(f);
+  await f.click('#boot-enter'); await onScreen(f, 'menu');
+  await f.waitForFunction(() => window.__BR.Audio.musicLoaded, null, { timeout: 30000 });
+  await sleep(2500);
+  const menu = await f.evaluate(() => {
+    const B = window.__BR, h = B.Lobby.hero, cam = B.World.camera;
+    const rigs = new Set(); B.World.scene.traverse((o) => { if (o.isSkinnedMesh && o.visible) { let v = true; for (let n = o; n; n = n.parent) if (!n.visible) v = false; if (v) rigs.add(o.skeleton.bones[0]); } }); const skinned = rigs.size;
+    let head = null; h.root.traverse((o) => { if (o.isBone && /Head$/.test(o.name)) head = o; });
+    const hp = head.getWorldPosition(cam.position.clone()), sp = hp.clone().project(cam);
+    return { skinned, dist: +cam.position.distanceTo(h.root.position).toFixed(2), headX: +sp.x.toFixed(2), headY: +sp.y.toFixed(2), music: B.Audio.musicOn, lights: h.lights.map(([l]) => l.intensity) };
+  });
+  await page.screenshot({ path: shotName('menu-hero-1280') });
+  check('menu shows one soldier, close to the camera, framed right of the menu', menu.skinned === 1 && menu.dist < 2.2 && menu.headX > 0 && menu.headX < 0.6 && menu.headY > 0.2 && menu.headY < 0.85 && menu.lights.every((x) => x > 0), JSON.stringify(menu));
+  check('menu music is playing', menu.music);
+  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
+  await sleep(500);
+  const hidden = await f.evaluate(() => window.__BR.Audio.musicOn);
+  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); document.dispatchEvent(new Event('visibilitychange')); });
+  await sleep(1500);
+  const back = await f.evaluate(() => window.__BR.Audio.musicOn);
+  await f.evaluate(() => window.__cg.settingsCbs.forEach((cb) => cb({ muteAudio: true }))); await sleep(500);
+  const muted = await f.evaluate(() => window.__BR.Audio.musicOn);
+  await f.evaluate(() => window.__cg.settingsCbs.forEach((cb) => cb({ muteAudio: false }))); await sleep(1500);
+  check('music stops when the tab is hidden or CrazyGames mutes, and comes back after', !hidden && back && !muted && (await f.evaluate(() => window.__BR.Audio.musicOn)), JSON.stringify({ hidden, back, muted }));
+  await startMission(f, 0, 'none', 'pistol');
+  await sleep(2500);
+  check('music fades out when a mission starts (menus only)', !(await f.evaluate(() => window.__BR.Audio.musicOn)));
+  await f.evaluate(() => window.__BR.Game.toMenu('menu')); await onScreen(f, 'menu'); await sleep(2000);
+  check('music comes back in the menu after a mission', await f.evaluate(() => window.__BR.Audio.musicOn));
+
+  const curve = await f.evaluate(() => {
+    const B = window.__BR, ops = B.MISSIONS.map((m, i) => i);
+    return ops.map((i) => { B.Game.missionIndex = i; return Object.fromEntries(['ak47', 'm4', 'sniper', 'shotgun', 'pistol'].map((w) => [w, +B.armorMul(w, i).toFixed(3)])); });
+  });
+  const dps = (c) => ({ ak: c.ak47 * 31 * 600, m4: c.m4 * 25 * 780 });
+  check('hostiles get tougher for the AK-47 every operation from Op 3 (down to 64%)', curve[0].ak47 === 1 && curve[1].ak47 === 1 && curve[2].ak47 < 1 && curve.every((c, i) => !i || c.ak47 <= curve[i - 1].ak47) && Math.min(...curve.map((c) => c.ak47)) >= 0.64, curve.map((c) => c.ak47).join(' '));
+  check('M4 weakens later and less (Op 5 on, down to 80%), always stronger than the AK-47', curve.slice(0, 4).every((c) => c.m4 === 1) && curve[4].m4 < 1 && Math.min(...curve.map((c) => c.m4)) >= 0.8 && curve.every((c) => dps(c).m4 > dps(c).ak), curve.map((c) => c.m4).join(' '));
+  check('Sniper, Tri-Barrel and pistol are never weakened', curve.every((c) => c.sniper === 1 && c.shotgun === 1 && c.pistol === 1));
+  await startMission(f, 8, 'none', 'pistol');
+  const hit = await f.evaluate(() => {
+    const B = window.__BR, G = B.Game, bots = G.actors.filter((a) => a.bot && a.team !== G.player.team).slice(0, 2);
+    const take = (bot, w) => { bot.spawnTime = -99; bot.hp = 1000; B.Combat.damage(bot, 100, G.player, false, w); return 1000 - bot.hp; };
+    return { ak: take(bots[0], 'ak47'), sniper: take(bots[1], 'sniper'), npcHpUnchanged: bots.every((b) => b.maxHp === bots[0].maxHp) };
+  });
+  check('in Operation 9 an AK-47 hit does 64% of a Sniper hit of the same strength (NPC code untouched)', Math.abs(hit.ak / hit.sniper - 0.64) < 0.01, JSON.stringify(hit));
+  await f.evaluate(() => window.__BR.Game.toMenu('menu')); await onScreen(f, 'menu');
+  const warn = [];
+  for (const i of [0, 1, 2, 7]) { await f.evaluate((k) => { const U = window.__BR.Ui; U.selMission = k; U.show('briefing'); }, i); await onScreen(f, 'briefing'); warn.push(await f.evaluate(() => { const e = document.querySelector('#briefing .threat'); return e ? e.innerText : ''; })); }
+  await settle(f); await page.screenshot({ path: shotName('briefing-threat') });
+  check('briefing warns "HOSTILES ARE GETTING STRONGER EVERY OPERATION" from Operation 3', !warn[0] && !warn[1] && /STRONGER EVERY OPERATION/.test(warn[2]) && /STRONGER/.test(warn[3]), JSON.stringify(warn));
+
+  const gfx = await f.evaluate(() => {
+    const B = window.__BR, W = B.World, S = B.Save.settings, out = {};
+    const run = (secs, fps) => { for (let i = 0; i < secs * fps; i++) W.adapt(1 / fps); };
+    S.quality = 'auto'; delete S.autoLevel; W.perf.slow = 0; W.dropComposer(); W.applyQuality(); out.start = W.qualityLevel; out.bloom = !!W.composer;
+    run(8, 60); out.smooth = W.qualityLevel;
+    run(5, 25); out.lag1 = W.qualityLevel;
+    run(5, 22); out.lag2 = W.qualityLevel; out.saved = S.autoLevel;
+    S.quality = 'high'; W.dropComposer(); W.applyQuality(); run(10, 15); out.manualHigh = W.qualityLevel;
+    S.quality = 'med'; W.applyQuality(); run(10, 15); out.manualMed = W.qualityLevel;
+    S.quality = 'auto'; delete S.autoLevel; W.perf.slow = 0;
+    Object.defineProperty(navigator, 'connection', { configurable: true, get: () => ({ effectiveType: '2g', saveData: false }) });
+    W.applyQuality(); out.slowNet = W.qualityLevel;
+    Object.defineProperty(navigator, 'connection', { configurable: true, get: () => undefined });
+    delete S.autoLevel; W.applyQuality();
+    return out;
+  });
+  check('graphics Auto starts on High (with bloom) and stays High while smooth', gfx.start === 'high' && gfx.bloom && gfx.smooth === 'high', JSON.stringify(gfx));
+  check('graphics Auto drops to Medium when it lags, then Low if it still lags, and remembers it', gfx.lag1 === 'med' && gfx.lag2 === 'low' && gfx.saved === 'low', JSON.stringify(gfx));
+  check('a manual High or Medium choice is never changed automatically', gfx.manualHigh === 'high' && gfx.manualMed === 'med', JSON.stringify(gfx));
+  check('a slow connection (2G / data saver) starts Auto on Medium', gfx.slowNet === 'med', JSON.stringify(gfx));
+  await f.evaluate(() => window.__BR.Ui.openModal('m-settings')); await settle(f);
+  const autoLbl = await f.evaluate(() => document.querySelector('#m-settings .seg button').innerText.trim());
+  await page.screenshot({ path: shotName('settings-auto') });
+  check('Settings shows the level Auto picked (e.g. "AUTO · HIGH")', /·/.test(autoLbl), autoLbl);
   check('no errors', !log.errors.length, log.errors.slice(0, 4).join(' | '));
   await browser.close();
 }

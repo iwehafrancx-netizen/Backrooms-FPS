@@ -30,7 +30,7 @@ const walk = (dir) => {
     const rel = path.join(dir, f), src = path.join(game, rel);
     if (fs.statSync(src).isDirectory()) { walk(rel); continue; }
     fs.mkdirSync(path.join(out, dir), { recursive: true });
-    if (/\.(glb|navmesh)$/.test(f)) { fs.writeFileSync(path.join(out, rel + '.b64.txt'), fs.readFileSync(src).toString('base64')); files.push(rel + '.b64.txt'); }
+    if (/\.(glb|navmesh|mp3)$/.test(f)) { fs.writeFileSync(path.join(out, rel + '.b64.txt'), fs.readFileSync(src).toString('base64')); files.push(rel + '.b64.txt'); }
     else { fs.copyFileSync(src, path.join(out, rel)); files.push(rel); }
   }
 };

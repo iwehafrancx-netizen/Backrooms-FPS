@@ -104,7 +104,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
     return r;
   });
   check('BUY with CP unlocks a gun for good and takes the price', !shop.akBefore && shop.buy && shop.cpAfter === 600 && shop.akAfter, JSON.stringify(shop));
-  check('Sniper can be bought (when you have 4,000 CP)', !shop.sniperBuy && (await page.evaluate(() => { window.__BR.Save.data.cp = 4000; return window.__BR.Arsenal.canBuy('sniper'); })));
+  check('Sniper can be bought (when you have 7,999 CP)', !shop.sniperBuy && (await page.evaluate(() => { window.__BR.Save.data.cp = 7999; return window.__BR.Arsenal.canBuy('sniper'); })));
   await page.evaluate(() => window.__BR.Game.start(3, 'ak47', 'shotgun'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   const inMission = await page.evaluate(() => window.__BR.Player.slots.map((s) => s.id).join());
@@ -128,17 +128,17 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   const rot = await page.evaluate(() => { const B = window.__BR, U = B.Ui, m = B.MISSIONS[4], got = []; for (let k = 0; k < 4; k++) { U.lastOffer = null; got.push(U.offerPick(m, 10 + k)); } return [...new Set(got.filter(Boolean))].sort().join(); });
   check('offer rotation includes every locked gun, Sniper too', rot === 'm4,shotgun,sniper', rot);
 
-  await page.evaluate(() => { window.__BR.Save.data.cp = 2000; const U = window.__BR.Ui; U.selMission = 4; U.show('briefing'); });
+  await page.evaluate(() => { window.__BR.Save.data.cp = 3500; const U = window.__BR.Ui; U.selMission = 4; U.show('briefing'); });
   await sleep(600);
   const card = await page.evaluate(() => { const c = document.querySelector('#briefing .wcard[data-w="shotgun"] .wbuy'); return c && c.innerText.replace(/\s+/g, ' ').trim(); });
-  check('affordable locked gun card reads BUY NOW (price) OR WATCH AD', /^BUY NOW 1,500 CP OR AD WATCH AD THIS MISSION$/.test(card || ''), card);
+  check('affordable locked gun card reads BUY NOW (price) OR WATCH AD', /^BUY NOW 2,999 CP OR AD WATCH AD THIS MISSION$/.test(card || ''), card);
   await shot(page, 'cg-shop-card');
   await page.click('#briefing .wcard[data-w="shotgun"] [data-buy]');
   const conf = await page.evaluate(() => document.querySelector('#briefing .wcard[data-w="shotgun"] [data-buy]').innerText.replace(/\s+/g, ' ').trim());
   await page.click('#briefing .wcard[data-w="shotgun"] [data-buy]');
   await sleep(300);
   const bought = await page.evaluate(() => ({ owns: window.__BR.Arsenal.owns('shotgun'), cp: window.__BR.Save.data.cp, sel: window.__BR.Ui.loadout.secondary }));
-  check('BUY asks to confirm, then buys and equips the gun', /CONFIRM/.test(conf) && bought.owns && bought.cp === 500 && bought.sel === 'shotgun', conf + ' ' + JSON.stringify(bought));
+  check('BUY asks to confirm, then buys and equips the gun', /CONFIRM/.test(conf) && bought.owns && bought.cp === 501 && bought.sel === 'shotgun', conf + ' ' + JSON.stringify(bought));
   await page.click('#briefing .wcard[data-w="sniper"] [data-rent]');
   await page.waitForFunction(() => window.__BR.Arsenal.usable('sniper'), null, { timeout: 8000 });
   check('WATCH AD on the card rents the gun for this mission', await page.evaluate(() => window.__BR.Ui.loadout.primary === 'sniper' && !window.__BR.Arsenal.owns('sniper')));

@@ -26,7 +26,7 @@ Backrooms FPS/            ← the YouTube Playables game. Zip the CONTENTS of th
   assets/Guns/            pistol, shotgun, ak47, m4, sniper (.glb, optimized)
   LICENSES.txt            licenses of the bundled libraries
 Backrooms FPS Standalone/ ← the same game without any YouTube integration (generated, see below)
-Backrooms FPS CrazyGames/ ← the CrazyGames edition (its own copy: CrazyGames SDK v3, ads, gun shop)
+Backrooms FPS CrazyGames/ ← the CrazyGames edition and the SOURCE of the game (all game changes are made here)
 source-assets/            your original, untouched .glb files (NOT shipped)
 tools/                    developer tools (NOT shipped): builds, asset optimizer, navmesh baker, tests
 dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-ignored)
@@ -57,19 +57,27 @@ dist/backrooms-fps.zip    the upload package, created by `npm run zip` (git-igno
 
 | Folder | Use it for | YouTube integration |
 |---|---|---|
-| `Backrooms FPS/` | **Mediacube / YouTube Playables submission** (`npm run zip` packages this one) | full SDK integration, certification-tested |
+| `Backrooms FPS/` | **Mediacube / YouTube Playables submission** (`npm run zip` syncs and packages this one) | YouTube Playables SDK (incl. `ytgame.ads` interstitial + rewarded), certification-tested |
 | `Backrooms FPS Standalone/` | play-testing, your own website, itch.io, anywhere else | none: no SDK tag, saves stay in the browser (localStorage), language follows the browser |
 | `Backrooms FPS CrazyGames/` | **CrazyGames upload** (`npm run zip-crazygames` → `dist/backrooms-crazygames.zip`) | CrazyGames SDK v3. Details below |
 
-The standalone folder is **generated** from the Playables folder, so make game changes in `Backrooms FPS/` and then run `cd tools && npm run standalone`. Don't edit the standalone copy by hand.
+**One game, two platforms.** All three folders are the same game. Make game changes in `Backrooms FPS CrazyGames/`, then:
+- `cd tools && npm run sync-youtube` regenerates `Backrooms FPS/`. It copies the game, CSS and assets and swaps only the platform layer for `tools/platform/youtube.js` (YouTube SDK: loading, saves, language, audio, pause, `requestInterstitialAd`, `requestRewardedAd`).
+- `npm run standalone` then regenerates `Backrooms FPS Standalone/`: no SDK, no ads, saves in localStorage.
+
+Don't edit the generated copies by hand.
 
 **Browser test link:** `cd tools && npm run web-demo` builds `dist/web-demo/` from the standalone copy. That's the version published as the private claude.ai test link. It only adds what that host needs: the page skeleton is removed and the CSS inlined, and the `.glb`/`.navmesh` files ship as base64 text because the host won't serve `.glb`.
 
+### What both editions have
+- **Menu:** one soldier in a close, lit, CoD-style lobby shot, with the player's own menu music (`assets/Audio/music.mp3`). The music plays in menus only.
+- **Shop:** guns are bought with **Combat Points (CP)**: Tri-Barrel 2,999 · AK-47 1,900 · M4 4,999 · Sniper 7,999. Affordable guns show a green **BUY NOW**.
+- **Hostile armour:** from Operation 3, hostiles shrug off more AK-47 damage each operation (down to 64%). From Operation 5 the same applies to the M4, but less (down to 80%; the M4 always out-damages the AK). The Sniper, Tri-Barrel and pistol are unaffected. Briefings warn "Hostiles are getting stronger every operation".
+- **Graphics Auto:** starts on High (Medium on 2G or data-saver connections). It drops to Medium, then Low, if the frame rate stays low, and remembers the level. Manual High, Medium or Low is never changed.
+
 ### CrazyGames edition
-- A separate copy of the game. Edit it directly; it is not generated, and the YouTube folder is left untouched.
 - **Platform layer:** the CrazyGames SDK v3 (init, loading and gameplay events, happytime, Data module saves, muteAudio, locale).
 - **Ads:** midgame ads at breaks; rewarded ads for **REVIVE**, **GET AMMO** (HUD button or G key), and for trying a locked gun for one mission. The in-match gun offer is a small pop-up after the countdown, every other mission.
-- **Shop:** guns are bought with **Combat Points (CP)**.
 - **First play:** new players go straight into Operation 1 with one click.
 - Upload steps, portal fields and the full rules checklist are in [CRAZYGAMES-UPLOAD.md](CRAZYGAMES-UPLOAD.md).
 - **Test link:** `npm run web-demo-crazygames` builds `dist/web-demo-crazygames/`. It uses `tools/crazygames-test-sdk.js`, a local stand-in for the SDK that shows a labelled **TEST AD** screen instead of real ads. The real game loads the official SDK from CrazyGames.
@@ -119,7 +127,7 @@ Completed operations can be replayed at any time. Clearing the finale (Op 12) op
 
 ---
 
-Ads: see [ADS-PLAN.md](ADS-PLAN.md) (plan only, nothing implemented).
+Ads: YouTube's own `ytgame.ads` only: an interstitial when leaving results or on RESTART, and rewarded ads for REVIVE, GET AMMO and gun rentals, only when the player taps. With no ads available, every ad button hides and the game stays fully playable.
 
 
 ## Controls
@@ -174,7 +182,7 @@ Screenshots go to `tools/test/out/`.
 | Score | `engagement.sendScore()` sends the campaign best total, which always matches the saved best | `cert.mjs` |
 | Localization | `system.getLanguage()` picks EN/ES/PT/FR, with an English fallback | `cert.mjs` (Spanish UI) |
 | Health reporting | `health.logError/logWarning` are wired to `window.onerror` and `unhandledrejection` | code |
-| No external requests or links | every asset is local and relative. No CDNs, links, ads, purchases, `alert` or `window.open` | `cert.mjs` (0 external requests) |
+| No external requests or links | every asset is local and relative. No CDNs, links, third-party ads (only YouTube's own `ytgame.ads`), real-money purchases, `alert` or `window.open` | `cert.mjs` (0 external requests) |
 | Bundle limits | 6.0 MiB total (limits: 30 MiB initial, 250 MiB total, 30 MiB per file, 8000 files) | `cert.mjs`, `npm run zip` |
 | Works on mobile and desktop | touch controls, adaptive resolution, safe-area insets, portrait and landscape | `mobile.mjs` |
 | Content | stylised combat with sparks and hit markers. No blood or gore | — |

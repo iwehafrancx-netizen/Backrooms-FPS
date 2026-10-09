@@ -9,12 +9,13 @@
     "navmesh": "node build-navmesh.mjs",
     "build": "node build-libs.mjs && node optimize-assets.mjs && node build-navmesh.mjs",
     "test": "node test/smoke.mjs",
-    "zip": "node package-zip.mjs",
+    "zip": "node sync-youtube.mjs && node package-zip.mjs",
     "zip-crazygames": "node package-zip.mjs crazygames",
     "web-demo-crazygames": "node build-web-demo.mjs crazygames",
     "standalone": "node build-standalone.mjs",
     "web-demo": "node build-standalone.mjs && node build-web-demo.mjs",
-    "qa-crazygames": "node package-zip.mjs crazygames && node test/cg-qa.mjs"
+    "qa-crazygames": "node package-zip.mjs crazygames && node test/cg-qa.mjs",
+    "sync-youtube": "node sync-youtube.mjs"
   },
   "devDependencies": {
     "@gltf-transform/core": "^4.5.1",

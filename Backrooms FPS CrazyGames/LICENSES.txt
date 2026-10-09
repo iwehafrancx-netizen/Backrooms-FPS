@@ -14,6 +14,7 @@ Soldier (assets/NPCs/operator.glb): original model by the game's developer.
 Level 0 map (assets/Maps/backroom.glb): downloaded from Sketchfab (free download); author details not recorded
 M4 Carbine (assets/Guns/m4.glb): downloaded from Sketchfab (free download); author details not recorded
 Bolt Sniper (assets/Guns/sniper.glb): downloaded from Sketchfab (free download); author details not recorded
+Menu music (assets/Audio/music.mp3): original track made for this game by its developer.
 
 ------------------------------------------------------------------------
 

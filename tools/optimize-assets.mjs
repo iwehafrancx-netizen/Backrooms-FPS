@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const src = path.resolve(here, '../source-assets');
-const out = path.resolve(here, '../Backrooms FPS/assets');
+const out = path.resolve(here, '../Backrooms FPS CrazyGames/assets');
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS);
 
 const CLIP_NAMES = {
@@ -66,7 +66,7 @@ function retargetNpc(doc) {
 }
 
 let total = 0;
-for (const job of jobs) {
+for (const job of jobs.filter((j) => !process.env.ONLY || j.to.includes(process.env.ONLY))) {
   const doc = await io.read(path.join(src, job.from));
   if (job.npc) { retargetNpc(doc); await paintNpc(doc); }
   await doc.transform(

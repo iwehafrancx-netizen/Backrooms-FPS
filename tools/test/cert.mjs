@@ -28,6 +28,16 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
 {
   const { browser, page, log } = await open();
   await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
+  await page.click('#boot-enter');
+  await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
+  const qp = await page.evaluate(() => ({ mi: window.__BR.Game.missionIndex, slots: window.__BR.Player.slots.map((x) => x.id).join() }));
+  check('Fresh save: one click (PLAY) goes straight into Operation 1 with AK-47 + pistol', qp.mi === 0 && qp.slots === 'ak47,pistol', JSON.stringify(qp));
+  check('Quick play: no errors', log.errors.length === 0, log.errors.slice(0, 2).join(' | '));
+  await browser.close();
+}
+{
+  const { browser, page, log } = await open({ query: '?debug&menu=1' });
+  await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
   const calls = await page.evaluate(() => window.__yt.calls);
   const ffr = calls.filter((c) => c[0] === 'firstFrameReady'), gr = calls.filter((c) => c[0] === 'gameReady');
   check('firstFrameReady called exactly once', ffr.length === 1);
@@ -79,13 +89,66 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   await browser.close();
 }
 {
-  const { browser, page, log } = await open({ save: savedStr, lang: 'es-ES' });
+  const { browser, page, log } = await open({ save: savedStr, lang: 'es-ES', query: '?debug&menu=1' });
   await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
   await page.click('#boot-enter'); await sleep(600);
   const locked = await page.evaluate(() => { window.__BR.Ui.show('missions'); return [...document.querySelectorAll('#missions .mcard')].map((c) => c.classList.contains('locked')); });
   check('Progress restored from loadData after reload', locked[0] === false && locked[1] === false && locked[2] === true, locked.map((l) => (l ? 'L' : 'U')).join(''));
   const txt = await page.evaluate(() => document.querySelector('#menu [data-a=play]') ? document.querySelector('#menu [data-a=play]').textContent : document.querySelector('#missions h2').textContent);
   check('getLanguage localizes the UI (es)', /Campaña|Elige/.test(txt), txt.trim());
+  await browser.close();
+}
+{
+  const { browser, page, log } = await open({ query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, cp: 0, owned: [], played: 3 }) });
+  await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
+  await page.click('#boot-enter');
+  await page.waitForFunction(() => window.__BR.Ui.cur === 'menu', null, { timeout: 15000 });
+  const ads = () => page.evaluate(() => window.__yt.calls.filter((c) => /^request/.test(c[0])).map((c) => c[0] + (c[1] ? ':' + c[1] : '')));
+  check('Rewarded ads available when ytgame.ads.requestRewardedAd exists', await page.evaluate(() => window.__BR.Platform.ads.canReward()));
+  await page.evaluate(() => window.__BR.Game.start(7, 'none', 'pistol'));
+  await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
+  check('No ad is requested when a mission starts', (await ads()).length === 0, (await ads()).join(','));
+  await page.evaluate(() => { const G = window.__BR.Game; G.countdownT = 0; const s = window.__BR.Player.slot; s.mag = 0; s.reserve = 0; });
+  await page.evaluate(() => { const muted = []; const A = window.__BR.Audio, f = A.setAdMuted; A.setAdMuted = (m) => { muted.push([m, window.__BR.Loop.running, window.__BR.Game.paused]); return f(m); }; window.__muted = muted; });
+  await page.evaluate(() => window.__BR.Game.getAmmo());
+  await page.waitForFunction(() => window.__BR.Player.slot.mag > 0, null, { timeout: 8000 });
+  const m1 = await page.evaluate(() => window.__muted);
+  check('GET AMMO: requestRewardedAd("ammo"), game paused and muted during the ad, ammo given after', (await ads()).includes('requestRewardedAd:ammo') && m1[0] && m1[0][0] === true && m1[0][1] === false && m1[0][2] === true, JSON.stringify(m1));
+  check('Game resumes after the rewarded ad', await page.evaluate(() => window.__BR.Loop.running && !window.__BR.Game.paused));
+  const kill = () => page.evaluate(() => { const B = window.__BR, G = B.Game, p = G.player; p.spawnTime = -99; p.armor = 1; B.Combat.damage(p, 9999, G.actors.find((a) => a.bot), false, 'ak47'); });
+  const alive = () => page.evaluate(() => { const G = window.__BR.Game; for (let i = 0; i < 400 && !G.player.alive; i++) G.update(1 / 20); });
+  await kill(); await alive(); await kill(); await alive(); await kill();
+  await page.waitForFunction(() => window.__BR.Ui.modal === 'm-out', null, { timeout: 8000 });
+  await page.evaluate(() => { window.__yt.nextReward = false; });
+  await page.click('#m-out [data-a=revive]'); await sleep(500);
+  check('REVIVE: reward not earned means no revive, a message, and REVIVE hides', await page.evaluate(() => !window.__BR.Game.player.alive && !document.querySelector('#m-out [data-a=revive]') && document.getElementById('toast').textContent.length > 0));
+  await page.evaluate(() => { window.__yt.nextReward = true; });
+  await page.click('#m-out [data-a=restart]');
+  await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting && window.__BR.Game.player.alive && !window.__BR.Ui.modal, null, { timeout: 30000 });
+  check('RESTART: interstitial ad (requestInterstitialAd), then the mission restarts', (await ads()).includes('requestInterstitialAd'), (await ads()).join(','));
+  await page.evaluate(() => { window.__BR.Game.finish(true, 'r_win'); });
+  await page.waitForFunction(() => window.__BR.Ui.cur === 'end', null, { timeout: 15000 });
+  const n0 = (await ads()).filter((a) => a === 'requestInterstitialAd').length;
+  await page.click('#end [data-a=menu]');
+  await page.waitForFunction(() => window.__BR.Ui.cur === 'missions', null, { timeout: 15000 });
+  check('Leaving the results screen requests an interstitial', (await ads()).filter((a) => a === 'requestInterstitialAd').length === n0 + 1);
+  check('CP shop: guns can be bought with CP', await page.evaluate(() => { const B = window.__BR; B.Save.data.cp = 2000; return B.Arsenal.buy('ak47') && B.Arsenal.owns('ak47'); }));
+  check('Ads + shop: no page errors', log.errors.length === 0, log.errors.slice(0, 3).join(' | '));
+  await browser.close();
+}
+{
+  const { browser, page, log } = await open({ query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, cp: 0, owned: [], played: 3 }) });
+  await page.addInitScript(() => { window.__ytNoAds = true; });
+  await page.reload();
+  await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
+  await page.click('#boot-enter');
+  await page.waitForFunction(() => window.__BR.Ui.cur === 'menu', null, { timeout: 15000 });
+  await page.evaluate(() => { const U = window.__BR.Ui; U.selMission = 2; U.show('briefing'); }); await sleep(600);
+  const b = await page.evaluate(() => ({ can: window.__BR.Platform.ads.canReward(), rent: document.querySelectorAll('#briefing [data-rent]').length, buy: document.querySelectorAll('#briefing [data-buy]').length }));
+  check('Without ytgame.ads: no ad buttons, BUY with CP still works, game playable', !b.can && b.rent === 0 && b.buy > 0, JSON.stringify(b));
+  await page.click('#briefing [data-a=deploy]');
+  await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
+  check('Without ytgame.ads: missions start, no errors', log.errors.length === 0, log.errors.slice(0, 3).join(' | '));
   await browser.close();
 }
 const failed = results.filter((r) => !r.ok);

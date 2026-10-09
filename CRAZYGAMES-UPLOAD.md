@@ -90,10 +90,10 @@ The score-race missions have no limit.
 
 | Gun | Price |
 |---|---|
-| Tri-Barrel | 1,500 CP |
+| Tri-Barrel | 2,999 CP |
 | AK-47 | 1,900 CP |
-| M4 Carbine | 2,999 CP |
-| Bolt Sniper | 4,000 CP |
+| M4 Carbine | 4,999 CP |
+| Bolt Sniper | 7,999 CP |
 
 **CP earned per mission:** 20% of the score on a win (7% on a loss), +15 per headshot, +30 per multi-kill.
 
@@ -102,3 +102,9 @@ The score-race missions have no limit.
 **GET AMMO:** a button at the top of the gameplay screen (AD badge; G key on desktop, tap on mobile). It plays a rewarded ad, then refills every gun the player carries. It glows when they're low on ammo and only shows when an ad can play.
 
 **Midgame ad** when leaving the results screen.
+
+**Hostiles get stronger:** from Operation 3 the briefing says "Hostiles are getting stronger every operation". Hostile armour soaks up more AK-47 damage each operation (down to 64%), and from Operation 5 more M4 damage (down to 80%; the M4 always stays stronger than the AK). The Sniper and Tri-Barrel are unaffected, so upgrading (CP or WATCH AD) pays off.
+
+**Menu and music:** one soldier, close and lit, in a CoD-style lobby shot. The developer's own music plays in menus only, and stops on mute, ads and a hidden tab.
+
+**Graphics Auto:** starts on High and drops to Medium, then Low, on lag. A manual choice sticks.

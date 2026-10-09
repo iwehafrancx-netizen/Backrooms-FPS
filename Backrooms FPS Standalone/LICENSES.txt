@@ -1,3 +1,23 @@
+3D models in assets/
+====================
+
+Pistol (assets/Guns/pistol.glb): "9mm Pistol" by TORI106 (https://sketchfab.com/TORI106)
+  https://sketchfab.com/3d-models/9mm-pistol-43bc09f5aace4346a8a2b6e1580fc03f
+  License: CC BY 4.0 (http://creativecommons.org/licenses/by/4.0/). Optimized for the web.
+Tri-Barrel shotgun (assets/Guns/shotgun.glb): "Triple barrel shotgun pistol" by Long Nguyễn (https://sketchfab.com/LongNguyen89)
+  https://sketchfab.com/3d-models/triple-barrel-shotgun-pistol-a4af8c9f2e294a0f96ee016770f1694a
+  License: CC BY 4.0 (http://creativecommons.org/licenses/by/4.0/). Optimized for the web.
+AK-47 (assets/Guns/ak47.glb): "Weathered AK47" by mikelkel2 (https://sketchfab.com/mikelkel2)
+  https://sketchfab.com/3d-models/weathered-ak47-c95a94e9c68340ff8b0ea49dc3ff81c2
+  License: CC BY 4.0 (http://creativecommons.org/licenses/by/4.0/). Optimized for the web.
+Soldier (assets/NPCs/operator.glb): original model by the game's developer.
+Level 0 map (assets/Maps/backroom.glb): downloaded from Sketchfab (free download); author details not recorded
+M4 Carbine (assets/Guns/m4.glb): downloaded from Sketchfab (free download); author details not recorded
+Bolt Sniper (assets/Guns/sniper.glb): downloaded from Sketchfab (free download); author details not recorded
+Menu music (assets/Audio/music.mp3): original track made for this game by its developer.
+
+------------------------------------------------------------------------
+
 Third-party software bundled in lib/
 ====================================
 

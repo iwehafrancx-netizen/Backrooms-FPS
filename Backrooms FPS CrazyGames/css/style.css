@@ -183,6 +183,7 @@ body.ingame #view canvas { cursor: none; }
 #briefing .wrap { margin-top: calc(60px + var(--safe-t)); display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; flex: 1; min-height: 0; overflow-y: auto; align-content: start; touch-action: pan-y; }
 .brief-left { display: flex; flex-direction: column; gap: 10px; }
 .brief-obj { padding: 14px 16px; }
+.threat { align-self: flex-start; padding: 6px 10px; border: 1px solid rgba(255,74,61,.7); background: rgba(255,74,61,.12); color: #ff6a5e; font: 700 11px/1.3 var(--f-mono); letter-spacing: .12em; }
 .brief-obj ul { margin: 8px 0 0; padding: 0; list-style: none; }
 .brief-obj li { position: relative; padding: 5px 0 5px 22px; font-size: 14px; line-height: 1.4; }
 .brief-obj li::before { content: ""; position: absolute; left: 2px; top: 11px; width: 10px; height: 2px; background: var(--yellow); }

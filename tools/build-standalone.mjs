@@ -15,32 +15,33 @@ html = html.replace(/\s*<script src="https:\/\/www\.youtube\.com\/game_api\/v1">
 fs.writeFileSync(path.join(out, 'index.html'), html);
 
 let js = fs.readFileSync(path.join(src, 'game.js'), 'utf8');
-const replaceBetween = (startMark, endMark, text) => {
-  const a = js.indexOf(startMark), b = js.indexOf(endMark, a);
-  if (a < 0 || b < 0) throw new Error('marker not found: ' + startMark);
-  js = js.slice(0, a) + text + js.slice(b);
-};
 const sub = (from, to) => { if (!js.includes(from)) throw new Error('text not found: ' + from); js = js.split(from).join(to); };
 
-replaceBetween('const Platform = (() => {', 'const DEFAULT_SETTINGS', `const Platform = (() => {
+{
+  const a = js.indexOf('const Platform = (() => {'), endMark = '\n  return api;\n})();\n', b = js.indexOf(endMark, a);
+  if (a < 0 || b < 0) throw new Error('Platform block not found');
+  js = js.slice(0, a) + `const Platform = (() => {
   const safe = (fn, fallback) => { try { return fn(); } catch (e) { return fallback; } };
   const noop = () => {};
   const api = {
-    inPlayables: false,
-    firstFrameReady: noop, gameReady: noop, sendScore: noop, logError: noop, logWarning: noop, onAudioEnabledChange: noop,
+    id: 'web', sdkReady: false,
+    async init() {}, loadingStart: noop, gameReady: noop, gameplayStart: noop, gameplayStop: noop, happytime: noop,
+    sendScore: noop, logError: noop, logWarning: noop, onAudioEnabledChange: noop,
     async getLanguage() { return String(navigator.language || 'en').toLowerCase().slice(0, 2); },
     isAudioEnabled() { return true; },
     onPause(cb) { document.addEventListener('visibilitychange', () => { if (document.hidden) cb(); }); },
     onResume(cb) { document.addEventListener('visibilitychange', () => { if (!document.hidden) cb(); }); },
     async loadData() { return safe(() => localStorage.getItem('backrooms.save') || '', ''); },
     async saveData(str) { safe(() => localStorage.setItem('backrooms.save', str)); },
+    ads: { canReward: () => false, async midgame() {}, async rewarded() { return false; } },
   };
   window.addEventListener('error', (e) => console.error('[backrooms]', e.message));
   window.addEventListener('unhandledrejection', (e) => console.error('[backrooms]', e.reason));
   return api;
 })();
+` + js.slice(b + endMark.length);
+}
 
-`);
 sub(`  async binary(url, kb) {
     const r = await fetch(url);`, `  async binary(url, kb) {
     if (window.BACKROOMS_WEB_DEMO && window.BACKROOMS_WEB_DEMO.b64) {
