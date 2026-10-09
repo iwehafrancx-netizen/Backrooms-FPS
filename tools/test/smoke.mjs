@@ -1,5 +1,5 @@
 import { open, shot, sleep } from './harness.mjs';
-const { browser, page, log } = await open();
+const { browser, page, log } = await open({ query: '?debug&menu=1' });
 const t0 = Date.now();
 try {
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 60000 });
