@@ -551,6 +551,28 @@ if (run('P')) {
     return { ground: +ground.toFixed(3), atDeath: +atDeath.toFixed(3), end: body ? +body.root.position.y.toFixed(3) : null, ys, mono: ys.every((y, i) => !i || y <= ys[i - 1] + 1e-6) };
   });
   check('soldier killed mid-jump falls to the floor while dying (no floating corpse)', air.atDeath > air.ground + 0.2 && Math.abs(air.end - air.ground) < 0.01 && air.mono, JSON.stringify(air));
+  await f.evaluate(() => window.__BR.Game.toMenu('menu')); await onScreen(f, 'menu');
+  await startMission(f, 3, 'none', 'pistol');
+  const mimic = await f.evaluate(() => {
+    const B = window.__BR, G = B.Game, boss = G.mode.boss, rounds = [];
+    for (const a of G.actors) if (a.bot) { a.bot.shootAt = () => {}; }
+    G.player.spawnTime = -99;
+    const snap = () => ({ hp: boss.maxHp, elite: boss.bot.elite, armor: boss.armor || 1, banner: (B.Hud.els.banner.textContent || '').trim() });
+    rounds.push(snap());
+    for (let r = 0; r < 3; r++) {
+      boss.spawnTime = -99; B.Combat.damage(boss, 99999, G.player, false, 'sniper');
+      for (let i = 0; i < 300 && !boss.alive; i++) G.update(1 / 30);
+      rounds.push(snap());
+    }
+    return rounds;
+  });
+  check('Duel: the Mimic is strong one round, a normal soldier the next, and strong again', mimic[0].hp === 300 && mimic[0].elite && mimic[1].hp === 125 && !mimic[1].elite && mimic[1].armor === 1 && mimic[2].hp === 300 && mimic[2].elite && mimic[3].hp === 125, JSON.stringify(mimic.map((m) => [m.hp, m.elite])));
+  check('Duel: a banner announces each Mimic round', /WEAKENED/.test(mimic[1].banner) && /POWERS UP/.test(mimic[2].banner), JSON.stringify(mimic.map((m) => m.banner)));
+  {
+    const src = fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames/game.js'), 'utf8');
+    const knobs = ['let p = 0.14 + 0.54 * this.skill;', 'lerp(0.95, 0.24, b.skill)', 'rand(0.7, 1.3) : rand(1.2, 2.2)', '0.3 + this.skill * 0.35 + (this.elite ? 0.12 : 0)', '(b.elite ? 0.14 : 0.05)) b.jump()', '(this.elite ? 0.35 : 0.4) && Game.time - this.lastRetreat > 8'];
+    check('NPCs a little easier: aim, reaction, dodging, jumping and retreat tuned down', knobs.every((k) => src.includes(k)), knobs.filter((k) => !src.includes(k)).join(' | '));
+  }
   check('no errors', !log.errors.length, log.errors.slice(0, 4).join(' | '));
   await browser.close();
 }

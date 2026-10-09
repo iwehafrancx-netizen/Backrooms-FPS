@@ -116,7 +116,7 @@ const STR = {
     o_ext: 'ELIMINATE HOSTILES — <b>{k}</b> / {t}', o_tdm: 'FIRST TEAM TO <b>{t}</b> ELIMINATIONS', o_key: 'RECOVER KEYCARDS — <b>{k}</b> / 3', o_exit: 'KEYCARDS SECURED — <b>REACH THE LIFT</b>', o_duel: 'FIRST TO <b>{t}</b> — TAKE DOWN THE MIMIC',
     o_surv: 'SQUADS REMAINING — <b>{n}</b>', o_brief: '<b>{h}</b> HAS THE BRIEFCASE — TAKE IT BACK', o_briefNone: 'GRAB THE BRIEFCASE', o_briefYou: '<b>YOU HAVE THE BRIEFCASE</b> — HOLD IT UNTIL TIME RUNS OUT',
     o_siege: 'OVERRIDE BOTH ENEMY SWITCHES — <b>{a}</b> / 2',
-    b_key: 'KEYCARD RECOVERED', b_exit: 'EXIT UNLOCKED', b_button: 'SWITCH OVERRIDDEN', b_lost: 'SWITCH LOST', b_case: 'BRIEFCASE SECURED', b_caseLost: 'BRIEFCASE DROPPED', b_lights: 'POWER FAILURE', b_squadOut: 'SQUAD ELIMINATED', b_lead: 'TAKING THE LEAD', b_hunt: 'THEY CAN HEAR YOU',
+    b_mimicUp: 'THE MIMIC POWERS UP', b_mimicDown: 'THE MIMIC IS WEAKENED', b_key: 'KEYCARD RECOVERED', b_exit: 'EXIT UNLOCKED', b_button: 'SWITCH OVERRIDDEN', b_lost: 'SWITCH LOST', b_case: 'BRIEFCASE SECURED', b_caseLost: 'BRIEFCASE DROPPED', b_lights: 'POWER FAILURE', b_squadOut: 'SQUAD ELIMINATED', b_lead: 'TAKING THE LEAD', b_hunt: 'THEY CAN HEAR YOU',
     r_time: 'TIME EXPIRED', r_dead: 'YOUR SQUAD WAS WIPED OUT', r_win: 'OPERATION SUCCESSFUL', r_score: 'TARGET NOT REACHED', r_enemyWin: 'THE ENEMY WON THE ROUND', r_case: 'LAST ONE STANDING WITH THE CASE', r_extract: 'EXTRACTED FROM LEVEL 0', r_siegeLost: 'THEY OVERRODE YOUR SWITCHES', o_wave: 'WAVE <b>{w}</b> / {t} — {n} HOSTILES LEFT', o_waveBreak: 'NEXT WAVE IN <b>{s}</b>', b_wave: 'WAVE {w}', b_waveClear: 'WAVE CLEARED', o_ghost: 'ELIMINATE THE OFFICERS — <b>{k}</b> / 3', b_alarm: 'ALARM RAISED', b_alarmSub: 'REINFORCEMENTS INBOUND', b_officer: 'OFFICER DOWN', o_hp: 'HOLD THE HARDPOINT — FIRST TO <b>{t}</b>', o_hpContest: '<b>HARDPOINT CONTESTED</b>', b_hpMove: 'HARDPOINT MOVED', o_boss: 'HUNT DOWN THE MIMIC', o_bossExit: 'THE MIMIC IS DOWN — <b>REACH THE LIFT</b>', b_boss: 'THE MIMIC IS DOWN', r_waves: 'ALL WAVES SURVIVED', r_ghost: 'ALL OFFICERS ELIMINATED', r_boss: 'THE MIMIC IS DEAD — EXTRACTED',
     tips: ['TIP: Hostiles get stronger every operation. Upgrade your weapon.', 'TIP: Headshots deal heavy bonus damage.', 'TIP: Crouching tightens your spread.', 'TIP: Hostiles hear gunfire. Pick your fights.', 'TIP: Blue chevrons mark your squad. Every other colour is hostile.', 'TIP: Keycards beep louder as you get closer.', 'TIP: Health regenerates after a few seconds out of combat.'],
   },
@@ -138,7 +138,7 @@ const STR = {
     reloading: 'RECARGANDO', noAmmo: 'SIN MUNICIÓN', lives: 'VIDAS {n}', you: 'TÚ', pressHold: 'MANTÉN', pickUp: 'RECOGER', useExit: 'EXTRAER', pressButton: 'ANULAR', insertion: 'INSERCIÓN', go: 'YA', fpsWord: 'FPS',
     o_ext: 'ELIMINA HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PRIMER EQUIPO EN <b>{t}</b> BAJAS', o_key: 'RECUPERA TARJETAS — <b>{k}</b> / 3', o_exit: 'TARJETAS LISTAS — <b>LLEGA AL ASCENSOR</b>', o_duel: 'PRIMERO A <b>{t}</b> — DERRIBA AL MIMIC',
     o_surv: 'EQUIPOS RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> TIENE EL MALETÍN — RECUPÉRALO', o_briefNone: 'COGE EL MALETÍN', o_briefYou: '<b>TIENES EL MALETÍN</b> — AGUANTA HASTA QUE ACABE EL TIEMPO', o_siege: 'ANULA LOS DOS INTERRUPTORES ENEMIGOS — <b>{a}</b> / 2',
-    b_key: 'TARJETA RECUPERADA', b_exit: 'SALIDA DESBLOQUEADA', b_button: 'INTERRUPTOR ANULADO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETÍN ASEGURADO', b_caseLost: 'MALETÍN PERDIDO', b_lights: 'APAGÓN', b_squadOut: 'EQUIPO ELIMINADO', b_lead: 'TOMAS LA DELANTERA', b_hunt: 'TE PUEDEN OÍR',
+    b_mimicUp: 'EL MIMIC SE POTENCIA', b_mimicDown: 'EL MIMIC ESTÁ DEBILITADO', b_key: 'TARJETA RECUPERADA', b_exit: 'SALIDA DESBLOQUEADA', b_button: 'INTERRUPTOR ANULADO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETÍN ASEGURADO', b_caseLost: 'MALETÍN PERDIDO', b_lights: 'APAGÓN', b_squadOut: 'EQUIPO ELIMINADO', b_lead: 'TOMAS LA DELANTERA', b_hunt: 'TE PUEDEN OÍR',
     r_time: 'TIEMPO AGOTADO', r_dead: 'TU EQUIPO FUE ELIMINADO', r_win: 'OPERACIÓN EXITOSA', r_score: 'OBJETIVO NO ALCANZADO', r_enemyWin: 'EL ENEMIGO GANÓ LA RONDA', r_case: 'ÚLTIMO EN PIE CON EL MALETÍN', r_extract: 'EXTRAÍDO DEL NIVEL 0', r_siegeLost: 'ANULARON TUS INTERRUPTORES', o_wave: 'OLEADA <b>{w}</b> / {t} — QUEDAN {n} HOSTILES', o_waveBreak: 'SIGUIENTE OLEADA EN <b>{s}</b>', b_wave: 'OLEADA {w}', b_waveClear: 'OLEADA SUPERADA', o_ghost: 'ELIMINA A LOS OFICIALES — <b>{k}</b> / 3', b_alarm: 'ALARMA ACTIVADA', b_alarmSub: 'LLEGAN REFUERZOS', b_officer: 'OFICIAL ABATIDO', o_hp: 'MANTÉN LA ZONA — PRIMERO A <b>{t}</b>', o_hpContest: '<b>ZONA DISPUTADA</b>', b_hpMove: 'LA ZONA SE MOVIÓ', o_boss: 'CAZA AL MIMIC', o_bossExit: 'EL MIMIC HA CAÍDO — <b>LLEGA AL ASCENSOR</b>', b_boss: 'EL MIMIC HA CAÍDO', r_waves: 'SOBREVIVISTE A TODAS LAS OLEADAS', r_ghost: 'OFICIALES ELIMINADOS', r_boss: 'EL MIMIC HA MUERTO — EXTRAÍDO',
     tips: ['CONSEJO: Los hostiles son más fuertes en cada operación. Mejora tu arma.', 'CONSEJO: Los tiros a la cabeza hacen mucho más daño.', 'CONSEJO: Agacharte reduce la dispersión.', 'CONSEJO: Los hostiles oyen los disparos.', 'CONSEJO: Los chevrones azules marcan a tu equipo.', 'CONSEJO: Las tarjetas pitan más fuerte al acercarte.', 'CONSEJO: La salud se regenera fuera de combate.'],
   },
@@ -160,7 +160,7 @@ const STR = {
     reloading: 'RECARREGANDO', noAmmo: 'SEM MUNIÇÃO', lives: 'VIDAS {n}', you: 'VOCÊ', pressHold: 'SEGURE', pickUp: 'PEGAR', useExit: 'EXTRAIR', pressButton: 'SOBRESCREVER', insertion: 'INSERÇÃO', go: 'VAI', fpsWord: 'FPS',
     o_ext: 'ELIMINE HOSTIS — <b>{k}</b> / {t}', o_tdm: 'PRIMEIRA EQUIPE A <b>{t}</b> ABATES', o_key: 'RECUPERE CARTÕES — <b>{k}</b> / 3', o_exit: 'CARTÕES OK — <b>VÁ ATÉ O ELEVADOR</b>', o_duel: 'PRIMEIRO A <b>{t}</b> — DERRUBE O MIMIC',
     o_surv: 'ESQUADRÕES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> ESTÁ COM A MALETA — RECUPERE', o_briefNone: 'PEGUE A MALETA', o_briefYou: '<b>VOCÊ ESTÁ COM A MALETA</b> — SEGURE ATÉ O TEMPO ACABAR', o_siege: 'SOBRESCREVA OS DOIS INTERRUPTORES INIMIGOS — <b>{a}</b> / 2',
-    b_key: 'CARTÃO RECUPERADO', b_exit: 'SAÍDA LIBERADA', b_button: 'INTERRUPTOR SOBRESCRITO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETA GARANTIDA', b_caseLost: 'MALETA PERDIDA', b_lights: 'QUEDA DE ENERGIA', b_squadOut: 'ESQUADRÃO ELIMINADO', b_lead: 'NA LIDERANÇA', b_hunt: 'ELES PODEM TE OUVIR',
+    b_mimicUp: 'O MIMIC FICA MAIS FORTE', b_mimicDown: 'O MIMIC ESTÁ ENFRAQUECIDO', b_key: 'CARTÃO RECUPERADO', b_exit: 'SAÍDA LIBERADA', b_button: 'INTERRUPTOR SOBRESCRITO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETA GARANTIDA', b_caseLost: 'MALETA PERDIDA', b_lights: 'QUEDA DE ENERGIA', b_squadOut: 'ESQUADRÃO ELIMINADO', b_lead: 'NA LIDERANÇA', b_hunt: 'ELES PODEM TE OUVIR',
     r_time: 'TEMPO ESGOTADO', r_dead: 'SEU ESQUADRÃO FOI ELIMINADO', r_win: 'OPERAÇÃO BEM-SUCEDIDA', r_score: 'META NÃO ATINGIDA', r_enemyWin: 'O INIMIGO VENCEU A RODADA', r_case: 'ÚLTIMO DE PÉ COM A MALETA', r_extract: 'EXTRAÍDO DO NÍVEL 0', r_siegeLost: 'SOBRESCREVERAM SEUS INTERRUPTORES', o_wave: 'ONDA <b>{w}</b> / {t} — RESTAM {n} HOSTIS', o_waveBreak: 'PRÓXIMA ONDA EM <b>{s}</b>', b_wave: 'ONDA {w}', b_waveClear: 'ONDA SUPERADA', o_ghost: 'ELIMINE OS OFICIAIS — <b>{k}</b> / 3', b_alarm: 'ALARME DISPARADO', b_alarmSub: 'REFORÇOS A CAMINHO', b_officer: 'OFICIAL ABATIDO', o_hp: 'SEGURE A ZONA — PRIMEIRO A <b>{t}</b>', o_hpContest: '<b>ZONA DISPUTADA</b>', b_hpMove: 'A ZONA MUDOU', o_boss: 'CACE O MIMIC', o_bossExit: 'O MIMIC CAIU — <b>VÁ ATÉ O ELEVADOR</b>', b_boss: 'O MIMIC CAIU', r_waves: 'TODAS AS ONDAS SUPERADAS', r_ghost: 'OFICIAIS ELIMINADOS', r_boss: 'O MIMIC MORREU — EXTRAÍDO',
     tips: ['DICA: Os hostis ficam mais fortes a cada operação. Melhore sua arma.', 'DICA: Tiros na cabeça causam muito mais dano.', 'DICA: Agachar reduz a dispersão.', 'DICA: Os hostis ouvem tiros.', 'DICA: Divisas azuis marcam seu esquadrão.', 'DICA: Os cartões apitam mais alto quando você se aproxima.', 'DICA: A vida regenera fora de combate.'],
   },
@@ -182,7 +182,7 @@ const STR = {
     reloading: 'RECHARGEMENT', noAmmo: 'PLUS DE MUNITIONS', lives: 'VIES {n}', you: 'VOUS', pressHold: 'MAINTENIR', pickUp: 'RAMASSER', useExit: 'EXTRAIRE', pressButton: 'FORCER', insertion: 'INSERTION', go: 'GO', fpsWord: 'FPS',
     o_ext: 'ÉLIMINEZ LES HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PREMIÈRE ÉQUIPE À <b>{t}</b> ÉLIMINATIONS', o_key: 'RÉCUPÉREZ LES CARTES — <b>{k}</b> / 3', o_exit: 'CARTES OK — <b>REJOIGNEZ L’ASCENSEUR</b>', o_duel: 'PREMIER À <b>{t}</b> — ABATTEZ LE MIMIC',
     o_surv: 'ESCOUADES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> A LA MALLETTE — REPRENEZ-LA', o_briefNone: 'PRENEZ LA MALLETTE', o_briefYou: '<b>VOUS AVEZ LA MALLETTE</b> — GARDEZ-LA JUSQU’À LA FIN DU TEMPS', o_siege: 'FORCEZ LES DEUX INTERRUPTEURS ENNEMIS — <b>{a}</b> / 2',
-    b_key: 'CARTE RÉCUPÉRÉE', b_exit: 'SORTIE DÉVERROUILLÉE', b_button: 'INTERRUPTEUR FORCÉ', b_lost: 'INTERRUPTEUR PERDU', b_case: 'MALLETTE SÉCURISÉE', b_caseLost: 'MALLETTE PERDUE', b_lights: 'PANNE DE COURANT', b_squadOut: 'ESCOUADE ÉLIMINÉE', b_lead: 'VOUS MENEZ', b_hunt: 'ILS VOUS ENTENDENT',
+    b_mimicUp: 'LE MIMIC SE RENFORCE', b_mimicDown: 'LE MIMIC EST AFFAIBLI', b_key: 'CARTE RÉCUPÉRÉE', b_exit: 'SORTIE DÉVERROUILLÉE', b_button: 'INTERRUPTEUR FORCÉ', b_lost: 'INTERRUPTEUR PERDU', b_case: 'MALLETTE SÉCURISÉE', b_caseLost: 'MALLETTE PERDUE', b_lights: 'PANNE DE COURANT', b_squadOut: 'ESCOUADE ÉLIMINÉE', b_lead: 'VOUS MENEZ', b_hunt: 'ILS VOUS ENTENDENT',
     r_time: 'TEMPS ÉCOULÉ', r_dead: 'VOTRE ESCOUADE A ÉTÉ ANÉANTIE', r_win: 'OPÉRATION RÉUSSIE', r_score: 'OBJECTIF NON ATTEINT', r_enemyWin: 'L’ENNEMI A GAGNÉ LA MANCHE', r_case: 'DERNIER DEBOUT AVEC LA MALLETTE', r_extract: 'EXTRAIT DU NIVEAU 0', r_siegeLost: 'ILS ONT FORCÉ VOS INTERRUPTEURS', o_wave: 'VAGUE <b>{w}</b> / {t} — {n} HOSTILES RESTANTS', o_waveBreak: 'PROCHAINE VAGUE DANS <b>{s}</b>', b_wave: 'VAGUE {w}', b_waveClear: 'VAGUE REPOUSSÉE', o_ghost: 'ÉLIMINEZ LES OFFICIERS — <b>{k}</b> / 3', b_alarm: 'ALERTE DÉCLENCHÉE', b_alarmSub: 'RENFORTS EN APPROCHE', b_officer: 'OFFICIER ÉLIMINÉ', o_hp: 'TENEZ LA ZONE — PREMIER À <b>{t}</b>', o_hpContest: '<b>ZONE CONTESTÉE</b>', b_hpMove: 'LA ZONE S’EST DÉPLACÉE', o_boss: 'TRAQUEZ LE MIMIC', o_bossExit: 'LE MIMIC EST TOMBÉ — <b>REJOIGNEZ L’ASCENSEUR</b>', b_boss: 'LE MIMIC EST TOMBÉ', r_waves: 'TOUTES LES VAGUES REPOUSSÉES', r_ghost: 'OFFICIERS ÉLIMINÉS', r_boss: 'LE MIMIC EST MORT — EXTRAIT',
     tips: ['ASTUCE : Les hostiles se renforcent à chaque opération. Améliorez votre arme.', 'ASTUCE : Les tirs à la tête infligent beaucoup plus de dégâts.', 'ASTUCE : S’accroupir réduit la dispersion.', 'ASTUCE : Les hostiles entendent les tirs.', 'ASTUCE : Les chevrons bleus marquent votre escouade.', 'ASTUCE : Les cartes bipent plus fort quand vous approchez.', 'ASTUCE : La santé se régénère hors combat.'],
   },
@@ -1781,7 +1781,7 @@ function defineAI() {
     exit(b) { b.crouchWanted = false; }
   }
   class Engage extends Y.State {
-    enter(b) { b.reactT = lerp(0.85, 0.18, b.skill) * rand(0.8, 1.3); b.strafeT = 0; b.assessT = 0; b.push = false; b.setSpeed(b.strafeSpeed); }
+    enter(b) { b.reactT = lerp(0.95, 0.24, b.skill) * rand(0.8, 1.3); b.strafeT = 0; b.assessT = 0; b.push = false; b.setSpeed(b.strafeSpeed); }
     execute(b) {
       const tg = b.target;
       if (!tg || !tg.alive) { b.target = null; b.brain.changeTo(b.bestMemory() ? 'hunt' : 'patrol'); return; }
@@ -1804,7 +1804,7 @@ function defineAI() {
         else if (d > pref * 1.4) { px += toX * 3; pz += toZ * 3; } else if (d < pref * 0.55) { px -= toX * 2.5; pz -= toZ * 2.5; }
         const p = Nav.closest({ x: px, y: 0, z: pz }); if (p) b.moveTo(p);
         b.crouchWanted = b.push ? false : b.elite ? Math.random() < 0.35 : Math.random() < 0.12;
-        if (!b.crouchWanted && Math.random() < (b.elite ? 0.18 : 0.08)) b.jump();
+        if (!b.crouchWanted && Math.random() < (b.elite ? 0.14 : 0.05)) b.jump();
       }
       b.setSpeed(b.dodgeT > 0 ? b.runSpeed : b.push ? b.runSpeed * 0.8 : b.strafeSpeed);
       if (b.reactT <= 0) b.shootAt(tg);
@@ -1971,13 +1971,13 @@ class Bot {
   shouldRetreat() {
     const st = this.brain.currentState;
     if (!this.a.alive || st instanceof AI.Retreat || st instanceof AI.Dead) return false;
-    return this.a.hp < this.a.maxHp * (this.elite ? 0.35 : 0.45) && Game.time - this.lastRetreat > 6;
+    return this.a.hp < this.a.maxHp * (this.elite ? 0.35 : 0.4) && Game.time - this.lastRetreat > 8;
   }
   underFire(shooter) {
     this.lastUnderFire = Game.time;
     if (!this.a.alive || this.target !== shooter || Game.time < this.dodgeCd) return;
-    this.dodgeCd = Game.time + (this.elite ? rand(0.5, 1.0) : rand(0.8, 1.6));
-    if (Math.random() > 0.45 + this.skill * 0.4 + (this.elite ? 0.15 : 0)) return;
+    this.dodgeCd = Game.time + (this.elite ? rand(0.7, 1.3) : rand(1.2, 2.2));
+    if (Math.random() > 0.3 + this.skill * 0.35 + (this.elite ? 0.12 : 0)) return;
     if (this.brain.currentState instanceof AI.Retreat) { if (!this.hiding && Math.random() < 0.5) this.jump(); return; }
     this.dodge(shooter);
   }
@@ -2106,7 +2106,7 @@ class Bot {
     Audio.shot(def.snd, this.a.pos);
     Game.noise(this.a, 12);
     const d = dist2D(this.a.pos, tg.pos);
-    let p = 0.16 + 0.6 * this.skill;
+    let p = 0.14 + 0.54 * this.skill;
     p *= clamp(1.25 - d / (def.range * 0.55), 0.18, 1);
     if (tg.isPlayer) {
       const sp = Math.hypot(Player.vel.x, Player.vel.z);
@@ -2335,13 +2335,23 @@ class Duel extends TeamDeathmatch {
     const p = Game.player; p.team = 'A'; p.lives = Infinity;
     const boss = this.makeBot('B', { name: 'THE MIMIC', weapon: 'm4', elite: true, hp: 300, armor: 0.8, skill: 1.0, dmgMul: 1.0, visionRange: 60, hearMul: 1.5 });
     boss.lives = Infinity;
-    this.boss = boss;
+    this.boss = boss; this.bossLife = 0; this.bossRound();
     this.score = { A: 0, B: 0 };
     this.spawnActor(p, Nav.randomInZone(MAP.zones.west));
     this.spawnActor(boss, Nav.randomInZone(MAP.zones.east));
     this.respawnDelay = 3; this.botDamageMul = 0.72; this.sweep = 0.9;
   }
-  respawnActor(a) { this.spawnActor(a, this.safeSpawn(a, null, 18)); }
+  bossRound() {
+    const strong = this.bossLife++ % 2 === 0, a = this.boss, b = a.bot;
+    a.maxHp = strong ? 300 : 125; a.armor = strong ? 0.8 : 0;
+    b.elite = strong; b.skill = strong ? 1 : 0.6; b.dmgMul = strong ? 1 : 0.8; b.visionRange = strong ? 60 : 42; b.hearMul = strong ? 1.5 : 1;
+    b.runSpeed = strong ? 4.6 : 3.9; b.strafeSpeed = strong ? 3.4 : 2.5;
+    return strong;
+  }
+  respawnActor(a) {
+    if (a === this.boss) Hud.banner(t(this.bossRound() ? 'b_mimicUp' : 'b_mimicDown'));
+    this.spawnActor(a, this.safeSpawn(a, null, 18));
+  }
   hud() { return { ally: this.score.A, enemy: this.score.B, clock: this.timeLeft, objective: t('o_duel', { t: this.m.target }) }; }
   stars(won) { if (!won) return 0; const m = this.score.A - this.score.B; return m >= 10 ? 3 : m >= 5 ? 2 : 1; }
   intel() { return { teams: '1 vs 1', time: fmtTime(this.timeLimit) }; }
