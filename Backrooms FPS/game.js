@@ -2335,11 +2335,19 @@ class Duel extends TeamDeathmatch {
     const p = Game.player; p.team = 'A'; p.lives = Infinity;
     const boss = this.makeBot('B', { name: 'THE MIMIC', weapon: 'm4', elite: true, hp: 290, armor: 0.8, skill: 0.97, dmgMul: 0.97, visionRange: 60, hearMul: 1.5 });
     boss.lives = Infinity;
-    this.boss = boss;
+    this.boss = boss; this.round = 0;
     this.score = { A: 0, B: 0 };
     this.spawnActor(p, Nav.randomInZone(MAP.zones.west));
     this.spawnActor(boss, Nav.randomInZone(MAP.zones.east));
     this.respawnDelay = 3; this.botDamageMul = 0.72; this.sweep = 0.9;
+  }
+  onKill(k, v) {
+    super.onKill(k, v);
+    const strong = [1, 1, 0, 1, 1, 0, 1, 0][++this.round % 8] === 1, a = this.boss, b = a.bot, max = strong ? 290 : 125;
+    if (a.alive) a.hp = Math.max(1, Math.round(a.hp * max / a.maxHp));
+    a.maxHp = max; a.armor = strong ? 0.8 : 0;
+    b.elite = strong; b.skill = strong ? 0.97 : 0.6; b.dmgMul = strong ? 0.97 : 1; b.visionRange = strong ? 60 : 42; b.hearMul = strong ? 1.5 : 1;
+    b.runSpeed = strong ? 4.6 : 3.9; b.strafeSpeed = strong ? 3.4 : 2.5;
   }
   respawnActor(a) { this.spawnActor(a, this.safeSpawn(a, null, 18)); }
   hud() { return { ally: this.score.A, enemy: this.score.B, clock: this.timeLeft, objective: t('o_duel', { t: this.m.target }) }; }

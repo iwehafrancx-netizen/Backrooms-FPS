@@ -554,20 +554,21 @@ if (run('P')) {
   await f.evaluate(() => window.__BR.Game.toMenu('menu')); await onScreen(f, 'menu');
   await startMission(f, 3, 'none', 'pistol');
   const mimic = await f.evaluate(() => {
-    const B = window.__BR, G = B.Game, boss = G.mode.boss, rounds = [];
-    for (const a of G.actors) if (a.bot) { a.bot.shootAt = () => {}; }
-    G.player.spawnTime = -99;
-    const snap = () => ({ hp: boss.maxHp, elite: boss.bot.elite, armor: boss.armor || 1, banner: (B.Hud.els.banner.textContent || '').trim() });
+    const B = window.__BR, G = B.Game, boss = G.mode.boss, p = G.player, rounds = [];
+    for (const a of G.actors) if (a.bot) a.bot.shootAt = () => {};
+    const snap = () => ({ hp: boss.maxHp, elite: boss.bot.elite, banner: (B.Hud.els.banner.textContent || '').trim(), feed: B.Hud.els.feed.textContent });
     rounds.push(snap());
-    for (let r = 0; r < 3; r++) {
-      boss.spawnTime = -99; B.Combat.damage(boss, 99999, G.player, false, 'sniper');
+    for (let r = 0; r < 8; r++) {
+      if (r === 3) { p.spawnTime = -99; p.armor = 1; B.Combat.damage(p, 99999, boss, false, 'm4'); for (let i = 0; i < 300 && !p.alive; i++) G.update(1 / 30); rounds.push(snap()); continue; }
+      boss.spawnTime = -99; B.Combat.damage(boss, 99999, p, false, 'sniper');
       for (let i = 0; i < 300 && !boss.alive; i++) G.update(1 / 30);
       rounds.push(snap());
     }
     return rounds;
   });
-  check('Duel: the Mimic stays strong every round (290 HP, armour, elite)', mimic.every((m) => m.hp === 290 && m.elite && m.armor === 0.8), JSON.stringify(mimic.map((m) => [m.hp, m.elite])));
-  check('Duel: no banner tells the player about the Mimic', mimic.every((m) => !/MIMIC/.test(m.banner)), JSON.stringify(mimic.map((m) => m.banner)));
+  const pat = mimic.map((m) => (m.hp === 290 && m.elite ? 'S' : m.hp === 125 && !m.elite ? 'W' : '?')).join('');
+  check('Duel: the Mimic switches silently between strong and weak, 5 strong to 3 weak, on every death (his or the player\'s)', pat === 'SSWSSWSWS', pat);
+  check('Duel: nothing on screen tells the player about the Mimic\'s form', mimic.every((m) => !/POWER|WEAK|STRONG/i.test(m.banner + m.feed)), JSON.stringify(mimic.map((m) => m.banner)));
   {
     const src = fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames/game.js'), 'utf8');
     const knobs = ['let p = 0.155 + 0.58 * this.skill;', 'lerp(0.87, 0.19, b.skill)', 'rand(0.55, 1.05) : rand(0.85, 1.7)', '0.43 + this.skill * 0.39 + (this.elite ? 0.14 : 0)', '(b.elite ? 0.17 : 0.075)) b.jump()', '(this.elite ? 0.35 : 0.45) && Game.time - this.lastRetreat > 6'];
