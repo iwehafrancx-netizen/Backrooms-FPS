@@ -566,12 +566,12 @@ if (run('P')) {
     }
     return rounds;
   });
-  check('Duel: the Mimic is strong one round, a normal soldier the next, and strong again', mimic[0].hp === 300 && mimic[0].elite && mimic[1].hp === 125 && !mimic[1].elite && mimic[1].armor === 1 && mimic[2].hp === 300 && mimic[2].elite && mimic[3].hp === 125, JSON.stringify(mimic.map((m) => [m.hp, m.elite])));
-  check('Duel: a banner announces each Mimic round', /WEAKENED/.test(mimic[1].banner) && /POWERS UP/.test(mimic[2].banner), JSON.stringify(mimic.map((m) => m.banner)));
+  check('Duel: the Mimic stays strong every round (290 HP, armour, elite)', mimic.every((m) => m.hp === 290 && m.elite && m.armor === 0.8), JSON.stringify(mimic.map((m) => [m.hp, m.elite])));
+  check('Duel: no banner tells the player about the Mimic', mimic.every((m) => !/MIMIC/.test(m.banner)), JSON.stringify(mimic.map((m) => m.banner)));
   {
     const src = fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames/game.js'), 'utf8');
-    const knobs = ['let p = 0.14 + 0.54 * this.skill;', 'lerp(0.95, 0.24, b.skill)', 'rand(0.7, 1.3) : rand(1.2, 2.2)', '0.3 + this.skill * 0.35 + (this.elite ? 0.12 : 0)', '(b.elite ? 0.14 : 0.05)) b.jump()', '(this.elite ? 0.35 : 0.4) && Game.time - this.lastRetreat > 8'];
-    check('NPCs a little easier: aim, reaction, dodging, jumping and retreat tuned down', knobs.every((k) => src.includes(k)), knobs.filter((k) => !src.includes(k)).join(' | '));
+    const knobs = ['let p = 0.155 + 0.58 * this.skill;', 'lerp(0.87, 0.19, b.skill)', 'rand(0.55, 1.05) : rand(0.85, 1.7)', '0.43 + this.skill * 0.39 + (this.elite ? 0.14 : 0)', '(b.elite ? 0.17 : 0.075)) b.jump()', '(this.elite ? 0.35 : 0.45) && Game.time - this.lastRetreat > 6'];
+    check('NPC strength back to just under the previous level', knobs.every((k) => src.includes(k)), knobs.filter((k) => !src.includes(k)).join(' | '));
   }
   check('no errors', !log.errors.length, log.errors.slice(0, 4).join(' | '));
   await browser.close();
