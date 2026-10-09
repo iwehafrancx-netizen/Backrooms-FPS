@@ -11,9 +11,9 @@ AK-47 (assets/Guns/ak47.glb): "Weathered AK47" by mikelkel2 (https://sketchfab.c
   https://sketchfab.com/3d-models/weathered-ak47-c95a94e9c68340ff8b0ea49dc3ff81c2
   License: CC BY 4.0 (http://creativecommons.org/licenses/by/4.0/). Optimized for the web.
 Soldier (assets/NPCs/operator.glb): original model by the game's developer.
-Level 0 map (assets/Maps/backroom.glb): <model name> by <author>, <link>, <license>
-M4 Carbine (assets/Guns/m4.glb): <model name> by <author>, <link>, <license>
-Bolt Sniper (assets/Guns/sniper.glb): <model name> by <author>, <link>, <license>
+Level 0 map (assets/Maps/backroom.glb): downloaded from Sketchfab (free download); author details not recorded
+M4 Carbine (assets/Guns/m4.glb): downloaded from Sketchfab (free download); author details not recorded
+Bolt Sniper (assets/Guns/sniper.glb): downloaded from Sketchfab (free download); author details not recorded
 
 ------------------------------------------------------------------------
 

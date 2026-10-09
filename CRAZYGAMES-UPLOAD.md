@@ -22,7 +22,7 @@
 | Languages | English, Spanish, Portuguese, French (follows the CrazyGames locale) |
 | Age / content | PEGI 12 style: shooting at human-like soldiers, no blood or gore |
 
-3. **Credits:** fill in the 3D model lines at the top of `Backrooms FPS CrazyGames/LICENSES.txt` (model name, author, link, license) before uploading. If a license is CC-BY, the author must be credited where players can see it.
+3. **Credits:** `Backrooms FPS CrazyGames/LICENSES.txt` lists every 3D model. The three CC BY guns are credited in Settings → Credits. The map, M4 and sniper have no recorded author or license.
 4. **Covers** (your own artwork, not a plain screenshot with the name on it):
    - Landscape 16:9: **1920 × 1080**
    - Portrait 2:3: **800 × 1200**
@@ -86,14 +86,14 @@
 
 The score-race missions have no limit.
 
-**Guns:** the pistol is free. The others have two options: **buy with Combat Points (CP)** to own them forever, or **WATCH AD** to use them for one mission.
+**Guns:** the pistol is free. When the player has enough CP, the gun's button turns green and reads **BUY NOW** with the price. The others have two options: **buy with Combat Points (CP)** to own them forever, or **WATCH AD** to use them for one mission.
 
 | Gun | Price |
 |---|---|
-| Tri-Barrel | 6,000 CP |
-| AK-47 | 10,000 CP |
-| M4 Carbine | 15,000 CP |
-| Bolt Sniper | 22,000 CP |
+| Tri-Barrel | 1,500 CP |
+| AK-47 | 1,900 CP |
+| M4 Carbine | 2,999 CP |
+| Bolt Sniper | 4,000 CP |
 
 **CP earned per mission:** 20% of the score on a win (7% on a loss), +15 per headshot, +30 per multi-kill.
 

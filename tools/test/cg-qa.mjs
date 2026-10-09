@@ -180,8 +180,10 @@ if (run('A')) {
   check('LICENSES.txt ships with library credits', /three\.js/.test(lic) && /Yuka/.test(lic) && /recast/i.test(lic));
   const ccby = [...lic.matchAll(/: "([^"]+)" by ([^(\n]+?) \(https[^\n]*\n[^\n]*\n\s*License: CC BY/g)].map((m) => m[2].trim());
   check('every CC BY model author is credited in the game (Settings > Credits)', ccby.length > 0 && ccby.every((a) => js.includes(a)), ccby.join(', '));
-  if (/<model name>/.test(lic)) { todo.push('3D model credits for the map, M4 and sniper are still placeholders in LICENSES.txt: send their Sketchfab links'); console.log('TODO  [A package] 3D model credits in LICENSES.txt (from you)'); }
-  else check('3D model credits filled in', true);
+  check('LICENSES.txt has a line for every 3D model (no placeholders)', !/<model name>/.test(lic) && ['backroom.glb', 'operator.glb', 'pistol.glb', 'shotgun.glb', 'ak47.glb', 'm4.glb', 'sniper.glb'].every((n) => lic.includes(n)));
+  const unknown = (lic.match(/author details not recorded/g) || []).length;
+  if (unknown) { todo.push(`${unknown} downloaded models (map, M4, sniper) have no recorded author or license (your choice to skip)`); console.log(`NOTE  [A package] ${unknown} downloaded models have no recorded author/license (owner's choice)`); }
+  check('gun prices: Tri-Barrel 1,500, AK-47 1,900, M4 2,999, Sniper 4,000 CP', /const SHOP = \{ shotgun: 1500, ak47: 1900, m4: 2999, sniper: 4000 \};/.test(js));
 }
 
 const SIZES = [
@@ -488,6 +490,51 @@ if (run('J')) {
     check(`corrupted save (${name}): game still starts, no errors`, !log.errors.length, log.errors.slice(0, 3).join(' | '));
     await browser.close();
   }
+}
+
+if (run('P')) {
+  section = 'P shop + soldiers';
+  const { browser, page, f, log } = await open({ w: 800, h: 450, query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, xp: 0, cp: 2000, owned: [], played: 3 }) });
+  await ready(f);
+  await f.click('#boot-enter'); await onScreen(f, 'menu');
+  await f.evaluate(() => { const U = window.__BR.Ui; U.selMission = 2; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
+  const cards = await f.evaluate(() => Object.fromEntries(['ak47', 'shotgun', 'm4', 'sniper'].map((id) => { const b = document.querySelector(`#briefing .wcard[data-w="${id}"] [data-buy]`); return [id, b ? { txt: b.innerText.replace(/\s+/g, ' ').trim(), can: b.classList.contains('can'), bg: getComputedStyle(b).backgroundColor } : null]; })));
+  await page.screenshot({ path: shotName('shop-buy-now') });
+  check('2,000 CP: AK-47 and Tri-Barrel show a green BUY NOW with the price', cards.ak47 && cards.ak47.can && /^BUY NOW 1,900 CP$/.test(cards.ak47.txt) && cards.shotgun.can && /^BUY NOW 1,500 CP$/.test(cards.shotgun.txt) && cards.ak47.bg !== cards.m4.bg, JSON.stringify(cards));
+  check('2,000 CP: M4 and Sniper show a dim BUY with their price (not affordable yet)', !cards.m4.can && /^BUY 2,999 CP$/.test(cards.m4.txt) && !cards.sniper.can && /^BUY 4,000 CP$/.test(cards.sniper.txt), JSON.stringify([cards.m4, cards.sniper]));
+  await f.click('#briefing .wcard[data-w="ak47"] [data-buy]'); await f.click('#briefing .wcard[data-w="ak47"] [data-buy]'); await sleep(300);
+  check('BUY NOW: confirm tap buys the AK-47 for 1,900 CP', await f.evaluate(() => window.__BR.Arsenal.owns('ak47') && window.__BR.Save.data.cp === 100));
+
+  await f.evaluate(() => window.__BR.Game.start(1, 'ak47', 'pistol'));
+  await inPlay(f);
+  await f.waitForFunction(() => window.__BR.Game.countdownT > 0 && window.__BR.Game.countdownT < 2.3, null, { timeout: 30000 });
+  const cd = await f.evaluate(() => {
+    const B = window.__BR, G = B.Game, src = {};
+    B.Assets.npc.scene.traverse((o) => { if (o.isBone) src[o.name] = o.quaternion; });
+    return { countdown: G.countdownT, bots: G.actors.filter((a) => a.bot).map((a) => {
+      let arm = null; a.bot.model.traverse((o) => { if (!arm && o.isBone && /RightArm$/.test(o.name)) arm = o; });
+      const rest = src[arm.name];
+      return { t: +a.bot.mixer.time.toFixed(2), anim: a.bot.anim && a.bot.anim.getClip().name, moved: +(2 * Math.acos(Math.min(1, Math.abs(arm.quaternion.dot(rest))))).toFixed(2) };
+    }) };
+  });
+  await page.screenshot({ path: shotName('countdown-squad') });
+  check('during the 3-2-1 countdown every soldier is animated in the gun pose (no T-pose)', cd.countdown > 0 && cd.bots.length > 0 && cd.bots.every((b) => b.t > 0.3 && b.anim === 'aim_idle' && b.moved > 0.2), JSON.stringify(cd).slice(0, 300));
+
+  await f.evaluate(() => { const G = window.__BR.Game; G.countdownT = 0; for (const a of G.actors) if (a.bot) { a.bot.brain.update = () => {}; a.bot.perceive = () => {}; a.bot.shootAt = () => {}; } });
+  const air = await f.evaluate(() => {
+    const B = window.__BR, G = B.Game, bot = G.actors.find((a) => a.bot && a.team !== G.player.team).bot;
+    bot.jump(); for (let i = 0; i < 18; i++) G.update(1 / 60);
+    const ground = bot.a.pos.y - bot.jumpY, atDeath = bot.root.position.y;
+    bot.a.spawnTime = -99; bot.a.armor = 0; B.Combat.damage(bot.a, 9999, G.player, false, 'ak47');
+    if (!bot.corpse) return { died: bot.a.alive === false, hp: bot.a.hp };
+    const ys = [];
+    for (let i = 0; i < 90; i++) { G.update(1 / 60); if (i % 10 === 0) ys.push(+bot.corpse.root.position.y.toFixed(3)); }
+    const body = bot.bodies.find((b) => b.root.visible && b.groundY != null);
+    return { ground: +ground.toFixed(3), atDeath: +atDeath.toFixed(3), end: body ? +body.root.position.y.toFixed(3) : null, ys, mono: ys.every((y, i) => !i || y <= ys[i - 1] + 1e-6) };
+  });
+  check('soldier killed mid-jump falls to the floor while dying (no floating corpse)', air.atDeath > air.ground + 0.2 && Math.abs(air.end - air.ground) < 0.01 && air.mono, JSON.stringify(air));
+  check('no errors', !log.errors.length, log.errors.slice(0, 4).join(' | '));
+  await browser.close();
 }
 
 if (run('L')) {

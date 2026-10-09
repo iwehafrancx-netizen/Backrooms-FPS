@@ -542,6 +542,8 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
 .wb small { font: 600 9.5px/1 var(--f-mono); letter-spacing: .06em; color: var(--paper-dim); white-space: nowrap; }
 .wb.buy small { color: var(--yellow); }
 .wb.buy.cant { opacity: .55; }
+.wb.buy.can { background: var(--green); border-color: var(--green); color: var(--ink); }
+.wb.buy.can small { color: var(--ink); }
 .wb.buy.confirm { background: var(--green); border-color: var(--green); color: var(--ink); }
 .wb.buy.confirm small { color: var(--ink); }
 .wb.ad { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
