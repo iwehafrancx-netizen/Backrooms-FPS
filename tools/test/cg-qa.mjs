@@ -827,14 +827,17 @@ if (run('Q')) {
     const pair = (sa, sb) => f.evaluate(([x, y]) => { const a = document.querySelector(x), b = document.querySelector(y); if (!a || !b) return null; const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(), ca = getComputedStyle(a), cb = getComputedStyle(b); return { w: [Math.round(ra.width), Math.round(rb.width)], h: [Math.round(ra.height), Math.round(rb.height)], bg: [ca.backgroundColor, cb.backgroundColor] }; }, [sa, sb]);
     const fair = (r) => r && Math.abs(r.w[0] - r.w[1]) <= 2 && Math.abs(r.h[0] - r.h[1]) <= 2 && r.bg[0] === r.bg[1];
     await f.evaluate(() => { const U = window.__BR.Ui; U.selMission = 4; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
+    await page.mouse.move(2, 2); await sleep(150);
     const cards = await pair('#briefing .wcard[data-w="m4"] [data-rent]', '#briefing .wcard[data-w="m4"] [data-buy]');
     await startMission(f, 7, 'none', 'pistol');
     await f.evaluate(() => { const G = window.__BR.Game; for (const a of G.actors) if (a.bot) { a.bot.brain.update = () => {}; a.bot.shootAt = () => {}; } });
     await f.evaluate(() => { const G = window.__BR.Game; G.offerGun = 'm4'; G.inGameOffer(); }); await sleep(800);
+    await page.mouse.move(2, 2); await sleep(150);
     const mini = await pair('#m-mini [data-a=ad]', '#m-mini [data-a=no]');
     await f.click('#m-mini [data-a=no]'); await sleep(400);
     await f.evaluate(() => { const B = window.__BR, G = B.Game; G.player.lives = 1; G.player.spawnTime = -99; G.player.armor = 1; B.Combat.damage(G.player, 9999, G.actors.find((a) => a.bot), false, 'ak47'); });
     await f.waitForFunction(() => window.__BR.Ui.modal === 'm-out', null, { timeout: 10000 }); await settle(f);
+    await page.mouse.move(2, 2); await sleep(150);
     const out = await pair('#m-out [data-a=revive]', '#m-out [data-a=restart]');
     await page.screenshot({ path: shotName('out-card-equal') });
     check('ad buttons are not sized or coloured to push ads: WATCH AD = BUY, EQUIP = NO THANKS, REVIVE = RESTART', fair(cards) && fair(mini) && fair(out), JSON.stringify({ cards, mini, out }));

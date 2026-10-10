@@ -3883,7 +3883,15 @@ async function boot() {
     World.camera.fov = 62; World.camera.updateProjectionMatrix();
     Lobby.show(true);
     Lobby.update(0.016);
-    await World.renderer.compileAsync(World.scene, World.camera);
+    const post = () => (World.composer && World.qualityLevel === 'high' ? World.composer.readBuffer : null);
+    const compileFor = (scene, rt) => {
+      const r = World.renderer, prev = r.getRenderTarget();
+      r.setRenderTarget(rt);
+      const p = r.compileAsync(scene, World.camera, World.scene);
+      r.setRenderTarget(prev);
+      return p;
+    };
+    await compileFor(World.scene, post());
     World.render();
     Loop.start();
     setStatus('ready'); fill.style.transform = 'scaleX(1)';
@@ -3897,7 +3905,7 @@ async function boot() {
       if (Game.state !== 'boot') return;
       if (e && e.type === 'pointerdown' && (e.pointerType !== 'mouse' || e.button !== 0)) return;
       if (e && e.type === 'pointerup' && e.pointerType === 'mouse') return;
-      if (e && e.cancelable) e.preventDefault();
+      if (e && e.type === 'keydown') e.preventDefault();
       Game.state = 'menu'; Audio.unlock(); Audio.ui();
       btn.classList.add('pressed'); btn.blur();
       if (!quick) { leave(); Ui.show('menu'); return; }
@@ -3916,7 +3924,8 @@ async function boot() {
     for (const id of Object.keys(WEAPONS)) if (!LATE_ASSETS.includes(WEAPONS[id].model)) addWarm(id);
     Assets.late.then(() => {
       for (const id of Object.keys(WEAPONS)) if (LATE_ASSETS.includes(WEAPONS[id].model)) addWarm(id);
-      return World.renderer.compileAsync(warm, World.camera, World.scene);
+      const rt = post();
+      return Promise.all([compileFor(warm, rt), ...(rt ? [compileFor(warm, null), compileFor(World.scene, null)] : [])]);
     }).catch(() => {})
       .then(() => Loader.binary(MUSIC_FILE, 0)).then((b) => Audio.loadMusic(b)).catch(() => {});
   } catch (e) {
