@@ -3929,18 +3929,17 @@ async function boot() {
     addEventListener('keydown', (e) => { if (Game.state === 'boot' && goKeys.includes(e.code)) enter(e); });
     if (!Input.st.touch) { btn.focus(); try { window.focus(); } catch (e) {} }
     if (queued) enter();
-    const warm = new THREE.Scene();
-    const addWarm = (id) => {
-      const g = Models.gun(id); warm.add(g);
+    const idle = () => new Promise((r) => (window.requestIdleCallback ? requestIdleCallback(() => r(), { timeout: 1200 }) : setTimeout(r, 120)));
+    const warmGun = async (id) => {
+      await idle();
+      const warm = new THREE.Scene(), g = Models.gun(id); warm.add(g);
       g.traverse((o) => { for (const m of [].concat(o.material || [])) for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'emissiveMap', 'aoMap']) if (m[k]) World.renderer.initTexture(m[k]); });
-    };
-    for (const id of Object.keys(WEAPONS)) if (!LATE_ASSETS.includes(WEAPONS[id].model)) addWarm(id);
-    Assets.late.then(() => {
-      for (const id of Object.keys(WEAPONS)) if (LATE_ASSETS.includes(WEAPONS[id].model)) addWarm(id);
       const rt = post();
-      return Promise.all([compileFor(warm, rt), ...(rt ? [compileFor(warm, null), compileFor(World.scene, null)] : [])]);
-    }).catch(() => {})
-      .then(() => Loader.binary(MUSIC_FILE, 0)).then((b) => Audio.loadMusic(b)).catch(() => {});
+      await compileFor(warm, rt);
+      if (rt) { await idle(); await compileFor(warm, null); }
+    };
+    Assets.late.then(async () => { for (const id of Object.keys(WEAPONS)) await warmGun(id); }).catch(() => {});
+    lateReady.then(() => Loader.binary(MUSIC_FILE, 0)).then((b) => Audio.loadMusic(b)).catch(() => {});
   } catch (e) {
     console.error(e);
     Platform.logError();
