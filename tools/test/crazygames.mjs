@@ -180,7 +180,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   await page.evaluate(() => { const G = window.__BR.Game; G.countdownT = 0; for (const s of window.__BR.Player.slots) { s.mag = 0; s.reserve = 0; } window.__BR.Hud.weapon(); });
   await sleep(500);
   const btn = await page.evaluate(() => { const b = document.querySelector('#hud .ammo-ad'); return { shown: !b.classList.contains('hidden'), low: b.classList.contains('low'), text: b.textContent, hint: document.querySelector('#hud .ammo .reload').textContent }; });
-  check('GET AMMO button with an AD badge is on screen, glowing when out of ammo', btn.shown && btn.low && /AD/.test(btn.text) && /GET AMMO/.test(btn.text), JSON.stringify(btn));
+  check('GET AMMO button with an AD badge is on screen when out of ammo, no glow pushing the ad', btn.shown && !btn.low && /AD/.test(btn.text) && /GET AMMO/.test(btn.text), JSON.stringify(btn));
   const place = await page.evaluate(() => { const a = document.querySelector('#hud .ammo-ad').getBoundingClientRect(), p = document.querySelector('#hud .hud-pause').getBoundingClientRect(); return { right: Math.round(a.right), pauseLeft: Math.round(p.left), top: Math.round(a.top), pTop: Math.round(p.top) }; });
   check('GET AMMO sits at the top right, just left of the pause button', place.right <= place.pauseLeft && place.pauseLeft - place.right < 16 && Math.abs(place.top - place.pTop) < 4, JSON.stringify(place));
   await shot(page, 'cg-ammo-button');
