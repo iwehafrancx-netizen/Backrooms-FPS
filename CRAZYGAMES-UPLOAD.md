@@ -1,5 +1,10 @@
 # Uploading Backrooms to CrazyGames
 
+## 0. Basic Launch first, Full Launch after approval
+CrazyGames reviews new games in two phases, and each phase gets its own zip.
+- **Basic Launch:** upload `dist/backrooms-crazygames-basic.zip` (`cd tools && npm run zip-crazygames-basic`). CrazyGames turns monetization off in this phase, so this build has no ads at all: no WATCH AD, GET AMMO, REVIVE or EQUIP buttons, no gun pop-up and no midgame ads. Guns are still bought with CP, the out-of-lives card offers RESTART, and the SDK still sends loading and gameplay events and saves progress. QA: `QA_BASIC=1 node test/cg-qa.mjs A B S K G H J P L`.
+- **Full Launch** (once the game is selected for it): upload `dist/backrooms-crazygames.zip`, described below, with rewarded and midgame ads through the SDK.
+
 ## 1. The file to upload
 `dist/backrooms-crazygames.zip`, built from `Backrooms FPS CrazyGames/` with `cd tools && npm run zip-crazygames`.
 - `index.html` sits at the root of the zip.

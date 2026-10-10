@@ -11,6 +11,7 @@
     "test": "node test/smoke.mjs",
     "zip": "node sync-youtube.mjs && node package-zip.mjs",
     "zip-crazygames": "node package-zip.mjs crazygames",
+    "zip-crazygames-basic": "node build-crazygames-basic.mjs && node package-zip.mjs crazygames-basic",
     "web-demo-crazygames": "node build-web-demo.mjs crazygames",
     "web-demo": "node sync-youtube.mjs && node build-standalone.mjs && node build-web-demo.mjs",
     "qa-crazygames": "node package-zip.mjs crazygames && node test/cg-qa.mjs",

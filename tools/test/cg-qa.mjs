@@ -6,11 +6,12 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(here, '../..');
-const ZIP = path.join(ROOT, 'dist/backrooms-crazygames.zip');
-const QA = path.join(here, 'out/qa');
+const BASIC = !!process.env.QA_BASIC;
+const ZIP = path.join(ROOT, BASIC ? 'dist/backrooms-crazygames-basic.zip' : 'dist/backrooms-crazygames.zip');
+const QA = path.join(here, BASIC ? 'out/qa-basic' : 'out/qa');
 const GAME_DIR = path.join(QA, 'game');
 const SHOTS = path.join(QA, 'shots');
-const HOST = 'http://localhost:8765/tools/test/out/qa/host.html';
+const HOST = `http://localhost:8765/tools/test/out/${BASIC ? 'qa-basic' : 'qa'}/host.html`;
 const SDK_URL = 'https://sdk.crazygames.com/crazygames-sdk-v3.js';
 const MOCK = fs.readFileSync(path.join(here, '../crazygames-test-sdk.js'), 'utf8');
 const only = process.argv.slice(2);
@@ -301,6 +302,44 @@ if (run('S')) {
     check('shotgun and sniper load in the background after the PLAY button', true, 'ready with ' + kb.first);
     await browser.close();
   }
+}
+
+if (BASIC && run('K')) {
+  section = 'K Basic Launch: no ads';
+  const js = fs.readFileSync(path.join(GAME_DIR, 'game.js'), 'utf8');
+  check('no ad requests anywhere in the code (CrazyGames monetization is off in Basic Launch)', !/requestAd|rewarded\(\)\s*\{\s*return this\.request/.test(js));
+  const { browser, page, f, log } = await open({ w: 800, h: 450 });
+  await ready(f);
+  await f.click('#boot-enter'); await inPlay(f);
+  check('new player: one click > Operation 1 (land directly in gameplay)', await f.evaluate(() => window.__BR.Game.missionIndex === 0 && window.__BR.Game.state === 'play'));
+  await f.waitForFunction(() => !!document.querySelector('#m-howto.active'), null, { timeout: 60000 });
+  await f.click('#m-howto [data-a=ok]'); await sleep(300);
+  await f.evaluate(() => { for (const s of window.__BR.Player.slots) { s.mag = 0; s.reserve = 0; } window.__BR.Hud.weapon(); });
+  await sleep(600);
+  const ammo = await f.evaluate(() => ({ shown: !document.querySelector('#hud .ammo-ad').classList.contains('hidden'), hint: document.querySelector('#hud .ammo .reload').textContent }));
+  check('out of ammo: no GET AMMO ad button, no hint pointing to an ad', !ammo.shown && !/GET AMMO/.test(ammo.hint), JSON.stringify(ammo));
+  await startMission(f, 7, 'none', 'pistol');
+  await f.evaluate(() => { const G = window.__BR.Game; for (const a of G.actors) if (a.bot) { a.bot.brain.update = () => {}; a.bot.shootAt = () => {}; } });
+  await f.evaluate(() => { const B = window.__BR, G = B.Game; G.player.lives = 1; G.player.spawnTime = -99; G.player.armor = 1; B.Combat.damage(G.player, 9999, G.actors.find((a) => a.bot), false, 'ak47'); });
+  await f.waitForFunction(() => window.__BR.Ui.modal === 'm-out', null, { timeout: 15000 }); await settle(f);
+  const out = await f.evaluate(() => ({ btns: [...document.querySelectorAll('#m-out .btn')].map((b) => b.dataset.a), text: document.querySelector('#m-out p').textContent }));
+  check('out of lives: only RESTART, no REVIVE ad, text does not mention reviving', out.btns.join() === 'restart' && !/revive/i.test(out.text), JSON.stringify(out));
+  await page.screenshot({ path: shotName('basic-out-card') });
+  await f.click('#m-out [data-a=restart]'); await sleep(500); await inPlay(f);
+  await f.evaluate(() => window.__BR.Game.toMenu('menu')); await onScreen(f, 'menu');
+  await f.evaluate(() => { const B = window.__BR; B.Save.data.played = 3; B.Save.data.unlocked = 12; const U = B.Ui; U.selMission = 4; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
+  const cards = await f.evaluate(() => ({ rent: document.querySelectorAll('#briefing [data-rent]').length, buy: document.querySelectorAll('#briefing [data-buy]').length, ad: /WATCH AD/i.test(document.getElementById('briefing').innerText) }));
+  check('loadout: locked guns show BUY with CP only, no WATCH AD', cards.rent === 0 && !cards.ad && cards.buy > 0, JSON.stringify(cards));
+  await page.screenshot({ path: shotName('basic-briefing') });
+  const offers = [];
+  for (const i of [2, 3, 4, 5]) { await startMission(f, i, 'none', 'pistol'); await sleep(1500); offers.push(await f.evaluate(() => ({ offer: window.__BR.Game.offerGun, modal: window.__BR.Ui.modal }))); }
+  check('no in-match gun pop-up that needs an ad', offers.every((o) => !o.offer && o.modal !== 'm-mini' && o.modal !== 'm-offer'), JSON.stringify(offers));
+  await f.evaluate(() => { const B = window.__BR; B.Game.finish(true, 'r_win'); }); await onScreen(f, 'end'); await sleep(800);
+  await f.evaluate(() => window.__BR.Game.restart()); await inPlay(f);
+  const c = await calls(f);
+  check('no ad is ever requested (rewarded or midgame), SDK events still sent', !c.some((x) => x.startsWith('requestAd')) && c.includes('loadingStop') && c.includes('gameplayStart'), c.filter((x) => /Ad|loading|gameplay/.test(x)).slice(0, 8).join(' '));
+  check('Basic Launch run: no errors, no external requests', !log.errors.length && !log.bad.length && !log.external.length, [...log.errors, ...log.bad, ...log.external].slice(0, 3).join(' | '));
+  await browser.close();
 }
 
 if (run('D')) {

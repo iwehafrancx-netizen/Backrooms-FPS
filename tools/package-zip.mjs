@@ -3,11 +3,16 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
-const target = process.argv[2] === 'crazygames' ? 'crazygames' : 'playables';
-const game = path.resolve(here, target === 'crazygames' ? '../Backrooms FPS CrazyGames' : '../Backrooms FPS');
+const TARGETS = {
+  crazygames: ['../Backrooms FPS CrazyGames', 'backrooms-crazygames.zip'],
+  'crazygames-basic': ['../Backrooms FPS CrazyGames Basic', 'backrooms-crazygames-basic.zip'],
+  playables: ['../Backrooms FPS', 'backrooms-fps.zip'],
+};
+const target = TARGETS[process.argv[2]] ? process.argv[2] : 'playables';
+const game = path.resolve(here, TARGETS[target][0]);
 const dist = path.resolve(here, '../dist');
 fs.mkdirSync(dist, { recursive: true });
-const out = path.join(dist, target === 'crazygames' ? 'backrooms-crazygames.zip' : 'backrooms-fps.zip');
+const out = path.join(dist, TARGETS[target][1]);
 if (fs.existsSync(out)) fs.rmSync(out);
 const files = [];
 const walk = (d) => { for (const f of fs.readdirSync(d).sort()) { const p = path.join(d, f); if (fs.statSync(p).isDirectory()) walk(p); else files.push(path.relative(game, p)); } };
