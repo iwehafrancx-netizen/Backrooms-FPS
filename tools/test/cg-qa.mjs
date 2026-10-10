@@ -30,7 +30,7 @@ fs.writeFileSync(path.join(QA, 'host.html'), `<!doctype html><html><head><meta c
 <iframe id="frame" allow="autoplay; pointer-lock; gamepad; fullscreen" scrolling="no"></iframe>
 <script>const p=new URLSearchParams(location.search),f=document.getElementById('frame');f.width=p.get('w');f.height=p.get('h');f.src='game/index.html'+(p.get('q')||'');</script></body></html>`);
 
-async function open({ w = 800, h = 450, vw, vh, dpr = 1, touch = false, query = '?debug', save = '', locale = 'en-US', cg = {}, blockSdk = false } = {}) {
+async function open({ w = 800, h = 450, vw, vh, dpr = 1, touch = false, query = '?debug', save = '', locale = 'en-US', cg = {}, blockSdk = false, slow = 0 } = {}) {
   const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
   const ctx = await browser.newContext({ viewport: { width: vw || (touch ? w : w + 200), height: vh || (touch ? h : h + 200) }, hasTouch: touch, isMobile: touch, deviceScaleFactor: dpr });
   const page = await ctx.newPage();
@@ -51,6 +51,7 @@ async function open({ w = 800, h = 450, vw, vh, dpr = 1, touch = false, query = 
   page.on('requestfailed', (r) => { if (r.url() !== SDK_URL) log.bad.push('failed ' + r.url()); });
   page.on('pageerror', (e) => log.errors.push(e.message));
   page.on('console', (m) => { if (m.type() === 'error' && !(blockSdk && /Failed to load resource: net::ERR_FAILED/.test(m.text()))) log.errors.push(m.text()); else if (m.type() === 'warning') log.warnings.push(m.text()); });
+  if (slow) { const cdp = await ctx.newCDPSession(page); await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 40, downloadThroughput: slow * 125000, uploadThroughput: 1e6 }); }
   const t0 = Date.now();
   await page.goto(`${HOST}?w=${w}&h=${h}&q=${encodeURIComponent(query)}`);
   await page.waitForFunction(() => { const f = document.getElementById('frame'); return f && f.contentWindow && f.contentWindow.document.readyState !== 'loading'; });
@@ -237,6 +238,60 @@ if (run('B')) {
   await onScreen(f, 'menu');
   check('returning player: ENTER opens the menu (progress kept)', await f.evaluate(() => window.__BR.Ui.cur === 'menu' && window.__BR.Save.data.missions.m1.cleared));
   await browser.close();
+}
+
+if (run('S')) {
+  section = 'S one press to play';
+  {
+    const { browser, page, f, log } = await open({ w: 800, h: 450, slow: 8 });
+    await f.waitForFunction(() => !!document.getElementById('boot-enter'), null, { polling: 20, timeout: 30000 });
+    const box = await (await page.$('#frame')).boundingBox();
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height * 0.8);
+    const early = await f.evaluate(() => document.getElementById('boot-enter').classList.contains('hidden'));
+    await inPlay(f);
+    const st = await f.evaluate(() => ({ starts: window.__BR.Game.starts, mi: window.__BR.Game.missionIndex }));
+    check('one click while still loading starts Operation 1 as soon as it is ready, no second press', early && st.starts === 1 && st.mi === 0, JSON.stringify({ early, ...st }));
+    await browser.close();
+  }
+  {
+    const { browser, page, f, log } = await open({ w: 800, h: 450 });
+    await ready(f);
+    const focused = await f.evaluate(() => document.activeElement && document.activeElement.id);
+    const t0 = Date.now();
+    await page.keyboard.press('Enter');
+    const pressed = await f.waitForFunction(() => document.getElementById('boot-enter').classList.contains('pressed'), null, { timeout: 5000 }).then(() => Date.now() - t0).catch(() => -1);
+    await inPlay(f);
+    check('PLAY button has focus, one Enter press starts the game', focused === 'boot-enter' && pressed >= 0 && (await f.evaluate(() => window.__BR.Game.starts)) === 1, `focus ${focused}, pressed after ${pressed} ms`);
+    await f.waitForFunction(() => !!document.querySelector('#m-howto.active'), null, { timeout: 60000 });
+    await sleep(300);
+    await page.keyboard.press('Enter');
+    await sleep(300);
+    const after = await f.evaluate(() => ({ modal: window.__BR.Ui.modal, paused: window.__BR.Game.paused }));
+    check('HOW TO PLAY closes with one Enter press and the mission runs', !after.modal && !after.paused, JSON.stringify(after));
+    check('one-press start: no errors', !log.errors.length && !log.bad.length, [...log.errors, ...log.bad].slice(0, 3).join(' | '));
+    await browser.close();
+  }
+  {
+    const { browser, page, f } = await open({ w: 800, h: 450 });
+    await ready(f);
+    const box = await (await page.$('#frame')).boundingBox();
+    const t0 = Date.now();
+    await page.mouse.click(box.x + box.width * 0.15, box.y + box.height * 0.2);
+    const pressed = await f.waitForFunction(() => document.getElementById('boot-enter').classList.contains('pressed'), null, { timeout: 5000 }).then(() => Date.now() - t0).catch(() => -1);
+    await inPlay(f);
+    check('a click anywhere on the start screen counts, button reacts at once', pressed >= 0 && pressed < 1500 && (await f.evaluate(() => window.__BR.Game.starts)) === 1, `pressed after ${pressed} ms (software GPU)`);
+    await browser.close();
+  }
+  {
+    const { browser, f } = await open({ w: 800, h: 450 });
+    await ready(f);
+    const kb = await f.evaluate(() => ({ first: Object.keys(window.__BR.Assets.guns).sort().join(','), files: performance.getEntriesByType('resource').filter((r) => /\.(glb|navmesh|js)$/.test(r.name)).map((r) => [r.name.split('/').pop(), Math.round(r.startTime)]) }));
+    const libs = kb.files.filter(([n]) => /three\.min|recast|yuka/.test(n)).map(([, t]) => t), assets = kb.files.filter(([n]) => /backroom\.glb|operator/.test(n)).map(([, t]) => t);
+    check('engine files and level files download at the same time', libs.length === 3 && assets.length === 2 && Math.max(...assets) < Math.max(...libs) + 200, JSON.stringify({ libs, assets }));
+    await f.waitForFunction(() => window.__BR.Assets.guns.sniper && window.__BR.Assets.guns.shotgun, null, { timeout: 60000 });
+    check('shotgun and sniper load in the background after the PLAY button', true, 'ready with ' + kb.first);
+    await browser.close();
+  }
 }
 
 if (run('D')) {

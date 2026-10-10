@@ -764,8 +764,8 @@ const LIBS = [
 ];
 const ASSET_FILES = {
   map: ['assets/Maps/backroom.glb', 340], npc: ['assets/NPCs/operator.glb', 1925], nav: ['assets/Maps/backroom.navmesh', 46],
-  pistol: ['assets/Guns/pistol.glb', 240], shotgun: ['assets/Guns/shotgun.glb', 126], ak47: ['assets/Guns/ak47.glb', 625],
-  m4: ['assets/Guns/m4.glb', 780], sniper: ['assets/Guns/sniper.glb', 860],
+  pistol: ['assets/Guns/pistol.glb', 184], shotgun: ['assets/Guns/shotgun.glb', 107], ak47: ['assets/Guns/ak47.glb', 516],
+  m4: ['assets/Guns/m4.glb', 530], sniper: ['assets/Guns/sniper.glb', 660],
 };
 const Keys = {
   map: null,
@@ -773,6 +773,7 @@ const Keys = {
   k(code) { const v = this.map && this.map.get(code); return v && v.trim().length === 1 ? v.toUpperCase() : code.replace(/^Key|^Digit/, ''); },
   move() { return ['KeyW', 'KeyA', 'KeyS', 'KeyD'].map((c) => this.k(c)).join(' '); },
 };
+const LATE_ASSETS = ['shotgun', 'sniper'];
 const MUSIC_FILE = 'assets/Audio/music.mp3';
 const Loader = {
   total: 0, done: 0, onProgress: null,
@@ -784,6 +785,7 @@ const Loader = {
       document.head.appendChild(s);
     });
   },
+  scripts(list) { return Promise.all(list.map(([src, kb]) => this.script(src, kb))); },
   async binary(url, kb) {
     const r = await fetch(url);
     if (!r.ok) throw new Error('Failed to load ' + url);
@@ -1233,7 +1235,7 @@ const FX = {
   },
 };
 
-const Assets = { map: null, npc: null, guns: {}, nav: null };
+const Assets = { map: null, npc: null, guns: {}, nav: null, late: null };
 const Models = {
   gunCache: {},
   gun(id) {
@@ -3505,8 +3507,15 @@ const Ui = {
       <button class="btn primary ht-ok" data-a="ok">${t('understood')}</button></div>`;
     this.openModal('m-howto');
     return new Promise((resolve) => {
-      $('[data-a=ok]', m).onclick = () => { Input.requestLock(); this.closeModal(); resolve(); };
-      setTimeout(() => !touch && $('[data-a=ok]', m).focus(), 60);
+      const ok = $('[data-a=ok]', m);
+      const go = (e) => {
+        if (e && e.type === 'keydown' && (e.repeat || !['Enter', 'NumpadEnter'].includes(e.code))) return;
+        if (e && e.type === 'keydown') e.preventDefault();
+        removeEventListener('keydown', go); ok.onclick = null;
+        Input.requestLock(); this.closeModal(); resolve();
+      };
+      ok.onclick = go; addEventListener('keydown', go);
+      setTimeout(() => !touch && ok.focus(), 60);
     });
   },
   render_modal_controls() {
@@ -3540,6 +3549,7 @@ const Game = {
     if (this.starting) return; this.starting = true;
     try {
       Audio.unlock();
+      await Assets.late;
       Platform.gameplayStop();
       this.state = 'loading';
       this.cleanup();
@@ -3818,16 +3828,26 @@ function wirePlatform() {
 async function boot() {
   const status = $('#boot-status'), fill = $('#boot-fill'), tip = $('#boot-tip');
   const setStatus = (k) => { status.textContent = t(k); };
-  await nextFrame(); await nextFrame();
+  const bootEl = $('#boot'), goKeys = ['Enter', 'NumpadEnter', 'Space'];
+  let queued = false;
+  const early = (e) => { if (e.type !== 'keydown' || goKeys.includes(e.code)) queued = true; };
+  bootEl.addEventListener('pointerup', early); addEventListener('keydown', early);
+  await nextFrame();
+  const first = Object.entries(ASSET_FILES).filter(([k]) => !LATE_ASSETS.includes(k));
+  Loader.total = LIBS.reduce((a, l) => a + l[1], 0) + first.reduce((a, f) => a + f[1][1], 0);
+  Loader.onProgress = (k) => { fill.style.transform = `scaleX(${k})`; };
+  const libsReady = Loader.scripts(LIBS);
+  const filesReady = Promise.all(first.map(([k, [url, kb]]) => Loader.binary(url, kb).then((b) => [k, b])));
+  const lateFiles = () => Promise.all(LATE_ASSETS.map((k) => Loader.binary(ASSET_FILES[k][0], 0).then((b) => [k, b])));
+  const lateReady = filesReady.then(() => lateFiles().catch(() => wait(1500).then(lateFiles)));
+  libsReady.catch(() => {}); filesReady.catch(() => {}); lateReady.catch(() => {});
   await Platform.init();
   Platform.loadingStart();
   const savePromise = Save.load().then(applyLanguage);
   Keys.init();
-  Loader.total = LIBS.reduce((a, l) => a + l[1], 0) + Object.values(ASSET_FILES).reduce((a, f) => a + f[1], 0);
-  Loader.onProgress = (k) => { fill.style.transform = `scaleX(${k})`; };
   try {
     setStatus('libs');
-    for (const [src, kb] of LIBS) await Loader.script(src, kb);
+    await libsReady;
     await savePromise;
     $('#boot-sub').textContent = t('tagline');
     const tips = STR[LANG].tips || STR.en.tips; let ti = randi(0, tips.length - 1);
@@ -3843,43 +3863,62 @@ async function boot() {
       return { name: 'backrooms_img_textures' };
     });
     const parse = (buf) => new Promise((res, rej) => loader.parse(buf, '', res, rej));
-    const entries = Object.entries(ASSET_FILES);
-    const bufs = await Promise.all(entries.map(([k, [url, kb]]) => Loader.binary(url, kb).then((b) => [k, b])));
+    Assets.late = lateReady.then((list) => Promise.all(list.map(([k, b]) => parse(b).then((g) => { Assets.guns[k] = g; }))));
+    const bufs = await filesReady;
     setStatus('building');
     await nextFrame();
-    for (const [k, b] of bufs) {
-      if (k === 'nav') Assets.nav = b;
-      else if (k === 'map') Assets.map = await parse(b);
-      else if (k === 'npc') Assets.npc = await parse(b);
-      else Assets.guns[k] = await parse(b);
+    Assets.nav = bufs.find(([k]) => k === 'nav')[1];
+    const navReady = Nav.init(Assets.nav);
+    const models = await Promise.all(bufs.filter(([k]) => k !== 'nav').map(([k, b]) => parse(b).then((g) => [k, g])));
+    for (const [k, g] of models) {
+      if (k === 'map') Assets.map = g;
+      else if (k === 'npc') Assets.npc = g;
+      else Assets.guns[k] = g;
     }
     World.setupMap(Assets.map);
     setStatus('nav');
-    await Nav.init(Assets.nav);
+    await navReady;
     Player.init(); Ui.init(); Hud.init(); Lobby.init();
     wirePlatform();
     World.camera.fov = 62; World.camera.updateProjectionMatrix();
     Lobby.show(true);
-    const warm = Object.keys(WEAPONS).map((id) => Models.gun(id));
-    for (const g of warm) { g.position.copy(World.camera.position); World.scene.add(g); g.traverse((o) => { for (const m of [].concat(o.material || [])) for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'emissiveMap', 'aoMap']) if (m[k]) World.renderer.initTexture(m[k]); }); }
-    Lobby.update(0.016); World.renderer.compile(World.scene, World.camera); World.render();
-    for (const g of warm) World.scene.remove(g);
+    Lobby.update(0.016);
+    await World.renderer.compileAsync(World.scene, World.camera);
+    World.render();
     Loop.start();
     setStatus('ready'); fill.style.transform = 'scaleX(1)';
     const quick = !(Save.data.played > 0) && !Object.keys(Save.data.missions).length && !/[?&]menu=1\b/.test(location.search);
     const btn = $('#boot-enter'); btn.textContent = quick ? t('playNow') : t('enter'); btn.classList.remove('hidden');
     Platform.gameReady();
-    Loader.onProgress = null; Loader.binary(MUSIC_FILE, 0).then((b) => Audio.loadMusic(b)).catch(() => {});
-    const enter = () => {
+    Loader.onProgress = null;
+    bootEl.removeEventListener('pointerup', early); removeEventListener('keydown', early);
+    const leave = () => { bootEl.classList.add('leaving'); setTimeout(() => bootEl.remove(), 400); };
+    const enter = (e) => {
       if (Game.state !== 'boot') return;
+      if (e && e.type === 'pointerdown' && (e.pointerType !== 'mouse' || e.button !== 0)) return;
+      if (e && e.type === 'pointerup' && e.pointerType === 'mouse') return;
+      if (e && e.cancelable) e.preventDefault();
       Game.state = 'menu'; Audio.unlock(); Audio.ui();
-      const b = $('#boot'); b.classList.add('leaving'); setTimeout(() => b.remove(), 400);
-      if (quick) { Arsenal.rent('ak47', 0); Game.start(0, 'ak47', 'pistol', true); }
-      else Ui.show('menu');
+      btn.classList.add('pressed'); btn.blur();
+      if (!quick) { leave(); Ui.show('menu'); return; }
+      Arsenal.rent('ak47', 0);
+      requestAnimationFrame(() => setTimeout(() => Game.start(0, 'ak47', 'pistol', true).finally(leave), 0));
     };
-    btn.addEventListener('click', enter);
-    addEventListener('keydown', (e) => { if (Game.state === 'boot' && (e.code === 'Enter' || e.code === 'Space')) enter(); });
-    if (!Input.st.touch) btn.focus();
+    for (const ev of ['pointerdown', 'pointerup', 'click']) bootEl.addEventListener(ev, enter);
+    addEventListener('keydown', (e) => { if (Game.state === 'boot' && goKeys.includes(e.code)) enter(e); });
+    if (!Input.st.touch) { btn.focus(); try { window.focus(); } catch (e) {} }
+    if (queued) enter();
+    const warm = new THREE.Scene();
+    const addWarm = (id) => {
+      const g = Models.gun(id); warm.add(g);
+      g.traverse((o) => { for (const m of [].concat(o.material || [])) for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'emissiveMap', 'aoMap']) if (m[k]) World.renderer.initTexture(m[k]); });
+    };
+    for (const id of Object.keys(WEAPONS)) if (!LATE_ASSETS.includes(WEAPONS[id].model)) addWarm(id);
+    Assets.late.then(() => {
+      for (const id of Object.keys(WEAPONS)) if (LATE_ASSETS.includes(WEAPONS[id].model)) addWarm(id);
+      return World.renderer.compileAsync(warm, World.camera, World.scene);
+    }).catch(() => {})
+      .then(() => Loader.binary(MUSIC_FILE, 0)).then((b) => Audio.loadMusic(b)).catch(() => {});
   } catch (e) {
     console.error(e);
     Platform.logError();

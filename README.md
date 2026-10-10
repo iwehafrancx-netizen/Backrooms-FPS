@@ -4,7 +4,7 @@ A lightweight 3D first-person shooter built with three.js for **YouTube Playable
 Everything runs offline from the game folder. The only external URL is the YouTube Playables SDK tag, which YouTube requires.
 
 - **Engine:** three.js r180 · **AI:** Yuka · **Navigation:** recast-navigation-js (Recast/Detour, WASM)
-- **Size:** 6.0 MiB unpacked (19 files), 2.8 MiB zipped
+- **Size:** 8.9 MiB unpacked (20 files), 5.9 MiB zipped; the music and two guns load after the PLAY button
 - **Platforms:** desktop (keyboard and mouse), mobile (touch, portrait or landscape) and gamepad
 - **Languages:** English, Spanish, Portuguese and French, chosen automatically with `ytgame.system.getLanguage()`
 
@@ -184,7 +184,7 @@ Screenshots go to `tools/test/out/`.
 | Localization | `system.getLanguage()` picks EN/ES/PT/FR, with an English fallback | `cert.mjs` (Spanish UI) |
 | Health reporting | `health.logError/logWarning` are wired to `window.onerror` and `unhandledrejection` | code |
 | No external requests or links | every asset is local and relative. No CDNs, links, third-party ads (only YouTube's own `ytgame.ads`), real-money purchases, `alert` or `window.open` | `cert.mjs` (0 external requests) |
-| Bundle limits | 6.0 MiB total (limits: 30 MiB initial, 250 MiB total, 30 MiB per file, 8000 files) | `cert.mjs`, `npm run zip` |
+| Bundle limits | 8.9 MiB total (limits: 30 MiB initial, 250 MiB total, 30 MiB per file, 8000 files) | `cert.mjs`, `npm run zip` |
 | Works on mobile and desktop | touch controls, adaptive resolution, safe-area insets, portrait and landscape | `mobile.mjs` |
 | Content | stylised combat with sparks and hit markers. No blood or gore | — |
 

@@ -1,6 +1,6 @@
 import { NodeIO, PropertyType } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
-import { dedup, prune, weld, textureCompress, resample } from '@gltf-transform/functions';
+import { dedup, prune, weld, textureCompress, resample, quantize } from '@gltf-transform/functions';
 import sharp from 'sharp';
 import { paintNpc } from './paint-npc.mjs';
 import fs from 'node:fs';
@@ -21,11 +21,11 @@ const CLIP_NAMES = {
 const jobs = [
   { from: 'Maps/backroom-2nd.glb', to: 'Maps/backroom.glb', size: 2048 },
   { from: 'NPCs/2nd-character-skin.glb', to: 'NPCs/operator.glb', size: 1024, npc: true },
-  { from: 'Guns/Pistol.glb', to: 'Guns/pistol.glb', size: 512 },
-  { from: 'Guns/triple_barrel_shotgun_pistol.glb', to: 'Guns/shotgun.glb', size: 512 },
-  { from: 'Guns/AK47.glb', to: 'Guns/ak47.glb', size: 1024 },
-  { from: 'Guns/colt ma rifle.glb', to: 'Guns/m4.glb', size: 512 },
-  { from: 'Guns/sniper.glb', to: 'Guns/sniper.glb', size: 1024 },
+  { from: 'Guns/Pistol.glb', to: 'Guns/pistol.glb', size: 512, pack: true },
+  { from: 'Guns/triple_barrel_shotgun_pistol.glb', to: 'Guns/shotgun.glb', size: 512, pack: true },
+  { from: 'Guns/AK47.glb', to: 'Guns/ak47.glb', size: 1024, pack: true },
+  { from: 'Guns/colt ma rifle.glb', to: 'Guns/m4.glb', size: 512, pack: true },
+  { from: 'Guns/sniper.glb', to: 'Guns/sniper.glb', size: 1024, pack: true },
 ];
 
 function retargetNpc(doc) {
@@ -73,6 +73,7 @@ for (const job of jobs.filter((j) => !process.env.ONLY || j.to.includes(process.
     dedup({ propertyTypes: [PropertyType.ACCESSOR, PropertyType.MESH, PropertyType.TEXTURE] }),
     ...(job.npc ? [resample()] : [weld()]),
     textureCompress({ encoder: sharp, targetFormat: 'webp', resize: [job.size, job.size], quality: 82 }),
+    ...(job.pack ? [quantize()] : []),
     prune(),
   );
   const dst = path.join(out, job.to);

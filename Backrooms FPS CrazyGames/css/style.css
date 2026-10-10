@@ -103,6 +103,7 @@ body.ingame #view canvas { cursor: none; }
   border: 0; cursor: pointer; clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%); animation: pulse 1.6s ease-in-out infinite;
 }
 @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,194,48,.0); filter: brightness(1); } 50% { filter: brightness(1.15); } }
+.boot-enter.pressed { animation: none; filter: brightness(.82); transform: scale(.95); }
 .boot-tip { position: absolute; bottom: calc(22px + var(--safe-b)); left: 0; right: 0; text-align: center; font: 12px/1.4 var(--f-mono); color: var(--paper-dim); letter-spacing: .08em; padding: 0 20px; }
 
 .btn {

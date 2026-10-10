@@ -3,7 +3,7 @@
 ## 1. The file to upload
 `dist/backrooms-crazygames.zip`, built from `Backrooms FPS CrazyGames/` with `cd tools && npm run zip-crazygames`.
 - `index.html` sits at the root of the zip.
-- 19 files, 6.0 MB unpacked, 2.8 MB zipped. CrazyGames' limits are a 50 MB initial download (20 MB for the mobile homepage), 250 MB total and 1500 files.
+- 20 files, 8.9 MB unpacked, 5.9 MB zipped. Engine and level files download together; the music, shotgun and sniper load in the background after the PLAY button. CrazyGames' limits are a 50 MB initial download (20 MB for the mobile homepage), 250 MB total and 1500 files.
 - All paths are relative.
 - The CrazyGames SDK v3 loads from `https://sdk.crazygames.com/crazygames-sdk-v3.js`, the official URL.
 
@@ -63,7 +63,7 @@
 - [x] Language comes from `SDK.user.systemInfo.locale`, with English as the fallback.
 
 **First click, controls and screen**
-- [x] New players: one click (PLAY) → straight into Operation 1. Returning players: the menu.
+- [x] New players: one click (PLAY) → straight into Operation 1. Returning players: the menu. One press is enough: a click or tap anywhere on the start screen, or Enter / Space, and a press made while it is still loading starts the game as soon as it's ready.
 - [x] Mouse locked during play; Esc releases it and pauses.
 - [x] Arrow keys, Space and the mouse wheel never scroll the page.
 - [x] No fullscreen button, external links, other ad networks or real-money purchases.
