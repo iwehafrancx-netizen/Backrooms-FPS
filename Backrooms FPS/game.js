@@ -3904,7 +3904,6 @@ async function boot() {
     const enter = (e) => {
       if (Game.state !== 'boot') return;
       if (e && e.type === 'pointerdown' && (e.pointerType !== 'mouse' || e.button !== 0)) return;
-      if (e && e.type === 'pointerup' && e.pointerType === 'mouse') return;
       if (e && e.type === 'keydown') e.preventDefault();
       Game.state = 'menu'; Audio.unlock(); Audio.ui();
       btn.classList.add('pressed'); btn.blur();
@@ -3912,7 +3911,7 @@ async function boot() {
       Arsenal.rent('ak47', 0);
       requestAnimationFrame(() => setTimeout(() => Game.start(0, 'ak47', 'pistol', true).finally(leave), 0));
     };
-    for (const ev of ['pointerdown', 'pointerup', 'click']) bootEl.addEventListener(ev, enter);
+    for (const ev of ['pointerdown', 'click']) bootEl.addEventListener(ev, enter);
     addEventListener('keydown', (e) => { if (Game.state === 'boot' && goKeys.includes(e.code)) enter(e); });
     if (!Input.st.touch) { btn.focus(); try { window.focus(); } catch (e) {} }
     if (queued) enter();

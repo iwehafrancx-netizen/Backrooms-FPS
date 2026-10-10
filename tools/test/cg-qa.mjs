@@ -282,6 +282,15 @@ if (run('S')) {
     check('a click anywhere on the start screen counts, button reacts at once', pressed >= 0 && pressed < 1500 && (await f.evaluate(() => window.__BR.Game.starts)) === 1, `pressed after ${pressed} ms (software GPU)`);
     await browser.close();
   }
+  for (const [w, h] of [[390, 844], [844, 390]]) {
+    const { browser, f } = await open({ w, h, dpr: 2, touch: true, query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 3, missions: {}, cp: 0, owned: [], played: 2, tutorialSeen: true }) });
+    await ready(f);
+    await f.tap('#boot-enter');
+    await onScreen(f, 'menu'); await sleep(600);
+    const st = await f.evaluate(() => ({ cur: window.__BR.Ui.cur, modal: window.__BR.Ui.modal, state: window.__BR.Game.state }));
+    check(`${w}x${h} touch: tapping ENTER opens the menu and nothing under the finger (no ghost tap)`, st.cur === 'menu' && !st.modal && st.state === 'menu', JSON.stringify(st));
+    await browser.close();
+  }
   {
     const { browser, f } = await open({ w: 800, h: 450 });
     await ready(f);
