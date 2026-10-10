@@ -70,6 +70,14 @@
 - [x] Readable at 800 × 450 and 907 × 510.
 - [x] Movement and fire rates don't depend on the frame rate.
 
+**Quality guidelines**
+- [x] Onboarding inside gameplay: a new player's first mission pauses once after the countdown and shows a visual HOW TO PLAY box. It shows keycaps and the mouse on desktop, and the joystick and buttons on touch. One clearly labelled UNDERSTOOD button skips it, and it never shows again.
+- [x] Key labels follow the player's keyboard layout (for example Z Q S D on AZERTY). Movement uses physical key positions.
+- [x] No Ctrl binding (Ctrl+W would close the tab). P pauses; Esc also pauses because the browser uses it to release the mouse.
+- [x] Ad buttons have the same size and style as the non-ad choice next to them (WATCH AD and BUY, EQUIP and NO THANKS, REVIVE and RESTART). Nothing pulses or flashes to draw clicks, and no button is delayed.
+- [x] Consistent visuals: dynamic resolution never drops below 75%; graphics Auto lowers detail on slow devices first.
+- [x] Audio levels are consistent: menu music is normalised to -16 LUFS.
+
 ## 5. Monetization design in this edition
 
 **Death limit, then REVIVE (rewarded ad, unlimited) or RESTART (midgame ad break)**

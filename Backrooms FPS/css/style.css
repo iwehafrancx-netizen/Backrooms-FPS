@@ -513,7 +513,7 @@ body.offer-open .screen.active { visibility: hidden; }
 .mini-stats { display: flex; gap: 12px; font: 10px/1 var(--f-mono); letter-spacing: .12em; color: var(--paper-dim); padding-top: 8px !important; padding-bottom: 10px !important; }
 .mini-stats b { color: var(--paper); font-size: 12px; }
 .mini-actions { display: flex; gap: 8px; padding-bottom: 14px !important; }
-.mini-actions .btn { flex: 1; justify-content: center; padding: 9px 8px; font-size: 14px; letter-spacing: .08em; min-width: 0; white-space: nowrap; }
+.mini-actions .btn { flex: 1 1 0; justify-content: center; padding: 9px 8px; font-size: 14px; letter-spacing: .08em; min-width: 0; min-height: 50px; white-space: nowrap; }
 .mini-actions .btn.equip { flex-direction: column; gap: 4px; padding: 7px 8px; }
 .btn.equip .eq { font: 800 17px/1 var(--f-display); letter-spacing: .12em; }
 .btn.equip .eq-sub { font: 700 9px/1 var(--f-mono); letter-spacing: .08em; text-transform: none; display: inline-flex; align-items: center; gap: 4px; opacity: .85; }
@@ -530,10 +530,6 @@ body.offer-open .screen.active { visibility: hidden; }
 .ammo-ad .ico { color: var(--yellow); font-size: 10px; }
 .ammo-ad kbd { font: 700 10px/1 var(--f-mono); padding: 2px 5px; border: 1px solid var(--line); color: var(--paper-dim); }
 .ammo-ad.touch kbd { display: none; }
-.ammo-ad.low { background: var(--yellow); color: var(--ink); animation: ammoPulse 1s ease-in-out infinite; }
-.ammo-ad.low .ico { color: var(--ink); }
-.ammo-ad.low kbd { color: var(--ink); border-color: rgba(11,10,7,.5); }
-@keyframes ammoPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,194,48,.6); } 50% { box-shadow: 0 0 0 6px rgba(242,194,48,0); } }
 
 body:not(.ingame) #hud .crosshair { opacity: 0; }
 
@@ -548,8 +544,6 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
 .wb.buy.can small { color: var(--ink); }
 .wb.buy.confirm { background: var(--green); border-color: var(--green); color: var(--ink); }
 .wb.buy.confirm small { color: var(--ink); }
-.wb.ad { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
-.wb.ad small { color: rgba(11,10,7,.75); }
 .wb.ad .adb { font-size: 7px; padding: 2px 3px; margin-right: 0; }
 .wb:hover { filter: brightness(1.12); }
 .wbuy .or { font: 700 9px/1 var(--f-mono); letter-spacing: .14em; color: var(--paper-dim); }
@@ -560,3 +554,29 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
 .wcard .wbuy { grid-template-columns: 1fr; gap: 3px; margin-top: 8px; }
 .wcard .wbuy .or { text-align: center; font-size: 9px; }
 .wcard .wb { padding: 5px 8px; gap: 3px; }
+.howto-modal { background: rgba(5,5,3,.55); }
+.howto { width: min(560px, 94vw); max-height: 94vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; text-align: center; }
+.howto .h-kicker { color: var(--yellow); }
+.howto h2 { font-size: clamp(22px, 4vw, 32px); margin: 0; }
+.ht-desk, .ht-touch { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; align-items: center; }
+.ht-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; }
+.ht-item { display: flex; flex-direction: column; align-items: center; gap: 6px; font: 700 11px/1.2 var(--f-mono); letter-spacing: .1em; color: var(--paper-dim); text-transform: uppercase; }
+.ht-item.big span { color: var(--paper); font-size: 12px; }
+.cap { display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 6px; margin: 2px; border: 1px solid rgba(242,194,48,.7); border-bottom-width: 3px; background: rgba(255,255,255,.06); color: var(--paper); font: 800 14px/1 var(--f-mono); }
+.cap.wide { min-width: 70px; font-size: 11px; letter-spacing: .1em; }
+.wasd { display: flex; flex-direction: column; align-items: center; }
+.ht-mouse { width: 46px; height: 64px; color: var(--paper); }
+.ht-mouse .l { fill: var(--yellow); }
+.ht-mouse .r { fill: rgba(242,194,48,.35); }
+.ht-item .cl { color: var(--yellow); }
+.ht-item .cr { color: rgba(242,194,48,.7); }
+.ht-btn { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.08); color: var(--paper); font-style: normal; }
+.ht-btn svg { width: 22px; height: 22px; }
+.ht-joy { position: relative; display: block; width: 70px; height: 70px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); }
+.ht-joy b { position: absolute; left: 22px; top: 22px; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.55); animation: htJoy 2.4s ease-in-out infinite; }
+@keyframes htJoy { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(0, -14px); } 50% { transform: translate(14px, 0); } 75% { transform: translate(-14px, 0); } }
+.ht-drag { display: grid; place-items: center; width: 70px; height: 70px; color: var(--paper); font-style: normal; animation: htDrag 2.4s ease-in-out infinite; }
+.ht-drag svg { width: 34px; height: 34px; }
+@keyframes htDrag { 0%, 100% { transform: translateX(-12px); } 50% { transform: translateX(12px); } }
+.ht-ok { align-self: center; min-width: 220px; justify-content: center; }
+@media (max-height: 480px) { .howto { gap: 8px; padding: 12px 14px; } .cap { height: 28px; min-width: 28px; } .ht-joy, .ht-drag { width: 56px; height: 56px; } .ht-joy b { left: 16px; top: 16px; } .ht-mouse { height: 52px; } }

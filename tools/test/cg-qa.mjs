@@ -703,6 +703,100 @@ if (run('M')) {
   await browser.close();
 }
 
+if (run('Q')) {
+  section = 'Q quality guidelines';
+  {
+    const { browser, page, f, log } = await open({ w: 1280, h: 720, query: '?debug' });
+    await ready(f);
+    await f.click('#boot-enter');
+    await f.waitForFunction(() => window.__BR.Ui.modal === 'm-howto', null, { timeout: 60000 });
+    const box = await f.evaluate(() => ({ paused: window.__BR.Game.paused, cd: window.__BR.Game.countdownT, caps: [...document.querySelectorAll('#m-howto .cap')].map((k) => k.textContent).join(' '), mouse: !!document.querySelector('#m-howto .ht-mouse'), btn: document.querySelector('#m-howto [data-a=ok]').innerText.trim() }));
+    await settle(f); await page.screenshot({ path: shotName('howto-desktop-1280') });
+    check('new player: right after the countdown a HOW TO PLAY box pauses the first mission', box.paused && box.cd <= 0, JSON.stringify(box));
+    check('desktop box shows keyboard keycaps and the mouse (visual, little text)', /^W A S D/.test(box.caps) && box.mouse, box.caps);
+    const locks0 = await f.evaluate(() => window.__locks);
+    await f.click('#m-howto [data-a=ok]'); await sleep(400);
+    const after = await f.evaluate(() => ({ modal: window.__BR.Ui.modal, paused: window.__BR.Game.paused, seen: window.__BR.Save.data.tutorialSeen, locks: window.__locks }));
+    check('UNDERSTOOD starts the mission (skippable), asks for the mouse in the click, and is remembered', !after.modal && !after.paused && after.seen === true && after.locks > locks0, JSON.stringify(after));
+    await page.evaluate(() => sessionStorage.setItem('qaKeep', '1'));
+    await page.reload();
+    const f2 = page.frame({ url: /\/game\/index\.html/ });
+    await ready(f2);
+    await f2.click('#boot-enter');
+    await f2.waitForFunction(() => window.__BR.Ui.cur === 'menu' || window.__BR.Game.state === 'play', null, { timeout: 60000 });
+    await f2.evaluate(() => window.__BR.Game.start(0, 'none', 'pistol', true));
+    await f2.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 60000 });
+    await sleep(5000);
+    check('the box never shows again once understood', await f2.evaluate(() => window.__BR.Ui.modal !== 'm-howto'));
+    check('no errors', !log.errors.length, log.errors.slice(0, 3).join(' | '));
+    await browser.close();
+  }
+  {
+    const { browser, page, f } = await open({ w: 390, h: 844, dpr: 3, touch: true, query: '?debug' });
+    await ready(f);
+    await f.tap('#boot-enter');
+    await f.waitForFunction(() => window.__BR.Ui.modal === 'm-howto', null, { timeout: 60000 });
+    await settle(f); await page.screenshot({ path: shotName('howto-phone') });
+    const tb = await f.evaluate(() => ({ touch: !!document.querySelector('#m-howto .ht-touch'), joy: !!document.querySelector('#m-howto .ht-joy'), btns: document.querySelectorAll('#m-howto .ht-btn').length, caps: document.querySelectorAll('#m-howto .cap').length }));
+    check('phone/tablet box shows the touch controls (joystick, look, buttons)', tb.touch && tb.joy && tb.btns >= 6 && tb.caps === 0, JSON.stringify(tb));
+    await browser.close();
+  }
+  {
+    const { browser, page, f } = await open({ w: 800, h: 450, query: '?debug' });
+    await page.addInitScript(() => { const m = new Map([['KeyW', 'z'], ['KeyA', 'q'], ['KeyS', 's'], ['KeyD', 'd'], ['KeyQ', 'a'], ['KeyR', 'r'], ['KeyC', 'c'], ['KeyE', 'e'], ['KeyP', 'p'], ['KeyG', 'g']]); Object.defineProperty(navigator, 'keyboard', { configurable: true, value: { getLayoutMap: async () => m } }); });
+    await page.reload();
+    const f2 = page.frame({ url: /\/game\/index\.html/ });
+    await ready(f2);
+    await f2.click('#boot-enter');
+    await f2.waitForFunction(() => window.__BR.Ui.modal === 'm-howto', null, { timeout: 60000 });
+    await settle(f2); await page.screenshot({ path: shotName('howto-azerty-800') });
+    const caps = await f2.evaluate(() => [...document.querySelectorAll('#m-howto .cap')].map((k) => k.textContent).join(' '));
+    check('AZERTY keyboards: keys shown as Z Q S D (and A to swap), following the player layout', /^Z Q S D/.test(caps) && / A /.test(` ${caps} `), caps);
+    const audit800 = await audit(f2);
+    check('HOW TO PLAY box fits at 800x450 (nothing cut off)', !audit800.out.length && !audit800.clip.length, JSON.stringify(audit800.out.concat(audit800.clip)));
+    const keys = await f2.evaluate(() => {
+      const I = window.__BR.Input, ev = (t, code) => dispatchEvent(new KeyboardEvent(t, { code, bubbles: true }));
+      I.resetToggles(); I.enable(true);
+      ev('keydown', 'ControlLeft'); ev('keyup', 'ControlLeft'); const ctrl = I.sample(0.016).crouch;
+      ev('keydown', 'KeyC'); ev('keyup', 'KeyC'); const c = I.sample(0.016).crouch;
+      I.resetToggles();
+      return { ctrl, c };
+    });
+    check('Ctrl is not used (Ctrl+W would close the tab); C crouches', keys.ctrl === false && keys.c === true, JSON.stringify(keys));
+    await browser.close();
+  }
+  {
+    const { browser, page, f, log } = await open({ w: 1280, h: 720, query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, cp: 0, owned: [], played: 3, tutorialSeen: true }) });
+    await ready(f);
+    await f.click('#boot-enter'); await onScreen(f, 'menu');
+    const pair = (sa, sb) => f.evaluate(([x, y]) => { const a = document.querySelector(x), b = document.querySelector(y); if (!a || !b) return null; const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(), ca = getComputedStyle(a), cb = getComputedStyle(b); return { w: [Math.round(ra.width), Math.round(rb.width)], h: [Math.round(ra.height), Math.round(rb.height)], bg: [ca.backgroundColor, cb.backgroundColor] }; }, [sa, sb]);
+    const fair = (r) => r && Math.abs(r.w[0] - r.w[1]) <= 2 && Math.abs(r.h[0] - r.h[1]) <= 2 && r.bg[0] === r.bg[1];
+    await f.evaluate(() => { const U = window.__BR.Ui; U.selMission = 4; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
+    const cards = await pair('#briefing .wcard[data-w="m4"] [data-rent]', '#briefing .wcard[data-w="m4"] [data-buy]');
+    await startMission(f, 7, 'none', 'pistol');
+    await f.evaluate(() => { const G = window.__BR.Game; for (const a of G.actors) if (a.bot) { a.bot.brain.update = () => {}; a.bot.shootAt = () => {}; } });
+    await f.evaluate(() => { const G = window.__BR.Game; G.offerGun = 'm4'; G.inGameOffer(); }); await sleep(800);
+    const mini = await pair('#m-mini [data-a=ad]', '#m-mini [data-a=no]');
+    await f.click('#m-mini [data-a=no]'); await sleep(400);
+    await f.evaluate(() => { const B = window.__BR, G = B.Game; G.player.lives = 1; G.player.spawnTime = -99; G.player.armor = 1; B.Combat.damage(G.player, 9999, G.actors.find((a) => a.bot), false, 'ak47'); });
+    await f.waitForFunction(() => window.__BR.Ui.modal === 'm-out', null, { timeout: 10000 }); await settle(f);
+    const out = await pair('#m-out [data-a=revive]', '#m-out [data-a=restart]');
+    await page.screenshot({ path: shotName('out-card-equal') });
+    check('ad buttons are not sized or coloured to push ads: WATCH AD = BUY, EQUIP = NO THANKS, REVIVE = RESTART', fair(cards) && fair(mini) && fair(out), JSON.stringify({ cards, mini, out }));
+    const pulse = await f.evaluate(() => { const css = [...document.styleSheets].flatMap((sh) => { try { return [...sh.cssRules].map((r) => r.cssText); } catch (e) { return []; } }).join(' '); return /ammoPulse|\.ammo-ad\.low/.test(css); });
+    check('GET AMMO has no pulsing or flashing to draw clicks', !pulse);
+    check('no errors', !log.errors.length, log.errors.slice(0, 3).join(' | '));
+    await browser.close();
+  }
+  {
+    const src = fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames/game.js'), 'utf8');
+    check('consistent resolution: dynamic resolution never drops below 75%', /Math\.max\(0\.75, this\.pixelScale/.test(src) && !/Math\.max\(0\.55, this\.pixelScale/.test(src));
+    const m = execFileSync('sh', ['-c', `ffmpeg -hide_banner -nostats -i "${path.join(GAME_DIR, 'assets/Audio/music.mp3')}" -af ebur128 -f null - 2>&1 | grep -E "^ +I:" | tail -1`], { encoding: 'utf8' });
+    const v = parseFloat((m.match(/-?\d+(\.\d+)?/) || ['0'])[0]);
+    check('music loudness evened out (about -16 LUFS, not louder than the game)', v <= -15 && v >= -17.5, `${v} LUFS`);
+  }
+}
+
 if (run('L')) {
   section = 'L stability';
   const { browser, page, f, log } = await open({ w: 800, h: 450, query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, xp: 0, cp: 0, owned: [], played: 3 }) });

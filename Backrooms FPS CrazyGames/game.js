@@ -95,7 +95,7 @@ const STR = {
     play: 'Campaign', settings: 'Settings', controls: 'Controls', resume: 'Resume', restart: 'Restart', abort: 'Abort mission', back: 'Back',
     rank: 'RANK', totalScore: 'CAMPAIGN SCORE', ofMissions: '{a}/{b} MISSIONS',
     selectMission: 'Select operation', operations: 'OPERATIONS', locked: 'LOCKED', lockedHint: 'CLEAR OP {n} TO UNLOCK', best: 'BEST', newOp: 'NEW',
-    briefing: 'MISSION BRIEFING', objectives: 'OBJECTIVES', loadout: 'LOADOUT', primary: 'PRIMARY', secondary: 'SECONDARY', deploy: 'Deploy', cp: 'CP', cpBalance: 'COMBAT POINTS', cpEarned: '+{n} CP', watchAd: 'WATCH AD', thisMission: 'THIS MISSION', noThanks: 'NO THANKS', none: 'NONE', sidearmOnly: 'SIDEARM ONLY', notEnough: 'NOT ENOUGH CP', bought: '{w} UNLOCKED', adUnavailable: 'No ad available right now. Try again later.', adLoading: 'LOADING AD…', offerTitle: 'WEAPON OFFER', offerText: 'Take it into this mission now, or unlock it for good with Combat Points.', outTitle: 'OUT OF LIVES', outText: 'Revive right where you fell, or restart the mission from the beginning.', revive: 'REVIVE', restartMission: 'RESTART', playNow: 'PLAY', price: 'PRICE', range: 'RANGE', rpm: 'RPM', magazine: 'MAG', earnHint: 'Earn CP from missions, headshots and multi-kills.', getAmmo: 'GET AMMO', ammoRefilled: 'AMMO REFILLED', outOfAmmoHint: 'OUT OF AMMO — GET AMMO ▶', tryWeapon: 'TRY THIS WEAPON', equip: 'EQUIP', watchAnAd: 'Watch an ad', clickToAim: 'CLICK TO AIM', stronger: 'HOSTILES ARE GETTING STRONGER EVERY OPERATION', buy: 'BUY', buyNow: 'BUY NOW', or: 'OR', tapConfirm: 'TAP TO CONFIRM',
+    briefing: 'MISSION BRIEFING', objectives: 'OBJECTIVES', loadout: 'LOADOUT', primary: 'PRIMARY', secondary: 'SECONDARY', deploy: 'Deploy', cp: 'CP', cpBalance: 'COMBAT POINTS', cpEarned: '+{n} CP', watchAd: 'WATCH AD', thisMission: 'THIS MISSION', noThanks: 'NO THANKS', none: 'NONE', sidearmOnly: 'SIDEARM ONLY', notEnough: 'NOT ENOUGH CP', bought: '{w} UNLOCKED', adUnavailable: 'No ad available right now. Try again later.', adLoading: 'LOADING AD…', offerTitle: 'WEAPON OFFER', offerText: 'Take it into this mission now, or unlock it for good with Combat Points.', outTitle: 'OUT OF LIVES', outText: 'Revive right where you fell, or restart the mission from the beginning.', revive: 'REVIVE', restartMission: 'RESTART', playNow: 'PLAY', price: 'PRICE', range: 'RANGE', rpm: 'RPM', magazine: 'MAG', earnHint: 'Earn CP from missions, headshots and multi-kills.', getAmmo: 'GET AMMO', ammoRefilled: 'AMMO REFILLED', outOfAmmoHint: 'OUT OF AMMO — GET AMMO ▶', tryWeapon: 'TRY THIS WEAPON', equip: 'EQUIP', watchAnAd: 'Watch an ad', howTo: 'HOW TO PLAY', understood: 'UNDERSTOOD', clickToAim: 'CLICK TO AIM', stronger: 'HOSTILES ARE GETTING STRONGER EVERY OPERATION', buy: 'BUY', buyNow: 'BUY NOW', or: 'OR', tapConfirm: 'TAP TO CONFIRM',
     dmg: 'DMG', rof: 'RATE', acc: 'ACC', mob: 'MOB',
     intelMode: 'MODE', intelTeams: 'SQUADS', intelTime: 'TIME',
     victory: 'VICTORY', defeat: 'DEFEAT', missionComplete: 'MISSION COMPLETE', missionFailed: 'MISSION FAILED', newBest: 'NEW PERSONAL BEST', next: 'Next mission', retry: 'Retry', menu: 'Menu',
@@ -125,7 +125,7 @@ const STR = {
     tagline: 'NIVEL 0 // OPERACIONES TÁCTICAS', play: 'Campaña', settings: 'Ajustes', controls: 'Controles', resume: 'Continuar', restart: 'Reiniciar', abort: 'Abandonar misión', back: 'Volver',
     rank: 'RANGO', totalScore: 'PUNTUACIÓN DE CAMPAÑA', ofMissions: '{a}/{b} MISIONES',
     selectMission: 'Elige operación', operations: 'OPERACIONES', locked: 'BLOQUEADA', lockedHint: 'SUPERA LA OP {n} PARA DESBLOQUEAR', best: 'RÉCORD', newOp: 'NUEVA',
-    briefing: 'INFORME DE MISIÓN', objectives: 'OBJETIVOS', loadout: 'EQUIPO', primary: 'PRINCIPAL', secondary: 'SECUNDARIA', deploy: 'Desplegar', cp: 'CP', cpBalance: 'PUNTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANUNCIO', thisMission: 'ESTA MISIÓN', noThanks: 'NO, GRACIAS', none: 'NINGUNA', sidearmOnly: 'SOLO PISTOLA', notEnough: 'CP INSUFICIENTES', bought: '{w} DESBLOQUEADA', adUnavailable: 'No hay anuncios disponibles ahora. Inténtalo más tarde.', adLoading: 'CARGANDO ANUNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Llévala a esta misión ahora o desbloquéala para siempre con Puntos de Combate.', outTitle: 'SIN VIDAS', outText: 'Revive donde caíste o reinicia la misión desde el principio.', revive: 'REVIVIR', restartMission: 'REINICIAR', playNow: 'JUGAR', price: 'PRECIO', range: 'ALCANCE', rpm: 'DPM', magazine: 'CARGADOR', earnHint: 'Gana CP con misiones, disparos a la cabeza y bajas múltiples.', getAmmo: 'MUNICIÓN', ammoRefilled: 'MUNICIÓN RECARGADA', outOfAmmoHint: 'SIN MUNICIÓN — CONSEGUIR ▶', tryWeapon: 'PRUEBA ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver un anuncio', clickToAim: 'HAZ CLIC PARA APUNTAR', stronger: 'LOS HOSTILES SON MÁS FUERTES EN CADA OPERACIÓN', buy: 'COMPRAR', buyNow: 'COMPRAR YA', or: 'O', tapConfirm: 'TOCA PARA CONFIRMAR',
+    briefing: 'INFORME DE MISIÓN', objectives: 'OBJETIVOS', loadout: 'EQUIPO', primary: 'PRINCIPAL', secondary: 'SECUNDARIA', deploy: 'Desplegar', cp: 'CP', cpBalance: 'PUNTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANUNCIO', thisMission: 'ESTA MISIÓN', noThanks: 'NO, GRACIAS', none: 'NINGUNA', sidearmOnly: 'SOLO PISTOLA', notEnough: 'CP INSUFICIENTES', bought: '{w} DESBLOQUEADA', adUnavailable: 'No hay anuncios disponibles ahora. Inténtalo más tarde.', adLoading: 'CARGANDO ANUNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Llévala a esta misión ahora o desbloquéala para siempre con Puntos de Combate.', outTitle: 'SIN VIDAS', outText: 'Revive donde caíste o reinicia la misión desde el principio.', revive: 'REVIVIR', restartMission: 'REINICIAR', playNow: 'JUGAR', price: 'PRECIO', range: 'ALCANCE', rpm: 'DPM', magazine: 'CARGADOR', earnHint: 'Gana CP con misiones, disparos a la cabeza y bajas múltiples.', getAmmo: 'MUNICIÓN', ammoRefilled: 'MUNICIÓN RECARGADA', outOfAmmoHint: 'SIN MUNICIÓN — CONSEGUIR ▶', tryWeapon: 'PRUEBA ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver un anuncio', howTo: 'CÓMO JUGAR', understood: 'ENTENDIDO', clickToAim: 'HAZ CLIC PARA APUNTAR', stronger: 'LOS HOSTILES SON MÁS FUERTES EN CADA OPERACIÓN', buy: 'COMPRAR', buyNow: 'COMPRAR YA', or: 'O', tapConfirm: 'TOCA PARA CONFIRMAR',
     dmg: 'DAÑO', rof: 'CAD.', acc: 'PREC.', mob: 'MOV.', intelMode: 'MODO', intelTeams: 'EQUIPOS', intelTime: 'TIEMPO',
     victory: 'VICTORIA', defeat: 'DERROTA', missionComplete: 'MISIÓN CUMPLIDA', missionFailed: 'MISIÓN FALLIDA', newBest: 'NUEVO RÉCORD PERSONAL', next: 'Siguiente misión', retry: 'Reintentar', menu: 'Menú',
     kills: 'BAJAS', deaths: 'MUERTES', accuracy: 'PRECISIÓN', headshots: 'TIROS A LA CABEZA', time: 'TIEMPO',
@@ -147,7 +147,7 @@ const STR = {
     tagline: 'NÍVEL 0 // OPERAÇÕES TÁTICAS', play: 'Campanha', settings: 'Configurações', controls: 'Controles', resume: 'Continuar', restart: 'Reiniciar', abort: 'Abandonar missão', back: 'Voltar',
     rank: 'PATENTE', totalScore: 'PONTUAÇÃO DA CAMPANHA', ofMissions: '{a}/{b} MISSÕES',
     selectMission: 'Escolha a operação', operations: 'OPERAÇÕES', locked: 'BLOQUEADA', lockedHint: 'CONCLUA A OP {n} PARA LIBERAR', best: 'RECORDE', newOp: 'NOVA',
-    briefing: 'BRIEFING DA MISSÃO', objectives: 'OBJETIVOS', loadout: 'EQUIPAMENTO', primary: 'PRIMÁRIA', secondary: 'SECUNDÁRIA', deploy: 'Implantar', cp: 'CP', cpBalance: 'PONTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANÚNCIO', thisMission: 'ESTA MISSÃO', noThanks: 'NÃO, OBRIGADO', none: 'NENHUMA', sidearmOnly: 'SÓ PISTOLA', notEnough: 'CP INSUFICIENTE', bought: '{w} DESBLOQUEADA', adUnavailable: 'Nenhum anúncio disponível agora. Tente mais tarde.', adLoading: 'CARREGANDO ANÚNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Leve-a para esta missão agora ou desbloqueie-a para sempre com Pontos de Combate.', outTitle: 'SEM VIDAS', outText: 'Reviva onde caiu ou reinicie a missão do começo.', revive: 'REVIVER', restartMission: 'REINICIAR', playNow: 'JOGAR', price: 'PREÇO', range: 'ALCANCE', rpm: 'DPM', magazine: 'PENTE', earnHint: 'Ganhe CP com missões, tiros na cabeça e abates múltiplos.', getAmmo: 'MUNIÇÃO', ammoRefilled: 'MUNIÇÃO RECARREGADA', outOfAmmoHint: 'SEM MUNIÇÃO — PEGAR ▶', tryWeapon: 'EXPERIMENTE ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver um anúncio', clickToAim: 'CLIQUE PARA MIRAR', stronger: 'OS HOSTIS FICAM MAIS FORTES A CADA OPERAÇÃO', buy: 'COMPRAR', buyNow: 'COMPRAR AGORA', or: 'OU', tapConfirm: 'TOQUE PARA CONFIRMAR',
+    briefing: 'BRIEFING DA MISSÃO', objectives: 'OBJETIVOS', loadout: 'EQUIPAMENTO', primary: 'PRIMÁRIA', secondary: 'SECUNDÁRIA', deploy: 'Implantar', cp: 'CP', cpBalance: 'PONTOS DE COMBATE', cpEarned: '+{n} CP', watchAd: 'VER ANÚNCIO', thisMission: 'ESTA MISSÃO', noThanks: 'NÃO, OBRIGADO', none: 'NENHUMA', sidearmOnly: 'SÓ PISTOLA', notEnough: 'CP INSUFICIENTE', bought: '{w} DESBLOQUEADA', adUnavailable: 'Nenhum anúncio disponível agora. Tente mais tarde.', adLoading: 'CARREGANDO ANÚNCIO…', offerTitle: 'OFERTA DE ARMA', offerText: 'Leve-a para esta missão agora ou desbloqueie-a para sempre com Pontos de Combate.', outTitle: 'SEM VIDAS', outText: 'Reviva onde caiu ou reinicie a missão do começo.', revive: 'REVIVER', restartMission: 'REINICIAR', playNow: 'JOGAR', price: 'PREÇO', range: 'ALCANCE', rpm: 'DPM', magazine: 'PENTE', earnHint: 'Ganhe CP com missões, tiros na cabeça e abates múltiplos.', getAmmo: 'MUNIÇÃO', ammoRefilled: 'MUNIÇÃO RECARREGADA', outOfAmmoHint: 'SEM MUNIÇÃO — PEGAR ▶', tryWeapon: 'EXPERIMENTE ESTA ARMA', equip: 'EQUIPAR', watchAnAd: 'Ver um anúncio', howTo: 'COMO JOGAR', understood: 'ENTENDI', clickToAim: 'CLIQUE PARA MIRAR', stronger: 'OS HOSTIS FICAM MAIS FORTES A CADA OPERAÇÃO', buy: 'COMPRAR', buyNow: 'COMPRAR AGORA', or: 'OU', tapConfirm: 'TOQUE PARA CONFIRMAR',
     dmg: 'DANO', rof: 'CAD.', acc: 'PREC.', mob: 'MOB.', intelMode: 'MODO', intelTeams: 'ESQUADRÕES', intelTime: 'TEMPO',
     victory: 'VITÓRIA', defeat: 'DERROTA', missionComplete: 'MISSÃO CUMPRIDA', missionFailed: 'MISSÃO FALHOU', newBest: 'NOVO RECORDE PESSOAL', next: 'Próxima missão', retry: 'Tentar de novo', menu: 'Menu',
     kills: 'ABATES', deaths: 'MORTES', accuracy: 'PRECISÃO', headshots: 'NA CABEÇA', time: 'TEMPO',
@@ -169,7 +169,7 @@ const STR = {
     tagline: 'NIVEAU 0 // OPÉRATIONS TACTIQUES', play: 'Campagne', settings: 'Options', controls: 'Commandes', resume: 'Reprendre', restart: 'Recommencer', abort: 'Abandonner', back: 'Retour',
     rank: 'GRADE', totalScore: 'SCORE DE CAMPAGNE', ofMissions: '{a}/{b} MISSIONS',
     selectMission: 'Choisir une opération', operations: 'OPÉRATIONS', locked: 'VERROUILLÉE', lockedHint: 'TERMINEZ L’OP {n} POUR DÉBLOQUER', best: 'RECORD', newOp: 'NOUVEAU',
-    briefing: 'BRIEFING DE MISSION', objectives: 'OBJECTIFS', loadout: 'ÉQUIPEMENT', primary: 'PRINCIPALE', secondary: 'SECONDAIRE', deploy: 'Déployer', cp: 'PC', cpBalance: 'POINTS DE COMBAT', cpEarned: '+{n} PC', watchAd: 'VOIR UNE PUB', thisMission: 'CETTE MISSION', noThanks: 'NON MERCI', none: 'AUCUNE', sidearmOnly: 'PISTOLET SEUL', notEnough: 'PC INSUFFISANTS', bought: '{w} DÉBLOQUÉE', adUnavailable: 'Aucune pub disponible pour le moment. Réessayez plus tard.', adLoading: 'CHARGEMENT DE LA PUB…', offerTitle: 'OFFRE D’ARME', offerText: 'Emportez-la dans cette mission maintenant, ou débloquez-la pour de bon avec des Points de Combat.', outTitle: 'PLUS DE VIES', outText: 'Ressuscitez là où vous êtes tombé, ou recommencez la mission depuis le début.', revive: 'RESSUSCITER', restartMission: 'RECOMMENCER', playNow: 'JOUER', price: 'PRIX', range: 'PORTÉE', rpm: 'CPM', magazine: 'CHARGEUR', earnHint: 'Gagnez des PC avec les missions, les tirs à la tête et les éliminations multiples.', getAmmo: 'MUNITIONS', ammoRefilled: 'MUNITIONS RECHARGÉES', outOfAmmoHint: 'PLUS DE MUNITIONS — RECHARGER ▶', tryWeapon: 'ESSAYEZ CETTE ARME', equip: 'ÉQUIPER', watchAnAd: 'Voir une pub', clickToAim: 'CLIQUEZ POUR VISER', stronger: 'LES HOSTILES SONT PLUS FORTS À CHAQUE OPÉRATION', buy: 'ACHETER', buyNow: 'ACHETER', or: 'OU', tapConfirm: 'TOUCHEZ POUR CONFIRMER',
+    briefing: 'BRIEFING DE MISSION', objectives: 'OBJECTIFS', loadout: 'ÉQUIPEMENT', primary: 'PRINCIPALE', secondary: 'SECONDAIRE', deploy: 'Déployer', cp: 'PC', cpBalance: 'POINTS DE COMBAT', cpEarned: '+{n} PC', watchAd: 'VOIR UNE PUB', thisMission: 'CETTE MISSION', noThanks: 'NON MERCI', none: 'AUCUNE', sidearmOnly: 'PISTOLET SEUL', notEnough: 'PC INSUFFISANTS', bought: '{w} DÉBLOQUÉE', adUnavailable: 'Aucune pub disponible pour le moment. Réessayez plus tard.', adLoading: 'CHARGEMENT DE LA PUB…', offerTitle: 'OFFRE D’ARME', offerText: 'Emportez-la dans cette mission maintenant, ou débloquez-la pour de bon avec des Points de Combat.', outTitle: 'PLUS DE VIES', outText: 'Ressuscitez là où vous êtes tombé, ou recommencez la mission depuis le début.', revive: 'RESSUSCITER', restartMission: 'RECOMMENCER', playNow: 'JOUER', price: 'PRIX', range: 'PORTÉE', rpm: 'CPM', magazine: 'CHARGEUR', earnHint: 'Gagnez des PC avec les missions, les tirs à la tête et les éliminations multiples.', getAmmo: 'MUNITIONS', ammoRefilled: 'MUNITIONS RECHARGÉES', outOfAmmoHint: 'PLUS DE MUNITIONS — RECHARGER ▶', tryWeapon: 'ESSAYEZ CETTE ARME', equip: 'ÉQUIPER', watchAnAd: 'Voir une pub', howTo: 'COMMENT JOUER', understood: 'COMPRIS', clickToAim: 'CLIQUEZ POUR VISER', stronger: 'LES HOSTILES SONT PLUS FORTS À CHAQUE OPÉRATION', buy: 'ACHETER', buyNow: 'ACHETER', or: 'OU', tapConfirm: 'TOUCHEZ POUR CONFIRMER',
     dmg: 'DÉG.', rof: 'CAD.', acc: 'PRÉC.', mob: 'MOB.', intelMode: 'MODE', intelTeams: 'ESCOUADES', intelTime: 'TEMPS',
     victory: 'VICTOIRE', defeat: 'DÉFAITE', missionComplete: 'MISSION ACCOMPLIE', missionFailed: 'MISSION ÉCHOUÉE', newBest: 'NOUVEAU RECORD PERSONNEL', next: 'Mission suivante', retry: 'Réessayer', menu: 'Menu',
     kills: 'ÉLIMINATIONS', deaths: 'MORTS', accuracy: 'PRÉCISION', headshots: 'TIRS À LA TÊTE', time: 'TEMPS',
@@ -581,7 +581,7 @@ const Input = (() => {
       if (c === 'Digit2') press('slot2');
       if (c === 'KeyE' || c === 'KeyF') press('interact');
       if (c === 'KeyP' || c === 'Escape') press('pause');
-      if (c === 'KeyC' || c === 'ControlLeft') st.crouchToggle = !st.crouchToggle;
+      if (c === 'KeyC') st.crouchToggle = !st.crouchToggle;
     }
     if (c === 'KeyE' || c === 'KeyF') st.interactHeld = down;
     if (c === 'ShiftLeft' || c === 'ShiftRight') st.sprintKey = down;
@@ -781,6 +781,12 @@ const ASSET_FILES = {
   pistol: ['assets/Guns/pistol.glb', 240], shotgun: ['assets/Guns/shotgun.glb', 126], ak47: ['assets/Guns/ak47.glb', 625],
   m4: ['assets/Guns/m4.glb', 780], sniper: ['assets/Guns/sniper.glb', 860],
 };
+const Keys = {
+  map: null,
+  async init() { try { if (navigator.keyboard && navigator.keyboard.getLayoutMap) this.map = await navigator.keyboard.getLayoutMap(); } catch (e) { this.map = null; } },
+  k(code) { const v = this.map && this.map.get(code); return v && v.trim().length === 1 ? v.toUpperCase() : code.replace(/^Key|^Digit/, ''); },
+  move() { return ['KeyW', 'KeyA', 'KeyS', 'KeyD'].map((c) => this.k(c)).join(' '); },
+};
 const MUSIC_FILE = 'assets/Audio/music.mp3';
 const Loader = {
   total: 0, done: 0, onProgress: null,
@@ -888,7 +894,7 @@ const World = {
       if (p.slow >= 2) { p.slow = 0; Save.settings.autoLevel = this.qualityLevel === 'high' ? 'med' : 'low'; Save.persist(); this.dropComposer(); this.applyQuality(); return; }
     }
     const old = this.pixelScale;
-    if (avg > 1 / 40) this.pixelScale = Math.max(0.55, this.pixelScale - 0.12);
+    if (avg > 1 / 40) this.pixelScale = Math.max(0.75, this.pixelScale - 0.08);
     else if (avg < 1 / 58 && this.pixelScale < 1) this.pixelScale = Math.min(1, this.pixelScale + 0.06);
     if (old !== this.pixelScale) this.resize();
   },
@@ -2822,7 +2828,7 @@ const Hud = {
       <div class="hud-pad">
         <div class="radar"><canvas width="264" height="264"></canvas></div>
         <div class="objective"><div class="scorebar"></div><div class="obj-text"></div><div class="keys"></div></div>
-        <button class="ammo-ad hidden" aria-label="AD"><span class="adb">AD</span><span class="ico">▶</span><span class="lbl"></span><kbd>G</kbd></button>
+        <button class="ammo-ad hidden" aria-label="AD"><span class="adb">AD</span><span class="ico">▶</span><span class="lbl"></span><kbd>${Keys.k('KeyG')}</kbd></button>
         <div class="killfeed"></div>
         <div class="vitals"><div class="lbl"><span>HP</span><span class="lives"></span></div><div class="hpnum">100</div><div class="bar hp"><em></em><i></i></div></div>
         <div class="ammo"><div class="wname"></div><div class="count">30<small>/ 90</small></div><div class="pips"></div><div class="reload"></div><div class="alt"></div></div>
@@ -2889,7 +2895,7 @@ const Hud = {
     const pips = e.pips.children; for (let i = 0; i < pips.length; i++) pips[i].classList.toggle('spent', i >= s.mag);
     e.reload.textContent = Player.reloadT > 0 ? t('reloading') : s.mag === 0 && s.reserve === 0 ? (Platform.ads.canReward() ? t('outOfAmmoHint') : t('noAmmo')) : '';
     const other = Player.slots[1 - Player.cur];
-    e.alt.textContent = other ? `${Input.st.touch ? '⇄' : 'Q'} ${WEAPONS[other.id].name}` : '';
+    e.alt.textContent = other ? `${Input.st.touch ? '⇄' : Keys.k('KeyQ')} ${WEAPONS[other.id].name}` : '';
   },
   keys() {
     const m = Game.mode; const e = this.els.keys;
@@ -2928,7 +2934,7 @@ const Hud = {
   interact(it, prog) {
     const e = this.els;
     if (!it || it.auto) { e.interact.classList.remove('on'); e.ring.classList.remove('on'); $('#touch .use') && $('#touch .use').classList.remove('on'); return; }
-    const key = Input.st.touch ? '' : Input.st.gamepad ? '<kbd>LB</kbd>' : '<kbd>E</kbd>';
+    const key = Input.st.touch ? '' : Input.st.gamepad ? '<kbd>LB</kbd>' : `<kbd>${Keys.k('KeyE')}</kbd>`;
     const label = `${key}${it.hold ? t('pressHold') + ' · ' : ''}${esc(it.label)}`;
     if (e.interact.dataset.l !== label) { e.interact.innerHTML = label; e.interact.dataset.l = label; }
     e.interact.classList.add('on');
@@ -2969,8 +2975,6 @@ const Hud = {
     e.ammoAd.classList.toggle('hidden', !showAmmo);
     if (showAmmo) {
       if (e.ammoAd.dataset.l !== LANG) { e.ammoAd.dataset.l = LANG; $('.lbl', e.ammoAd).textContent = t('getAmmo'); }
-      const sl = Player.slot, d = sl && WEAPONS[sl.id];
-      e.ammoAd.classList.toggle('low', !!d && sl.mag + sl.reserve <= d.mag);
       e.ammoAd.classList.toggle('touch', !!Input.st.touch);
     }
     if (!p.alive) this.death(Player.killer, p.respawnAt ? p.respawnAt - Game.time : 0, p.out);
@@ -3146,6 +3150,7 @@ const Ui = {
       <section id="end" class="screen"></section>
       <section id="complete" class="screen"></section>
       <div id="m-pause" class="modal"></div>
+      <div id="m-howto" class="modal howto-modal"></div>
       <div id="m-settings" class="modal"></div>
       <div id="m-controls" class="modal"></div>
       <div id="m-confirm" class="modal"></div>
@@ -3321,7 +3326,7 @@ const Ui = {
           <div class="mini-name"><b>${w.name}</b><span>${w.cls}</span></div>
           <div class="mini-stats"><span>${t('dmg')} <b>${w.dmg}${w.pellets ? '×' + w.pellets : ''}</b></span><span>${t('rpm')} <b>${w.rpm}</b></span><span>${t('magazine')} <b>${w.mag}</b></span></div>
           <div class="mini-actions">
-            ${ad ? `<button class="btn primary equip" data-a="ad"><span class="eq">${t('equip')}</span><span class="eq-sub"><span class="adb">AD</span>▶ ${t('watchAnAd')}</span></button>` : ''}
+            ${ad ? `<button class="btn equip" data-a="ad"><span class="eq">${t('equip')}</span><span class="eq-sub"><span class="adb">AD</span>▶ ${t('watchAnAd')}</span></button>` : ''}
             <button class="btn" data-a="no">${t('noThanks')}</button>
           </div></div>`;
         const adBtn = $('[data-a=ad]', m);
@@ -3447,7 +3452,7 @@ const Ui = {
       <div class="h-kicker" style="color:var(--red)">${t('youDied')}</div>
       <h2 class="h-display" style="font-size:clamp(26px,5vw,40px)">${t('outTitle')}</h2>
       <p class="muted" style="line-height:1.5;margin:4px 0 8px">${t('outText')}</p>
-      ${ad ? `<button class="btn primary" data-a="revive">${ICONS.play}${t('revive')}<span class="sub">${t('watchAd')}</span></button>` : ''}
+      ${ad ? `<button class="btn" data-a="revive">${ICONS.play}${t('revive')}<span class="sub">${t('watchAd')}</span></button>` : ''}
       <button class="btn${ad ? '' : ' primary'}" data-a="restart">${t('restartMission')}</button></div>`;
     const rv = $('[data-a=revive]', m);
     if (rv) rv.onclick = async () => { if (await Ads.reward('revive')) Game.revive(); else this.render_modal_out(); };
@@ -3491,12 +3496,39 @@ const Ui = {
     }));
     const rs = $('[data-a=reset]', m); if (rs) rs.onclick = () => this.confirmReset(() => { if (this.cur === 'missions' || this.cur === 'menu') this['render_' + this.cur](); });
   },
+  howTo(goal) {
+    const m = $('#m-howto'), touch = Input.st.touch, cap = (k, wide) => `<kbd class="cap${wide ? ' wide' : ''}">${k}</kbd>`;
+    const item = (keys, label) => `<div class="ht-item">${keys}<span>${label}</span></div>`;
+    const icon = (ic, label) => `<div class="ht-item"><i class="ht-btn">${ic}</i><span>${label}</span></div>`;
+    const [w, a, sk, d] = ['KeyW', 'KeyA', 'KeyS', 'KeyD'].map((c) => Keys.k(c));
+    const body = touch
+      ? `<div class="ht-touch">
+          <div class="ht-item big"><i class="ht-joy"><b></b></i><span>${t('move')}</span></div>
+          <div class="ht-item big"><i class="ht-drag">${ICONS.hand}</i><span>${t('look')}</span></div>
+          <div class="ht-grid">${icon(ICONS.target, t('fire'))}${icon(ICONS.scope, t('aim'))}${icon(ICONS.reload, t('reload'))}${icon(ICONS.jump, t('jump'))}${icon(ICONS.crouch, t('crouch'))}${icon(ICONS.swap, t('swap'))}</div>
+        </div>`
+      : `<div class="ht-desk">
+          <div class="ht-item big"><div class="wasd">${cap(w)}<div>${cap(a)}${cap(sk)}${cap(d)}</div></div><span>${t('move')}</span></div>
+          <div class="ht-item big"><svg class="ht-mouse" viewBox="0 0 60 84"><rect x="6" y="4" width="48" height="76" rx="24" fill="none" stroke="currentColor" stroke-width="3"/><path d="M6 32h48M30 4v28" stroke="currentColor" stroke-width="3"/><path class="l" d="M9 30V26A21 21 0 0 1 28 6v24z"/><path class="r" d="M32 6a21 21 0 0 1 19 20v4H32z"/></svg><span><b class="cl">L</b> ${t('fire')} · <b class="cr">R</b> ${t('aim')}</span></div>
+          <div class="ht-grid">${item(cap(Keys.k('KeyR')), t('reload'))}${item(cap('SPACE', 1), t('jump'))}${item(cap('SHIFT', 1), t('sprint'))}${item(cap(Keys.k('KeyC')), t('crouch'))}${item(cap(Keys.k('KeyQ')), t('swap'))}${item(cap(Keys.k('KeyE')), t('interact'))}${item(cap(Keys.k('KeyP')), t('pauseK'))}</div>
+        </div>`;
+    m.innerHTML = `<div class="box panel howto">
+      <div class="h-kicker">${esc(goal)}</div>
+      <h2 class="h-display">${t('howTo')}</h2>
+      ${body}
+      <button class="btn primary ht-ok" data-a="ok">${t('understood')}</button></div>`;
+    this.openModal('m-howto');
+    return new Promise((resolve) => {
+      $('[data-a=ok]', m).onclick = () => { Input.requestLock(); this.closeModal(); resolve(); };
+      setTimeout(() => !touch && $('[data-a=ok]', m).focus(), 60);
+    });
+  },
   render_modal_controls() {
     const m = $('#m-controls');
     const kv = (a, b) => `<div class="kv"><span>${a}</span><kbd>${b}</kbd></div>`;
     m.innerHTML = `<div class="box panel wide"><div class="row"><button class="back" data-a="close">${ICONS.back}</button><h2 class="h-display" style="font-size:28px">${t('controls')}</h2></div>
       <div class="scroll"><div class="controls-grid">
-        <div><h4>${t('ctlDesktop')}</h4>${kv(t('move'), 'W A S D')}${kv(t('look'), 'MOUSE')}${kv(t('fire'), 'LMB')}${kv(t('aim'), 'RMB')}${kv(t('reload'), 'R')}${kv(t('jump'), 'SPACE')}${kv(t('crouch'), 'C / CTRL')}${kv(t('sprint'), 'SHIFT')}${kv(t('swap'), 'Q / 1 / 2 / WHEEL')}${kv(t('interact'), 'E')}${kv(t('getAmmo') + ' (AD)', 'G')}${kv(t('pauseK'), 'ESC / P')}</div>
+        <div><h4>${t('ctlDesktop')}</h4>${kv(t('move'), Keys.move())}${kv(t('look'), 'MOUSE')}${kv(t('fire'), 'LMB')}${kv(t('aim'), 'RMB')}${kv(t('reload'), Keys.k('KeyR'))}${kv(t('jump'), 'SPACE')}${kv(t('crouch'), Keys.k('KeyC'))}${kv(t('sprint'), 'SHIFT')}${kv(t('swap'), `${Keys.k('KeyQ')} / 1 / 2 / WHEEL`)}${kv(t('interact'), Keys.k('KeyE'))}${kv(t('getAmmo') + ' (AD)', Keys.k('KeyG'))}${kv(t('pauseK'), `${Keys.k('KeyP')} / ESC`)}</div>
         <div><h4>${t('ctlTouch')}</h4>${kv(t('move'), t('joystick'))}${kv(t('look'), t('dragRight'))}${kv(t('fire'), '◎')}${kv(t('aim'), '⌖')}${kv(t('reload'), '⟳')}${kv(t('jump'), '▲')}${kv(t('crouch'), '▼')}${kv(t('swap'), '⇄')}${kv(t('interact'), '✋')}</div>
         <div><h4>${t('ctlPad')}</h4>${kv(t('move'), t('leftStick'))}${kv(t('look'), t('rightStick'))}${kv(t('fire'), 'RT')}${kv(t('aim'), 'LT')}${kv(t('reload'), 'X')}${kv(t('jump'), 'A')}${kv(t('crouch'), 'B')}${kv(t('sprint'), 'L3')}${kv(t('swap'), 'Y')}${kv(t('interact'), 'LB / RB')}${kv(t('pauseK'), 'START')}</div>
       </div></div></div>`;
@@ -3545,6 +3577,7 @@ const Game = {
       if (m.deaths) player.lives = m.deaths;
       this.lastKillT = -99; this.multiKills = 0; this.outCard = false;
       this.starts++; this.offerGun = quick ? null : Ui.offerPick(m, this.starts);
+      this.howTo = quick && !Save.data.tutorialSeen;
       for (const a of this.actors) if (a.bot) a.bot.marker.visible = a.team === player.team && a.alive;
       Hud.reset(); Hud.show(true);
       Input.resetToggles();
@@ -3574,6 +3607,12 @@ const Game = {
     if (this.state !== 'play' || this.over || this.paused || this.outCard || !this.player.alive || !Platform.ads.canReward()) return;
     this.holdForAd();
     if (await Ads.reward('ammo')) { Player.refillAmmo(); Ads.toast(t('ammoRefilled')); }
+    this.releaseAfterAd();
+  },
+  async showHowTo() {
+    this.holdForAd();
+    await Ui.howTo((this.mode.hud().objective || '').replace(/<[^>]+>/g, ''));
+    Save.data.tutorialSeen = true; Save.persist(true);
     this.releaseAfterAd();
   },
   async inGameOffer() {
@@ -3621,6 +3660,7 @@ const Game = {
     if (inp.pressed.has('ammo') && !this.over) { this.getAmmo(); return; }
     if (this.countdownT > 0) {
       this.countdownT -= rawDt;
+      if (this.countdownT <= 0 && this.howTo) { this.howTo = false; this.showHowTo(); return; }
       const n = Math.ceil(this.countdownT);
       if (n !== this.lastCount && n >= 0) {
         this.lastCount = n;
@@ -3796,6 +3836,7 @@ async function boot() {
   await Platform.init();
   Platform.loadingStart();
   const savePromise = Save.load().then(applyLanguage);
+  Keys.init();
   Loader.total = LIBS.reduce((a, l) => a + l[1], 0) + Object.values(ASSET_FILES).reduce((a, f) => a + f[1], 0);
   Loader.onProgress = (k) => { fill.style.transform = `scaleX(${k})`; };
   try {
