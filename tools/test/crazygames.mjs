@@ -105,7 +105,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   });
   check('BUY with CP unlocks a gun for good and takes the price', !shop.akBefore && shop.buy && shop.cpAfter === 600 && shop.akAfter, JSON.stringify(shop));
   check('Sniper can be bought (when you have 7,999 CP)', !shop.sniperBuy && (await page.evaluate(() => { window.__BR.Save.data.cp = 7999; return window.__BR.Arsenal.canBuy('sniper'); })));
-  await page.evaluate(() => window.__BR.Game.start(8, 'ak47', 'shotgun'));
+  await page.evaluate(() => window.__BR.Game.start(3, 'ak47', 'shotgun'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   const inMission = await page.evaluate(() => window.__BR.Player.slots.map((s) => s.id).join());
   await page.evaluate(() => window.__BR.Game.toMenu('menu'));

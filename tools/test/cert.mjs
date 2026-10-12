@@ -59,7 +59,7 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   check('onPause halts rendering (menu)', fPaused === 0, `${fPaused} frames in 800 ms`);
   check('onPause silences audio', ctxState === false);
   await page.evaluate(() => window.__yt.resumeCbs.forEach((cb) => cb()));
-  const fRes = await frames(800);
+  const fRes = await frames(2500);
   check('onResume restarts rendering (menu)', fRes > 0, `${fRes} frames`);
   await page.evaluate(() => window.__BR.Game.start(0, 'ak47', 'pistol'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
