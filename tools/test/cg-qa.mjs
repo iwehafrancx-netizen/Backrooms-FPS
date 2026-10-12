@@ -318,7 +318,7 @@ if (BASIC && run('K')) {
   await sleep(600);
   const ammo = await f.evaluate(() => ({ shown: !document.querySelector('#hud .ammo-ad').classList.contains('hidden'), hint: document.querySelector('#hud .ammo .reload').textContent }));
   check('out of ammo: no GET AMMO ad button, no hint pointing to an ad', !ammo.shown && !/GET AMMO/.test(ammo.hint), JSON.stringify(ammo));
-  await startMission(f, 7, 'none', 'pistol');
+  await startMission(f, 6, 'none', 'pistol');
   await f.evaluate(() => { const G = window.__BR.Game; for (const a of G.actors) if (a.bot) { a.bot.brain.update = () => {}; a.bot.shootAt = () => {}; } });
   await f.evaluate(() => { const B = window.__BR, G = B.Game; G.player.lives = 1; G.player.spawnTime = -99; G.player.armor = 1; B.Combat.damage(G.player, 9999, G.actors.find((a) => a.bot), false, 'ak47'); });
   await f.waitForFunction(() => window.__BR.Ui.modal === 'm-out', null, { timeout: 15000 }); await settle(f);
@@ -327,7 +327,7 @@ if (BASIC && run('K')) {
   await page.screenshot({ path: shotName('basic-out-card') });
   await f.click('#m-out [data-a=restart]'); await sleep(500); await inPlay(f);
   await f.evaluate(() => window.__BR.Game.toMenu('menu')); await onScreen(f, 'menu');
-  await f.evaluate(() => { const B = window.__BR; B.Save.data.played = 3; B.Save.data.unlocked = 12; const U = B.Ui; U.selMission = 4; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
+  await f.evaluate(() => { const B = window.__BR; B.Save.data.played = 3; B.Save.data.unlocked = 12; const U = B.Ui; U.selMission = 3; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
   const cards = await f.evaluate(() => ({ rent: document.querySelectorAll('#briefing [data-rent]').length, buy: document.querySelectorAll('#briefing [data-buy]').length, ad: /WATCH AD/i.test(document.getElementById('briefing').innerText) }));
   check('loadout: locked guns show BUY with CP only, no WATCH AD', cards.rent === 0 && !cards.ad && cards.buy > 0, JSON.stringify(cards));
   await page.screenshot({ path: shotName('basic-briefing') });
@@ -655,7 +655,7 @@ if (run('P')) {
   });
   check('soldier killed mid-jump falls to the floor while dying (no floating corpse)', air.atDeath > air.ground + 0.2 && Math.abs(air.end - air.ground) < 0.01 && air.mono, JSON.stringify(air));
   await f.evaluate(() => window.__BR.Game.toMenu('menu')); await onScreen(f, 'menu');
-  await startMission(f, 3, 'none', 'pistol');
+  await startMission(f, 8, 'none', 'pistol');
   const mimic = await f.evaluate(() => {
     const B = window.__BR, G = B.Game, boss = G.mode.boss, p = G.player, rounds = [];
     for (const a of G.actors) if (a.bot) a.bot.shootAt = () => {};
@@ -679,6 +679,18 @@ if (run('P')) {
   }
   check('no errors', !log.errors.length, log.errors.slice(0, 4).join(' | '));
   await browser.close();
+  {
+    const { browser, f } = await open({ w: 1280, h: 720 });
+    await ready(f);
+    await f.click('#boot-enter'); await inPlay(f);
+    await f.evaluate(() => { const B = window.__BR; B.Game.finish(true, 'r_win'); }); await onScreen(f, 'end'); await sleep(600);
+    await f.click('#end [data-a=next]'); await onScreen(f, 'briefing'); await settle(f);
+    const shown = await f.evaluate(() => ({ sel: [...document.querySelectorAll('#briefing .wcard.sel')].map((c) => c.dataset.w).sort().join(), tag: document.querySelectorAll('#briefing .wfoot .rent').length > 0 }));
+    await f.click('#briefing [data-a=deploy]'); await inPlay(f);
+    const got = await f.evaluate(() => ['none', ...window.__BR.Player.slots.map((x) => x.id)].filter((x, k, a) => x !== 'none' || a.length === 2).sort().join());
+    check('NEXT after the first mission: the briefing shows only guns you really get (the free AK-47 from Operation 1 is not shown as selected)', !shown.sel.includes('ak47') && !shown.tag && shown.sel === got, JSON.stringify({ shown, got }));
+    await browser.close();
+  }
 }
 
 if (run('M')) {
@@ -728,7 +740,7 @@ if (run('M')) {
   check('hostiles get tougher for the AK-47 every operation from Op 3 (down to 64%)', curve[0].ak47 === 1 && curve[1].ak47 === 1 && curve[2].ak47 < 1 && curve.every((c, i) => !i || c.ak47 <= curve[i - 1].ak47) && Math.min(...curve.map((c) => c.ak47)) >= 0.64, curve.map((c) => c.ak47).join(' '));
   check('M4 weakens later and less (Op 5 on, down to 80%), always stronger than the AK-47', curve.slice(0, 4).every((c) => c.m4 === 1) && curve[4].m4 < 1 && Math.min(...curve.map((c) => c.m4)) >= 0.8 && curve.every((c) => dps(c).m4 > dps(c).ak), curve.map((c) => c.m4).join(' '));
   check('Sniper, Tri-Barrel and pistol are never weakened', curve.every((c) => c.sniper === 1 && c.shotgun === 1 && c.pistol === 1));
-  await startMission(f, 8, 'none', 'pistol');
+  await startMission(f, 7, 'none', 'pistol');
   const hit = await f.evaluate(() => {
     const B = window.__BR, G = B.Game, bots = G.actors.filter((a) => a.bot && a.team !== G.player.team).slice(0, 2);
     const take = (bot, w) => { bot.spawnTime = -99; bot.hp = 1000; B.Combat.damage(bot, 100, G.player, false, w); return 1000 - bot.hp; };
@@ -874,10 +886,10 @@ if (run('Q')) {
     await f.click('#boot-enter'); await onScreen(f, 'menu');
     const pair = (sa, sb) => f.evaluate(([x, y]) => { const a = document.querySelector(x), b = document.querySelector(y); if (!a || !b) return null; const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(), ca = getComputedStyle(a), cb = getComputedStyle(b); return { w: [Math.round(ra.width), Math.round(rb.width)], h: [Math.round(ra.height), Math.round(rb.height)], bg: [ca.backgroundColor, cb.backgroundColor] }; }, [sa, sb]);
     const fair = (r) => r && Math.abs(r.w[0] - r.w[1]) <= 2 && Math.abs(r.h[0] - r.h[1]) <= 2 && r.bg[0] === r.bg[1];
-    await f.evaluate(() => { const U = window.__BR.Ui; U.selMission = 4; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
+    await f.evaluate(() => { const U = window.__BR.Ui; U.selMission = 3; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
     await page.mouse.move(2, 2); await sleep(150);
     const cards = await pair('#briefing .wcard[data-w="m4"] [data-rent]', '#briefing .wcard[data-w="m4"] [data-buy]');
-    await startMission(f, 7, 'none', 'pistol');
+    await startMission(f, 6, 'none', 'pistol');
     await f.evaluate(() => { const G = window.__BR.Game; for (const a of G.actors) if (a.bot) { a.bot.brain.update = () => {}; a.bot.shootAt = () => {}; } });
     await f.evaluate(() => { const G = window.__BR.Game; G.offerGun = 'm4'; G.inGameOffer(); }); await sleep(800);
     await page.mouse.move(2, 2); await sleep(150);

@@ -71,12 +71,12 @@ const MISSIONS = [
   { id: 'm1', mode: 'extermination', time: 180, target: 15, stars: [15, 25, 35], primary: 'ak47', secondary: 'pistol', skill: 0.35 },
   { id: 'm2', mode: 'tdm', teamSize: 3, target: 20, time: 600, primary: 'ak47', secondary: 'pistol', skill: 0.5 },
   { id: 'm3', mode: 'keycard', deaths: 5, hostiles: 6, primary: 'ak47', secondary: 'pistol', skill: 0.45, stars: [420, 270] },
-  { id: 'm4', mode: 'duel', target: 15, time: 900, primary: 'm4', secondary: 'pistol', skill: 0.95 },
   { id: 'm5', mode: 'survival', deaths: 1, primary: 'm4', secondary: 'shotgun', skill: 0.6 },
   { id: 'm6', mode: 'briefcase', time: 240, ffa: 5, primary: 'm4', secondary: 'shotgun', skill: 0.6 },
   { id: 'm7', mode: 'siege', deaths: 5, teamSize: 6, time: 300, holdTime: 3, primary: 'm4', secondary: 'pistol', skill: 0.6 },
   { id: 'holdout', mode: 'waves', lives: 3, deaths: 3, waves: [3, 4, 5, 6, 8], primary: 'm4', secondary: 'shotgun', skill: 0.55 },
   { id: 'ghost', mode: 'assassination', lives: 3, deaths: 3, patrols: 6, primary: 'sniper', secondary: 'pistol', skill: 0.6 },
+  { id: 'm4', mode: 'duel', target: 15, time: 900, primary: 'm4', secondary: 'pistol', skill: 0.95 },
   { id: 'hardpoint', mode: 'hardpoint', teamSize: 4, target: 150, time: 600, primary: 'm4', secondary: 'pistol', skill: 0.6 },
   { id: 'm8', mode: 'keycard', finale: true, hostiles: 5, lives: 3, deaths: 3, primary: 'm4', secondary: 'shotgun', skill: 0.75, stars: [480, 330] },
   { id: 'zerohour', mode: 'zerohour', lives: 3, deaths: 3, guards: 4, primary: 'm4', secondary: 'shotgun', skill: 0.85 },
@@ -3253,6 +3253,7 @@ const Ui = {
     const i = this.selMission, m = MISSIONS[i], tx = mt(m), s = $('#briefing');
     const mode = new (MODES[m.mode])(m, i); const intel = mode.intel(); mode.dispose();
     const lo = Save.data.loadout;
+    Arsenal.enter(i);
     if (!this.loadout || this.loadout.m !== i) this.loadout = { m: i, primary: Arsenal.usable(lo.primary) ? lo.primary : 'none', secondary: Arsenal.usable(lo.secondary) ? lo.secondary : 'pistol' };
     if (!Arsenal.usable(this.loadout.primary)) this.loadout.primary = 'none';
     if (!Arsenal.usable(this.loadout.secondary)) this.loadout.secondary = 'pistol';

@@ -105,7 +105,7 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   await page.waitForFunction(() => window.__BR.Ui.cur === 'menu', null, { timeout: 15000 });
   const ads = () => page.evaluate(() => window.__yt.calls.filter((c) => /^request/.test(c[0])).map((c) => c[0] + (c[1] ? ':' + c[1] : '')));
   check('Rewarded ads available when ytgame.ads.requestRewardedAd exists', await page.evaluate(() => window.__BR.Platform.ads.canReward()));
-  await page.evaluate(() => window.__BR.Game.start(7, 'none', 'pistol'));
+  await page.evaluate(() => window.__BR.Game.start(6, 'none', 'pistol'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   check('No ad is requested when a mission starts', (await ads()).length === 0, (await ads()).join(','));
   await page.evaluate(() => { const G = window.__BR.Game; G.countdownT = 0; const s = window.__BR.Player.slot; s.mag = 0; s.reserve = 0; });
