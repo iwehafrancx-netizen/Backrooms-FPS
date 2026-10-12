@@ -3,9 +3,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const cg = process.argv[2] === 'crazygames';
-const game = path.resolve(here, cg ? '../Backrooms FPS CrazyGames' : '../Backrooms FPS Standalone');
-const out = path.resolve(here, cg ? '../dist/web-demo-crazygames' : '../dist/web-demo');
+const arena = process.argv[2] === 'arena';
+const cg = process.argv[2] === 'crazygames' || arena;
+const game = path.resolve(here, arena ? '../Backrooms FPS Arena Lab' : cg ? '../Backrooms FPS CrazyGames' : '../Backrooms FPS Standalone');
+const out = path.resolve(here, arena ? '../dist/web-demo-arena' : cg ? '../dist/web-demo-crazygames' : '../dist/web-demo');
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
 
