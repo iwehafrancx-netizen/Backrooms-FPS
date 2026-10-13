@@ -67,3 +67,20 @@ export const T = {
   signs: () => svg(512, 64, `<rect width="512" height="64" fill="#0f1216"/>
     ${[['NEON', '#ff3d7f'], ['BURGER', '#ffb02e'], ['TECH', '#3df2ff'], ['STYLE', '#c084ff'], ['SPORT', '#3df27a'], ['CAFE', '#ff7b3d'], ['GAMES', '#ffe14a'], ['BOOKS', '#7fb2ff']].map(([w, c], i) => `<text x="${i * 64 + 32}" y="41" font-family="DejaVu Sans" font-weight="bold" font-size="15" fill="${c}" text-anchor="middle">${w}</text>`).join('')}`),
 };
+
+const art = (seed, c1, c2, c3) => svg(192, 128, `<defs>${noise('n', 0.03, 4, seed)}<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs>
+  <rect width="192" height="128" fill="url(#g)"/><circle cx="${60 + seed % 50}" cy="60" r="34" fill="${c3}" opacity="0.8"/><path d="M0 100 Q60 ${60 + seed % 30} 120 96 T192 90 V128 H0Z" fill="#1a1a1a" opacity="0.55"/>${grain(192, 128, 'n', 0.3)}
+  <rect width="192" height="128" fill="none" stroke="#b8923a" stroke-width="10"/><rect x="5" y="5" width="182" height="118" fill="none" stroke="#6b4a14" stroke-width="2"/>`);
+Object.assign(T, {
+  stone: () => svg(256, 256, `<defs>${noise('n', 0.02, 4, 81)}${noise('v', 0.05, 3, 83)}</defs><rect width="256" height="256" fill="#e9e5dc"/><rect width="128" height="128" fill="#2c2f36"/><rect x="128" y="128" width="128" height="128" fill="#2c2f36"/>${grain(256, 256, 'n', 0.35)}${grain(256, 256, 'v', 0.12)}<rect width="256" height="2" fill="#555"/><rect width="2" height="256" fill="#555"/><rect y="128" width="256" height="1.5" fill="#777"/><rect x="128" width="1.5" height="256" fill="#777"/>`),
+  brick: () => { let b = ''; for (let y = 0; y < 256; y += 16) for (let x = 0; x < 256; x += 32) { const o = (y / 16) % 2 ? 16 : 0, s = 0.85 + ((x * 3 + y * 5) % 7) * 0.03; b += `<rect x="${x + o}" y="${y}" width="31" height="15" fill="rgb(${Math.round(150 * s)},${Math.round(72 * s)},${Math.round(52 * s)})"/>`; } return svg(256, 256, `<defs>${noise('n', 0.06, 3, 91)}</defs><rect width="256" height="256" fill="#b8b0a4"/>${b}${grain(256, 256, 'n', 0.3)}`); },
+  curtain: () => svg(128, 128, `<defs>${noise('n', 0.08, 2, 95)}</defs><rect width="128" height="128" fill="#7a1a24"/>${ribs(128, 128, 16, 8, 3, 0.18, 0.32)}${grain(128, 128, 'n', 0.25)}`),
+  rug: () => svg(128, 128, `<rect width="128" height="128" fill="#7a1f26"/><rect x="8" y="8" width="112" height="112" fill="none" stroke="#d6b25a" stroke-width="4"/><rect x="20" y="20" width="88" height="88" fill="#233a66"/><path d="M64 26 L100 64 L64 102 L28 64Z" fill="#7a1f26" stroke="#d6b25a" stroke-width="3"/><circle cx="64" cy="64" r="12" fill="#d6b25a"/>`),
+  paintA: () => art(5, '#2a3b66', '#c98c4a', '#f2d98a'),
+  paintB: () => art(17, '#3f5a3a', '#d9c7a0', '#8a3a2a'),
+  paintC: () => art(33, '#5a2a44', '#2a4a5e', '#e0c070'),
+  train: () => svg(256, 128, `<defs>${noise('n', 0.04, 3, 101)}</defs><rect width="256" height="128" fill="#d8dce0"/><rect y="70" width="256" height="34" fill="#c0392b"/><rect y="104" width="256" height="24" fill="#2b2f36"/>${[0, 1, 2, 3].map((i) => `<rect x="${12 + i * 62}" y="22" width="46" height="40" rx="5" fill="#25364d"/><rect x="${12 + i * 62}" y="22" width="46" height="8" fill="#6c8fb5" opacity="0.5"/>`).join('')}<rect y="62" width="256" height="4" fill="#f2c230"/>${grain(256, 128, 'n', 0.22)}`),
+  glassroof: () => svg(128, 128, `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe3f6"/><stop offset="1" stop-color="#8fb3d4"/></linearGradient></defs><rect width="128" height="128" fill="url(#g)"/><rect width="128" height="4" fill="#3a434c"/><rect width="4" height="128" fill="#3a434c"/>`),
+  rail: () => svg(64, 64, `<rect width="64" height="64" fill="#5b5148"/><rect width="64" height="14" y="25" fill="#8a8a8c"/>${lines(64, 64, 2, '#2b2420', 3, true)}`),
+  platform: () => svg(256, 256, `<defs>${noise('n', 0.03, 4, 111)}</defs><rect width="256" height="256" fill="#9a9ea3"/>${grain(256, 256, 'n', 0.3)}<rect width="256" height="2" fill="#6c7075"/><rect width="2" height="256" fill="#6c7075"/><rect y="0" width="256" height="18" fill="#e8c52a" opacity="0.9"/>`),
+});

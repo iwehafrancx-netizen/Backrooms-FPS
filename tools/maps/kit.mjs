@@ -6,7 +6,7 @@ import fs from 'node:fs';
 
 export const NAV_CONFIG = {
   cs: 0.1, ch: 0.05,
-  walkableSlopeAngle: 40, walkableHeight: 18, walkableClimb: 6, walkableRadius: 3,
+  walkableSlopeAngle: 40, walkableHeight: 34, walkableClimb: 10, walkableRadius: 3,
   maxEdgeLen: 40, maxSimplificationError: 1.1, minRegionArea: 20, mergeRegionArea: 40,
   maxVertsPerPoly: 6, detailSampleDist: 6, detailSampleMaxError: 1,
 };
@@ -163,7 +163,7 @@ export class Kit {
   }
 }
 
-export async function navmesh(glb, out, seed, skip = /^(light|Lightsurround|RoofBaked|MuralA|MuralB|Glass)$/) {
+export async function navmesh(glb, out, seed, skip = /^(light|Lightsurround|RoofBaked|MuralA|MuralB|Glass|Deco)$/) {
   const doc = await new NodeIO().read(glb);
   const positions = [], indices = [];
   for (const prim of doc.getRoot().listMeshes().flatMap((m) => m.listPrimitives())) {

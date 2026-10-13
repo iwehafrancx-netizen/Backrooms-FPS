@@ -6,7 +6,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const out = path.resolve(here, '../../Backrooms FPS CrazyGames/assets/Maps');
 const only = process.argv.slice(2);
 
-for (const id of ['hangar', 'manor', 'mall']) {
+for (const id of ['hangar', 'manor', 'station']) {
   if (only.length && !only.includes(id)) continue;
   const { build } = await import(`./${id}.mjs`);
   const { kit, tex, seed } = await build();
