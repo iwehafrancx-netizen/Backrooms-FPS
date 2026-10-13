@@ -1,10 +1,11 @@
 import { Kit, clamp01 } from './kit.mjs';
 import { T } from './textures.mjs';
+import { P } from './photo.mjs';
 
 const X = 32, Z = 22, H = 13, DECK = 3.6;
 const C = {
-  orange: [0.95, 0.42, 0.1], teal: [0.08, 0.58, 0.6], crimson: [0.72, 0.1, 0.13], cobalt: [0.14, 0.3, 0.78],
-  yellow: [0.98, 0.74, 0.12], green: [0.18, 0.52, 0.26], grey: [0.62, 0.64, 0.66], blue: [0.15, 0.45, 1], red: [1, 0.2, 0.15],
+  orange: [0.66, 0.34, 0.15], teal: [0.24, 0.42, 0.42], crimson: [0.5, 0.18, 0.14], cobalt: [0.22, 0.3, 0.44],
+  yellow: [0.64, 0.5, 0.2], green: [0.22, 0.34, 0.25], grey: [0.62, 0.64, 0.66], blue: [0.15, 0.45, 1], red: [1, 0.2, 0.15],
 };
 const BASES = { A: { x: -27, z: 0 }, B: { x: 27, z: 0 } };
 
@@ -111,8 +112,8 @@ export async function build() {
   });
 
   const tex = {
-    concrete: await T.concrete(), roof: await T.roof(), corrugated: await T.corrugated(), container: await T.container(), steel: await T.steel(),
-    deck: await T.deck(), crate: await T.crate(), paint: await T.paint(),
+    concrete: await P.slab(), roof: await P.roofsteel(), corrugated: await P.corrugated(), container: await P.container(), steel: await P.steelplate(),
+    deck: await P.deckplate(), crate: await P.crate(), paint: await T.paint(),
     muralA: await T.mural('#0d2f6b', '#1a5fd0', '#7fc0ff', 'BLUE TEAM', 'A'), muralB: await T.mural('#6b0d12', '#d0261a', '#ffb07f', 'RED TEAM', 'B'),
   };
   return { kit: k, tex, seed: { x: 8, y: 0, z: 0 } };

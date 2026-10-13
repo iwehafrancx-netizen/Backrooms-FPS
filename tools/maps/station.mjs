@@ -1,5 +1,6 @@
 import { Kit, clamp01 } from './kit.mjs';
 import { T } from './textures.mjs';
+import { P } from './photo.mjs';
 import { furniture, W } from './furn.mjs';
 
 const X = 34, Z = 22, H = 15, UP = 5.5;
@@ -23,8 +24,10 @@ export async function build() {
   k.mat('Wood', 'crate', 'world', 2);
   k.mat('Furniture', 'fabric', 'world', 1);
   k.mat('Marble', 'marble', 'world', 3);
-  k.mat('Crates', 'crate', 'face');
+  k.mat('Crates', 'crates', 'face');
   k.mat('PaintA', 'paintA', 'face');
+  k.mat('Leather', 'leather', 'world', 1);
+  k.mat('Brass', 'brass', 'world', 0.6);
   k.mat('light', null);
   for (const x of [-27, -18, -9, 0, 9, 18, 27]) { k.lamps.push({ x, y: 11, z: 0, k: 0.3, r: 90 }); for (const z of [-14, 14]) k.lamps.push({ x, y: 4.6, z, k: 0.2, r: 40 }); }
 
@@ -89,6 +92,6 @@ export async function build() {
   for (const [x, z] of [[-30, -19], [30, -19], [-30, 19.5], [30, 19.5]]) { f.crate(x, z, 0); f.crate(x + 1.0, z, 0); f.crate(x, z + (z < 0 ? 1 : -1), 0); }
   for (const x of [-16, 16]) { f.crate(x, -19.6, 0, 1.0); f.crate(x + 1.1, -19.6, 0, 1.0); f.crate(x, -19.6, 1.0, 0.9); }
 
-  const tex = { stone: await T.stone(), platform: await T.platform(), rail: await T.rail(), brick: await T.brick(), roof: await T.roof(), glassroof: await T.glassroof(), steel: await T.steel(), deck: await T.deck(), train: await T.train(), storefront: await T.storefront(), signs: await T.signs(), crate: await T.crate(), fabric: await T.fabric(), marble: await T.marble(), paintA: await T.paintA() };
+  const tex = { stone: await P.flagstone(), platform: await P.platform(), rail: await P.ballast(), brick: await P.brick(), roof: await P.roofsteel(), glassroof: await P.skyglass(), steel: await P.steelplate(), deck: await P.deckplate(), train: await P.livery(), storefront: await T.storefront(), signs: await T.signs(), crate: await P.walnut(), crates: await P.crate(), fabric: await P.leather(), leather: await P.leather(), brass: await P.brass(), marble: await P.limestone(), paintA: await P.oil1() };
   return { kit: k, tex, seed: { x: 0, y: 0, z: -10 } };
 }

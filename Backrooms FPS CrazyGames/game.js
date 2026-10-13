@@ -67,7 +67,7 @@ const MAPS = {
     lobby: { x: 7.5, z: 12.5 },
   },
   hangar: {
-    name: 'HANGAR 9', glb: 'assets/Maps/hangar.glb', nav: 'assets/Maps/hangar.navmesh', kb: [255, 83], bright: 1.45, fog: [0x1c2229, 34, 120], bg: 0x14191f, hemi: [0xe8f0ff, 0x3d444d], env: [0, 1.6, 8],
+    name: 'HANGAR 9', glb: 'assets/Maps/hangar.glb', nav: 'assets/Maps/hangar.navmesh', kb: [257, 84], bright: 1.25, fog: [0x1c2229, 34, 120], bg: 0x14191f, hemi: [0xe8f0ff, 0x3d444d], env: [0, 1.6, 8],
     zones: { west: { x: [-31, -24.5], z: [-15, 15] }, central: { x: [-14, 14], z: [-15, 15] }, east: { x: [24.5, 31], z: [-15, 15] } },
     lifts: [{ x: -27, z: 0 }, { x: 27, z: 0 }],
     survival: [{ x: [-31, -24.5], z: [-15, 15] }, { x: [-3, 3], z: [-15, -9.5] }, { x: [24.5, 31], z: [-15, 15] }, { x: [-3, 3], z: [9.5, 15] }],
@@ -84,7 +84,7 @@ const MAPS = {
     lobby: { x: 7.5, z: 12.5 },
   },
   manor: {
-    name: 'THE MANOR', glb: 'assets/Maps/manor.glb', nav: 'assets/Maps/manor.navmesh', kb: [660, 145], bright: 1.4, fog: [0x1a140e, 40, 110], bg: 0x0d0b09, hemi: [0xfff0d8, 0x4a3a2a], env: [0, 2, 2],
+    name: 'THE MANOR', glb: 'assets/Maps/manor.glb', nav: 'assets/Maps/manor.navmesh', kb: [2666, 160], bright: 1.5, fog: [0x120e0b, 30, 95], bg: 0x0d0b09, hemi: [0xfff0d8, 0x4a3a2a], env: [0, 2, 2],
     zones: { west: { x: [-24.5, -10], z: [-17, 17] }, central: { x: [-8, 8], z: [-17, 17] }, east: { x: [10, 24.5], z: [-17, 17] } },
     lifts: [{ x: 0, z: 16.5 }, { x: 0, z: -16.5 }],
     survival: [{ x: [-24.5, -10], z: [-17, 17] }, { x: [10, 24.5], z: [-17, 17] }, { x: [-8, 8], z: [-17, -10] }, { x: [-8, 8], z: [10, 17] }],
@@ -94,7 +94,7 @@ const MAPS = {
     lobby: { x: 7.5, z: 12.5 },
   },
   station: {
-    name: 'THE STATION', glb: 'assets/Maps/station.glb', nav: 'assets/Maps/station.navmesh', kb: [601, 111], bright: 1.4, fog: [0x20252c, 50, 130], bg: 0x12161b, hemi: [0xf0f4ff, 0x50545a], env: [0, 2, -10],
+    name: 'THE STATION', glb: 'assets/Maps/station.glb', nav: 'assets/Maps/station.navmesh', kb: [711, 111], bright: 1.2, fog: [0x20252c, 50, 130], bg: 0x12161b, hemi: [0xf0f4ff, 0x50545a], env: [0, 2, -10],
     zones: { west: { x: [-33, -24], z: [-21, 21] }, central: { x: [-14, 14], z: [-20, 20] }, east: { x: [24, 33], z: [-21, 21] } },
     lifts: [{ x: -32, z: -10 }, { x: 32, z: 10 }],
     survival: [{ x: [-33, -24], z: [-21, 21] }, { x: [24, 33], z: [-21, 21] }, { x: [-14, 14], z: [-20, -8] }, { x: [-14, 14], z: [8, 20] }],
