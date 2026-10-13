@@ -54,32 +54,75 @@ const SHOP = { shotgun: 2999, ak47: 1900, m4: 4999, sniper: 7999 };
 const ARMOR = { ak47: { from: 2, step: 0.06, min: 0.64 }, m4: { from: 4, step: 0.035, min: 0.8 } };
 const armorMul = (id, mission) => { const a = ARMOR[id]; return a ? Math.max(a.min, 1 - a.step * Math.max(0, mission + 1 - a.from)) : 1; };
 
-const MAP = {
-  zones: {
-    west:    { x: [-30.5, -1.5], z: [6.5, 20.5] },
-    central: { x: [0.5, 14.5], z: [-9.5, 20.5] },
-    east:    { x: [16.0, 30.5], z: [-24.5, 20.5] },
+const MAPS = {
+  backrooms: {
+    name: 'LEVEL 0', glb: 'assets/Maps/backroom.glb', nav: 'assets/Maps/backroom.navmesh', kb: [340, 46], bright: 2.3, fog: [0x2e2812, 10, 52], bg: 0x0b0a07, hemi: [0xfff1c2, 0x5a4a24], env: [7, 1.5, 12],
+    zones: { west: { x: [-30.5, -1.5], z: [6.5, 20.5] }, central: { x: [0.5, 14.5], z: [-9.5, 20.5] }, east: { x: [16.0, 30.5], z: [-24.5, 20.5] } },
+    lifts: [{ x: -8.5, z: 21.4 }, { x: 29.4, z: 5.95 }],
+    siege: { blue: [{ x: -30.0, z: 13.5 }, { x: -3.0, z: 20.0 }], enemy: [{ x: 27.5, z: -24.0 }, { x: 27.5, z: 20.0 }] },
+    siegeZones: { A: { x: [-24, -6], z: [8, 20] }, B: { x: [18, 30], z: [-8, 8] } },
+    survival: [{ x: [-30.5, -1.5], z: [6.5, 20.5] }, { x: [1, 14], z: [-9, 2] }, { x: [17, 30], z: [8, 20] }, { x: [16, 30.5], z: [-24.5, -10] }],
+    caseSpot: { x: 7.5, z: 4 },
+    hardpoints: [{ x: 7, z: -3, name: 'ALPHA' }, { x: -15, z: 13, name: 'BRAVO' }, { x: 23, z: -16, name: 'CHARLIE' }, { x: 23, z: 14, name: 'DELTA' }, { x: 7, z: 15, name: 'ECHO' }],
+    lobby: { x: 7.5, z: 12.5 },
   },
-  lifts: [{ x: -8.5, z: 21.4 }, { x: 29.4, z: 5.95 }],
-  siege: { blue: [{ x: -30.0, z: 13.5 }, { x: -3.0, z: 20.0 }], enemy: [{ x: 27.5, z: -24.0 }, { x: 27.5, z: 20.0 }] },
-  lobby: { x: 7.5, z: 12.5 },
+  hangar: {
+    name: 'HANGAR 9', glb: 'assets/Maps/hangar.glb', nav: 'assets/Maps/hangar.navmesh', kb: [255, 83], bright: 1.45, fog: [0x1c2229, 34, 120], bg: 0x14191f, hemi: [0xe8f0ff, 0x3d444d], env: [0, 1.6, 8],
+    zones: { west: { x: [-31, -24.5], z: [-15, 15] }, central: { x: [-14, 14], z: [-15, 15] }, east: { x: [24.5, 31], z: [-15, 15] } },
+    lifts: [{ x: -27, z: 0 }, { x: 27, z: 0 }],
+    survival: [{ x: [-31, -24.5], z: [-15, 15] }, { x: [-3, 3], z: [-15, -9.5] }, { x: [24.5, 31], z: [-15, 15] }, { x: [-3, 3], z: [9.5, 15] }],
+    caseSpot: { x: 0, z: 9 },
+    hardpoints: [{ x: 0, z: 9, name: 'ALPHA' }, { x: -20, z: 0, name: 'BRAVO' }, { x: 20, z: 0, name: 'CHARLIE' }, { x: -12, z: -17, name: 'DELTA' }, { x: 12, z: 17, name: 'ECHO' }],
+    ctf: {
+      A: { x: -27, z: 0 }, B: { x: 27, z: 0 },
+      guard: {
+        A: [{ x: -22, y: 0, z: 3 }, { x: -22, y: 0, z: -3 }, { x: -21, y: 3.6, z: -20.2 }, { x: -21, y: 3.6, z: 20.2 }, { x: -25, y: 0, z: 8 }, { x: -25, y: 0, z: -8 }],
+        B: [{ x: 22, y: 0, z: -3 }, { x: 22, y: 0, z: 3 }, { x: 21, y: 3.6, z: 20.2 }, { x: 21, y: 3.6, z: -20.2 }, { x: 25, y: 0, z: -8 }, { x: 25, y: 0, z: 8 }],
+      },
+    },
+    lss: { x: 0, z: 0, r0: 36, r1: 7 },
+    lobby: { x: 7.5, z: 12.5 },
+  },
+  manor: {
+    name: 'THE MANOR', glb: 'assets/Maps/manor.glb', nav: 'assets/Maps/manor.navmesh', kb: [211, 91], bright: 1.35, fog: [0x17120d, 26, 70], bg: 0x0d0b09, hemi: [0xfff0d8, 0x4a3a2a], env: [0, 1.6, 2],
+    zones: { west: { x: [-19.5, -9.5], z: [-15.5, 15.5] }, central: { x: [-8.5, 8.5], z: [-15.5, 15.5] }, east: { x: [9.5, 19.5], z: [-15.5, 15.5] } },
+    lifts: [{ x: 0, z: 14.5 }, { x: 0, z: -14.5 }],
+    survival: [{ x: [-19.5, -9.5], z: [-15.5, 15.5] }, { x: [9.5, 19.5], z: [-15.5, 15.5] }, { x: [-8.5, 8.5], z: [-15.5, -7] }, { x: [-8.5, 8.5], z: [7, 15.5] }],
+    caseSpot: { x: 0, z: 2.6 },
+    hardpoints: [{ x: 0, z: 3, name: 'ALPHA' }, { x: -14, z: -8, name: 'BRAVO' }, { x: 14, z: 8, name: 'CHARLIE' }, { x: -14, z: 8, name: 'DELTA' }, { x: 14, z: -8, name: 'ECHO' }],
+    lss: { x: 0, z: 0, r0: 26, r1: 6 },
+    lobby: { x: 7.5, z: 12.5 },
+  },
+  mall: {
+    name: 'THE MALL', glb: 'assets/Maps/mall.glb', nav: 'assets/Maps/mall.navmesh', kb: [271, 120], bright: 1.35, fog: [0x1a1e24, 40, 110], bg: 0x101318, hemi: [0xf0f4ff, 0x50545a], env: [0, 1.6, -4.5],
+    zones: { west: { x: [-31.5, -26.5], z: [-19, 19] }, central: { x: [-24, 24], z: [-5.5, 5.5] }, east: { x: [26.5, 31.5], z: [-19, 19] } },
+    lifts: [{ x: -29, z: 12 }, { x: 29, z: -12 }],
+    survival: [{ x: [-31.5, -26.5], z: [-19, 19] }, { x: [26.5, 31.5], z: [-19, 19] }, { x: [-24, -12], z: [-19, -7] }, { x: [12, 24], z: [7, 19] }],
+    caseSpot: { x: 0, z: 4.5 },
+    hardpoints: [{ x: -20, z: 0, name: 'ALPHA' }, { x: 20, z: 0, name: 'BRAVO' }, { x: 5, z: 13, name: 'CHARLIE' }, { x: -5, z: -13, name: 'DELTA' }, { x: 29, z: -10, name: 'ECHO' }],
+    lss: { x: 0, z: 0, r0: 38, r1: 8 },
+    lobby: { x: 7.5, z: 12.5 },
+  },
 };
-
+let MAP = MAPS.backrooms;
 const KEY_COLORS = ['#ff4a3d', '#3df27a', '#3d8bff'];
 
 const MISSIONS = [
-  { id: 'm1', mode: 'extermination', time: 180, target: 15, stars: [15, 25, 35], primary: 'ak47', secondary: 'pistol', skill: 0.35 },
-  { id: 'm2', mode: 'tdm', teamSize: 3, target: 20, time: 600, primary: 'ak47', secondary: 'pistol', skill: 0.5 },
-  { id: 'm3', mode: 'keycard', deaths: 5, hostiles: 6, primary: 'ak47', secondary: 'pistol', skill: 0.45, stars: [420, 270] },
-  { id: 'm5', mode: 'survival', deaths: 1, primary: 'm4', secondary: 'shotgun', skill: 0.6 },
-  { id: 'm6', mode: 'briefcase', time: 240, ffa: 5, primary: 'm4', secondary: 'shotgun', skill: 0.6 },
-  { id: 'm7', mode: 'siege', deaths: 5, teamSize: 6, time: 300, holdTime: 3, primary: 'm4', secondary: 'pistol', skill: 0.6 },
-  { id: 'holdout', mode: 'waves', lives: 3, deaths: 3, waves: [3, 4, 5, 6, 8], primary: 'm4', secondary: 'shotgun', skill: 0.55 },
-  { id: 'ghost', mode: 'assassination', lives: 3, deaths: 3, patrols: 6, primary: 'sniper', secondary: 'pistol', skill: 0.6 },
-  { id: 'm4', mode: 'duel', target: 15, time: 900, primary: 'm4', secondary: 'pistol', skill: 0.95 },
-  { id: 'hardpoint', mode: 'hardpoint', teamSize: 4, target: 150, time: 600, primary: 'm4', secondary: 'pistol', skill: 0.6 },
-  { id: 'm8', mode: 'keycard', finale: true, hostiles: 5, lives: 3, deaths: 3, primary: 'm4', secondary: 'shotgun', skill: 0.75, stars: [480, 330] },
-  { id: 'zerohour', mode: 'zerohour', lives: 3, deaths: 3, guards: 4, primary: 'm4', secondary: 'shotgun', skill: 0.85 },
+  { id: 'ctf1', map: 'hangar', mode: 'ctf', teamSize: 5, target: 3, time: 600, primary: 'ak47', secondary: 'pistol', skill: 0.4 },
+  { id: 'm1', map: 'mall', mode: 'extermination', time: 180, target: 15, stars: [15, 25, 35], primary: 'ak47', secondary: 'pistol', skill: 0.35 },
+  { id: 'm2', map: 'manor', mode: 'tdm', teamSize: 3, target: 20, time: 600, primary: 'ak47', secondary: 'pistol', skill: 0.5 },
+  { id: 'm3', map: 'backrooms', mode: 'keycard', deaths: 5, hostiles: 6, primary: 'ak47', secondary: 'pistol', skill: 0.45, stars: [420, 270] },
+  { id: 'm5', map: 'mall', mode: 'survival', deaths: 1, primary: 'm4', secondary: 'shotgun', skill: 0.6 },
+  { id: 'm6', map: 'manor', mode: 'briefcase', time: 240, ffa: 5, primary: 'm4', secondary: 'shotgun', skill: 0.6 },
+  { id: 'lss', map: 'mall', mode: 'lss', deaths: 1, squads: 4, squadSize: 3, time: 420, primary: 'm4', secondary: 'pistol', skill: 0.6 },
+  { id: 'm7', map: 'backrooms', mode: 'siege', deaths: 5, teamSize: 6, time: 300, holdTime: 3, primary: 'm4', secondary: 'pistol', skill: 0.6 },
+  { id: 'm4', map: 'manor', mode: 'duel', target: 15, time: 900, primary: 'm4', secondary: 'pistol', skill: 0.95 },
+  { id: 'holdout', map: 'hangar', mode: 'waves', lives: 3, deaths: 3, waves: [3, 4, 5, 6, 8], primary: 'm4', secondary: 'shotgun', skill: 0.55 },
+  { id: 'ghost', map: 'manor', mode: 'assassination', lives: 3, deaths: 3, patrols: 6, primary: 'sniper', secondary: 'pistol', skill: 0.6 },
+  { id: 'hardpoint', map: 'mall', mode: 'hardpoint', teamSize: 4, target: 150, time: 600, primary: 'm4', secondary: 'pistol', skill: 0.6 },
+  { id: 'm8', map: 'backrooms', mode: 'keycard', finale: true, hostiles: 5, lives: 3, deaths: 3, primary: 'm4', secondary: 'shotgun', skill: 0.75, stars: [480, 330] },
+  { id: 'zerohour', map: 'backrooms', mode: 'zerohour', lives: 3, deaths: 3, guards: 4, primary: 'm4', secondary: 'shotgun', skill: 0.85 },
+
 ];
 
 const RANKS = [
@@ -113,6 +156,7 @@ const STR = {
     pressHold: 'HOLD', pickUp: 'PICK UP', useExit: 'EXTRACT', pressButton: 'OVERRIDE',
     insertion: 'INSERTION', go: 'GO',
     fpsWord: 'FPS',
+    o_ctf: 'CAPTURE THE ENEMY FLAG — <b>{a}</b> / {t}', o_ctfCarry: 'YOU HAVE THE FLAG — <b>RUN IT HOME</b>', o_ctfTaken: 'YOUR FLAG IS TAKEN — <b>STOP THE CARRIER</b>', o_ctfWait: 'GET YOUR FLAG BACK — <b>YOU CANNOT SCORE</b>', o_lss: 'LAST SQUAD STANDING — <b>{n}</b> SQUADS LEFT', b_flagYou: 'YOU HAVE THE FLAG', b_flagAlly: 'WE HAVE THEIR FLAG', b_flagTaken: 'OUR FLAG IS TAKEN', b_flagDropped: 'FLAG DROPPED', b_flagReturned: 'OUR FLAG IS BACK', b_flagReset: 'ENEMY FLAG RESET', b_capture: 'FLAG CAPTURED', b_enemyCapture: 'THEY CAPTURED OUR FLAG', b_zone: 'THE ZONE IS CLOSING', b_outside: 'GET BACK IN THE ZONE', f_ours: 'OUR FLAG', f_theirs: 'ENEMY FLAG', f_home: 'CAPTURE', f_dropped: 'DROPPED', r_ctfLost: 'The enemy captured three flags.',
     o_ext: 'ELIMINATE HOSTILES — <b>{k}</b> / {t}', o_tdm: 'FIRST TEAM TO <b>{t}</b> ELIMINATIONS', o_key: 'RECOVER KEYCARDS — <b>{k}</b> / 3', o_exit: 'KEYCARDS SECURED — <b>REACH THE LIFT</b>', o_duel: 'FIRST TO <b>{t}</b> — TAKE DOWN THE MIMIC',
     o_surv: 'SQUADS REMAINING — <b>{n}</b>', o_brief: '<b>{h}</b> HAS THE BRIEFCASE — TAKE IT BACK', o_briefNone: 'GRAB THE BRIEFCASE', o_briefYou: '<b>YOU HAVE THE BRIEFCASE</b> — HOLD IT UNTIL TIME RUNS OUT',
     o_siege: 'OVERRIDE BOTH ENEMY SWITCHES — <b>{a}</b> / 2',
@@ -136,6 +180,7 @@ const STR = {
     leftStick: 'Stick izquierdo', rightStick: 'Stick derecho', dragRight: 'Arrastra a la derecha', joystick: 'Joystick izquierdo (al borde = correr)',
     eliminated: 'ELIMINADO', headshot: 'A LA CABEZA', youDied: 'CAÍDO', killedBy: 'ELIMINADO POR {n}', respawnIn: 'REAPARECES EN {s}', outOfLives: 'SIN VIDAS', spectating: 'OBSERVANDO A {n}', youAreOut: 'ESTÁS FUERA — TU EQUIPO SIGUE LUCHANDO',
     reloading: 'RECARGANDO', noAmmo: 'SIN MUNICIÓN', lives: 'VIDAS {n}', you: 'TÚ', pressHold: 'MANTÉN', pickUp: 'RECOGER', useExit: 'EXTRAER', pressButton: 'ANULAR', insertion: 'INSERCIÓN', go: 'YA', fpsWord: 'FPS',
+    o_ctf: 'CAPTURA LA BANDERA ENEMIGA — <b>{a}</b> / {t}', o_ctfCarry: 'TIENES LA BANDERA — <b>LLÉVALA A TU BASE</b>', o_ctfTaken: 'TE ROBARON LA BANDERA — <b>DETÉN AL PORTADOR</b>', o_ctfWait: 'RECUPERA TU BANDERA — <b>NO PUEDES ANOTAR</b>', o_lss: 'ÚLTIMO ESCUADRÓN EN PIE — QUEDAN <b>{n}</b>', b_flagYou: 'TIENES LA BANDERA', b_flagAlly: 'TENEMOS SU BANDERA', b_flagTaken: 'NOS ROBARON LA BANDERA', b_flagDropped: 'BANDERA SOLTADA', b_flagReturned: 'NUESTRA BANDERA VOLVIÓ', b_flagReset: 'BANDERA ENEMIGA REINICIADA', b_capture: 'BANDERA CAPTURADA', b_enemyCapture: 'CAPTURARON NUESTRA BANDERA', b_zone: 'LA ZONA SE CIERRA', b_outside: 'VUELVE A LA ZONA', f_ours: 'NUESTRA BANDERA', f_theirs: 'BANDERA ENEMIGA', f_home: 'CAPTURAR', f_dropped: 'SOLTADA', r_ctfLost: 'El enemigo capturó tres banderas.',
     o_ext: 'ELIMINA HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PRIMER EQUIPO EN <b>{t}</b> BAJAS', o_key: 'RECUPERA TARJETAS — <b>{k}</b> / 3', o_exit: 'TARJETAS LISTAS — <b>LLEGA AL ASCENSOR</b>', o_duel: 'PRIMERO A <b>{t}</b> — DERRIBA AL MIMIC',
     o_surv: 'EQUIPOS RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> TIENE EL MALETÍN — RECUPÉRALO', o_briefNone: 'COGE EL MALETÍN', o_briefYou: '<b>TIENES EL MALETÍN</b> — AGUANTA HASTA QUE ACABE EL TIEMPO', o_siege: 'ANULA LOS DOS INTERRUPTORES ENEMIGOS — <b>{a}</b> / 2',
     b_key: 'TARJETA RECUPERADA', b_exit: 'SALIDA DESBLOQUEADA', b_button: 'INTERRUPTOR ANULADO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETÍN ASEGURADO', b_caseLost: 'MALETÍN PERDIDO', b_lights: 'APAGÓN', b_squadOut: 'EQUIPO ELIMINADO', b_lead: 'TOMAS LA DELANTERA', b_hunt: 'TE PUEDEN OÍR',
@@ -158,6 +203,7 @@ const STR = {
     leftStick: 'Analógico esquerdo', rightStick: 'Analógico direito', dragRight: 'Arraste à direita', joystick: 'Joystick esquerdo (na borda = correr)',
     eliminated: 'ELIMINADO', headshot: 'NA CABEÇA', youDied: 'ABATIDO', killedBy: 'ABATIDO POR {n}', respawnIn: 'RETORNO EM {s}', outOfLives: 'SEM VIDAS', spectating: 'ASSISTINDO {n}', youAreOut: 'VOCÊ ESTÁ FORA — SEU ESQUADRÃO CONTINUA',
     reloading: 'RECARREGANDO', noAmmo: 'SEM MUNIÇÃO', lives: 'VIDAS {n}', you: 'VOCÊ', pressHold: 'SEGURE', pickUp: 'PEGAR', useExit: 'EXTRAIR', pressButton: 'SOBRESCREVER', insertion: 'INSERÇÃO', go: 'VAI', fpsWord: 'FPS',
+    o_ctf: 'CAPTURE A BANDEIRA INIMIGA — <b>{a}</b> / {t}', o_ctfCarry: 'VOCÊ ESTÁ COM A BANDEIRA — <b>LEVE PARA A BASE</b>', o_ctfTaken: 'ROUBARAM SUA BANDEIRA — <b>PARE O PORTADOR</b>', o_ctfWait: 'RECUPERE SUA BANDEIRA — <b>NÃO DÁ PARA PONTUAR</b>', o_lss: 'ÚLTIMO ESQUADRÃO DE PÉ — RESTAM <b>{n}</b>', b_flagYou: 'A BANDEIRA É SUA', b_flagAlly: 'PEGAMOS A BANDEIRA DELES', b_flagTaken: 'ROUBARAM NOSSA BANDEIRA', b_flagDropped: 'BANDEIRA CAIU', b_flagReturned: 'NOSSA BANDEIRA VOLTOU', b_flagReset: 'BANDEIRA INIMIGA VOLTOU', b_capture: 'BANDEIRA CAPTURADA', b_enemyCapture: 'CAPTURARAM NOSSA BANDEIRA', b_zone: 'A ZONA ESTÁ FECHANDO', b_outside: 'VOLTE PARA A ZONA', f_ours: 'NOSSA BANDEIRA', f_theirs: 'BANDEIRA INIMIGA', f_home: 'CAPTURAR', f_dropped: 'CAÍDA', r_ctfLost: 'O inimigo capturou três bandeiras.',
     o_ext: 'ELIMINE HOSTIS — <b>{k}</b> / {t}', o_tdm: 'PRIMEIRA EQUIPE A <b>{t}</b> ABATES', o_key: 'RECUPERE CARTÕES — <b>{k}</b> / 3', o_exit: 'CARTÕES OK — <b>VÁ ATÉ O ELEVADOR</b>', o_duel: 'PRIMEIRO A <b>{t}</b> — DERRUBE O MIMIC',
     o_surv: 'ESQUADRÕES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> ESTÁ COM A MALETA — RECUPERE', o_briefNone: 'PEGUE A MALETA', o_briefYou: '<b>VOCÊ ESTÁ COM A MALETA</b> — SEGURE ATÉ O TEMPO ACABAR', o_siege: 'SOBRESCREVA OS DOIS INTERRUPTORES INIMIGOS — <b>{a}</b> / 2',
     b_key: 'CARTÃO RECUPERADO', b_exit: 'SAÍDA LIBERADA', b_button: 'INTERRUPTOR SOBRESCRITO', b_lost: 'INTERRUPTOR PERDIDO', b_case: 'MALETA GARANTIDA', b_caseLost: 'MALETA PERDIDA', b_lights: 'QUEDA DE ENERGIA', b_squadOut: 'ESQUADRÃO ELIMINADO', b_lead: 'NA LIDERANÇA', b_hunt: 'ELES PODEM TE OUVIR',
@@ -180,6 +226,7 @@ const STR = {
     leftStick: 'Stick gauche', rightStick: 'Stick droit', dragRight: 'Glisser à droite', joystick: 'Joystick gauche (au bord = sprint)',
     eliminated: 'ÉLIMINÉ', headshot: 'TIR À LA TÊTE', youDied: 'TOMBÉ', killedBy: 'ÉLIMINÉ PAR {n}', respawnIn: 'RETOUR DANS {s}', outOfLives: 'PLUS DE VIES', spectating: 'SPECTATEUR : {n}', youAreOut: 'VOUS ÊTES HORS JEU — VOTRE ESCOUADE CONTINUE',
     reloading: 'RECHARGEMENT', noAmmo: 'PLUS DE MUNITIONS', lives: 'VIES {n}', you: 'VOUS', pressHold: 'MAINTENIR', pickUp: 'RAMASSER', useExit: 'EXTRAIRE', pressButton: 'FORCER', insertion: 'INSERTION', go: 'GO', fpsWord: 'FPS',
+    o_ctf: 'CAPTUREZ LE DRAPEAU ENNEMI — <b>{a}</b> / {t}', o_ctfCarry: 'VOUS AVEZ LE DRAPEAU — <b>RAMENEZ-LE</b>', o_ctfTaken: 'VOTRE DRAPEAU EST PRIS — <b>ARRÊTEZ LE PORTEUR</b>', o_ctfWait: 'RÉCUPÉREZ VOTRE DRAPEAU — <b>IMPOSSIBLE DE MARQUER</b>', o_lss: 'DERNIÈRE ESCOUADE — <b>{n}</b> RESTANTES', b_flagYou: 'VOUS AVEZ LE DRAPEAU', b_flagAlly: 'NOUS AVONS LEUR DRAPEAU', b_flagTaken: 'NOTRE DRAPEAU EST PRIS', b_flagDropped: 'DRAPEAU LÂCHÉ', b_flagReturned: 'NOTRE DRAPEAU EST REVENU', b_flagReset: 'DRAPEAU ENNEMI REPLACÉ', b_capture: 'DRAPEAU CAPTURÉ', b_enemyCapture: 'ILS ONT CAPTURÉ NOTRE DRAPEAU', b_zone: 'LA ZONE SE RÉDUIT', b_outside: 'REVENEZ DANS LA ZONE', f_ours: 'NOTRE DRAPEAU', f_theirs: 'DRAPEAU ENNEMI', f_home: 'CAPTURER', f_dropped: 'LÂCHÉ', r_ctfLost: 'L’ennemi a capturé trois drapeaux.',
     o_ext: 'ÉLIMINEZ LES HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PREMIÈRE ÉQUIPE À <b>{t}</b> ÉLIMINATIONS', o_key: 'RÉCUPÉREZ LES CARTES — <b>{k}</b> / 3', o_exit: 'CARTES OK — <b>REJOIGNEZ L’ASCENSEUR</b>', o_duel: 'PREMIER À <b>{t}</b> — ABATTEZ LE MIMIC',
     o_surv: 'ESCOUADES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> A LA MALLETTE — REPRENEZ-LA', o_briefNone: 'PRENEZ LA MALLETTE', o_briefYou: '<b>VOUS AVEZ LA MALLETTE</b> — GARDEZ-LA JUSQU’À LA FIN DU TEMPS', o_siege: 'FORCEZ LES DEUX INTERRUPTEURS ENNEMIS — <b>{a}</b> / 2',
     b_key: 'CARTE RÉCUPÉRÉE', b_exit: 'SORTIE DÉVERROUILLÉE', b_button: 'INTERRUPTEUR FORCÉ', b_lost: 'INTERRUPTEUR PERDU', b_case: 'MALLETTE SÉCURISÉE', b_caseLost: 'MALLETTE PERDUE', b_lights: 'PANNE DE COURANT', b_squadOut: 'ESCOUADE ÉLIMINÉE', b_lead: 'VOUS MENEZ', b_hunt: 'ILS VOUS ENTENDENT',
@@ -189,56 +236,64 @@ const STR = {
 };
 const MTEXT = {
   en: {
-    m1: ['OPERATION: LAST LIGHT', 'EXTERMINATION · TIME TRIAL', 'Hostile operators have flooded the yellow halls. Clear them out before the lights die.', ['Eliminate as many hostiles as possible in 3:00', 'Reach 15 eliminations to clear the operation', '★ 15 · ★★ 25 · ★★★ 35 eliminations']],
-    m2: ['OPERATION: YELLOW HALLS', 'TEAM DEATHMATCH · 3V3', 'Two fireteams, one endless office. Your squad wears blue. Everything else is hostile.', ['Fight alongside 2 blue squadmates', 'First team to 20 eliminations wins', 'Fallen operators redeploy after a short delay']],
+    ctf1: ['CTF: HANGAR 9', 'CAPTURE THE FLAG · 5V5', 'Cargo Hangar 9. Containers, catwalks and a sky-bridge between two bases. Take their flag, bring it home, and keep yours on its stand.', ['Steal the red flag from the east stand', 'Carry it to your own stand while your flag is home', 'First team to 3 captures wins']],
+    lss: ['OPERATION: LAST SQUAD', 'LAST SQUAD STANDING · 4 SQUADS', 'Four squads, one mall, one life each. The safe zone keeps shrinking. Be the squad that walks out.', ['You and 2 squadmates against 3 rival squads', 'Everyone has one life. Stay inside the shrinking zone', 'Be the last squad standing']],
+    m1: ['OPERATION: LAST LIGHT', 'EXTERMINATION · TIME TRIAL', 'Hostile operators have flooded the mall. Clear them out before the lights die.', ['Eliminate as many hostiles as possible in 3:00', 'Reach 15 eliminations to clear the operation', '★ 15 · ★★ 25 · ★★★ 35 eliminations']],
+    m2: ['OPERATION: YELLOW HALLS', 'TEAM DEATHMATCH · 3V3', 'Two fireteams, one dark manor. Your squad wears blue. Everything else is hostile.', ['Fight alongside 2 blue squadmates', 'First team to 20 eliminations wins', 'Fallen operators redeploy after a short delay']],
     m3: ['OPERATION: KEYMASTER', 'KEYCARD EXTRACTION', 'Three access keycards are hidden somewhere in Level 0. Find them and get to the lift before the patrols find you.', ['Search the halls for 3 hidden keycards', 'Keycards beep louder as you get closer', 'With all 3 secured, reach the marked lift to extract']],
     m4: ['DUEL: THE MIMIC', 'DUEL · 1V1', 'Something in black has been copying our operators. It is fast, armoured and it learns. Put it down 15 times.', ['First to 15 eliminations wins', 'The Mimic is armoured, regenerates and fights from cover', 'Headshots are your best weapon']],
     m5: ['OPERATION: NO SECOND CHANCES', 'SQUADS SURVIVAL · TEAMS OF 2', 'Three duos enter. One leaves. Everyone gets exactly one life.', ['You and 1 squadmate face 2 rival duos', 'Every operator has one life. Fall and you are out', 'Be the last squad standing']],
     m6: ['OPERATION: BLACK CASE', 'CAPTURE THE BRIEFCASE · TIME TRIAL', 'A briefcase full of something nobody should have. Six operators, no friends, and everyone keeps coming back.', ['Free-for-all: every other operator is hostile. Fallen operators redeploy', 'Grab the briefcase. The holder is visible to everyone and gets hunted', 'Whoever holds the case when 4:00 runs out wins']],
     m7: ['OPERATION: OVERRIDE', 'SIEGE · 6V6 · TIME TRIAL', 'Two switches guard each end of the enemy zone. Override both before they override yours.', ['Lead a squad of 6 against 6 hostiles', 'Hold Interact on both enemy switches (east wing, both ends)', 'Defend your own switches in the west wing. 5:00 on the clock']],
-    holdout: ['OPERATION: HOLDOUT', 'WAVES · SURVIVAL', 'The halls are filling up. Squad after squad is coming for the central hall. Hold the line until the last wave breaks.', ['Survive 5 waves of growing hostile squads', 'Each wave must be fully eliminated before the next one arrives', 'You have 3 lives']],
+    holdout: ['OPERATION: HOLDOUT', 'WAVES · SURVIVAL', 'The hangar is filling up. Squad after squad is coming for the centre floor. Hold the line until the last wave breaks.', ['Survive 5 waves of growing hostile squads', 'Each wave must be fully eliminated before the next one arrives', 'You have 3 lives']],
     ghost: ['OPERATION: GHOST PROTOCOL', 'STEALTH · ASSASSINATION', 'Three officers run the patrols in the east wing. Get in, take them out and stay unseen. Crouch to move silently.', ['Eliminate the 3 marked officers', 'Patrols see what is in front of them and hear footsteps and gunfire nearby. Crouching is silent', 'If they spot you, an alarm calls in reinforcements. You have 3 lives']],
     hardpoint: ['OPERATION: HARDPOINT', 'HARDPOINT · 4V4', 'One zone matters, and it keeps moving. Take it, hold it, and move with it.', ['Stand inside the hardpoint to score while no enemy is in it', 'The hardpoint moves every 60 seconds', 'First team to 150 points wins']],
     zerohour: ['FINALE: ZERO HOUR', 'BOSS ASSAULT · FINALE', 'The Mimic is back, stronger, with hunters at its side. End it, then walk out of Level 0 for good.', ['Hunt down and kill the Mimic. It is heavily armoured', 'Hunters guard it and hear everything you do', 'With the Mimic down, reach the lift. You have 3 lives']],
     m8: ['OPERATION: LIGHTS OUT', 'KEYCARD EXTRACTION II', 'The power is failing. Hunters stalk the dark, and the keycards are buried deeper than ever. Get out of Level 0.', ['Find 3 keycards hidden in the darkest corners', 'Hunters track noise. Gunfire draws them in', 'You have 3 lives. Reach the lift to escape']],
   },
   es: {
-    m1: ['OPERACIÓN: ÚLTIMA LUZ', 'EXTERMINIO · CONTRARRELOJ', 'Operadores hostiles invadieron los pasillos amarillos. Límpialos antes de que mueran las luces.', ['Elimina a todos los hostiles que puedas en 3:00', 'Llega a 15 bajas para superar la operación', '★ 15 · ★★ 25 · ★★★ 35 bajas']],
-    m2: ['OPERACIÓN: PASILLOS AMARILLOS', 'DUELO POR EQUIPOS · 3V3', 'Dos escuadras, una oficina infinita. Tu equipo viste de azul. Todos los demás son hostiles.', ['Lucha junto a 2 compañeros azules', 'Gana el primer equipo en llegar a 20 bajas', 'Los caídos reaparecen tras unos segundos']],
+    ctf1: ['CTF: HANGAR 9', 'CAPTURA LA BANDERA · 5V5', 'Hangar de carga 9. Contenedores, pasarelas y un puente aéreo entre dos bases. Roba su bandera, llévala a casa y protege la tuya.', ['Roba la bandera roja del soporte este', 'Llévala a tu soporte mientras tu bandera esté en casa', 'Gana el primer equipo con 3 capturas']],
+    lss: ['OPERACIÓN: ÚLTIMO ESCUADRÓN', 'ÚLTIMO ESCUADRÓN EN PIE · 4 ESCUADRONES', 'Cuatro escuadrones, un centro comercial, una vida cada uno. La zona segura se encoge. Sé el escuadrón que sale.', ['Tú y 2 compañeros contra 3 escuadrones rivales', 'Todos tienen una vida. Quédate dentro de la zona', 'Sé el último escuadrón en pie']],
+    m1: ['OPERACIÓN: ÚLTIMA LUZ', 'EXTERMINIO · CONTRARRELOJ', 'Operadores hostiles invadieron el centro comercial. Límpialos antes de que mueran las luces.', ['Elimina a todos los hostiles que puedas en 3:00', 'Llega a 15 bajas para superar la operación', '★ 15 · ★★ 25 · ★★★ 35 bajas']],
+    m2: ['OPERACIÓN: PASILLOS AMARILLOS', 'DUELO POR EQUIPOS · 3V3', 'Dos escuadras, una mansión oscura. Tu equipo viste de azul. Todos los demás son hostiles.', ['Lucha junto a 2 compañeros azules', 'Gana el primer equipo en llegar a 20 bajas', 'Los caídos reaparecen tras unos segundos']],
     m3: ['OPERACIÓN: LLAVERO', 'EXTRACCIÓN CON TARJETAS', 'Hay tres tarjetas de acceso escondidas en el Nivel 0. Encuéntralas y llega al ascensor antes de que te encuentren las patrullas.', ['Busca 3 tarjetas escondidas', 'Las tarjetas pitan más fuerte al acercarte', 'Con las 3, llega al ascensor marcado']],
     m4: ['DUELO: EL MIMIC', 'DUELO · 1V1', 'Algo vestido de negro ha estado copiando a nuestros operadores. Es rápido, blindado y aprende. Derríbalo 15 veces.', ['Gana el primero en llegar a 15 bajas', 'El Mimic va blindado, se regenera y se cubre', 'Apunta a la cabeza']],
     m5: ['OPERACIÓN: SIN SEGUNDAS OPORTUNIDADES', 'SUPERVIVENCIA · EQUIPOS DE 2', 'Entran tres dúos. Sale uno. Cada uno tiene una sola vida.', ['Tú y 1 compañero contra 2 dúos rivales', 'Una sola vida. Si caes, quedas fuera', 'Sé el último equipo en pie']],
     m6: ['OPERACIÓN: MALETÍN NEGRO', 'CAPTURA EL MALETÍN · CONTRARRELOJ', 'Un maletín que nadie debería tener. Seis operadores, ningún amigo, y todos vuelven a la carga.', ['Todos contra todos. Los caídos reaparecen', 'Coge el maletín. Todos ven y persiguen a quien lo lleva', 'Gana quien tenga el maletín cuando acaben los 4:00']],
     m7: ['OPERACIÓN: ANULACIÓN', 'ASEDIO · 6V6 · CONTRARRELOJ', 'Dos interruptores protegen cada extremo de la zona enemiga. Anúlalos antes que ellos los tuyos.', ['Lidera un equipo de 6 contra 6', 'Mantén Interactuar en ambos interruptores enemigos (ala este)', 'Defiende los tuyos en el ala oeste. 5:00 de reloj']],
-    holdout: ['OPERACIÓN: RESISTENCIA', 'OLEADAS · SUPERVIVENCIA', 'Los pasillos se llenan. Escuadra tras escuadra viene a por la sala central. Resiste hasta que caiga la última oleada.', ['Sobrevive a 5 oleadas cada vez más grandes', 'Cada oleada debe ser eliminada antes de que llegue la siguiente', 'Tienes 3 vidas']],
+    holdout: ['OPERACIÓN: RESISTENCIA', 'OLEADAS · SUPERVIVENCIA', 'El hangar se llena. Escuadra tras escuadra viene a por la zona central. Resiste hasta que caiga la última oleada.', ['Sobrevive a 5 oleadas cada vez más grandes', 'Cada oleada debe ser eliminada antes de que llegue la siguiente', 'Tienes 3 vidas']],
     ghost: ['OPERACIÓN: PROTOCOLO FANTASMA', 'SIGILO · ASESINATO', 'Tres oficiales dirigen las patrullas del ala este. Entra, elimínalos y que no te vean. Agáchate para moverte en silencio.', ['Elimina a los 3 oficiales marcados', 'Las patrullas ven lo que tienen delante y oyen pasos y disparos cercanos. Agachado no haces ruido', 'Si te ven, una alarma trae refuerzos. Tienes 3 vidas']],
     hardpoint: ['OPERACIÓN: PUNTO CALIENTE', 'PUNTO CALIENTE · 4V4', 'Solo importa una zona, y no deja de moverse. Tómala, mantenla y síguela.', ['Quédate en la zona para puntuar mientras no haya enemigos dentro', 'La zona se mueve cada 60 segundos', 'Gana el primer equipo en llegar a 150 puntos']],
     zerohour: ['FINAL: HORA CERO', 'ASALTO AL JEFE · FINAL', 'El Mimic ha vuelto, más fuerte y con cazadores a su lado. Acaba con él y sal del Nivel 0 para siempre.', ['Caza y abate al Mimic. Va muy blindado', 'Los cazadores lo protegen y oyen todo lo que haces', 'Con el Mimic abatido, llega al ascensor. Tienes 3 vidas']],
     m8: ['OPERACIÓN: APAGÓN', 'EXTRACCIÓN II', 'La energía falla. Los cazadores acechan en la oscuridad y las tarjetas están mejor escondidas que nunca. Sal del Nivel 0.', ['Encuentra 3 tarjetas en los rincones más oscuros', 'Los cazadores siguen el ruido de los disparos', 'Tienes 3 vidas. Llega al ascensor para escapar']],
   },
   pt: {
-    m1: ['OPERAÇÃO: ÚLTIMA LUZ', 'EXTERMÍNIO · CONTRA O TEMPO', 'Operadores hostis invadiram os corredores amarelos. Elimine todos antes que as luzes morram.', ['Elimine o máximo de hostis em 3:00', 'Chegue a 15 abates para concluir', '★ 15 · ★★ 25 · ★★★ 35 abates']],
-    m2: ['OPERAÇÃO: CORREDORES AMARELOS', 'MATA-MATA EM EQUIPE · 3V3', 'Duas equipes, um escritório sem fim. Seu esquadrão veste azul. O resto é hostil.', ['Lute ao lado de 2 aliados azuis', 'A primeira equipe a 20 abates vence', 'Abatidos retornam após alguns segundos']],
+    ctf1: ['CTF: HANGAR 9', 'CAPTURE A BANDEIRA · 5V5', 'Hangar de carga 9. Contêineres, passarelas e uma ponte aérea entre duas bases. Pegue a bandeira deles, leve para casa e proteja a sua.', ['Roube a bandeira vermelha do suporte leste', 'Leve-a até o seu suporte enquanto sua bandeira estiver em casa', 'Vence a primeira equipe com 3 capturas']],
+    lss: ['OPERAÇÃO: ÚLTIMO ESQUADRÃO', 'ÚLTIMO ESQUADRÃO DE PÉ · 4 ESQUADRÕES', 'Quatro esquadrões, um shopping, uma vida cada. A zona segura não para de fechar. Seja o esquadrão que sai.', ['Você e 2 colegas contra 3 esquadrões rivais', 'Todos têm uma vida. Fique dentro da zona', 'Seja o último esquadrão de pé']],
+    m1: ['OPERAÇÃO: ÚLTIMA LUZ', 'EXTERMÍNIO · CONTRA O TEMPO', 'Operadores hostis invadiram o shopping. Elimine todos antes que as luzes morram.', ['Elimine o máximo de hostis em 3:00', 'Chegue a 15 abates para concluir', '★ 15 · ★★ 25 · ★★★ 35 abates']],
+    m2: ['OPERAÇÃO: CORREDORES AMARELOS', 'MATA-MATA EM EQUIPE · 3V3', 'Duas equipes, uma mansão escura. Seu esquadrão veste azul. O resto é hostil.', ['Lute ao lado de 2 aliados azuis', 'A primeira equipe a 20 abates vence', 'Abatidos retornam após alguns segundos']],
     m3: ['OPERAÇÃO: CHAVEIRO', 'EXTRAÇÃO COM CARTÕES', 'Três cartões de acesso estão escondidos no Nível 0. Encontre-os e chegue ao elevador antes que as patrulhas encontrem você.', ['Procure 3 cartões escondidos', 'Os cartões apitam mais alto quando você se aproxima', 'Com os 3, vá até o elevador marcado']],
     m4: ['DUELO: O MIMIC', 'DUELO · 1V1', 'Algo de preto anda copiando nossos operadores. É rápido, blindado e aprende. Derrube-o 15 vezes.', ['O primeiro a 15 abates vence', 'O Mimic é blindado, se regenera e usa cobertura', 'Mire na cabeça']],
     m5: ['OPERAÇÃO: SEM SEGUNDA CHANCE', 'SOBREVIVÊNCIA · DUPLAS', 'Três duplas entram. Uma sai. Cada um tem uma única vida.', ['Você e 1 aliado contra 2 duplas rivais', 'Uma vida só. Caiu, está fora', 'Seja o último esquadrão de pé']],
     m6: ['OPERAÇÃO: MALETA NEGRA', 'CAPTURE A MALETA · CONTRA O TEMPO', 'Uma maleta que ninguém deveria ter. Seis operadores, nenhum amigo, e todos sempre voltam.', ['Todos contra todos. Abatidos retornam', 'Pegue a maleta. Todos veem e caçam quem está com ela', 'Vence quem estiver com a maleta quando os 4:00 acabarem']],
     m7: ['OPERAÇÃO: SOBRESCRITA', 'CERCO · 6V6 · CONTRA O TEMPO', 'Dois interruptores guardam cada ponta da zona inimiga. Sobrescreva os dois antes que façam o mesmo com os seus.', ['Lidere 6 contra 6', 'Segure Interagir nos dois interruptores inimigos (ala leste)', 'Defenda os seus na ala oeste. 5:00 no relógio']],
-    holdout: ['OPERAÇÃO: RESISTÊNCIA', 'ONDAS · SOBREVIVÊNCIA', 'Os corredores estão enchendo. Esquadrão após esquadrão vem para o salão central. Segure até a última onda cair.', ['Sobreviva a 5 ondas cada vez maiores', 'Cada onda precisa ser eliminada antes da próxima chegar', 'Você tem 3 vidas']],
+    holdout: ['OPERAÇÃO: RESISTÊNCIA', 'ONDAS · SOBREVIVÊNCIA', 'O hangar está enchendo. Esquadrão após esquadrão vem para o centro. Segure até a última onda cair.', ['Sobreviva a 5 ondas cada vez maiores', 'Cada onda precisa ser eliminada antes da próxima chegar', 'Você tem 3 vidas']],
     ghost: ['OPERAÇÃO: PROTOCOLO FANTASMA', 'FURTIVIDADE · ASSASSINATO', 'Três oficiais comandam as patrulhas da ala leste. Entre, elimine-os e não seja visto. Agache para se mover em silêncio.', ['Elimine os 3 oficiais marcados', 'As patrulhas veem o que está à frente e ouvem passos e tiros por perto. Agachado você não faz barulho', 'Se te virem, um alarme chama reforços. Você tem 3 vidas']],
     hardpoint: ['OPERAÇÃO: PONTO QUENTE', 'PONTO QUENTE · 4V4', 'Só uma zona importa, e ela não para de mudar. Tome, segure e acompanhe.', ['Fique dentro da zona para pontuar enquanto não houver inimigos nela', 'A zona muda a cada 60 segundos', 'A primeira equipe a 150 pontos vence']],
     zerohour: ['FINAL: HORA ZERO', 'ATAQUE AO CHEFE · FINAL', 'O Mimic voltou, mais forte e com caçadores ao lado. Acabe com ele e saia do Nível 0 de vez.', ['Cace e derrube o Mimic. Ele é muito blindado', 'Caçadores o protegem e ouvem tudo o que você faz', 'Com o Mimic abatido, vá até o elevador. Você tem 3 vidas']],
     m8: ['OPERAÇÃO: APAGÃO', 'EXTRAÇÃO II', 'A energia está falhando. Caçadores rondam no escuro, e os cartões estão mais escondidos do que nunca. Saia do Nível 0.', ['Encontre 3 cartões nos cantos mais escuros', 'Caçadores seguem o barulho dos tiros', 'Você tem 3 vidas. Chegue ao elevador']],
   },
   fr: {
-    m1: ['OPÉRATION : DERNIÈRE LUEUR', 'EXTERMINATION · CONTRE-LA-MONTRE', 'Des opérateurs hostiles ont envahi les couloirs jaunes. Nettoyez-les avant que les néons ne meurent.', ['Éliminez un maximum d’hostiles en 3:00', 'Atteignez 15 éliminations pour réussir', '★ 15 · ★★ 25 · ★★★ 35 éliminations']],
-    m2: ['OPÉRATION : COULOIRS JAUNES', 'MATCH À MORT PAR ÉQUIPE · 3C3', 'Deux escouades, un bureau sans fin. Votre équipe est en bleu. Tout le reste est hostile.', ['Combattez avec 2 coéquipiers bleus', 'Première équipe à 20 éliminations', 'Les opérateurs tombés reviennent rapidement']],
+    ctf1: ['CTF : HANGAR 9', 'CAPTURE DU DRAPEAU · 5C5', 'Hangar de fret 9. Conteneurs, passerelles et un pont suspendu entre deux bases. Prenez leur drapeau, ramenez-le et gardez le vôtre.', ['Volez le drapeau rouge sur le socle est', 'Rapportez-le sur votre socle pendant que votre drapeau est chez vous', 'La première équipe à 3 captures gagne']],
+    lss: ['OPÉRATION : DERNIÈRE ESCOUADE', 'DERNIÈRE ESCOUADE · 4 ESCOUADES', 'Quatre escouades, un centre commercial, une vie chacune. La zone se réduit sans cesse. Soyez l’escouade qui sort.', ['Vous et 2 coéquipiers contre 3 escouades rivales', 'Une seule vie. Restez dans la zone qui rétrécit', 'Soyez la dernière escouade debout']],
+    m1: ['OPÉRATION : DERNIÈRE LUEUR', 'EXTERMINATION · CONTRE-LA-MONTRE', 'Des opérateurs hostiles ont envahi le centre commercial. Nettoyez-les avant que les néons ne meurent.', ['Éliminez un maximum d’hostiles en 3:00', 'Atteignez 15 éliminations pour réussir', '★ 15 · ★★ 25 · ★★★ 35 éliminations']],
+    m2: ['OPÉRATION : COULOIRS JAUNES', 'MATCH À MORT PAR ÉQUIPE · 3C3', 'Deux escouades, un manoir sombre. Votre équipe est en bleu. Tout le reste est hostile.', ['Combattez avec 2 coéquipiers bleus', 'Première équipe à 20 éliminations', 'Les opérateurs tombés reviennent rapidement']],
     m3: ['OPÉRATION : PASSE-PARTOUT', 'EXTRACTION PAR CARTES', 'Trois cartes d’accès sont cachées dans le Niveau 0. Trouvez-les et rejoignez l’ascenseur avant que les patrouilles ne vous trouvent.', ['Trouvez 3 cartes cachées', 'Les cartes bipent plus fort quand vous approchez', 'Avec les 3, rejoignez l’ascenseur indiqué']],
     m4: ['DUEL : LE MIMIC', 'DUEL · 1C1', 'Une silhouette noire copie nos opérateurs. Elle est rapide, blindée et elle apprend. Abattez-la 15 fois.', ['Premier à 15 éliminations', 'Le Mimic est blindé, se régénère et se met à couvert', 'Visez la tête']],
     m5: ['OPÉRATION : SANS SECONDE CHANCE', 'SURVIE · ÉQUIPES DE 2', 'Trois duos entrent. Un seul ressort. Chacun n’a qu’une vie.', ['Vous et 1 coéquipier contre 2 duos rivaux', 'Une seule vie : si vous tombez, vous êtes éliminé', 'Soyez la dernière escouade debout']],
     m6: ['OPÉRATION : MALLETTE NOIRE', 'CAPTURE DE MALLETTE · CONTRE-LA-MONTRE', 'Une mallette que personne ne devrait avoir. Six opérateurs, aucun ami, et tout le monde revient.', ['Chacun pour soi. Les opérateurs tombés reviennent', 'Prenez la mallette : son porteur est visible et traqué par tous', 'Celui qui tient la mallette à la fin des 4:00 gagne']],
     m7: ['OPÉRATION : PRIORITÉ', 'SIÈGE · 6C6 · CONTRE-LA-MONTRE', 'Deux interrupteurs gardent chaque extrémité de la zone ennemie. Forcez-les avant qu’ils ne forcent les vôtres.', ['Menez 6 opérateurs contre 6', 'Maintenez Interagir sur les deux interrupteurs ennemis (aile est)', 'Défendez les vôtres dans l’aile ouest. 5:00 au chrono']],
-    holdout: ['OPÉRATION : TENIR BON', 'VAGUES · SURVIE', 'Les couloirs se remplissent. Escouade après escouade fonce vers le hall central. Tenez jusqu’à la dernière vague.', ['Survivez à 5 vagues de plus en plus nombreuses', 'Chaque vague doit être éliminée avant que la suivante n’arrive', 'Vous avez 3 vies']],
+    holdout: ['OPÉRATION : TENIR BON', 'VAGUES · SURVIE', 'Le hangar se remplit. Escouade après escouade fonce vers le centre. Tenez jusqu’à la dernière vague.', ['Survivez à 5 vagues de plus en plus nombreuses', 'Chaque vague doit être éliminée avant que la suivante n’arrive', 'Vous avez 3 vies']],
     ghost: ['OPÉRATION : PROTOCOLE FANTÔME', 'INFILTRATION · ASSASSINAT', 'Trois officiers dirigent les patrouilles de l’aile est. Entrez, éliminez-les et restez invisible. Accroupissez-vous pour avancer sans bruit.', ['Éliminez les 3 officiers marqués', 'Les patrouilles voient devant elles et entendent les pas et les tirs proches. Accroupi, vous êtes silencieux', 'Si elles vous repèrent, une alerte appelle des renforts. Vous avez 3 vies']],
     hardpoint: ['OPÉRATION : POINT CHAUD', 'POINT CHAUD · 4C4', 'Une seule zone compte, et elle bouge sans arrêt. Prenez-la, tenez-la, suivez-la.', ['Restez dans la zone pour marquer tant qu’aucun ennemi n’y est', 'La zone change toutes les 60 secondes', 'Première équipe à 150 points']],
     zerohour: ['FINALE : HEURE ZÉRO', 'ASSAUT DU BOSS · FINALE', 'Le Mimic est de retour, plus fort, avec des traqueurs à ses côtés. Achevez-le, puis quittez le Niveau 0 pour de bon.', ['Traquez et abattez le Mimic. Il est lourdement blindé', 'Des traqueurs le protègent et entendent tout ce que vous faites', 'Le Mimic abattu, rejoignez l’ascenseur. Vous avez 3 vies']],
@@ -777,7 +832,7 @@ const LIBS = [
   ['lib/ai/yuka.min.js', 123], ['lib/navigation/recast-navigation.js', 790],
 ];
 const ASSET_FILES = {
-  map: ['assets/Maps/backroom.glb', 340], npc: ['assets/NPCs/operator.glb', 1925], nav: ['assets/Maps/backroom.navmesh', 46],
+  npc: ['assets/NPCs/operator.glb', 1925],
   pistol: ['assets/Guns/pistol.glb', 184], shotgun: ['assets/Guns/shotgun.glb', 107], ak47: ['assets/Guns/ak47.glb', 516],
   m4: ['assets/Guns/m4.glb', 530], sniper: ['assets/Guns/sniper.glb', 660],
 };
@@ -903,38 +958,59 @@ const World = {
   setupMap(gltf) {
     const T = THREE;
     this.map = gltf.scene;
+    this.mapMeshes = []; this.wallMeshes = []; this.basicMats = []; this.litMats = null; this.lightPanelMat = null;
     this.map.traverse((o) => {
       if (!o.isMesh) return;
-      const src = o.material; const name = src.name || '';
-      let mat;
-      if (src.emissiveMap) {
-        src.emissiveMap.anisotropy = 4;
-        mat = new T.MeshBasicMaterial({ map: src.emissiveMap, side: T.FrontSide });
-        mat.color.setScalar(this.brightness);
-        const img = src.emissiveMap.image;
-        if (!img || !(img.width || img.videoWidth)) { mat.map = null; mat.color.set(name === 'CarpetBake4' ? 0x5a4a2c : name === 'RoofBaked' ? 0x8f8458 : 0xb3a462); }
-      } else if (name === 'light') {
-        mat = new T.MeshBasicMaterial({ color: new T.Color(1.6, 1.55, 1.35) });
-        this.lightPanelMat = mat;
-      } else {
-        mat = new T.MeshBasicMaterial({ color: new T.Color(0.32, 0.3, 0.22) });
+      if (!o.userData.mapMat) {
+        const src = o.material; const name = src.name || '';
+        let mat;
+        if (src.emissiveMap) {
+          src.emissiveMap.anisotropy = 4;
+          mat = new T.MeshBasicMaterial({ map: src.emissiveMap, side: T.FrontSide, vertexColors: !!o.geometry.attributes.color });
+          mat.color.setScalar(this.brightness);
+          const img = src.emissiveMap.image;
+          if (!img || !(img.width || img.videoWidth)) { mat.map = null; mat.color.set(name === 'CarpetBake4' ? 0x5a4a2c : name === 'RoofBaked' ? 0x8f8458 : 0xb3a462); }
+        } else if (name === 'light') {
+          mat = new T.MeshBasicMaterial({ color: new T.Color(1.6, 1.55, 1.35) });
+        } else {
+          mat = new T.MeshBasicMaterial({ color: new T.Color(0.32, 0.3, 0.22) });
+        }
+        mat.side = T.DoubleSide;
+        mat.name = name;
+        o.userData.mapMat = mat;
+        o.matrixAutoUpdate = false; o.updateMatrix();
       }
-      mat.side = T.DoubleSide;
-      mat.name = name; mat.userData.base = mat.color.clone();
+      const mat = o.userData.mapMat;
+      if (mat.name === 'light') this.lightPanelMat = mat;
       o.material = mat; this.basicMats.push(mat);
-      o.matrixAutoUpdate = false; o.updateMatrix();
       this.mapMeshes.push(o);
-      if (!/^(RoofBaked|CarpetBake4|light|Lightsurround|PlugsBaked)$/.test(name)) this.wallMeshes.push(o);
+      if (!/^(RoofBaked|CarpetBake4|light|Lightsurround|PlugsBaked)$|^Floor/.test(mat.name)) this.wallMeshes.push(o);
     });
     this.scene.add(this.map);
     this.map.updateMatrixWorld(true);
     try {
-      const pm = new T.PMREMGenerator(this.renderer);
-      const env = pm.fromScene(this.scene, 0.04, 0.1, 60, { position: new T.Vector3(7, 1.5, 12) });
-      this.scene.environment = env.texture; this.vmScene.environment = env.texture;
+      if (!this.envTex) {
+        const pm = new T.PMREMGenerator(this.renderer);
+        this.envTex = pm.fromScene(this.scene, 0.04, 0.1, 60, { position: new T.Vector3(...MAP.env) }).texture;
+        pm.dispose();
+      }
+      this.scene.environment = this.envTex; this.vmScene.environment = this.envTex;
       this.scene.environmentIntensity = 0.6; this.vmScene.environmentIntensity = 0.9;
-      pm.dispose();
     } catch (e) { }
+  },
+  async useMap(id) {
+    if (this.mapId === id) return;
+    const data = await Assets.loadMap(id);
+    if (this.mapId === id) return;
+    if (this.map) this.scene.remove(this.map);
+    MAP = MAPS[id]; this.mapId = id; this.brightness = MAP.bright;
+    this.scene.fog.color.set(MAP.fog[0]); this.scene.fog.near = MAP.fog[1]; this.scene.fog.far = MAP.fog[2];
+    this.scene.background.set(MAP.bg); this.renderer.setClearColor(MAP.bg, 1);
+    this.hemi.color.set(MAP.hemi[0]); this.hemi.groundColor.set(MAP.hemi[1]);
+    this.setupMap(data.gltf);
+    await Nav.init(data.nav);
+    Player.agent = null;
+    if (Hud.root) Hud.buildRadarMap();
   },
   setLightsOut(on) {
     const T = THREE;
@@ -954,7 +1030,7 @@ const World = {
     }
     this.flashlight.intensity = on ? 22 : 0;
     this.hemi.intensity = on ? 0.35 : 2.3;
-    this.scene.fog.color.set(on ? 0x050402 : 0x2e2812); this.scene.fog.near = on ? 3 : 10; this.scene.fog.far = on ? 24 : 52;
+    this.scene.fog.color.set(on ? 0x050402 : MAP.fog[0]); this.scene.fog.near = on ? 3 : MAP.fog[1]; this.scene.fog.far = on ? 24 : MAP.fog[2];
     $('#darkness').classList.toggle('on', on);
   },
   flicker: { t: 0, level: 1 },
@@ -988,6 +1064,7 @@ const Nav = {
   async init(navData) {
     const R = window.Recast;
     await R.init();
+    if (this.crowd) { try { this.crowd.destroy(); this.query.destroy(); this.navMesh.destroy(); } catch (e) { } }
     const { navMesh } = R.importNavMesh(new Uint8Array(navData));
     this.navMesh = navMesh;
     this.query = new R.NavMeshQuery(navMesh);
@@ -1054,7 +1131,9 @@ const Nav = {
     const r = this.query.moveAlongSurface(ref, from, to);
     if (!r.success) return { pos: from, ref };
     const nref = r.visited.length ? r.visited[r.visited.length - 1] : ref;
-    return { pos: r.resultPosition, ref: nref };
+    const pos = r.resultPosition, h = this.query.getPolyHeight(nref, pos);
+    if (h.success) pos.y = h.height;
+    return { pos, ref: nref };
   },
 };
 
@@ -1249,7 +1328,13 @@ const FX = {
   },
 };
 
-const Assets = { map: null, npc: null, guns: {}, nav: null, late: null };
+const Assets = {
+  map: null, npc: null, guns: {}, nav: null, late: null, maps: {}, parse: null,
+  loadMap(id) {
+    return this.maps[id] || (this.maps[id] = Promise.all([Loader.binary(MAPS[id].glb, 0), Loader.binary(MAPS[id].nav, 0)])
+      .then(async ([g, n]) => ({ gltf: await this.parse(g), nav: n })));
+  },
+};
 const Models = {
   gunCache: {},
   gun(id) {
@@ -1822,7 +1907,7 @@ function defineAI() {
         if (b.a.carrying) { px -= toX * rand(3, 5); pz -= toZ * rand(3, 5); }
         else if (b.push && d > 3.5) { const k = Math.min(d - 3, rand(2.5, 4.5)); px += toX * k; pz += toZ * k; }
         else if (d > pref * 1.4) { px += toX * 3; pz += toZ * 3; } else if (d < pref * 0.55) { px -= toX * 2.5; pz -= toZ * 2.5; }
-        const p = Nav.closest({ x: px, y: 0, z: pz }); if (p) b.moveTo(p);
+        const p = Nav.closest({ x: px, y: b.a.pos.y, z: pz }); if (p) b.moveTo(p);
         b.crouchWanted = b.push ? false : b.elite ? Math.random() < 0.35 : Math.random() < 0.12;
         if (!b.crouchWanted && Math.random() < (b.elite ? 0.17 : 0.075)) b.jump();
       }
@@ -2004,7 +2089,7 @@ class Bot {
   dodge(shooter) {
     const a = this.a.pos, dx = shooter.pos.x - a.x, dz = shooter.pos.z - a.z, d = Math.hypot(dx, dz) || 1;
     const side = Math.random() < 0.5 ? -1 : 1, r = rand(2, 3.5);
-    const p = Nav.closest({ x: a.x - (dz / d) * side * r, y: 0, z: a.z + (dx / d) * side * r });
+    const p = Nav.closest({ x: a.x - (dz / d) * side * r, y: a.y, z: a.z + (dx / d) * side * r });
     if (p) { this.moveTo(p); this.dodgeT = 0.7; this.strafeT = Math.max(this.strafeT || 0, 0.7); this.crouchWanted = false; }
     if (Math.random() < (this.elite ? 0.45 : 0.3)) this.jump();
   }
@@ -2051,7 +2136,7 @@ class Bot {
     let best = null, bestScore = Infinity;
     for (let i = 0; i < 14; i++) {
       const ang = away + rand(-1.3, 1.3), r = rand(5, 16);
-      const c = Nav.closest({ x: a.x + Math.sin(ang) * r, y: 0, z: a.z + Math.cos(ang) * r });
+      const c = Nav.closest({ x: a.x + Math.sin(ang) * r, y: a.y, z: a.z + Math.cos(ang) * r });
       if (!c) continue;
       probe.set(c.x, 1.3, c.z);
       const hidden = !eye || !World.los(eye, probe);
@@ -2472,7 +2557,7 @@ class Survival extends Mode {
   setup() {
     const p = Game.player; p.team = 'A';
     this.respawn = false; this.regen = 9; this.botDamageMul = 0.6; this.sweep = 0.5;
-    const zones = [MAP.zones.west, { x: [1, 14], z: [-9, 2] }, { x: [17, 30], z: [8, 20] }];
+    const zones = MAP.survival;
     this.zones = { A: zones[0], B: zones[1], C: zones[2] };
     this.ally = this.makeBot('A', { weapon: 'm4' });
     for (const team of ['B', 'C']) for (let i = 0; i < 2; i++) this.makeBot(team, { weapon: pick(['ak47', 'm4', 'shotgun']), dmgMul: 0.8 });
@@ -2506,7 +2591,7 @@ class Briefcase extends Mode {
       spots.push(pnt); this.spawnActor(a, pnt);
     }
     this.case = Models.briefcase(); this.props.add(this.case);
-    const c = Nav.closest({ x: 7.5, y: 0, z: 4 }); this.casePos = new THREE.Vector3(c.x, 0, c.z);
+    const c = Nav.closest({ x: MAP.caseSpot.x, y: 0, z: MAP.caseSpot.z }); this.casePos = new THREE.Vector3(c.x, c.y, c.z);
     this.holder = null; this.lastHolder = null; this.holdTime = 0; this.shareT = 0;
     this.case.position.copy(this.casePos);
   }
@@ -2588,7 +2673,7 @@ class Siege extends Mode {
     MAP.siege.blue.forEach((p2) => mk(p2, 'A')); MAP.siege.enemy.forEach((p2) => mk(p2, 'B'));
     for (const a of Game.actors) { a.lives = Infinity; this.spawnActor(a, Nav.randomInZone(this.zoneFor(a))); }
   }
-  zoneFor(a) { return a.team === 'A' ? { x: [-24, -6], z: [8, 20] } : { x: [18, 30], z: [-8, 8] }; }
+  zoneFor(a) { return MAP.siegeZones[a.team === 'A' ? 'A' : 'B']; }
   pressedBy(team) { return this.switches.filter((s) => s.team !== team && s.pressed).length; }
   press(s, by) {
     s.pressed = true; s.progress = 0;
@@ -2730,7 +2815,6 @@ class Assassination extends Mode {
   intel() { return { teams: `1 vs ${3 + this.m.patrols}`, time: '∞' }; }
 }
 
-const HARDPOINTS = [{ x: 7, z: -3, name: 'ALPHA' }, { x: -15, z: 13, name: 'BRAVO' }, { x: 23, z: -16, name: 'CHARLIE' }, { x: 23, z: 14, name: 'DELTA' }, { x: 7, z: 15, name: 'ECHO' }];
 class Hardpoint extends Mode {
   setup() {
     const p = Game.player; p.team = 'A';
@@ -2739,7 +2823,7 @@ class Hardpoint extends Mode {
     for (let i = 0; i < n - 1; i++) this.makeBot('A', { weapon: pick(['ak47', 'm4']) });
     for (let i = 0; i < n; i++) this.makeBot('B', { weapon: pick(['ak47', 'm4', 'shotgun']), dmgMul: 0.8 });
     for (const a of Game.actors) { a.lives = Infinity; this.spawnActor(a, Nav.randomInZone(this.zoneFor(a))); }
-    this.points = HARDPOINTS.map((h) => { const c = Nav.closest({ x: h.x, y: 0, z: h.z }); return { pos: new THREE.Vector3(c.x, 0, c.z), name: h.name }; });
+    this.points = MAP.hardpoints.map((h) => { const c = Nav.closest({ x: h.x, y: 0, z: h.z }); return { pos: new THREE.Vector3(c.x, 0, c.z), name: h.name }; });
     this.idx = randi(0, this.points.length - 1); this.moveT = 60; this.score = { A: 0, B: 0 }; this.contested = false;
     const T = THREE;
     this.ring = new T.Group();
@@ -2820,7 +2904,210 @@ class ZeroHour extends Mode {
   intel() { return { teams: `1 vs MIMIC + ${this.m.guards}`, time: '∞' }; }
 }
 
-const MODES = { extermination: Extermination, tdm: TeamDeathmatch, keycard: Keycard, duel: Duel, survival: Survival, briefcase: Briefcase, siege: Siege, waves: Waves, assassination: Assassination, hardpoint: Hardpoint, zerohour: ZeroHour };
+Models.flag = (color) => {
+  const T = THREE, g = new T.Group();
+  const pole = new T.Mesh(new T.CylinderGeometry(0.035, 0.035, 2.3, 8), new T.MeshStandardMaterial({ color: 0xc8ccd2, metalness: 0.8, roughness: 0.35 }));
+  pole.position.y = 1.15; g.add(pole);
+  const knob = new T.Mesh(new T.SphereGeometry(0.07, 10, 8), new T.MeshStandardMaterial({ color: 0xf2c230, metalness: 0.6, roughness: 0.3 }));
+  knob.position.y = 2.33; g.add(knob);
+  const geo = new T.PlaneGeometry(1.0, 0.62, 10, 4); geo.translate(0.5, 0, 0);
+  const cloth = new T.Mesh(geo, new T.MeshBasicMaterial({ color, side: T.DoubleSide }));
+  cloth.position.set(0.035, 1.95, 0); g.add(cloth);
+  const stripe = new T.Mesh(new T.PlaneGeometry(1.0, 0.1, 10, 1).translate(0.5, 0, 0.004), new T.MeshBasicMaterial({ color: 0xffffff, side: T.DoubleSide }));
+  cloth.add(stripe);
+  g.userData.cloth = cloth; g.userData.rest = geo.attributes.position.array.slice();
+  return g;
+};
+
+class CaptureTheFlag extends Mode {
+  setup() {
+    const p = Game.player; p.team = 'A';
+    this.respawnDelay = 4; this.botDamageMul = 0.55; this.regen = 14; this.sweep = 0.25;
+    const n = this.m.teamSize || 5;
+    for (let i = 0; i < n - 1; i++) this.makeBot('A', { weapon: pick(['ak47', 'm4']), role: i % 2 === 0 ? 'attack' : 'defend' });
+    for (let i = 0; i < n; i++) this.makeBot('B', { weapon: pick(['ak47', 'm4', 'shotgun', 'ak47']), role: i % 2 === 0 ? 'attack' : 'defend', dmgMul: 0.8 });
+    this.score = { A: 0, B: 0 };
+    this.stats = { pickups: 0, drops: 0, returns: 0, resets: 0, maxBotY: 0 };
+    this.flags = {};
+    for (const team of ['A', 'B']) {
+      const b = MAP.ctf[team], c = Nav.closest({ x: b.x, y: 0.3, z: b.z }), col = team === 'A' ? 0x3d8bff : 0xff4a3d;
+      const home = new THREE.Vector3(c.x, c.y, c.z);
+      const pad = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.04, 32), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.55 }));
+      pad.position.set(home.x, home.y + 0.03, home.z); this.props.add(pad);
+      const beam = Models.beam(col); beam.position.set(home.x, home.y + 1.4, home.z); this.props.add(beam);
+      const model = Models.flag(col); this.props.add(model);
+      this.flags[team] = { team, home, pos: home.clone(), model, beam, holder: null, dropped: false, dropT: 0 };
+    }
+    for (const a of Game.actors) { a.lives = Infinity; this.spawnActor(a, this.safeSpawn(a, this.zoneFor(a), 12)); }
+    this.shareT = 0;
+  }
+  zoneFor(a) { return a.team === 'B' ? MAP.zones.east : MAP.zones.west; }
+  foe(team) { return team === 'A' ? 'B' : 'A'; }
+  near(a, p, r = 1.5) { return dist2D(a.pos, p) < r && Math.abs(a.pos.y - p.y) < 1.4; }
+  take(a, f) {
+    f.holder = a; f.dropped = false; a.carrying = f.model; this.stats.pickups++;
+    if (a.isPlayer) { Hud.banner(t('b_flagYou')); Audio.pickup(); this.objectiveScore += 300; }
+    else if (f.team === 'A') { Hud.banner(t('b_flagTaken')); Audio.alarm(); }
+    else Hud.banner(t('b_flagAlly'));
+    for (const o of Game.actors) if (o.bot && o.alive && o.team === f.team) o.bot.sense(a, false, true);
+  }
+  dropCarry(a) {
+    for (const f of Object.values(this.flags)) {
+      if (f.holder !== a) continue;
+      f.holder = null; a.carrying = null; f.dropped = true; f.dropT = 20; this.stats.drops++;
+      const c = Nav.closest({ x: a.pos.x, y: a.pos.y, z: a.pos.z }) || a.pos;
+      f.pos.set(c.x, c.y, c.z);
+      if (f.team === 'B' || a.isPlayer) Hud.banner(t('b_flagDropped'));
+    }
+  }
+  home(f) { if (f.holder) f.holder.carrying = null; f.holder = null; f.dropped = false; f.pos.copy(f.home); }
+  reset(f, by) {
+    this.home(f);
+    if (by) { this.stats.returns++; if (by.isPlayer) this.objectiveScore += 150; } else this.stats.resets++;
+    Hud.banner(f.team === 'A' ? t('b_flagReturned') : t('b_flagReset'));
+  }
+  capture(h, f) {
+    const team = h.team; this.score[team]++;
+    this.home(f);
+    if (team === 'A') { Hud.banner(t('b_capture'), `${this.score.A} / ${this.m.target}`); Audio.pickup(); this.objectiveScore += h.isPlayer ? 1000 : 400; }
+    else { Hud.banner(t('b_enemyCapture'), `${this.score.B} / ${this.m.target}`); Audio.alarm(); }
+    if (this.score.A >= this.m.target) Game.finish(true, 'r_win');
+    else if (this.score.B >= this.m.target) Game.finish(false, 'r_ctfLost');
+  }
+  drive(dt) {
+    this.driveT = (this.driveT || 0) - dt;
+    if (this.driveT > 0) return;
+    this.driveT = 0.4;
+    for (const a of Game.actors) {
+      const b = a.bot;
+      if (!b || !a.alive || !b.agent) continue;
+      const enemyF = this.flags[this.foe(a.team)], ownF = this.flags[a.team], carrier = enemyF.holder === a;
+      const goal = carrier ? ownF.home : b.role !== 'attack' ? null : enemyF.holder ? enemyF.holder.pos : enemyF.pos;
+      if (!goal) continue;
+      if (b.brain.in('hunt')) { for (let i = 0, m; i < 8 && (m = b.bestMemory()); i++) b.forget(m); b.brain.changeTo('patrol'); }
+      const engaged = b.brain.in('engage');
+      if (!carrier && engaged && dist2D(a.pos, goal) > 18) continue;
+      b.moveTo(goal); b.setSpeed(b.runSpeed); b.goalT = 0.6;
+      if (engaged) b.strafeT = 0.6;
+    }
+  }
+  update(dt) {
+    super.update(dt);
+    if (Game.over) return;
+    this.drive(dt);
+    this.shareT -= dt;
+    const share = this.shareT <= 0; if (share) this.shareT = 1;
+    for (const a of Game.actors) if (a.bot && a.alive && a.pos.y > this.stats.maxBotY) this.stats.maxBotY = a.pos.y;
+    for (const f of Object.values(this.flags)) {
+      const m = f.model, foe = this.foe(f.team);
+      if (f.holder) {
+        const h = f.holder;
+        m.visible = !h.isPlayer;
+        m.position.set(h.pos.x - Math.sin(h.yaw || 0) * 0.25, h.pos.y + 0.35, h.pos.z - Math.cos(h.yaw || 0) * 0.25);
+        m.scale.setScalar(0.75);
+        if (share) for (const o of Game.actors) if (o.bot && o.alive && o.team === f.team) o.bot.sense(h, false, true);
+        const own = this.flags[foe];
+        if (h.alive && !own.holder && !own.dropped && this.near(h, own.home, 1.8)) { this.capture(h, f); if (Game.over) return; }
+      } else {
+        m.visible = true; m.scale.setScalar(1);
+        m.position.set(f.pos.x, f.pos.y + (f.dropped ? 0.05 : 0.02), f.pos.z);
+        if (f.dropped) { f.dropT -= dt; if (f.dropT <= 0) { this.reset(f, null); continue; } }
+        for (const a of Game.actors) {
+          if (!a.alive || !this.near(a, f.pos)) continue;
+          if (a.team === f.team) { if (f.dropped) { this.reset(f, a); break; } }
+          else if (!a.carrying) { this.take(a, f); break; }
+        }
+      }
+      const cl = m.userData.cloth, pos = cl.geometry.attributes.position, rest = m.userData.rest;
+      for (let i = 0; i < pos.count; i++) { const x = rest[i * 3]; pos.array[i * 3 + 2] = Math.sin(x * 5 - Game.time * 7 + f.home.x) * 0.07 * x; }
+      pos.needsUpdate = true;
+      f.beam.material.opacity = f.holder || f.dropped ? 0.06 : 0.16 + Math.sin(Game.time * 3) * 0.04;
+    }
+  }
+  botGoal(b) {
+    const me = b.a, my = me.team, ownF = this.flags[my], enemyF = this.flags[this.foe(my)];
+    if (enemyF.holder === me) return { pos: ownF.home, run: true, hold: true };
+    if (ownF.holder && (b.role === 'defend' || dist2D(me.pos, ownF.holder.pos) < 22)) return { pos: ownF.holder.pos, run: true, hold: true };
+    if (ownF.dropped && (b.role === 'defend' || dist2D(me.pos, ownF.pos) < 22)) return { pos: ownF.pos, run: true, hold: true };
+    if (b.role === 'attack') {
+      if (enemyF.holder) return { pos: Nav.randomAround(enemyF.holder.pos, 3), run: true, hold: true };
+      return { pos: enemyF.pos, run: true, hold: dist2D(me.pos, enemyF.pos) < 8 };
+    }
+    const spots = MAP.ctf.guard[my], s = spots[(me.id + Math.floor(Game.time / 25)) % spots.length];
+    return { pos: Nav.randomAround(s, 2.5), run: dist2D(me.pos, s) > 12, patrol: true };
+  }
+  markersNow() {
+    const out = [];
+    for (const team of ['A', 'B']) {
+      const f = this.flags[team];
+      if (f.holder && f.holder.isPlayer) continue;
+      out.push({ pos: f.holder ? f.holder.pos : f.pos, cls: team === 'A' ? 'own' : 'enemy', label: f.holder ? f.holder.name : f.dropped ? t('f_dropped') : t(team === 'A' ? 'f_ours' : 'f_theirs'), h: f.holder ? 2.3 : 2.7 });
+    }
+    if (this.flags.B.holder === Game.player) out.push({ pos: this.flags.A.home, cls: 'exit', label: t('f_home'), h: 1.4 });
+    return out;
+  }
+  hud() {
+    const you = this.flags.B.holder === Game.player, own = this.flags.A;
+    const objective = you ? (own.holder || own.dropped ? t('o_ctfWait') : t('o_ctfCarry')) : own.holder ? t('o_ctfTaken') : t('o_ctf', { a: this.score.A, t: this.m.target });
+    return { ally: this.score.A, enemy: this.score.B, clock: this.timeLeft, objective };
+  }
+  onTimeUp() { const w = this.score.A > this.score.B; Game.finish(w, w ? 'r_win' : 'r_time'); }
+  stars(won) { return won ? (this.score.B === 0 ? 3 : this.score.B === 1 ? 2 : 1) : 0; }
+  finalScore(won) { return super.finalScore(won) + this.score.A * 500; }
+  intel() { const n = this.m.teamSize || 5; return { teams: `${n} vs ${n}`, time: fmtTime(this.timeLimit) }; }
+}
+
+class LastSquad extends Survival {
+  setup() {
+    const p = Game.player; p.team = 'A';
+    this.respawn = false; this.regen = 9; this.botDamageMul = 0.6; this.sweep = 0.7;
+    const teams = ['A', 'B', 'C', 'D'].slice(0, this.m.squads || 4), n = this.m.squadSize || 3;
+    this.zones = {}; teams.forEach((tm, i) => { this.zones[tm] = MAP.survival[i % MAP.survival.length]; });
+    this.allies = [];
+    for (let i = 0; i < n - 1; i++) this.allies.push(this.makeBot('A', { weapon: pick(['ak47', 'm4']) }));
+    this.ally = this.allies[0];
+    for (const tm of teams.slice(1)) for (let i = 0; i < n; i++) this.makeBot(tm, { weapon: pick(['ak47', 'm4', 'shotgun', 'ak47']), dmgMul: 0.8 });
+    for (const a of Game.actors) { a.lives = 1; this.spawnActor(a, this.safeSpawn(a, this.zones[a.team], 10)); }
+    const L = MAP.lss || { x: 0, z: 0, r0: 30, r1: 6 };
+    this.center = new THREE.Vector3(L.x, 0, L.z); this.r0 = L.r0; this.r1 = L.r1; this.radius = L.r0; this.hurtT = 0; this.warned = 0;
+    this.ring = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 14, 48, 1, true), new THREE.MeshBasicMaterial({ color: 0xff4a3d, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending }));
+    this.ring.position.set(L.x, 6, L.z); this.props.add(this.ring);
+  }
+  spectateTarget() { return this.allies.find((a) => a.alive) || null; }
+  onKill(k, v) {
+    super.onKill(k, v);
+    if (v.isPlayer) { const a = this.spectateTarget(); if (a) setTimeout(() => Game.active && Hud.spectate(a.name), 1800); }
+  }
+  update(dt) {
+    super.update(dt);
+    if (Game.over) return;
+    const k = clamp((Game.time - 30) / Math.max(60, this.timeLimit - 90), 0, 1);
+    this.radius = this.r0 + (this.r1 - this.r0) * k;
+    this.ring.scale.set(this.radius, 1, this.radius);
+    this.ring.material.opacity = 0.12 + Math.sin(Game.time * 2) * 0.04;
+    if (k > 0 && this.warned === 0) { this.warned = 1; Hud.banner(t('b_zone')); }
+    this.hurtT -= dt;
+    if (this.hurtT <= 0) {
+      this.hurtT = 1;
+      for (const a of Game.actors) {
+        if (!a.alive || dist2D(a.pos, this.center) <= this.radius) continue;
+        if (a.isPlayer && Game.time - (this.outWarn || -99) > 6) { this.outWarn = Game.time; Hud.banner(t('b_outside')); }
+        Combat.damage(a, 6 + k * 14, null, false, 'zone');
+      }
+    }
+  }
+  botGoal(b) {
+    const d = dist2D(b.a.pos, this.center);
+    if (d > this.radius * 0.7) return { pos: Nav.randomAround(this.center, Math.max(3, this.radius * 0.5)), run: true };
+    return super.botGoal ? Mode.prototype.botGoal.call(this, b) : null;
+  }
+  zoneFor(a) { return this.zones[a.team]; }
+  onTimeUp() { const alive = this.aliveTeams(); Game.finish(alive.has('A') && alive.size === 1, alive.has('A') && alive.size === 1 ? 'r_win' : 'r_time'); }
+  hud() { return { objective: t('o_lss', { n: this.aliveTeams().size }), clock: this.timeLeft, lives: Game.player.alive ? 1 : 0 }; }
+  intel() { const n = this.m.squadSize || 3; return { teams: Array(this.m.squads || 4).fill(n).join(' vs '), time: fmtTime(this.timeLimit) }; }
+}
+
+const MODES = { ctf: CaptureTheFlag, lss: LastSquad, extermination: Extermination, tdm: TeamDeathmatch, keycard: Keycard, duel: Duel, survival: Survival, briefcase: Briefcase, siege: Siege, waves: Waves, assassination: Assassination, hardpoint: Hardpoint, zerohour: ZeroHour };
 
 const Hud = {
   root: null, els: {}, radarCtx: null, radarMap: null, markerEls: new Map(), lastHp: 100,
@@ -2868,12 +3155,15 @@ const Hud = {
   },
   buildRadarMap() {
     const [pos, idx] = window.Recast.getNavMeshPositionsAndIndices(Nav.navMesh);
-    const S = 5, ox = 33, oz = 28, c = document.createElement('canvas'); c.width = 66 * S; c.height = 52 * S;
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+    for (let i = 0; i < pos.length; i += 3) { x0 = Math.min(x0, pos[i]); x1 = Math.max(x1, pos[i]); z0 = Math.min(z0, pos[i + 2]); z1 = Math.max(z1, pos[i + 2]); }
+    const S = 5, ox = 2 - x0, oz = 2 - z0, c = document.createElement('canvas'); c.width = Math.ceil((x1 - x0 + 4) * S); c.height = Math.ceil((z1 - z0 + 4) * S);
     const g = c.getContext('2d'); g.fillStyle = 'rgba(233,220,164,0.20)';
     for (let i = 0; i < idx.length; i += 3) {
       const a = idx[i] * 3, b = idx[i + 1] * 3, d = idx[i + 2] * 3;
       const cx = (pos[a] + pos[b] + pos[d]) / 3, cz = (pos[a + 2] + pos[b + 2] + pos[d + 2]) / 3;
-      const n = Nav.closest({ x: cx, y: 0, z: cz }); if (!n || Math.hypot(n.x - cx, n.z - cz) > 0.5) continue;
+      const cy = (pos[a + 1] + pos[b + 1] + pos[d + 1]) / 3;
+      const n = Nav.closest({ x: cx, y: cy, z: cz }); if (!n || Math.hypot(n.x - cx, n.z - cz) > 0.5) continue;
       if (!this._interior) this._interior = () => true;
       g.beginPath(); g.moveTo((pos[a] + ox) * S, (pos[a + 2] + oz) * S); g.lineTo((pos[b] + ox) * S, (pos[b + 2] + oz) * S); g.lineTo((pos[d] + ox) * S, (pos[d + 2] + oz) * S); g.closePath(); g.fill();
     }
@@ -3265,7 +3555,7 @@ const Ui = {
     };
     const none = `<div class="wcard none${this.loadout.primary === 'none' ? ' sel' : ''}" data-w="none"><div class="wn">${t('none')}</div><div class="wt">${t('sidearmOnly')}</div></div>`;
     s.innerHTML = `
-      <div class="topbar"><button class="back" aria-label="${t('back')}">${ICONS.back}</button><div><div class="h-kicker">${t('briefing')} · OP ${String(i + 1).padStart(2, '0')}</div><h2 class="h-display" style="font-size:clamp(22px,4.4vw,44px)">${esc(tx[0])}</h2></div><div class="cp-chip">${fmtNum(Save.data.cp)} ${t('cp')}</div></div>
+      <div class="topbar"><button class="back" aria-label="${t('back')}">${ICONS.back}</button><div><div class="h-kicker">${t('briefing')} · OP ${String(i + 1).padStart(2, '0')} · ${MAPS[m.map].name}</div><h2 class="h-display" style="font-size:clamp(22px,4.4vw,44px)">${esc(tx[0])}</h2></div><div class="cp-chip">${fmtNum(Save.data.cp)} ${t('cp')}</div></div>
       <div class="wrap">
         <div class="brief-left stagger">
           <div class="tag" style="color:var(--yellow);align-self:flex-start">${esc(tx[1])}</div>
@@ -3569,11 +3859,13 @@ const Game = {
       this.state = 'loading';
       this.cleanup();
       this.missionIndex = index;
+      const mapReady = World.useMap(MISSIONS[index].map);
       Arsenal.enter(index);
       if (!Arsenal.usable(primary)) primary = 'none';
       if (!Arsenal.usable(secondary)) secondary = 'pistol';
       this.loadout = { primary, secondary };
       if (quick) await Ui.show(null); else await Ui.deploySequence(index);
+      await mapReady;
       const m = MISSIONS[index];
       Lobby.show(false);
       this.time = 0; this.over = false; this.result = null; this.slowmo = 1;
@@ -3848,7 +4140,8 @@ async function boot() {
   const early = (e) => { if (e.type !== 'keydown' || goKeys.includes(e.code)) queued = true; };
   bootEl.addEventListener('pointerup', early); addEventListener('keydown', early);
   await nextFrame();
-  const first = Object.entries(ASSET_FILES).filter(([k]) => !LATE_ASSETS.includes(k));
+  const startMap = MAPS[MISSIONS[0].map];
+  const first = [...Object.entries(ASSET_FILES).filter(([k]) => !LATE_ASSETS.includes(k)), ['map', [startMap.glb, startMap.kb[0]]], ['nav', [startMap.nav, startMap.kb[1]]]];
   Loader.total = LIBS.reduce((a, l) => a + l[1], 0) + first.reduce((a, f) => a + f[1][1], 0);
   Loader.onProgress = (k) => { fill.style.transform = `scaleX(${k})`; };
   const libsReady = Loader.scripts(LIBS);
@@ -3878,21 +4171,21 @@ async function boot() {
       return { name: 'backrooms_img_textures' };
     });
     const parse = (buf) => new Promise((res, rej) => loader.parse(buf, '', res, rej));
+    Assets.parse = parse;
     Assets.late = lateReady.then((list) => Promise.all(list.map(([k, b]) => parse(b).then((g) => { Assets.guns[k] = g; }))));
     const bufs = await filesReady;
     setStatus('building');
     await nextFrame();
     Assets.nav = bufs.find(([k]) => k === 'nav')[1];
-    const navReady = Nav.init(Assets.nav);
     const models = await Promise.all(bufs.filter(([k]) => k !== 'nav').map(([k, b]) => parse(b).then((g) => [k, g])));
     for (const [k, g] of models) {
       if (k === 'map') Assets.map = g;
       else if (k === 'npc') Assets.npc = g;
       else Assets.guns[k] = g;
     }
-    World.setupMap(Assets.map);
+    Assets.maps[MISSIONS[0].map] = Promise.resolve({ gltf: Assets.map, nav: Assets.nav });
     setStatus('nav');
-    await navReady;
+    await World.useMap(MISSIONS[0].map);
     Player.init(); Ui.init(); Hud.init(); Lobby.init();
     wirePlatform();
     World.camera.fov = 62; World.camera.updateProjectionMatrix();
@@ -3941,6 +4234,7 @@ async function boot() {
     };
     Assets.late.then(async () => { for (const id of Object.keys(WEAPONS)) await warmGun(id); }).catch(() => {});
     lateReady.then(() => Loader.binary(MUSIC_FILE, 0)).then((b) => Audio.loadMusic(b)).catch(() => {});
+    Assets.late.then(async () => { for (const id of Object.keys(MAPS)) await Assets.loadMap(id).catch(() => { delete Assets.maps[id]; }); });
   } catch (e) {
     console.error(e);
     Platform.logError();

@@ -1,27 +1,3 @@
-const ARENA = {
-  bases: { A: { x: -27, z: 0 }, B: { x: 27, z: 0 } },
-  spawn: { A: { x: [-31, -24.5], z: [-15, 15] }, B: { x: [24.5, 31], z: [-15, 15] } },
-  guard: {
-    A: [{ x: -22, y: 0, z: 3 }, { x: -22, y: 0, z: -3 }, { x: -21, y: 3.6, z: -20.2 }, { x: -21, y: 3.6, z: 20.2 }, { x: -25, y: 0, z: 8 }, { x: -25, y: 0, z: -8 }],
-    B: [{ x: 22, y: 0, z: -3 }, { x: 22, y: 0, z: 3 }, { x: 21, y: 3.6, z: 20.2 }, { x: 21, y: 3.6, z: -20.2 }, { x: 25, y: 0, z: -8 }, { x: 25, y: 0, z: 8 }],
-  },
-};
-MAP.zones.west = ARENA.spawn.A; MAP.zones.east = ARENA.spawn.B; MAP.zones.central = { x: [-14, 14], z: [-15, 15] };
-MAP.lobby = { x: 7.5, z: 12.6 };
-
-Object.assign(STR.en, {
-  o_ctf: 'CAPTURE THE ENEMY FLAG — <b>{a}</b> / {t}', o_ctfCarry: 'YOU HAVE THE FLAG — <b>RUN IT HOME</b>',
-  o_ctfTaken: 'YOUR FLAG IS TAKEN — <b>STOP THE CARRIER</b>', o_ctfWait: 'GET YOUR FLAG BACK — <b>YOU CANNOT SCORE</b>',
-  b_flagYou: 'YOU HAVE THE FLAG', b_flagAlly: 'WE HAVE THEIR FLAG', b_flagTaken: 'OUR FLAG IS TAKEN', b_flagDropped: 'FLAG DROPPED',
-  b_flagReturned: 'OUR FLAG IS BACK', b_flagReset: 'ENEMY FLAG RESET', b_capture: 'FLAG CAPTURED', b_enemyCapture: 'THEY CAPTURED OUR FLAG',
-  f_ours: 'OUR FLAG', f_theirs: 'ENEMY FLAG', f_home: 'CAPTURE', f_dropped: 'DROPPED', r_ctfLost: 'The enemy captured three flags.',
-});
-MTEXT.en.ctf1 = ['CTF: HANGAR 9', 'CAPTURE THE FLAG · 5V5', 'Cargo Hangar 9. Containers, catwalks and a sky-bridge between two bases. Take their flag, bring it home, and keep yours on its dais.', ['Steal the red flag from the east dais', 'Carry it to your own dais while your flag is home', 'First team to 3 captures wins']];
-MTEXT.en.ctf2 = ['CTF: NIGHT SHIFT', 'CAPTURE THE FLAG · 6V6 · VETERANS', 'Same hangar, bigger squads, sharper shooters. The catwalks decide this one.', ['6 against 6, veteran hostiles', 'Use the mezzanine and sky-bridge to flank', 'First team to 3 captures wins']];
-MISSIONS.splice(0, MISSIONS.length,
-  { id: 'ctf1', mode: 'ctf', teamSize: 5, target: 3, time: 600, primary: 'ak47', secondary: 'pistol', skill: 0.55 },
-  { id: 'ctf2', mode: 'ctf', teamSize: 6, target: 3, time: 720, primary: 'm4', secondary: 'pistol', skill: 0.7 });
-
 Models.flag = (color) => {
   const T = THREE, g = new T.Group();
   const pole = new T.Mesh(new T.CylinderGeometry(0.035, 0.035, 2.3, 8), new T.MeshStandardMaterial({ color: 0xc8ccd2, metalness: 0.8, roughness: 0.35 }));
@@ -45,10 +21,10 @@ class CaptureTheFlag extends Mode {
     for (let i = 0; i < n - 1; i++) this.makeBot('A', { weapon: pick(['ak47', 'm4']), role: i % 2 === 0 ? 'attack' : 'defend' });
     for (let i = 0; i < n; i++) this.makeBot('B', { weapon: pick(['ak47', 'm4', 'shotgun', 'ak47']), role: i % 2 === 0 ? 'attack' : 'defend', dmgMul: 0.8 });
     this.score = { A: 0, B: 0 };
-    this.stats = { pickups: 0, drops: 0, returns: 0, resets: 0, caps: { A: 0, B: 0 }, maxBotY: 0 };
+    this.stats = { pickups: 0, drops: 0, returns: 0, resets: 0, maxBotY: 0 };
     this.flags = {};
     for (const team of ['A', 'B']) {
-      const b = ARENA.bases[team], c = Nav.closest({ x: b.x, y: 0.3, z: b.z }), col = team === 'A' ? 0x3d8bff : 0xff4a3d;
+      const b = MAP.ctf[team], c = Nav.closest({ x: b.x, y: 0.3, z: b.z }), col = team === 'A' ? 0x3d8bff : 0xff4a3d;
       const home = new THREE.Vector3(c.x, c.y, c.z);
       const pad = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.04, 32), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.55 }));
       pad.position.set(home.x, home.y + 0.03, home.z); this.props.add(pad);
@@ -59,7 +35,7 @@ class CaptureTheFlag extends Mode {
     for (const a of Game.actors) { a.lives = Infinity; this.spawnActor(a, this.safeSpawn(a, this.zoneFor(a), 12)); }
     this.shareT = 0;
   }
-  zoneFor(a) { return ARENA.spawn[a.team] || ARENA.spawn.A; }
+  zoneFor(a) { return a.team === 'B' ? MAP.zones.east : MAP.zones.west; }
   foe(team) { return team === 'A' ? 'B' : 'A'; }
   near(a, p, r = 1.5) { return dist2D(a.pos, p) < r && Math.abs(a.pos.y - p.y) < 1.4; }
   take(a, f) {
@@ -85,7 +61,7 @@ class CaptureTheFlag extends Mode {
     Hud.banner(f.team === 'A' ? t('b_flagReturned') : t('b_flagReset'));
   }
   capture(h, f) {
-    const team = h.team; this.score[team]++; this.stats.caps[team]++;
+    const team = h.team; this.score[team]++;
     this.home(f);
     if (team === 'A') { Hud.banner(t('b_capture'), `${this.score.A} / ${this.m.target}`); Audio.pickup(); this.objectiveScore += h.isPlayer ? 1000 : 400; }
     else { Hud.banner(t('b_enemyCapture'), `${this.score.B} / ${this.m.target}`); Audio.alarm(); }
@@ -151,7 +127,7 @@ class CaptureTheFlag extends Mode {
       if (enemyF.holder) return { pos: Nav.randomAround(enemyF.holder.pos, 3), run: true, hold: true };
       return { pos: enemyF.pos, run: true, hold: dist2D(me.pos, enemyF.pos) < 8 };
     }
-    const spots = ARENA.guard[my], s = spots[(me.id + Math.floor(Game.time / 25)) % spots.length];
+    const spots = MAP.ctf.guard[my], s = spots[(me.id + Math.floor(Game.time / 25)) % spots.length];
     return { pos: Nav.randomAround(s, 2.5), run: dist2D(me.pos, s) > 12, patrol: true };
   }
   markersNow() {
@@ -173,5 +149,55 @@ class CaptureTheFlag extends Mode {
   stars(won) { return won ? (this.score.B === 0 ? 3 : this.score.B === 1 ? 2 : 1) : 0; }
   finalScore(won) { return super.finalScore(won) + this.score.A * 500; }
   intel() { const n = this.m.teamSize || 5; return { teams: `${n} vs ${n}`, time: fmtTime(this.timeLimit) }; }
+}
+
+class LastSquad extends Survival {
+  setup() {
+    const p = Game.player; p.team = 'A';
+    this.respawn = false; this.regen = 9; this.botDamageMul = 0.6; this.sweep = 0.7;
+    const teams = ['A', 'B', 'C', 'D'].slice(0, this.m.squads || 4), n = this.m.squadSize || 3;
+    this.zones = {}; teams.forEach((tm, i) => { this.zones[tm] = MAP.survival[i % MAP.survival.length]; });
+    this.allies = [];
+    for (let i = 0; i < n - 1; i++) this.allies.push(this.makeBot('A', { weapon: pick(['ak47', 'm4']) }));
+    this.ally = this.allies[0];
+    for (const tm of teams.slice(1)) for (let i = 0; i < n; i++) this.makeBot(tm, { weapon: pick(['ak47', 'm4', 'shotgun', 'ak47']), dmgMul: 0.8 });
+    for (const a of Game.actors) { a.lives = 1; this.spawnActor(a, this.safeSpawn(a, this.zones[a.team], 10)); }
+    const L = MAP.lss || { x: 0, z: 0, r0: 30, r1: 6 };
+    this.center = new THREE.Vector3(L.x, 0, L.z); this.r0 = L.r0; this.r1 = L.r1; this.radius = L.r0; this.hurtT = 0; this.warned = 0;
+    this.ring = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 14, 48, 1, true), new THREE.MeshBasicMaterial({ color: 0xff4a3d, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending }));
+    this.ring.position.set(L.x, 6, L.z); this.props.add(this.ring);
+  }
+  spectateTarget() { return this.allies.find((a) => a.alive) || null; }
+  onKill(k, v) {
+    super.onKill(k, v);
+    if (v.isPlayer) { const a = this.spectateTarget(); if (a) setTimeout(() => Game.active && Hud.spectate(a.name), 1800); }
+  }
+  update(dt) {
+    super.update(dt);
+    if (Game.over) return;
+    const k = clamp((Game.time - 30) / Math.max(60, this.timeLimit - 90), 0, 1);
+    this.radius = this.r0 + (this.r1 - this.r0) * k;
+    this.ring.scale.set(this.radius, 1, this.radius);
+    this.ring.material.opacity = 0.12 + Math.sin(Game.time * 2) * 0.04;
+    if (k > 0 && this.warned === 0) { this.warned = 1; Hud.banner(t('b_zone')); }
+    this.hurtT -= dt;
+    if (this.hurtT <= 0) {
+      this.hurtT = 1;
+      for (const a of Game.actors) {
+        if (!a.alive || dist2D(a.pos, this.center) <= this.radius) continue;
+        if (a.isPlayer && Game.time - (this.outWarn || -99) > 6) { this.outWarn = Game.time; Hud.banner(t('b_outside')); }
+        Combat.damage(a, 6 + k * 14, null, false, 'zone');
+      }
+    }
+  }
+  botGoal(b) {
+    const d = dist2D(b.a.pos, this.center);
+    if (d > this.radius * 0.7) return { pos: Nav.randomAround(this.center, Math.max(3, this.radius * 0.5)), run: true };
+    return super.botGoal ? Mode.prototype.botGoal.call(this, b) : null;
+  }
+  zoneFor(a) { return this.zones[a.team]; }
+  onTimeUp() { const alive = this.aliveTeams(); Game.finish(alive.has('A') && alive.size === 1, alive.has('A') && alive.size === 1 ? 'r_win' : 'r_time'); }
+  hud() { return { objective: t('o_lss', { n: this.aliveTeams().size }), clock: this.timeLeft, lives: Game.player.alive ? 1 : 0 }; }
+  intel() { const n = this.m.squadSize || 3; return { teams: Array(this.m.squads || 4).fill(n).join(' vs '), time: fmtTime(this.timeLimit) }; }
 }
 

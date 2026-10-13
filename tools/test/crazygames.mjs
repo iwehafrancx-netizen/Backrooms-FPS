@@ -45,7 +45,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
     window.__adStates = [];
     window.CrazyGames.SDK.ad.requestAd = (type, cb) => { window.__adStates.push([type, B.Game.state, B.Game.paused, B.Game.over]); return real(type, cb); };
   });
-  await page.evaluate(() => window.__BR.Game.start(6, 'none', 'pistol'));
+  await page.evaluate(() => window.__BR.Game.start(9, 'none', 'pistol'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   const kill = () => page.evaluate(() => { const B = window.__BR, G = B.Game, p = G.player; G.countdownT = 0; p.spawnTime = -99; p.armor = 1; B.Combat.damage(p, 9999, G.actors.find((a) => a.bot), false, 'ak47'); });
   const waitAlive = () => page.evaluate(() => { const G = window.__BR.Game; for (let i = 0; i < 400 && !G.player.alive; i++) G.update(1 / 20); return G.player.alive; });
@@ -77,7 +77,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   const lastAd = await page.evaluate(() => window.__adStates[window.__adStates.length - 1]);
   check('RESTART requests a midgame ad, then restarts the mission with full lives', lastAd[0] === 'midgame', JSON.stringify(lastAd));
 
-  await page.evaluate(() => window.__BR.Game.start(1, 'none', 'pistol'));
+  await page.evaluate(() => window.__BR.Game.start(2, 'none', 'pistol'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   for (let k = 0; k < 4; k++) { await kill(); await waitAlive(); }
   check('race-to-score mission (Team Deathmatch) never shows the card', await page.evaluate(() => window.__BR.Ui.modal !== 'm-out' && !window.__BR.Game.outCard));
@@ -105,7 +105,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   });
   check('BUY with CP unlocks a gun for good and takes the price', !shop.akBefore && shop.buy && shop.cpAfter === 600 && shop.akAfter, JSON.stringify(shop));
   check('Sniper can be bought (when you have 7,999 CP)', !shop.sniperBuy && (await page.evaluate(() => { window.__BR.Save.data.cp = 7999; return window.__BR.Arsenal.canBuy('sniper'); })));
-  await page.evaluate(() => window.__BR.Game.start(3, 'ak47', 'shotgun'));
+  await page.evaluate(() => window.__BR.Game.start(4, 'ak47', 'shotgun'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   const inMission = await page.evaluate(() => window.__BR.Player.slots.map((s) => s.id).join());
   await page.evaluate(() => window.__BR.Game.toMenu('menu'));
@@ -118,17 +118,17 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   check('after an ad error, ad buttons stay hidden for 2 minutes', !(await page.evaluate(() => window.__BR.Platform.ads.canReward())));
   await page.evaluate(() => { const now = performance.now.bind(performance); performance.now = () => now() + 125000; });
   const offer = await page.evaluate(() => {
-    const B = window.__BR, U = B.Ui, m = B.MISSIONS[3];
+    const B = window.__BR, U = B.Ui, m = B.MISSIONS[4];
     U.lastOffer = null; const a = U.offerPick(m, 5);
     U.lastOffer = 5; const b = U.offerPick(m, 6);
     const c = U.offerPick(m, 7);
     return { a, b, c };
   });
   check('gun offer: shows, skips the next mission, then shows again (every other mission)', !!offer.a && offer.b === null && !!offer.c, JSON.stringify(offer));
-  const rot = await page.evaluate(() => { const B = window.__BR, U = B.Ui, m = B.MISSIONS[3], got = []; for (let k = 0; k < 4; k++) { U.lastOffer = null; got.push(U.offerPick(m, 10 + k)); } return [...new Set(got.filter(Boolean))].sort().join(); });
+  const rot = await page.evaluate(() => { const B = window.__BR, U = B.Ui, m = B.MISSIONS[4], got = []; for (let k = 0; k < 4; k++) { U.lastOffer = null; got.push(U.offerPick(m, 10 + k)); } return [...new Set(got.filter(Boolean))].sort().join(); });
   check('offer rotation includes every locked gun, Sniper too', rot === 'm4,shotgun,sniper', rot);
 
-  await page.evaluate(() => { window.__BR.Save.data.cp = 3500; const U = window.__BR.Ui; U.selMission = 3; U.show('briefing'); });
+  await page.evaluate(() => { window.__BR.Save.data.cp = 3500; const U = window.__BR.Ui; U.selMission = 4; U.show('briefing'); });
   await sleep(600);
   const card = await page.evaluate(() => { const c = document.querySelector('#briefing .wcard[data-w="shotgun"] .wbuy'); return c && c.innerText.replace(/\s+/g, ' ').trim(); });
   check('affordable locked gun card reads BUY NOW (price) OR WATCH AD', /^BUY NOW 2,999 CP OR AD WATCH AD THIS MISSION$/.test(card || ''), card);
@@ -143,7 +143,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   await page.waitForFunction(() => window.__BR.Arsenal.usable('sniper'), null, { timeout: 8000 });
   check('WATCH AD on the card rents the gun for this mission', await page.evaluate(() => window.__BR.Ui.loadout.primary === 'sniper' && !window.__BR.Arsenal.owns('sniper')));
   await page.evaluate(() => { window.__BR.Arsenal.leave(); });
-  await page.evaluate(() => { const U = window.__BR.Ui; U.lastOffer = null; U.selMission = 3; U.show('briefing'); });
+  await page.evaluate(() => { const U = window.__BR.Ui; U.lastOffer = null; U.selMission = 4; U.show('briefing'); });
   await sleep(600);
   await page.click('#briefing [data-a=deploy]');
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
@@ -173,7 +173,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   const after = await page.evaluate(() => ({ slots: window.__BR.Player.slots.map((s) => s.id + ':' + s.mag).join(), cur: window.__BR.Player.weapon.name }));
   n = await names(page);
   check('WATCH AD puts the gun in your hands with full ammo, game resumes', after.cur === want && n[n.length - 1] === 'gameplayStart', JSON.stringify(after) + ' wanted ' + want);
-  await page.evaluate(() => window.__BR.Game.start(3, 'none', 'pistol'));
+  await page.evaluate(() => window.__BR.Game.start(4, 'none', 'pistol'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   check('next mission: no offer (every other mission)', await page.evaluate(() => window.__BR.Game.offerGun === null));
 

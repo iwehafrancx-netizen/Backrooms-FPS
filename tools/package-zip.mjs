@@ -6,7 +6,6 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const TARGETS = {
   crazygames: ['../Backrooms FPS CrazyGames', 'backrooms-crazygames.zip'],
   'crazygames-basic': ['../Backrooms FPS CrazyGames Basic', 'backrooms-crazygames-basic.zip'],
-  arena: ['../Backrooms FPS Arena Lab', 'backrooms-arena-lab.zip'],
   playables: ['../Backrooms FPS', 'backrooms-fps.zip'],
 };
 const target = TARGETS[process.argv[2]] ? process.argv[2] : 'playables';

@@ -61,7 +61,7 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   await page.evaluate(() => window.__yt.resumeCbs.forEach((cb) => cb()));
   const fRes = await frames(2500);
   check('onResume restarts rendering (menu)', fRes > 0, `${fRes} frames`);
-  await page.evaluate(() => window.__BR.Game.start(0, 'ak47', 'pistol'));
+  await page.evaluate(() => window.__BR.Game.start(1, 'ak47', 'pistol'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   await page.evaluate(() => { window.__BR.Game.countdownT = 0; });
   await sleep(1500);
@@ -105,7 +105,7 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   await page.waitForFunction(() => window.__BR.Ui.cur === 'menu', null, { timeout: 15000 });
   const ads = () => page.evaluate(() => window.__yt.calls.filter((c) => /^request/.test(c[0])).map((c) => c[0] + (c[1] ? ':' + c[1] : '')));
   check('Rewarded ads available when ytgame.ads.requestRewardedAd exists', await page.evaluate(() => window.__BR.Platform.ads.canReward()));
-  await page.evaluate(() => window.__BR.Game.start(6, 'none', 'pistol'));
+  await page.evaluate(() => window.__BR.Game.start(9, 'none', 'pistol'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   check('No ad is requested when a mission starts', (await ads()).length === 0, (await ads()).join(','));
   await page.evaluate(() => { const G = window.__BR.Game; G.countdownT = 0; const s = window.__BR.Player.slot; s.mag = 0; s.reserve = 0; });
@@ -143,7 +143,7 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
   await page.click('#boot-enter');
   await page.waitForFunction(() => window.__BR.Ui.cur === 'menu', null, { timeout: 15000 });
-  await page.evaluate(() => { const U = window.__BR.Ui; U.selMission = 2; U.show('briefing'); }); await sleep(600);
+  await page.evaluate(() => { const U = window.__BR.Ui; U.selMission = 3; U.show('briefing'); }); await sleep(600);
   const b = await page.evaluate(() => ({ can: window.__BR.Platform.ads.canReward(), rent: document.querySelectorAll('#briefing [data-rent]').length, buy: document.querySelectorAll('#briefing [data-buy]').length }));
   check('Without ytgame.ads: no ad buttons, BUY with CP still works, game playable', !b.can && b.rent === 0 && b.buy > 0, JSON.stringify(b));
   await page.click('#briefing [data-a=deploy]');

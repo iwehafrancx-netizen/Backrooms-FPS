@@ -3,7 +3,7 @@ import { open } from './harness.mjs';
 const { browser, page, log } = await open({ width: 640, height: 360 });
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
 await page.click('#boot-enter');
-await page.evaluate(() => { const S = window.__BR.Save; if (S.data.owned && !S.data.owned.includes('ak47')) S.data.owned.push('ak47'); window.__BR.Game.start(0, 'ak47', 'pistol'); });
+await page.evaluate(() => { const S = window.__BR.Save; if (S.data.owned && !S.data.owned.includes('ak47')) S.data.owned.push('ak47'); window.__BR.Game.start(1, 'ak47', 'pistol'); });
 await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
 const res = await page.evaluate(() => {
   const B = window.__BR, G = B.Game, P = B.Player; B.Loop.stop(); B.World.render = () => {};

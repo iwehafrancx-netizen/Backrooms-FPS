@@ -5,7 +5,7 @@ for (const [w, h, tag] of [[844, 390, 'land'], [390, 844, 'port']]) {
   await page.tap('#boot-enter'); await sleep(1000); await shot(page, `m-${tag}-menu`);
   await page.tap('#menu [data-a=play]'); await sleep(1300); await shot(page, `m-${tag}-missions`);
   await page.tap('#missions .mcard:not(.locked)'); await sleep(1600); await shot(page, `m-${tag}-briefing`);
-  await page.evaluate(() => { const B = window.__BR; B.Game.start(1, 'ak47', 'pistol'); });
+  await page.evaluate(() => { const B = window.__BR; B.Game.start(2, 'ak47', 'pistol'); });
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   await page.evaluate(() => { window.__BR.Game.countdownT = 0; });
   await sleep(2500); await shot(page, `m-${tag}-hud`);

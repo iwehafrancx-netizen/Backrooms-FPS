@@ -6,12 +6,12 @@ for (const [w, h, touch] of [[800, 450, true], [907, 510, false]]) {
   await page.waitForFunction(() => window.__cg && window.__cg.calls.some((c) => c[0] === 'loadingStop'), null, { timeout: 90000 });
   await page.click('#boot-enter'); await sleep(900);
   await shot(page, `cg-${w}-menu`);
-  await page.evaluate(() => { const U = window.__BR.Ui; U.selMission = 2; U.show('briefing'); }); await sleep(900);
+  await page.evaluate(() => { const U = window.__BR.Ui; U.selMission = 3; U.show('briefing'); }); await sleep(900);
   await shot(page, `cg-${w}-briefing`);
   await page.evaluate(() => { window.__BR.Ui.gunOffer('ak47', 2); }); await sleep(1800);
   await shot(page, `cg-${w}-offer`);
   await page.evaluate(() => window.__BR.Ui.closeModal());
-  await page.evaluate(() => window.__BR.Game.start(2, 'none', 'shotgun'));
+  await page.evaluate(() => window.__BR.Game.start(3, 'none', 'shotgun'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   await page.evaluate(() => { const G = window.__BR.Game; G.countdownT = 0; }); await sleep(800);
   await shot(page, `cg-${w}-hud`);

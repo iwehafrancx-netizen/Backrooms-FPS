@@ -2,7 +2,7 @@ import { open, shot, sleep } from './harness.mjs';
 const { browser, page, log } = await open({ width: 1280, height: 720 });
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 90000 });
 await page.click('#boot-enter');
-await page.evaluate(() => window.__BR.Game.start(0, 'ak47', 'pistol'));
+await page.evaluate(() => window.__BR.Game.start(1, 'ak47', 'pistol'));
 await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
 const r = await page.evaluate(() => {
   const B = window.__BR, G = B.Game, p = G.player; G.countdownT = 0; p.armor = 0.0001;
