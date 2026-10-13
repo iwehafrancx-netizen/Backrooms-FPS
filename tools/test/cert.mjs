@@ -61,7 +61,7 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   await page.evaluate(() => window.__yt.resumeCbs.forEach((cb) => cb()));
   const fRes = await frames(2500);
   check('onResume restarts rendering (menu)', fRes > 0, `${fRes} frames`);
-  await page.evaluate(() => window.__BR.Game.start(1, 'ak47', 'pistol'));
+  await page.evaluate(() => window.__BR.Game.start(0, 'ak47', 'pistol'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   await page.evaluate(() => { window.__BR.Game.countdownT = 0; });
   await sleep(1500);

@@ -19,6 +19,12 @@ export const grain = (w, h, id, op) => `<rect width="${w}" height="${h}" filter=
 export class Kit {
   constructor({ dim, ambient = 0.62, rise = 0.3 } = {}) { this.mats = {}; this.lamps = []; this.footprints = []; this.dim = dim || (() => 1); this.ambient = ambient; this.rise = rise; }
   mat(name, tex, mode = 'world', scale = 4) { this.mats[name] = { name, tex, mode, scale, pos: [], uv: [], col: [], idx: [] }; }
+  dmat(m) {
+    if (!this.splitDeco || m === 'light' || /Deco$/.test(m)) return m;
+    const d = m + 'Deco';
+    if (!this.mats[d]) { const M = this.mats[m]; this.mat(d, M.tex, M.mode, M.scale); }
+    return d;
+  }
   shade(x, y, z) {
     const c = this.light(x, y, z);
     return (c[0] + c[1] + c[2]) / 3;
@@ -35,6 +41,7 @@ export class Kit {
     M.idx.push(b, b + 1, b + 2, b, b + 2, b + 3);
   }
   box(m, x0, y0, z0, x1, y1, z1, opts = {}) {
+    if (opts.deco) m = this.dmat(m);
     const M = this.mats[m], tint = opts.tint || [1, 1, 1], s = M.scale;
     const faces = [
       { k: 'top', p: [[x0, y1, z0], [x0, y1, z1], [x1, y1, z1], [x1, y1, z0]] },
@@ -103,6 +110,7 @@ export class Kit {
     }
   }
   lathe(m, cx, cz, prof, tint, seg = 12, opts = {}) {
+    if (opts.solid === false) m = this.dmat(m);
     const M = this.mats[m], b = M.pos.length / 3, L = prof.map(([, y]) => this.light(cx, y, cz)), len = prof.length;
     let acc = 0; const vs = prof.map((p, i) => (i ? (acc += Math.hypot(p[0] - prof[i - 1][0], p[1] - prof[i - 1][1])) : 0));
     for (let i = 0; i <= seg; i++) {
@@ -189,19 +197,35 @@ export class Kit {
     doc.createScene('Map').addChild(node); node.setMesh(mesh);
     const cache = {};
     let tris = 0, verts = 0;
+    const CELL = this.cell || 16;
     for (const M of Object.values(this.mats)) {
       if (!M.idx.length) continue;
-      const n = M.pos.length / 3;
-      const col = new Uint8Array(M.col.length); for (let i = 0; i < M.col.length; i++) col[i] = Math.round(clamp01(M.col[i]) * 255);
-      const prim = doc.createPrimitive()
-        .setAttribute('POSITION', doc.createAccessor().setType('VEC3').setArray(new Float32Array(M.pos)).setBuffer(buf))
-        .setAttribute('TEXCOORD_0', doc.createAccessor().setType('VEC2').setArray(new Float32Array(M.uv)).setBuffer(buf))
-        .setAttribute('COLOR_0', doc.createAccessor().setType('VEC3').setArray(col).setNormalized(true).setBuffer(buf))
-        .setIndices(doc.createAccessor().setType('SCALAR').setArray(n < 65536 ? new Uint16Array(M.idx) : new Uint32Array(M.idx)).setBuffer(buf));
+      const bins = new Map();
+      for (let t = 0; t < M.idx.length; t += 3) {
+        const a = M.idx[t] * 3, b = M.idx[t + 1] * 3, c = M.idx[t + 2] * 3;
+        const cx = (M.pos[a] + M.pos[b] + M.pos[c]) / 3, cz = (M.pos[a + 2] + M.pos[b + 2] + M.pos[c + 2]) / 3;
+        const key = M.idx.length < 9000 ? '0' : `${Math.floor(cx / CELL)},${Math.floor(cz / CELL)}`;
+        if (!bins.has(key)) bins.set(key, []);
+        bins.get(key).push(M.idx[t], M.idx[t + 1], M.idx[t + 2]);
+      }
       const mat = doc.createMaterial(M.name).setBaseColorFactor([0, 0, 0, 1]).setEmissiveFactor([1, 1, 1]);
       if (M.tex && textures[M.tex]) mat.setEmissiveTexture(cache[M.tex] || (cache[M.tex] = doc.createTexture(M.tex).setImage(new Uint8Array(textures[M.tex])).setMimeType('image/jpeg')));
-      prim.setMaterial(mat); mesh.addPrimitive(prim);
-      tris += M.idx.length / 3; verts += n;
+      for (const tri of bins.values()) {
+        const remap = new Map(), pos = [], uv = [], col = [], idx = [];
+        for (const i of tri) {
+          let j = remap.get(i);
+          if (j === undefined) { j = remap.size; remap.set(i, j); pos.push(M.pos[i * 3], M.pos[i * 3 + 1], M.pos[i * 3 + 2]); uv.push(M.uv[i * 2], M.uv[i * 2 + 1]); col.push(Math.round(clamp01(M.col[i * 3]) * 255), Math.round(clamp01(M.col[i * 3 + 1]) * 255), Math.round(clamp01(M.col[i * 3 + 2]) * 255)); }
+          idx.push(j);
+        }
+        const n = remap.size;
+        const prim = doc.createPrimitive()
+          .setAttribute('POSITION', doc.createAccessor().setType('VEC3').setArray(new Float32Array(pos)).setBuffer(buf))
+          .setAttribute('TEXCOORD_0', doc.createAccessor().setType('VEC2').setArray(new Float32Array(uv)).setBuffer(buf))
+          .setAttribute('COLOR_0', doc.createAccessor().setType('VEC3').setArray(new Uint8Array(col)).setNormalized(true).setBuffer(buf))
+          .setIndices(doc.createAccessor().setType('SCALAR').setArray(n < 65536 ? new Uint16Array(idx) : new Uint32Array(idx)).setBuffer(buf));
+        prim.setMaterial(mat); mesh.addPrimitive(prim);
+        tris += idx.length / 3; verts += n;
+      }
     }
     await new NodeIO().write(file, doc);
     return { kb: fs.statSync(file).size / 1024, tris, verts };

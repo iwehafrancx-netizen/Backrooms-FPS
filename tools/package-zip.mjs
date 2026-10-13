@@ -7,6 +7,7 @@ const TARGETS = {
   crazygames: ['../Backrooms FPS CrazyGames', 'backrooms-crazygames.zip'],
   'crazygames-basic': ['../Backrooms FPS CrazyGames Basic', 'backrooms-crazygames-basic.zip'],
   playables: ['../Backrooms FPS', 'backrooms-fps.zip'],
+  playgama: ['../Backrooms FPS Playgama', 'backrooms-playgama.zip'],
 };
 const target = TARGETS[process.argv[2]] ? process.argv[2] : 'playables';
 const game = path.resolve(here, TARGETS[target][0]);

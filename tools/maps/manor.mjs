@@ -16,6 +16,7 @@ export async function build() {
     return 1 - 0.5 * (1 - clamp01(dw / 1.8)) * (1 - clamp01(dy / 1.8)) - 0.14 * (1 - clamp01(dy / 0.6)) - 0.12 * (1 - clamp01(dw / 0.5));
   };
   const k = new Kit({ ambient: 0.27, rise: 0.04, dim: ao });
+  k.splitDeco = true;
   const f = furniture(k);
   k.mat('FloorStone', 'carrara', 'world', 4);
   k.mat('FloorParquet', 'oak', 'world', 4);
@@ -24,6 +25,8 @@ export async function build() {
   k.mat('Nero', 'nero', 'world', 2);
   k.mat('Marble', 'statuary', 'world', 1.5);
   k.mat('Stone', 'limestone', 'world', 2);
+  k.mat('Trim', 'limestone', 'world', 2);
+  k.mat('Statue', 'statuary', 'world', 1.5);
   k.mat('Ceiling', 'plaster', 'world', 3);
   k.mat('RoofBaked', 'plaster', 'world', 3);
   k.mat('Walls', 'panelwall', 'wall', 2.4);
@@ -116,7 +119,7 @@ export async function build() {
     const along = Math.abs(x1 - x0) > Math.abs(z1 - z0), len = along ? x1 - x0 : z1 - z0, n = Math.floor(len / 0.3);
     for (let i = 0; i <= n; i++) {
       const t = (i + 0.5) / (n + 1), x = along ? x0 + len * t : (x0 + x1) / 2, z = along ? (z0 + z1) / 2 : z0 + len * t;
-      k.lathe('Stone', x, z, [[0.06, y + 0.14], [0.035, y + 0.34], [0.085, y + 0.56], [0.04, y + 0.86]], W.n, 4, { solid: false, sun: 0.4 });
+      k.lathe('Trim', x, z, [[0.06, y + 0.14], [0.035, y + 0.34], [0.085, y + 0.56], [0.04, y + 0.86]], W.n, 4, { solid: false, sun: 0.4 });
     }
   };
   for (const [i, y] of LV.entries()) {
