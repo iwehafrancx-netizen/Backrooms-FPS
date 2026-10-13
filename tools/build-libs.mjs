@@ -42,7 +42,7 @@ await bundle(`import * as T from 'three'; window.THREE = Object.assign({}, T);`,
 const addon = (file, names) =>
   `import { ${names.join(', ')} } from '${path.join(jsm, file).replace(/\\/g, '/')}'; Object.assign(window.THREE, { ${names.join(', ')} });`;
 
-await bundle(addon('loaders/GLTFLoader.js', ['GLTFLoader']), path.join(lib, 'three/GLTFLoader.js'), { name: 'GLTFLoader.js' });
+await bundle(`${addon('loaders/GLTFLoader.js', ['GLTFLoader'])}\n${addon('libs/meshopt_decoder.module.js', ['MeshoptDecoder'])}\nimport { computeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh'; Object.assign(window.THREE, { computeBoundsTree, acceleratedRaycast });`, path.join(lib, 'three/GLTFLoader.js'), { name: 'GLTFLoader.js' });
 await bundle(addon('controls/PointerLockControls.js', ['PointerLockControls']), path.join(lib, 'three/PointerLockControls.js'), { name: 'PointerLockControls.js' });
 await bundle(`import * as S from '${path.join(jsm, 'utils/SkeletonUtils.js')}'; window.THREE.SkeletonUtils = S;`, path.join(lib, 'three/SkeletonUtils.js'), { name: 'SkeletonUtils.js' });
 await bundle(

@@ -33,7 +33,7 @@ export async function build() {
     const c = [0.6, 0.6, 0.6], p = nx > 0 ? [[x, 11.6, 9], [x, 1.6, 9], [x, 1.6, -9], [x, 11.6, -9]] : [[x, 11.6, -9], [x, 1.6, -9], [x, 1.6, 9], [x, 11.6, 9]];
     k.quad(m, ...p, [[0, 0], [0, 1], [1, 1], [1, 0]], [c, c, c, c]);
   };
-  mural('MuralA', -X + 0.02, 1); mural('MuralB', X - 0.02, -1);
+  mural('MuralA', -X + 0.06, 1); mural('MuralB', X - 0.06, -1);
   k.quad('RoofBaked', [-X, H, -Z], [X, H, -Z], [X, H, Z], [-X, H, Z], [[-X / 4, -Z / 4], [X / 4, -Z / 4], [X / 4, Z / 4], [-X / 4, Z / 4]], Array(4).fill([0.55, 0.58, 0.62]));
   for (const z of [-8, 8]) for (let x = -24; x < 24; x += 8) k.box('light', x + 1, H - 0.08, z - 1.5, x + 7, H - 0.02, z + 1.5, { flat: true, solid: false, skip: ['top'] });
   for (let x = -24; x <= 24; x += 8) k.box('Lightsurround', x - 0.25, H - 1.4, -Z, x + 0.25, H - 1.0, Z, { tint: C.grey, solid: false, skip: ['top'] });
@@ -76,8 +76,8 @@ export async function build() {
     for (const pz of [-2.95, 2.85]) k.box('PlugsBaked', bx - 2.6, 6.05, pz, bx + 2.6, 6.2, pz + 0.1, { tint: tc, flat: true, solid: false });
     const bar = sx * 23.4;
     for (const [z0, z1] of [[3.6, 6.8], [-6.8, -3.6]]) { k.box('Steel', bar - 0.3, 0, z0, bar + 0.3, 1.15, z1, { tint: [0.68, 0.7, 0.72] }); k.box('PlugsBaked', bar - 0.31, 1.0, z0, bar + 0.31, 1.15, z1, { tint: tc, flat: true, solid: false }); }
-    k.box('PlugsBaked', sx * 23.6 - 0.12, 0, -22, sx * 23.6 + 0.12, 0.012, 22, { tint: C.yellow, flat: true, solid: false, skip: ['x+', 'x-', 'z+', 'z-'] });
-    for (let z = -21; z < 21; z += 3) k.box('PlugsBaked', sx * 30.2 - 0.6, 0, z, sx * 30.2 + 0.6, 0.012, z + 1.2, { tint: tc, flat: true, solid: false, skip: ['x+', 'x-', 'z+', 'z-'] });
+    k.box('PlugsBaked', sx * 23.6 - 0.12, 0, -22, sx * 23.6 + 0.12, 0.03, 22, { tint: C.yellow, flat: true, solid: false, skip: ['x+', 'x-', 'z+', 'z-'] });
+    for (let z = -21; z < 21; z += 3) k.box('PlugsBaked', sx * 30.2 - 0.6, 0, z, sx * 30.2 + 0.6, 0.03, z + 1.2, { tint: tc, flat: true, solid: false, skip: ['x+', 'x-', 'z+', 'z-'] });
   }
 
   const container = (x0, z0, alongX, tint, levels = 1, color2) => {

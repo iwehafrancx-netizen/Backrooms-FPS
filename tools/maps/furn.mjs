@@ -57,7 +57,7 @@ export function furniture(k) {
     const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
     k.lathe('Brass', cx, cz, [[0, y + 0.85], [0.12, y + 0.85], [0.08, y + 0.95], [0.11, y + 1.08], [0.05, y + 1.16], [0, y + 1.17]], [0.9, 0.85, 0.8], 8, { solid: false });
   };
-  f.rug = (cx, cz, w, d, y = 0, mat = 'Rug') => k.box(mat, cx - w / 2, y, cz - d / 2, cx + w / 2, y + 0.012, cz + d / 2, { tint: [0.92, 0.92, 0.92], solid: false, skip: ['x+', 'x-', 'z+', 'z-', 'bot'], deco: true });
+  f.rug = (cx, cz, w, d, y = 0, mat = 'Rug') => k.box(mat, cx - w / 2, y, cz - d / 2, cx + w / 2, y + 0.03, cz + d / 2, { tint: [0.92, 0.92, 0.92], solid: false, skip: ['x+', 'x-', 'z+', 'z-', 'bot'], deco: true });
   f.painting = (m, x, z, y, w, h, nx, nz) => {
     const c = [0.92, 0.92, 0.92], hw = w / 2, d = 0.06;
     const p = nz !== 0 ? (nz > 0 ? [[x - hw, y + h, z], [x - hw, y, z], [x + hw, y, z], [x + hw, y + h, z]] : [[x + hw, y + h, z], [x + hw, y, z], [x - hw, y, z], [x - hw, y + h, z]])
@@ -66,8 +66,9 @@ export function furniture(k) {
     const lifted = p.map(([px, py, pz]) => [px + nx * d, py, pz + nz * d]);
     k.quad(m, ...lifted, [[0, 0], [0, 1], [1, 1], [1, 0]], L.map((l) => c.map((v, i) => v * Math.min(1, l[i] * 1.1))));
     if (m === 'Glass') return;
-    if (nz !== 0) k.box('Brass', x - hw, y, Math.min(z, z + nz * d), x + hw, y + h, Math.max(z, z + nz * d), { ...D, tint: [0.55, 0.5, 0.45] });
-    else k.box('Brass', Math.min(x, x + nx * d), y, z - hw, Math.max(x, x + nx * d), y + h, z + hw, { ...D, tint: [0.55, 0.5, 0.45] });
+    const e = d - 0.015;
+    if (nz !== 0) k.box('Brass', x - hw, y, Math.min(z, z + nz * e), x + hw, y + h, Math.max(z, z + nz * e), { ...D, tint: [0.55, 0.5, 0.45] });
+    else k.box('Brass', Math.min(x, x + nx * e), y, z - hw, Math.max(x, x + nx * e), y + h, z + hw, { ...D, tint: [0.55, 0.5, 0.45] });
   };
   f.column = (x, z, y0, y1, r = 0.5) => {
     k.box('Stone', x - r - 0.18, y0, z - r - 0.18, x + r + 0.18, y0 + 0.3, z + r + 0.18, { noBottom: y0 > 0 });

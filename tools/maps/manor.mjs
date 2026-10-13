@@ -101,7 +101,7 @@ export async function build() {
     k.stairsZ('Marble', s.z0, s.dir, s.x[0], s.x[1], s.base, FH, STEPS, { tint: [0.92, 0.9, 0.86], noBottom: s.base > 0, run: RUN });
     const rise = FH / STEPS, zEnd = s.z0 + s.dir * LEN, top = s.base + FH;
     for (const xs of [s.x[0] - 0.16, s.x[1]]) {
-      k.prism('Wood', xs, xs + 0.16, [[s.z0, s.base], [s.z0, s.base + rise + 0.1], [zEnd, top + 0.1], [zEnd, s.base > 0 ? top - 0.6 : s.base]], W.n, { scale: 2 });
+      k.prism('Wood', xs - (xs >= s.x[1] ? 0.02 : 0), xs + 0.16 + (xs < s.x[0] ? 0.02 : 0), [[s.z0, s.base], [s.z0, s.base + rise + 0.1], [zEnd, top + 0.1], [zEnd, s.base > 0 ? top - 0.6 : s.base]], W.n, { scale: 2 });
       const r0 = s.base + rise + 0.95, r1 = top + 0.95;
       k.prism('Wood', xs + 0.01, xs + 0.15, [[s.z0, r0], [s.z0, r0 + 0.08], [zEnd, r1 + 0.08], [zEnd, r1]], W.n, { scale: 2 });
       for (let i = 1; i <= STEPS; i++) {
@@ -125,23 +125,23 @@ export async function build() {
   for (const [i, y] of LV.entries()) {
     if (i === 0) continue;
     const holes = [ATRIUM, ...FLIGHTS.filter((s) => s.base === y - FH).map(stairHole)];
-    k.slab('Ceiling', y - 0.4, y - 0.02, [-X, -Z, X, Z], holes, { tint: [0.74, 0.72, 0.68], sub: 1.5 });
+    k.slab('Ceiling', y - 0.4, y - 0.02, [-X, -Z, X, Z], [[ATRIUM[0] - 0.5, ATRIUM[1] - 0.5, ATRIUM[2] + 0.5, ATRIUM[3] + 0.5], ...holes.slice(1)], { tint: [0.74, 0.72, 0.68], sub: 1.5, skip: ['top'] });
     fgrid('Parquet', -X, -Z, -9, Z, y, holes);
     fgrid('Parquet', 9, -Z, X, Z, y, holes);
     fgrid('Gallery', -9, -Z, 9, Z, y, holes);
     const [ax0, az0, ax1, az1] = ATRIUM;
     balustrade(ax0 - 0.2, az0 - 0.2, ax1 + 0.2, az0, y); balustrade(ax0 - 0.2, az1, ax1 + 0.2, az1 + 0.2, y);
     balustrade(ax0 - 0.2, az0, ax0, az1, y); balustrade(ax1, az0, ax1 + 0.2, az1, y);
-    k.box('Nero', ax0 - 0.5, y - 0.6, az0 - 0.5, ax1 + 0.5, y - 0.02, az0, { solid: false }); k.box('Nero', ax0 - 0.5, y - 0.6, az1, ax1 + 0.5, y - 0.02, az1 + 0.5, { solid: false });
-    k.box('Nero', ax0 - 0.5, y - 0.6, az0, ax0, y - 0.02, az1, { solid: false }); k.box('Nero', ax1, y - 0.6, az0, ax1 + 0.5, y - 0.02, az1, { solid: false });
+    k.box('Nero', ax0 - 0.5, y - 0.6, az0 - 0.5, ax1 + 0.5, y - 0.02, az0, { solid: false, skip: ['top'] }); k.box('Nero', ax0 - 0.5, y - 0.6, az1, ax1 + 0.5, y - 0.02, az1 + 0.5, { solid: false, skip: ['top'] });
+    k.box('Nero', ax0 - 0.5, y - 0.6, az0, ax0, y - 0.02, az1, { solid: false, skip: ['top'] }); k.box('Nero', ax1, y - 0.6, az0, ax1 + 0.5, y - 0.02, az1, { solid: false, skip: ['top'] });
     for (const s of FLIGHTS.filter((st) => st.base === y - FH)) {
       const [hx0, hz0, hx1, hz1] = stairHole(s);
       if (s.dir > 0) balustrade(hx0 - 0.2, hz0 - 0.2, hx1 + 0.2, hz0, y); else balustrade(hx0 - 0.2, hz1, hx1 + 0.2, hz1 + 0.2, y);
       balustrade(s.x[0] < 0 ? hx1 : hx0 - 0.2, hz0, s.x[0] < 0 ? hx1 + 0.2 : hx0, hz1, y);
     }
   }
-  k.box('RoofBaked', -X, TOP, -Z, X, TOP + 0.3, Z, { tint: [0.74, 0.72, 0.68], solid: false, skip: ['top'], sub: 1.5 });
-  k.box('light', -4.5, TOP - 0.02, -7.5, 4.5, TOP, 7.5, { flat: true, solid: false });
+  k.slab('RoofBaked', TOP, TOP + 0.3, [-X, -Z, X, Z], [[-4.5, -7.5, 4.5, 7.5]], { tint: [0.74, 0.72, 0.68], skip: ['top'], sub: 1.5 });
+  k.box('light', -4.5, TOP + 0.1, -7.5, 4.5, TOP + 0.12, 7.5, { flat: true, solid: false, skip: ['top', 'x+', 'x-', 'z+', 'z-'] });
   for (const xx of [-4.5, -1.5, 1.5, 4.5]) k.box('Wood', xx - 0.12, TOP - 0.4, -7.7, xx + 0.12, TOP, 7.7, { solid: false, deco: true, tint: W.dark });
   for (let zz = -7.5; zz <= 7.5; zz += 2.5) k.box('Wood', -4.7, TOP - 0.34, zz - 0.1, 4.7, TOP - 0.02, zz + 0.1, { solid: false, deco: true, tint: W.dark });
 
@@ -173,7 +173,7 @@ export async function build() {
   fgrid('FloorStone', -9, -Z, 9, Z, 0);
   fgrid('FloorParquet', -X, -Z, -9, Z, 0);
   fgrid('FloorParquet', 9, -Z, X, Z, 0);
-  for (const [x0, z0, x1, z1] of [[-4.6, -9.6, 4.6, -9], [-4.6, 9, 4.6, 9.6], [-4.6, -9, -4, 9], [4, -9, 4.6, 9]]) k.box('Nero', x0, 0, z0, x1, 0.012, z1, { solid: false, skip: ['x+', 'x-', 'z+', 'z-'], deco: true });
+  for (const [x0, z0, x1, z1] of [[-4.6, -9.6, 4.6, -9], [-4.6, 9, 4.6, 9.6], [-4.6, -9, -4, 9], [4, -9, 4.6, 9]]) k.box('Nero', x0, 0, z0, x1, 0.03, z1, { solid: false, skip: ['x+', 'x-', 'z+', 'z-'], deco: true });
 
   k.lathe('Nero', 0, 0, [[2.6, 0], [2.6, 0.55], [2.75, 0.62], [2.75, 0.72], [2.45, 0.72], [2.4, 0.5]], W.n, 28);
   k.lathe('Nero', 0, 0, [[2.4, 0.5], [0, 0.5]], [0.3, 0.36, 0.38], 28, { solid: false });

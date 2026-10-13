@@ -17,7 +17,8 @@
     "web-demo": "node sync-youtube.mjs && node build-standalone.mjs && node build-web-demo.mjs",
     "qa-crazygames": "node package-zip.mjs crazygames && node test/cg-qa.mjs",
     "sync-youtube": "node sync-youtube.mjs",
-    "zip-playgama": "node build-playgama.mjs && node package-zip.mjs playgama"
+    "zip-playgama": "node build-playgama.mjs && node package-zip.mjs playgama",
+    "compress": "node compress-glb.mjs"
   },
   "devDependencies": {
     "@gltf-transform/core": "^4.5.1",
@@ -27,9 +28,11 @@
     "@recast-navigation/generators": "^0.43.1",
     "@recast-navigation/wasm": "^0.43.1",
     "esbuild": "^0.28.2",
+    "meshoptimizer": "^1.3.0",
     "playwright-core": "^1.63.0",
     "recast-navigation": "^0.43.1",
     "sharp": "^0.35.5",
-    "three": "^0.180.0"
+    "three": "^0.180.0",
+    "three-mesh-bvh": "^0.9.16"
   }
 }

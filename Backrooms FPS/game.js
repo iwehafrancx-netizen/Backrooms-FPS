@@ -56,7 +56,7 @@ const armorMul = (id, mission) => { const a = ARMOR[id]; return a ? Math.max(a.m
 
 const MAPS = {
   backrooms: {
-    name: 'LEVEL 0', glb: 'assets/Maps/backroom.glb', nav: 'assets/Maps/backroom.navmesh', kb: [340, 46], bright: 2.3, fog: [0x2e2812, 10, 52], bg: 0x0b0a07, hemi: [0xfff1c2, 0x5a4a24], env: [7, 1.5, 12],
+    name: 'LEVEL 0', glb: 'assets/Maps/backroom.glb', nav: 'assets/Maps/backroom.navmesh', kb: [213, 45], bright: 2.3, fog: [0x2e2812, 10, 52], bg: 0x0b0a07, hemi: [0xfff1c2, 0x5a4a24], env: [7, 1.5, 12],
     zones: { west: { x: [-30.5, -1.5], z: [6.5, 20.5] }, central: { x: [0.5, 14.5], z: [-9.5, 20.5] }, east: { x: [16.0, 30.5], z: [-24.5, 20.5] } },
     lifts: [{ x: -8.5, z: 21.4 }, { x: 29.4, z: 5.95 }],
     siege: { blue: [{ x: -30.0, z: 13.5 }, { x: -3.0, z: 20.0 }], enemy: [{ x: 27.5, z: -24.0 }, { x: 27.5, z: 20.0 }] },
@@ -67,7 +67,7 @@ const MAPS = {
     lobby: { x: 7.5, z: 12.5 },
   },
   hangar: {
-    name: 'HANGAR 9', glb: 'assets/Maps/hangar.glb', nav: 'assets/Maps/hangar.navmesh', kb: [257, 84], bright: 1.25, fog: [0x1c2229, 34, 120], bg: 0x14191f, hemi: [0xe8f0ff, 0x3d444d], env: [0, 1.6, 8],
+    name: 'HANGAR 9', glb: 'assets/Maps/hangar.glb', nav: 'assets/Maps/hangar.navmesh', kb: [160, 84], bright: 1.25, fog: [0x1c2229, 34, 120], bg: 0x14191f, hemi: [0xe8f0ff, 0x3d444d], env: [0, 1.6, 8],
     zones: { west: { x: [-31, -24.5], z: [-15, 15] }, central: { x: [-14, 14], z: [-15, 15] }, east: { x: [24.5, 31], z: [-15, 15] } },
     lifts: [{ x: -27, z: 0 }, { x: 27, z: 0 }],
     survival: [{ x: [-31, -24.5], z: [-15, 15] }, { x: [-3, 3], z: [-15, -9.5] }, { x: [24.5, 31], z: [-15, 15] }, { x: [-3, 3], z: [9.5, 15] }],
@@ -84,7 +84,7 @@ const MAPS = {
     lobby: { x: 7.5, z: 12.5 },
   },
   manor: {
-    name: 'THE MANOR', glb: 'assets/Maps/manor.glb', nav: 'assets/Maps/manor.navmesh', kb: [2666, 160], bright: 1.5, fog: [0x120e0b, 30, 95], bg: 0x0d0b09, hemi: [0xfff0d8, 0x4a3a2a], env: [0, 2, 2],
+    name: 'THE MANOR', glb: 'assets/Maps/manor.glb', nav: 'assets/Maps/manor.navmesh', kb: [1431, 160], bright: 1.5, fog: [0x120e0b, 30, 95], bg: 0x0d0b09, hemi: [0xfff0d8, 0x4a3a2a], env: [0, 2, 2],
     zones: { west: { x: [-24.5, -10], z: [-17, 17] }, central: { x: [-8, 8], z: [-17, 17] }, east: { x: [10, 24.5], z: [-17, 17] } },
     lifts: [{ x: 0, z: 16.5 }, { x: 0, z: -16.5 }],
     survival: [{ x: [-24.5, -10], z: [-17, 17] }, { x: [10, 24.5], z: [-17, 17] }, { x: [-8, 8], z: [-17, -10] }, { x: [-8, 8], z: [10, 17] }],
@@ -94,7 +94,7 @@ const MAPS = {
     lobby: { x: 7.5, z: 12.5 },
   },
   station: {
-    name: 'THE STATION', glb: 'assets/Maps/station.glb', nav: 'assets/Maps/station.navmesh', kb: [711, 111], bright: 1.2, fog: [0x20252c, 50, 130], bg: 0x12161b, hemi: [0xf0f4ff, 0x50545a], env: [0, 2, -10],
+    name: 'THE STATION', glb: 'assets/Maps/station.glb', nav: 'assets/Maps/station.navmesh', kb: [414, 111], bright: 1.2, fog: [0x20252c, 50, 130], bg: 0x12161b, hemi: [0xf0f4ff, 0x50545a], env: [0, 2, -10],
     zones: { west: { x: [-33, -24], z: [-21, 21] }, central: { x: [-14, 14], z: [-20, 20] }, east: { x: [24, 33], z: [-21, 21] } },
     lifts: [{ x: -32, z: -10 }, { x: 32, z: 10 }],
     survival: [{ x: [-33, -24], z: [-21, 21] }, { x: [24, 33], z: [-21, 21] }, { x: [-14, 14], z: [-20, -8] }, { x: [-14, 14], z: [8, 20] }],
@@ -843,9 +843,9 @@ const LIBS = [
   ['lib/ai/yuka.min.js', 123], ['lib/navigation/recast-navigation.js', 790],
 ];
 const ASSET_FILES = {
-  npc: ['assets/NPCs/operator.glb', 1925],
-  pistol: ['assets/Guns/pistol.glb', 184], shotgun: ['assets/Guns/shotgun.glb', 107], ak47: ['assets/Guns/ak47.glb', 516],
-  m4: ['assets/Guns/m4.glb', 530], sniper: ['assets/Guns/sniper.glb', 660],
+  npc: ['assets/NPCs/operator.glb', 1231],
+  pistol: ['assets/Guns/pistol.glb', 139], shotgun: ['assets/Guns/shotgun.glb', 80], ak47: ['assets/Guns/ak47.glb', 427],
+  m4: ['assets/Guns/m4.glb', 212], sniper: ['assets/Guns/sniper.glb', 472],
 };
 const Keys = {
   map: null,
@@ -899,7 +899,7 @@ const World = {
     this.scene = new T.Scene();
     this.scene.fog = new T.Fog(0x2e2812, 10, 52);
     this.scene.background = new T.Color(0x0b0a07);
-    this.camera = new T.PerspectiveCamera(80, 1, 0.05, 120);
+    this.camera = new T.PerspectiveCamera(80, 1, 0.1, 120);
     this.camera.rotation.order = 'YXZ';
     this.scene.add(this.camera);
     this.hemi = new T.HemisphereLight(0xfff1c2, 0x5a4a24, 2.3);
@@ -957,12 +957,12 @@ const World = {
     if (p.t < 2) return;
     const avg = p.acc / p.n; p.acc = 0; p.n = 0; p.t = 0;
     if (Save.settings.quality === 'auto' && this.qualityLevel !== 'low') {
-      const limit = this.qualityLevel === 'high' ? 1 / 40 : 1 / 30;
+      const limit = this.qualityLevel === 'high' ? 1 / 50 : 1 / 40;
       p.slow = avg > limit ? (p.slow || 0) + 1 : 0;
       if (p.slow >= 2) { p.slow = 0; Save.settings.autoLevel = this.qualityLevel === 'high' ? 'med' : 'low'; Save.persist(); this.dropComposer(); this.applyQuality(); return; }
     }
     const old = this.pixelScale;
-    if (avg > 1 / 40) this.pixelScale = Math.max(0.75, this.pixelScale - 0.08);
+    if (avg > 1 / 50) this.pixelScale = Math.max(0.75, this.pixelScale - 0.08);
     else if (avg < 1 / 58 && this.pixelScale < 1) this.pixelScale = Math.min(1, this.pixelScale + 0.06);
     if (old !== this.pixelScale) this.resize();
   },
@@ -995,6 +995,8 @@ const World = {
       if (mat.name === 'light') this.lightPanelMat = mat;
       o.material = mat; this.basicMats.push(mat);
       this.mapMeshes.push(o);
+      if (T.computeBoundsTree && !o.geometry.boundsTree) T.computeBoundsTree.call(o.geometry);
+      if (T.acceleratedRaycast) o.raycast = T.acceleratedRaycast;
       if (!/^(RoofBaked|CarpetBake4|light|Lightsurround|PlugsBaked|Trim|Statue|Brass|Curtain|Rug|Tarp|Paint[ABC]|Scaffold)$|^Floor|Deco$/.test(mat.name)) this.wallMeshes.push(o);
     });
     this.scene.add(this.map);
@@ -1053,7 +1055,7 @@ const World = {
   },
   _v: null, _dir: null,
   rayWalls(origin, dir, far, meshes = this.wallMeshes) {
-    const rc = this.raycaster; rc.ray.origin.copy(origin); rc.ray.direction.copy(dir); rc.near = 0; rc.far = far;
+    const rc = this.raycaster; rc.ray.origin.copy(origin); rc.ray.direction.copy(dir); rc.near = 0; rc.far = far; rc.firstHitOnly = true;
     const hits = rc.intersectObjects(meshes, false);
     return hits.length ? hits[0] : null;
   },
@@ -1518,7 +1520,7 @@ const Player = {
     this.a = actor; actor.isPlayer = true; actor.alive = true; actor.hp = actor.maxHp; actor.spawnTime = Game.time;
     actor.pos.set(pos.x, pos.y, pos.z); actor.yaw = yaw; actor.pitch = 0;
     const c = Nav.closest(pos); this.ref = c ? c.ref : 0;
-    this.vel.set(0, 0, 0); this.vy = 0; this.jumpY = 0; this.onGround = true; this.reloadT = 0; this.switchT = 0; this.bloom = 0; this.recoilP = this.recoilY = 0;
+    this.vel.set(0, 0, 0); this.vy = 0; this.jumpY = 0; this.onGround = true; this.vault = null; this.reloadT = 0; this.switchT = 0; this.bloom = 0; this.recoilP = this.recoilY = 0;
     this.deathT = 0; this.interactT = 0;
     for (const s of this.slots) { const d = WEAPONS[s.id]; s.mag = d.mag; s.reserve = d.reserve; }
     if (!this.agent) this.agent = Nav.crowd.addAgent(pos, { radius: 0.4, height: 1.8, maxSpeed: 0, maxAcceleration: 0, separationWeight: 0, updateFlags: 0 });
@@ -1558,6 +1560,27 @@ const Player = {
     this.switchT = instant ? 0 : 0.42; this.switchTo = -1; this.reloadT = 0;
     Hud.weapon();
   },
+  tryVault(a, dx, dz) {
+    const W = World, o = this._vo || (this._vo = new THREE.Vector3()), d = this._vd || (this._vd = new THREE.Vector3()), y = a.pos.y;
+    let top = 0;
+    d.set(0, -1, 0);
+    for (const f of [0.3, 0.55, 0.85]) { o.set(a.pos.x + dx * f, y + 1.8, a.pos.z + dz * f); const hit = W.rayWalls(o, d, 1.75, W.mapMeshes); if (hit) top = Math.max(top, hit.point.y - y); }
+    if (top < 0.2 || top > 1.15) return false;
+    for (let st = 0.6; st <= 2.61; st += 0.2) {
+      const px = a.pos.x + dx * st, pz = a.pos.z + dz * st, c = Nav.closest({ x: px, y, z: pz });
+      if (!c || Math.hypot(c.x - px, c.z - pz) > 0.25 || c.y - y > 0.6 || c.y - y < -1.2) continue;
+      const dist = Math.hypot(c.x - a.pos.x, c.z - a.pos.z);
+      if (dist < 0.5) continue;
+      d.set((c.x - a.pos.x) / dist, 0, (c.z - a.pos.z) / dist);
+      for (const h of [1.25, 1.7]) { o.set(a.pos.x, y + h, a.pos.z); if (W.rayWalls(o, d, dist + 0.35, W.mapMeshes)) return false; }
+      const dn = this._vn || (this._vn = new THREE.Vector3(0, -1, 0));
+      for (let f = 0.3; f < dist; f += 0.3) { o.set(lerp(a.pos.x, c.x, f / dist), y + 1.8, lerp(a.pos.z, c.z, f / dist)); const hit = W.rayWalls(o, dn, 1.8 + Math.max(0, y - c.y), W.mapMeshes); if (hit) top = Math.max(top, hit.point.y - y); }
+      if (top > 1.15) return false;
+      this.vault = { x0: a.pos.x, z0: a.pos.z, y0: y, x1: c.x, z1: c.z, y1: c.y, ref: c.ref, t: 0, dur: clamp(st / 4.4, 0.3, 0.6), lift: top + 0.18, j0: this.jumpY };
+      return true;
+    }
+    return false;
+  },
   startReload() {
     const s = this.slot, d = this.weapon;
     if (this.reloadT > 0 || s.mag >= d.mag || s.reserve <= 0 || this.switchT > 0) return;
@@ -1589,12 +1612,24 @@ const Player = {
     const accel = this.onGround ? 14 : 3;
     this.vel.x = damp(this.vel.x, wx, accel, dt); this.vel.z = damp(this.vel.z, wz, accel, dt);
     const tgt = { x: a.pos.x + this.vel.x * dt, y: a.pos.y, z: a.pos.z + this.vel.z * dt };
-    const mv = Nav.move(this.ref, { x: a.pos.x, y: a.pos.y, z: a.pos.z }, tgt);
-    const moved = Math.hypot(mv.pos.x - a.pos.x, mv.pos.z - a.pos.z);
-    a.pos.x = mv.pos.x; a.pos.z = mv.pos.z; a.pos.y = mv.pos.y; this.ref = mv.ref;
+    let moved;
+    if (this.vault) {
+      const v = this.vault, px = a.pos.x, pz = a.pos.z;
+      v.t += dt; const k = clamp(v.t / v.dur, 0, 1);
+      a.pos.x = lerp(v.x0, v.x1, k); a.pos.z = lerp(v.z0, v.z1, k); a.pos.y = lerp(v.y0, v.y1, k);
+      moved = Math.hypot(a.pos.x - px, a.pos.z - pz);
+      this.jumpY = Math.sin(k * Math.PI) * v.lift + (1 - k) * v.j0; this.vy = 0;
+      if (k >= 1) { this.vault = null; this.ref = v.ref; this.jumpY = 0; this.onGround = true; this.landDip = 0.06; Audio.land(); Game.noise(a, 6); }
+    } else {
+      const want = Math.hypot(tgt.x - a.pos.x, tgt.z - a.pos.z), ox = a.pos.x, oz = a.pos.z;
+      const mv = Nav.move(this.ref, { x: a.pos.x, y: a.pos.y, z: a.pos.z }, tgt);
+      moved = Math.hypot(mv.pos.x - a.pos.x, mv.pos.z - a.pos.z);
+      a.pos.x = mv.pos.x; a.pos.z = mv.pos.z; a.pos.y = mv.pos.y; this.ref = mv.ref;
+      if (!this.onGround && want > 1e-3 && moved < want * 0.4) this.tryVault(a, (tgt.x - ox) / want, (tgt.z - oz) / want);
+    }
     if (this.agent) this.agent.teleport(a.pos);
     if (inp.pressed.has('jump') && this.onGround && !crouch) { this.vy = 4.6; this.onGround = false; }
-    if (!this.onGround) {
+    if (!this.onGround && !this.vault) {
       this.vy -= 13 * dt; this.jumpY += this.vy * dt;
       if (this.jumpY <= 0) { this.jumpY = 0; this.vy = 0; this.onGround = true; this.landDip = 0.06; Audio.land(); Game.noise(a, 6); }
     }
@@ -4176,6 +4211,7 @@ async function boot() {
     Input.attach(World.renderer.domElement);
     setStatus('assets');
     const loader = new THREE.GLTFLoader();
+    if (THREE.MeshoptDecoder) loader.setMeshoptDecoder(THREE.MeshoptDecoder);
     loader.register((parser) => {
       parser.textureLoader = new THREE.TextureLoader(parser.options.manager);
       parser.textureLoader.setCrossOrigin(parser.options.crossOrigin);

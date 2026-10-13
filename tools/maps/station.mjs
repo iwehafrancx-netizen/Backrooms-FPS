@@ -43,7 +43,7 @@ export async function build() {
   for (const x of [-27, -18, -9, 0, 9, 18, 27]) { k.box('Steel', x - 0.02, 8, -0.02, x + 0.02, H - 3, 0.02, { tint: [0.2, 0.2, 0.2], solid: false, skip: ['top'] }); k.box('light', x - 1.6, 7.8, -0.25, x + 1.6, 8.0, 0.25, { flat: true, solid: false, skip: ['top'] }); }
 
   k.floor('FloorStone', -X, -Z, X, Z, 0, 2, (x, z) => { const s = k.shade(x, 0, z) * (0.62 + 0.38 * clamp01(k.clearance(x, z, X, Z) / 1.4)); return [s, s, s]; });
-  k.box('Platform', -X + 6, 0, -4, X - 6, 0.02, 20, { tint: [0.95, 0.95, 0.95], solid: false, skip: ['x+', 'x-', 'z+', 'z-'], deco: true });
+  k.box('Platform', -X + 6, 0, -4, X - 6, 0.03, 20, { tint: [0.95, 0.95, 0.95], solid: false, skip: ['x+', 'x-', 'z+', 'z-'], deco: true });
   for (const z of [3.5, 14]) { k.box('Tracks', -X + 6, 0, z - 1.2, X - 6, 0.04, z + 1.2, { tint: [0.9, 0.9, 0.9], solid: false, skip: ['x+', 'x-', 'z+', 'z-'], deco: true }); for (const o of [-0.75, 0.75]) k.box('Steel', -X + 6, 0.04, z + o - 0.05, X - 6, 0.2, z + o + 0.05, { tint: [0.7, 0.7, 0.72], solid: false, deco: true }); }
   for (const [x0, z] of [[-27, 3.5], [3, 3.5], [-12, 14], [14, 14]]) {
     k.box('Train', x0, 0.5, z - 1.4, x0 + 22, 4.1, z + 1.4, { tint: [1, 1, 1], gain: 1.05 });
