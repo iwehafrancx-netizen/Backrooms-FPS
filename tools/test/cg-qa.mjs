@@ -296,7 +296,7 @@ if (run('S')) {
     const { browser, f } = await open({ w: 800, h: 450 });
     await ready(f);
     const kb = await f.evaluate(() => ({ first: Object.keys(window.__BR.Assets.guns).sort().join(','), files: performance.getEntriesByType('resource').filter((r) => /\.(glb|navmesh|js)$/.test(r.name)).map((r) => [r.name.split('/').pop(), Math.round(r.startTime)]) }));
-    const libs = kb.files.filter(([n]) => /three\.min|recast|yuka/.test(n)).map(([, t]) => t), assets = kb.files.filter(([n]) => /backroom\.glb|operator/.test(n)).map(([, t]) => t);
+    const libs = kb.files.filter(([n]) => /three\.min|recast|yuka/.test(n)).map(([, t]) => t), assets = kb.files.filter(([n]) => /hangar\.glb|operator/.test(n)).map(([, t]) => t);
     check('engine files and level files download at the same time', libs.length === 3 && assets.length === 2 && Math.max(...assets) < Math.max(...libs) + 200, JSON.stringify({ libs, assets }));
     await f.waitForFunction(() => window.__BR.Assets.guns.sniper && window.__BR.Assets.guns.shotgun, null, { timeout: 60000 });
     check('shotgun and sniper load in the background after the PLAY button', true, 'ready with ' + kb.first);
