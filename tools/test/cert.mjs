@@ -132,7 +132,7 @@ check('No alert/confirm/prompt/window.open', !/\b(alert|confirm|prompt)\s*\(|win
   await page.click('#end [data-a=menu]');
   await page.waitForFunction(() => window.__BR.Ui.cur === 'missions', null, { timeout: 15000 });
   check('Leaving the results screen requests an interstitial', (await ads()).filter((a) => a === 'requestInterstitialAd').length === n0 + 1);
-  check('CP shop: guns can be bought with CP', await page.evaluate(() => { const B = window.__BR; B.Save.data.cp = 2000; return B.Arsenal.buy('ak47') && B.Arsenal.owns('ak47'); }));
+  check('CP shop: guns can be bought with CP', await page.evaluate(() => { const B = window.__BR; B.Save.data.cp = 3000; return B.Arsenal.owns('ak47') && B.Arsenal.buy('shotgun') && B.Arsenal.owns('shotgun'); }));
   check('Ads + shop: no page errors', log.errors.length === 0, log.errors.slice(0, 3).join(' | '));
   await browser.close();
 }

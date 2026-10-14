@@ -50,7 +50,7 @@ const CREDITS = [
 ];
 const PRIMARIES = ['ak47', 'm4', 'sniper'];
 const SECONDARIES = ['pistol', 'shotgun'];
-const SHOP = { shotgun: 2999, ak47: 1900, m4: 4999, sniper: 7999 };
+const SHOP = { shotgun: 2999, m4: 3999, sniper: 5998 };
 const ARMOR = { ak47: { from: 2, step: 0.06, min: 0.64 }, m4: { from: 4, step: 0.035, min: 0.8 } };
 const armorMul = (id, mission) => { const a = ARMOR[id]; return a ? Math.max(a.min, 1 - a.step * Math.max(0, mission + 1 - a.from)) : 1; };
 
@@ -474,7 +474,7 @@ const Save = {
 
 const Arsenal = {
   rented: new Set(), mission: -1,
-  owns(id) { return id === 'pistol' || Save.data.owned.includes(id); },
+  owns(id) { return id === 'pistol' || id === 'ak47' || Save.data.owned.includes(id); },
   usable(id) { return id === 'none' || this.owns(id) || this.rented.has(id); },
   price(id) { return SHOP[id] || 0; },
   canBuy(id) { return !this.owns(id) && Save.data.cp >= this.price(id); },

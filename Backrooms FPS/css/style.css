@@ -328,6 +328,7 @@ body.ingame #view canvas { cursor: none; }
 body.touch .killfeed { top: 52px; }
 
 #touch { position: fixed; inset: 0; z-index: 21; display: none; pointer-events: none; }
+body.touch #hud { z-index: 22; }
 body.touch.ingame #touch { display: block; }
 .joy { position: absolute; left: calc(24px + var(--safe-l)); bottom: calc(26px + var(--safe-b)); width: calc(150px * var(--touch-scale)); height: calc(150px * var(--touch-scale)); pointer-events: auto; border-radius: 50%; background: rgba(11,10,7,.28); border: 1.5px solid rgba(233,220,164,.25); }
 .joy .knob { position: absolute; left: 50%; top: 50%; width: 42%; height: 42%; margin: -21%; border-radius: 50%; background: rgba(233,220,164,.35); border: 1.5px solid rgba(233,220,164,.6); }

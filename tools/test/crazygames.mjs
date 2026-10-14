@@ -30,7 +30,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   await shot(page, 'cg-quickplay');
   await page.evaluate(() => window.__BR.Game.toMenu('menu'));
   await page.waitForFunction(() => window.__BR.Ui.cur === 'menu', null, { timeout: 15000 });
-  check('after leaving that mission the AK-47 is locked again', await page.evaluate(() => !window.__BR.Arsenal.usable('ak47') && !window.__BR.Arsenal.owns('ak47')));
+  check('after leaving that mission the AK-47 stays available (it is free)', await page.evaluate(() => window.__BR.Arsenal.usable('ak47') && window.__BR.Arsenal.owns('ak47')));
   check('no page errors', !log.errors.length, log.errors.join(' | '));
   await browser.close();
 }
@@ -97,14 +97,14 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   check('no ad was ever requested during active gameplay', ends.every(([type, state, paused, over]) => state !== 'play' || paused || over), JSON.stringify(ends));
 
   const shop = await page.evaluate(() => {
-    const B = window.__BR, S = B.Save; S.data.cp = 2500;
+    const B = window.__BR, S = B.Save; S.data.cp = 4500;
     const A = B.Arsenal;
-    const r = { akBefore: A.usable('ak47'), buy: A.buy('ak47'), cpAfter: S.data.cp, akAfter: A.owns('ak47'), sniperBuy: A.canBuy('sniper') };
-    A.rent('shotgun', 3); r.rented = A.usable('shotgun');
+    const r = { akBefore: A.usable('ak47'), buy: A.buy('m4'), cpAfter: S.data.cp, m4After: A.owns('m4'), sniperBuy: A.canBuy('sniper') };
+    A.rent('shotgun', 4); r.rented = A.usable('shotgun');
     return r;
   });
-  check('BUY with CP unlocks a gun for good and takes the price', !shop.akBefore && shop.buy && shop.cpAfter === 600 && shop.akAfter, JSON.stringify(shop));
-  check('Sniper can be bought (when you have 7,999 CP)', !shop.sniperBuy && (await page.evaluate(() => { window.__BR.Save.data.cp = 7999; return window.__BR.Arsenal.canBuy('sniper'); })));
+  check('AK-47 is free; BUY with CP unlocks the M4 for good and takes 3,999 CP', shop.akBefore && shop.buy && shop.cpAfter === 501 && shop.m4After, JSON.stringify(shop));
+  check('Sniper can be bought (when you have 5,998 CP)', !shop.sniperBuy && (await page.evaluate(() => { window.__BR.Save.data.cp = 5998; return window.__BR.Arsenal.canBuy('sniper'); })));
   await page.evaluate(() => window.__BR.Game.start(4, 'ak47', 'shotgun'));
   await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 30000 });
   const inMission = await page.evaluate(() => window.__BR.Player.slots.map((s) => s.id).join());
@@ -113,7 +113,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   check('ad rental works for its mission and is gone after leaving', inMission === 'ak47,shotgun' && !(await page.evaluate(() => window.__BR.Arsenal.usable('shotgun'))), inMission);
   check('saved through the CrazyGames Data module', (await names(page)).includes('data.setItem'));
   const saved = await page.evaluate(() => JSON.parse(window.__cg.data['backrooms.save']));
-  check('purchase persisted in the save', saved.owned.includes('ak47'), JSON.stringify(saved.owned));
+  check('purchase persisted in the save', saved.owned.includes('m4'), JSON.stringify(saved.owned));
 
   check('after an ad error, ad buttons stay hidden for 2 minutes', !(await page.evaluate(() => window.__BR.Platform.ads.canReward())));
   await page.evaluate(() => { const now = performance.now.bind(performance); performance.now = () => now() + 125000; });
@@ -126,7 +126,7 @@ const names = (page) => page.evaluate(() => window.__cg.calls.map((c) => c[0] + 
   });
   check('gun offer: shows, skips the next mission, then shows again (every other mission)', !!offer.a && offer.b === null && !!offer.c, JSON.stringify(offer));
   const rot = await page.evaluate(() => { const B = window.__BR, U = B.Ui, m = B.MISSIONS[4], got = []; for (let k = 0; k < 4; k++) { U.lastOffer = null; got.push(U.offerPick(m, 10 + k)); } return [...new Set(got.filter(Boolean))].sort().join(); });
-  check('offer rotation includes every locked gun, Sniper too', rot === 'm4,shotgun,sniper', rot);
+  check('offer rotation includes every gun not owned yet, Sniper too (M4 was bought above, AK-47 is free)', rot === 'shotgun,sniper', rot);
 
   await page.evaluate(() => { window.__BR.Save.data.cp = 3500; const U = window.__BR.Ui; U.selMission = 4; U.show('briefing'); });
   await sleep(600);

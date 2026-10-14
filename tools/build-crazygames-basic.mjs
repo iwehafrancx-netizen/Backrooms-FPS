@@ -18,8 +18,6 @@ if (a < 0 || b < 0) throw new Error('ads block not found in the CrazyGames game.
 js = js.slice(0, a) + '    ads: { canReward: () => false, async midgame() {}, async rewarded() { return false; } },\n' + js.slice(b + endMark.length);
 js = js.replace('let SDK = null, ready = false, playing = false, adBusy = false, adCooldownUntil = 0;', 'let SDK = null, ready = false, playing = false;');
 if (/requestAd|adBusy|adCooldownUntil/.test(js)) throw new Error('ad code left in the Basic Launch build');
-const own = "owns(id) { return id === 'pistol' || Save.data.owned.includes(id); },";
-if (!js.includes(own)) throw new Error('Arsenal.owns not found in the CrazyGames game.js');
-js = js.replace(own, "owns(id) { return id === 'pistol' || id === 'ak47' || Save.data.owned.includes(id); },");
+
 fs.writeFileSync(path.join(out, 'game.js'), js);
-console.log('wrote', path.relative(path.resolve(here, '..'), out), '(Basic Launch: no ads, AK-47 free)');
+console.log('wrote', path.relative(path.resolve(here, '..'), out), '(Basic Launch: no ads)');

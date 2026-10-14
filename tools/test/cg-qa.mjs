@@ -185,7 +185,7 @@ if (run('A')) {
   check('LICENSES.txt has a line for every 3D model (no placeholders)', !/<model name>/.test(lic) && ['backroom.glb', 'operator.glb', 'pistol.glb', 'shotgun.glb', 'ak47.glb', 'm4.glb', 'sniper.glb'].every((n) => lic.includes(n)));
   const unknown = (lic.match(/author details not recorded/g) || []).length;
   if (unknown) { todo.push(`${unknown} downloaded models (map, M4, sniper) have no recorded author or license (your choice to skip)`); console.log(`NOTE  [A package] ${unknown} downloaded models have no recorded author/license (owner's choice)`); }
-  check('gun prices: Tri-Barrel 2,999, AK-47 1,900, M4 4,999, Sniper 7,999 CP', /const SHOP = \{ shotgun: 2999, ak47: 1900, m4: 4999, sniper: 7999 \};/.test(js));
+  check('gun prices: AK-47 free, Tri-Barrel 2,999, M4 3,999, Sniper 5,998 CP', /const SHOP = \{ shotgun: 2999, m4: 3999, sniper: 5998 \};/.test(js) && /id === 'ak47' \|\| Save\.data\.owned/.test(js));
   check('the old fluorescent hum is gone; menu music file ships in the zip', !/startHum|humNodes/.test(js) && files.includes('assets/Audio/music.mp3'));
 }
 
@@ -461,7 +461,7 @@ if (run('F')) {
     await page.reload();
     const f2 = page.frame({ url: /\/game\/index\.html/ });
     await ready(f2, true);
-    check('ad blocker: progress survives a reload', await f2.evaluate(() => !!(window.__BR.Save.data.missions.m1 && window.__BR.Save.data.missions.m1.cleared)));
+    check('ad blocker: progress survives a reload', await f2.evaluate(() => !!(window.__BR.Save.data.missions.ctf1 && window.__BR.Save.data.missions.ctf1.cleared)));
     check('ad blocker: no errors or missing files (only the blocked SDK fails)', !log.errors.length && !log.external.length && !log.bad.length, [...log.errors, ...log.external, ...log.bad].slice(0, 4).join(' | '));
     await browser.close();
   }
@@ -597,7 +597,7 @@ if (run('J')) {
     await page.reload();
     const f2 = page.frame({ url: /\/game\/index\.html/ });
     await ready(f2);
-    const s = await f2.evaluate(() => ({ cleared: !!(window.__BR.Save.data.missions.m1 && window.__BR.Save.data.missions.m1.cleared), cp: window.__BR.Save.data.cp, read: window.__cg.calls.some((c) => c[0] === 'data.getItem') }));
+    const s = await f2.evaluate(() => ({ cleared: !!(window.__BR.Save.data.missions.ctf1 && window.__BR.Save.data.missions.ctf1.cleared), cp: window.__BR.Save.data.cp, read: window.__cg.calls.some((c) => c[0] === 'data.getItem') }));
     check('reload: progress and CP come back from the Data module', s.cleared && s.cp === cp && s.read, JSON.stringify(s));
     await f2.click('#boot-enter'); await onScreen(f2, 'menu');
     check('reload: returning player lands on the menu, not a forced mission', await f2.evaluate(() => window.__BR.Ui.cur === 'menu'));
@@ -615,16 +615,16 @@ if (run('J')) {
 
 if (run('P')) {
   section = 'P shop + soldiers';
-  const { browser, page, f, log } = await open({ w: 800, h: 450, query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, xp: 0, cp: 2000, owned: [], played: 3 }) });
+  const { browser, page, f, log } = await open({ w: 800, h: 450, query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, xp: 0, cp: 4000, owned: [], played: 3 }) });
   await ready(f);
   await f.click('#boot-enter'); await onScreen(f, 'menu');
   await f.evaluate(() => { const U = window.__BR.Ui; U.selMission = 3; U.show('briefing'); }); await onScreen(f, 'briefing'); await settle(f);
   const cards = await f.evaluate(() => Object.fromEntries(['ak47', 'shotgun', 'm4', 'sniper'].map((id) => { const b = document.querySelector(`#briefing .wcard[data-w="${id}"] [data-buy]`); return [id, b ? { txt: b.innerText.replace(/\s+/g, ' ').trim(), can: b.classList.contains('can'), bg: getComputedStyle(b).backgroundColor } : null]; })));
   await page.screenshot({ path: shotName('shop-buy-now') });
-  check('2,000 CP: AK-47 shows a green BUY NOW with the price', cards.ak47 && cards.ak47.can && /^BUY NOW 1,900 CP$/.test(cards.ak47.txt) && cards.ak47.bg !== cards.m4.bg, JSON.stringify(cards));
-  check('2,000 CP: Tri-Barrel, M4 and Sniper show a dim BUY with their price (not affordable yet)', !cards.shotgun.can && /^BUY 2,999 CP$/.test(cards.shotgun.txt) && !cards.m4.can && /^BUY 4,999 CP$/.test(cards.m4.txt) && !cards.sniper.can && /^BUY 7,999 CP$/.test(cards.sniper.txt), JSON.stringify([cards.shotgun, cards.m4, cards.sniper]));
-  await f.click('#briefing .wcard[data-w="ak47"] [data-buy]'); await f.click('#briefing .wcard[data-w="ak47"] [data-buy]'); await sleep(300);
-  check('BUY NOW: confirm tap buys the AK-47 for 1,900 CP', await f.evaluate(() => window.__BR.Arsenal.owns('ak47') && window.__BR.Save.data.cp === 100));
+  check('AK-47 is free: no price, no BUY button', !cards.ak47, JSON.stringify(cards));
+  check('4,000 CP: Tri-Barrel 2,999 and M4 3,999 show a green BUY NOW, Sniper 5,998 a dim BUY', cards.shotgun.can && /^BUY NOW 2,999 CP$/.test(cards.shotgun.txt) && cards.m4.can && /^BUY NOW 3,999 CP$/.test(cards.m4.txt) && !cards.sniper.can && /^BUY 5,998 CP$/.test(cards.sniper.txt) && cards.m4.bg !== cards.sniper.bg, JSON.stringify([cards.shotgun, cards.m4, cards.sniper]));
+  await f.click('#briefing .wcard[data-w="m4"] [data-buy]'); await f.click('#briefing .wcard[data-w="m4"] [data-buy]'); await sleep(300);
+  check('BUY NOW: confirm tap buys the M4 for 3,999 CP', await f.evaluate(() => window.__BR.Arsenal.owns('m4') && window.__BR.Save.data.cp === 1));
 
   await f.evaluate(() => window.__BR.Game.start(2, 'ak47', 'pistol'));
   await inPlay(f);
