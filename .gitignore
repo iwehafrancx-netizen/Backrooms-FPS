@@ -1,7 +1,7 @@
 node_modules/
-tools/node_modules/
-dist/
-tools/test/out/
-Backrooms FPS Standalone/
-Backrooms FPS CrazyGames Basic/
-Backrooms FPS Playgama/
+Backrooms/tools/node_modules/
+Backrooms/dist/
+Backrooms/tools/test/out/
+Backrooms/Backrooms FPS Standalone/
+Backrooms/Backrooms FPS CrazyGames Basic/
+Backrooms/Backrooms FPS Playgama/
