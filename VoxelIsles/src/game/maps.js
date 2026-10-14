@@ -75,13 +75,13 @@ export function tree(w, r, x, y, z, kind, pal) {
   }
 }
 
-function decorate(w, r, cells, pal, density = 0.18, trees = 1) {
+function decorate(w, r, cells, pal, density = 0.18, trees = 1, ok = () => true) {
   const free = cells.filter(([, , , d]) => d < 0.8);
   let placed = 0;
   for (let i = 0; i < trees * 6 && placed < trees; i++) {
     const c = free[Math.floor(r() * free.length)];
     if (!c || c[3] < 0.25) continue;
-    if (w.get(c[0], c[1] + 1, c[2])) continue;
+    if (w.get(c[0], c[1] + 1, c[2]) || !ok(c[0], c[2])) continue;
     tree(w, r, c[0], c[1], c[2], pal.tree, pal); placed++;
   }
   if (!pal.plants.length) return;
@@ -104,8 +104,8 @@ export function buildSkyIslands(seed, theme = 'meadow', players = 8) {
     const side = [-Math.sin(a), Math.cos(a)];
     const chestSpots = [[cx + Math.round(side[0] * 3), cz + Math.round(side[1] * 3)], [cx - Math.round(side[0] * 3), cz - Math.round(side[1] * 3)], [cx - Math.round(Math.cos(a) * 3), cz - Math.round(Math.sin(a) * 3)]];
     for (const [x, z] of chestSpots) { const y = w.topY(x, z); if (y > 0) chestAt(w, chests, x, (w.get(x, y, z) >= 40 ? y : y + 1), z, 'spawn'); }
-    decorate(w, r, cells, pal, 0.12, 1);
-    spawns.push({ x: cx + 0.5, y: sy + 1, z: cz + 0.5, yaw: Math.atan2(cx, cz) + Math.PI, look: [tx, tz] });
+    decorate(w, r, cells, pal, 0.12, 1, (x, z) => (x - cx) * Math.cos(a) + (z - cz) * Math.sin(a) > 1.5 && Math.hypot(x - cx, z - cz) > 2.5 && (x - cx) * Math.cos(a) + (z - cz) * Math.sin(a) > 2.4);
+    spawns.push({ x: cx + 0.5, y: sy + 1, z: cz + 0.5, yaw: Math.atan2(cx, cz), look: [tx, tz] });
   }
   const midCells = island(w, n, 0, 0, TOP + 2, 10.5, pal, { depth: 13, rough: 0.5 });
   decorate(w, r, midCells, pal, 0.1, 3);

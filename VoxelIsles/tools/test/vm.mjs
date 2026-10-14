@@ -1,0 +1,13 @@
+import { chromium } from 'playwright-core';
+const cfg = process.argv[2] || '{}', out = process.argv[3] || 'test/out/vm.png', item = process.argv[4] || '';
+const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const page = await (await browser.newContext({ viewport: { width: 960, height: 540 } })).newPage();
+page.on('pageerror', (e) => console.log('pageerror', e.message));
+await page.goto('http://localhost:8766/dev/index.html');
+await page.waitForTimeout(1500);
+await page.evaluate(() => window.__vi.startLobby('sky', { fast: true, countdown: 0, firstWait: 0, map: 'meadow' }));
+await page.waitForFunction(() => window.__vi.m && window.__vi.m.state === 'play', null, { timeout: 20000 });
+await page.evaluate(([cfg, item]) => { const a = window.__vi; Object.assign(a.view.vmCfg, JSON.parse(cfg)); if (item) { a.me.inv.clear(); a.me.inv.add(+item, 1); a.me.sel = 0; } a.view.vmHeldId = -2; a.view.placeArm(); a.me.pitch = -0.2; }, [cfg, item]);
+await page.waitForTimeout(600);
+await page.screenshot({ path: out });
+await browser.close();

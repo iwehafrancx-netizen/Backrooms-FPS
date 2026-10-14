@@ -4,6 +4,12 @@ import { ITEMS } from './items.js';
 import { makeCharacter, poseCharacter, setArmor, itemMesh, makeEgg, nameTag } from './models.js';
 import { eyeHeight } from './physics.js';
 
+export const VM = {
+  shoulder: [0.5, -0.62, -0.18], dir: [-0.2, 0.5, -1], roll: 0.5, scale: 1,
+  block: { scale: 0.24, rot: [0.0, 0.8, 0], off: [-0.05, 0.07, -0.08] },
+  tool: { scale: 0.5, rot: [0, -0.8, 0.2], off: [-0.08, 0.12, -0.1] },
+};
+
 export class View {
   constructor(R, atlas) {
     this.R = R; this.atlas = atlas; this.scene = R.scene;
@@ -21,7 +27,7 @@ export class View {
     this.vmScene.add(new THREE.HemisphereLight(0xffffff, 0x777777, 2.2));
     const dl = new THREE.DirectionalLight(0xffffff, 1.2); dl.position.set(0.3, 1, 0.5); this.vmScene.add(dl);
     this.vm = new THREE.Group(); this.vmScene.add(this.vm);
-    this.vmHeld = null; this.vmHeldId = -1; this.vmSwing = 0; this.vmBob = 0;
+    this.vmHeld = null; this.vmHeldId = -1; this.vmSwing = 0; this.vmBob = 0; this.vmCfg = JSON.parse(JSON.stringify(VM));
   }
 
   setMatch(m, local) {
@@ -57,11 +63,18 @@ export class View {
   buildViewmodelArm() {
     if (this.vmArm) this.vm.remove(this.vmArm);
     const ch = makeCharacter(this.local ? this.local.skin : 1, this.m && this.m.mode.id === 'egg' && this.local ? this.local.team : -1);
-    const geo = ch.armR.children[0].geometry.clone();
-    this.vmArm = new THREE.Mesh(geo, ch.mat);
-    this.vmArm.position.set(0.42, -0.42, -0.5); this.vmArm.rotation.set(-1.25, 0.2, 0.25);
-    this.vmArm.scale.setScalar(1.15);
+    this.vmArm = new THREE.Mesh(ch.armR.children[0].geometry.clone(), ch.mat);
     this.vm.add(this.vmArm);
+    this.placeArm();
+  }
+  placeArm() {
+    const c = this.vmCfg;
+    const dir = new THREE.Vector3(...c.dir).normalize();
+    this.vmArm.position.set(...c.shoulder);
+    this.vmArm.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), dir);
+    this.vmArm.rotateY(c.roll);
+    this.vmArm.scale.setScalar(c.scale);
+    this.vmHandPos = new THREE.Vector3(...c.shoulder).addScaledVector(dir, 0.675 * c.scale * 0.92);
   }
 
   heldModel(id) {
@@ -153,12 +166,12 @@ export class View {
       this.vmEquip = 0.25;
       if (id) {
         const mesh = itemMesh(id, this.atlas, this.R.atlasTex);
-        if (ITEMS[id].kind === 'block') { mesh.scale.setScalar(0.28); mesh.position.set(0.5, -0.36, -0.72); mesh.rotation.set(0.15, 0.75, 0); }
-        else { mesh.scale.setScalar(0.85); mesh.position.set(0.5, -0.3, -0.62); mesh.rotation.set(0.1, -1.3, 0.35); }
+        const c = ITEMS[id].kind === 'block' ? this.vmCfg.block : this.vmCfg.tool;
+        mesh.scale.setScalar(c.scale); mesh.rotation.set(...c.rot, 'YXZ');
+        mesh.position.copy(this.vmHandPos).add(new THREE.Vector3(...c.off));
         this.vmHeld = mesh; this.vm.add(mesh);
       }
     }
-    if (this.vmArm) this.vmArm.visible = !id || ITEMS[id].kind === 'block' ? true : true;
     if (a.swingT > 0.2 && this.vmSwing <= 0) this.vmSwing = 0.28;
     this.vmSwing = Math.max(0, this.vmSwing - dt);
     this.vmEquip = Math.max(0, (this.vmEquip || 0) - dt);

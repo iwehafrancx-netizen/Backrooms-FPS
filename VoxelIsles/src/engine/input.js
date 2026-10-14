@@ -30,7 +30,7 @@ export class Input {
     document.addEventListener('pointerlockchange', () => { const was = this.locked; this.locked = document.pointerLockElement === this.canvas; if (was && !this.locked && this.onUnlock) this.onUnlock(); });
     addEventListener('touchstart', () => { if (!this.touch) { this.touch = true; if (this.onTouch) this.onTouch(); } }, { passive: true, capture: true });
   }
-  requestLock() { if (this.touch) return; try { const p = this.canvas.requestPointerLock({ unadjustedMovement: true }); if (p && p.catch) p.catch(() => { try { this.canvas.requestPointerLock(); } catch (e) {} }); } catch (e) { try { this.canvas.requestPointerLock(); } catch (er) {} } }
+  requestLock() { if (this.touch) return; try { const p = this.canvas.requestPointerLock({ unadjustedMovement: true }); if (p && p.catch) p.catch((e) => { if (e && e.name === 'NotSupportedError') try { const q = this.canvas.requestPointerLock(); if (q && q.catch) q.catch(() => {}); } catch (er) {} }); } catch (e) { try { this.canvas.requestPointerLock(); } catch (er) {} } }
   exitLock() { if (document.pointerLockElement) document.exitPointerLock(); }
   enable(on) { this.enabled = on; if (!on) { this.keys.clear(); this.mouse.l = this.mouse.r = false; this.t.attack = this.t.place = this.t.jump = false; } }
 

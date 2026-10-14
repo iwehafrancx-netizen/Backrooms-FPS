@@ -33,7 +33,7 @@ export class Audio {
     s.connect(fl).connect(g).connect(at || this.sfx); s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.05);
   }
   tone(f, dur, type = 'square', gain = 0.15, slide = 0, t0 = 0, at) {
-    if (!this.ctx) return;
+    if (!this.ctx || !(gain > 0.002)) return;
     const c = this.ctx, t = c.currentTime + t0;
     const o = c.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, f * slide), t + dur);
     const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);

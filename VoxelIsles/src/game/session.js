@@ -25,7 +25,7 @@ export class Lobby {
     this.mode = MODES[mode]; this.slots = [me]; this.t = 0; this.state = 'search';
     this.firstWait = opts.firstWait ?? 2.2; this.gap = opts.gap ?? [0.35, 1.3];
     this.next = this.firstWait; this.countdown = opts.countdown ?? 4; this.names = new Set([me.name]);
-    this.map = this.mode.maps[Math.floor(Math.random() * this.mode.maps.length)];
+    this.fast = !!opts.fast; this.map = opts.map ? this.mode.maps.find((m) => m.id === opts.map) : this.mode.maps[Math.floor(Math.random() * this.mode.maps.length)];
   }
   update(dt) {
     this.t += dt;
@@ -36,7 +36,7 @@ export class Lobby {
         this.names.add(name);
         this.slots.push({ name, bot: true, skin: Math.floor(Math.random() * 100000), skill: 0.25 + Math.random() * 0.6 });
         const left = this.mode.players - this.slots.length;
-        this.next += left > 3 ? this.gap[0] + Math.random() * (this.gap[1] - this.gap[0]) : 0.25 + Math.random() * 0.5;
+        this.next += this.fast ? 0 : left > 3 ? this.gap[0] + Math.random() * (this.gap[1] - this.gap[0]) : 0.25 + Math.random() * 0.5;
       }
       if (this.slots.length >= this.mode.players) { this.state = 'countdown'; this.cd = this.countdown; }
     } else if (this.state === 'countdown') {

@@ -15,7 +15,7 @@ export class Renderer {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', alpha: false, stencil: false });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, 1, 0.08, 220);
+    this.camera = new THREE.PerspectiveCamera(75, 1, 0.08, 260);
     this.scene.add(this.camera);
     this.hemi = new THREE.HemisphereLight(0xffffff, 0x666666, 1.6);
     this.sun = new THREE.DirectionalLight(0xffffff, 1.4);
@@ -60,7 +60,7 @@ export class Renderer {
   setTheme(name) {
     const t = THEMES[name] || THEMES.meadow;
     this.theme = t;
-    this.scene.fog = new THREE.Fog(t.fog, 40, 150);
+    this.scene.fog = new THREE.Fog(t.fog, 60, 190);
     this.hemi.color.set(t.hemiSky); this.hemi.groundColor.set(t.hemiGround);
     this.sun.color.set(t.sun);
     if (this.sky) { this.scene.remove(this.sky); this.sky.geometry.dispose(); }

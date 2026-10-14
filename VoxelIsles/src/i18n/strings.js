@@ -1,0 +1,89 @@
+const en = {
+  play: 'PLAY', chooseGame: 'Choose a game', skins: 'Skins', settings: 'Settings', howto: 'How to play', back: 'Back', level: 'Level {n}', loading: 'Loading…',
+  sky: 'Sky Islands', skyDesc: 'Loot your island, bridge across the sky and knock everyone into the void. Last one standing wins!', solo8: 'Solo · 8 players',
+  egg: 'Egg Defense', eggDesc: 'Guard your team egg, buy gear with iron & gold, then go break the enemy eggs!', teams4x2: '4 teams of 2',
+  soon: 'Coming soon', race: 'Block Race', raceDesc: 'Parkour sprint over floating blocks.', spleef: 'Spleef Arena', spleefDesc: 'Dig the floor out from under your rivals.',
+  finding: 'Finding players…', starting: 'Starting in {n}', cancel: 'Cancel', you: 'You', yourTeam: 'Your team: {team}',
+  go: 'GO!', alive: '{n} players left', refillIn: 'Chest refill {t}', borderIn: 'Border {t}', borderNow: 'Border closing!', refilled: 'Chests refilled!', borderMsg: 'The border is closing in!',
+  suddenIn: 'Eggs crumble {t}', sudden: 'Sudden death! All eggs are gone!', eggGone: '{team} egg destroyed!', yourEgg: 'Your egg was destroyed!', noRespawn: 'You will no longer respawn', teamOut: '{team} team eliminated!',
+  died: 'You died!', respawnIn: 'Respawning in {n}', fell: 'fell into the void', border: 'was caught by the border', diedMsg: 'died',
+  victory: 'VICTORY!', gameOver: 'GAME OVER', placeOf: 'You placed #{n} of {m}', teamWins: '{team} team wins!', winnerIs: '{name} wins!',
+  kills: 'Kills', reward: 'Coins', xp: 'XP', playAgain: 'Play again', changeGame: 'Change game', doubleCoins: 'Double coins', spectate: 'Spectate', spectating: 'Spectating {name}', leave: 'Leave',
+  paused: 'Paused', resume: 'Resume', leaveMatch: 'Leave match', clickToPlay: 'Click to play',
+  sens: 'Look sensitivity', fov: 'Field of view', quality: 'Graphics', qAuto: 'Auto', qLow: 'Low', qHigh: 'High', volume: 'Sound', music: 'Music', language: 'Language', invert: 'Invert look', on: 'On', off: 'Off', auto: 'Auto',
+  chest: 'Chest', takeAll: 'Take all', inventory: 'Inventory', shop: 'Shop', cBlocks: 'Blocks', cCombat: 'Combat', cArmor: 'Armor', cTools: 'Tools', cUtility: 'Utility',
+  wool: 'Wool', chainSet: 'Chain armor', ironSet: 'Iron armor', diamondSet: 'Diamond armor', notEnough: 'Not enough', bought: 'Bought!',
+  equip: 'Equip', equipped: 'Equipped', levelUp: 'Level up! +25 coins', kill1: '+1 kill',
+  team_0: 'Red', team_1: 'Blue', team_2: 'Green', team_3: 'Yellow', team_4: 'Purple', team_5: 'Orange', team_6: 'Cyan', team_7: 'Pink',
+  h1: 'Move with WASD, jump with Space, sprint with Ctrl or double-tap W.', h2: 'Hold Shift to sneak: you will not fall off edges, perfect for bridging.', h3: 'Left click breaks blocks and attacks. Right click places blocks, opens chests and eats.', h4: 'On mobile: left stick to move, drag to look, buttons to break, place and jump. Tap the world to place a block.',
+  h5: 'Sky Islands: loot your chests, build bridges to other islands, be the last one standing.', h6: 'Egg Defense: collect iron and gold at your generator, buy gear from the shopkeeper and protect your egg. While your egg survives, you respawn!',
+};
+
+const es = {
+  play: 'JUGAR', chooseGame: 'Elige un juego', skins: 'Aspectos', settings: 'Ajustes', howto: 'Cómo jugar', back: 'Volver', level: 'Nivel {n}', loading: 'Cargando…',
+  sky: 'Islas del Cielo', skyDesc: 'Saquea tu isla, construye puentes y tira a todos al vacío. ¡Gana el último en pie!', solo8: 'Solo · 8 jugadores',
+  egg: 'Defensa del Huevo', eggDesc: 'Protege el huevo de tu equipo, compra equipo con hierro y oro y rompe los huevos rivales.', teams4x2: '4 equipos de 2',
+  soon: 'Próximamente', race: 'Carrera de Bloques', raceDesc: 'Parkour sobre bloques flotantes.', spleef: 'Arena Spleef', spleefDesc: 'Rompe el suelo bajo tus rivales.',
+  finding: 'Buscando jugadores…', starting: 'Empieza en {n}', cancel: 'Cancelar', you: 'Tú', yourTeam: 'Tu equipo: {team}',
+  go: '¡YA!', alive: 'Quedan {n} jugadores', refillIn: 'Recarga de cofres {t}', borderIn: 'Borde {t}', borderNow: '¡El borde se cierra!', refilled: '¡Cofres recargados!', borderMsg: '¡El borde se está cerrando!',
+  suddenIn: 'Los huevos caen {t}', sudden: '¡Muerte súbita! ¡No quedan huevos!', eggGone: '¡Huevo {team} destruido!', yourEgg: '¡Tu huevo fue destruido!', noRespawn: 'Ya no reaparecerás', teamOut: '¡Equipo {team} eliminado!',
+  died: '¡Has muerto!', respawnIn: 'Reapareces en {n}', fell: 'cayó al vacío', border: 'fue atrapado por el borde', diedMsg: 'murió',
+  victory: '¡VICTORIA!', gameOver: 'FIN DEL JUEGO', placeOf: 'Quedaste #{n} de {m}', teamWins: '¡Gana el equipo {team}!', winnerIs: '¡{name} gana!',
+  kills: 'Bajas', reward: 'Monedas', xp: 'XP', playAgain: 'Jugar otra vez', changeGame: 'Cambiar juego', doubleCoins: 'Doblar monedas', spectate: 'Observar', spectating: 'Observando a {name}', leave: 'Salir',
+  paused: 'Pausa', resume: 'Continuar', leaveMatch: 'Salir de la partida', clickToPlay: 'Haz clic para jugar',
+  sens: 'Sensibilidad', fov: 'Campo de visión', quality: 'Gráficos', qAuto: 'Auto', qLow: 'Bajo', qHigh: 'Alto', volume: 'Sonido', music: 'Música', language: 'Idioma', invert: 'Invertir vista', on: 'Sí', off: 'No', auto: 'Auto',
+  chest: 'Cofre', takeAll: 'Tomar todo', inventory: 'Inventario', shop: 'Tienda', cBlocks: 'Bloques', cCombat: 'Combate', cArmor: 'Armadura', cTools: 'Herramientas', cUtility: 'Utilidad',
+  wool: 'Lana', chainSet: 'Armadura de malla', ironSet: 'Armadura de hierro', diamondSet: 'Armadura de diamante', notEnough: 'No alcanza', bought: '¡Comprado!',
+  equip: 'Usar', equipped: 'En uso', levelUp: '¡Subiste de nivel! +25 monedas', kill1: '+1 baja',
+  team_0: 'Rojo', team_1: 'Azul', team_2: 'Verde', team_3: 'Amarillo', team_4: 'Morado', team_5: 'Naranja', team_6: 'Cian', team_7: 'Rosa',
+  h1: 'Muévete con WASD, salta con Espacio, corre con Ctrl o doble toque en W.', h2: 'Mantén Shift para agacharte: no caerás por los bordes, ideal para construir puentes.', h3: 'Clic izquierdo rompe bloques y ataca. Clic derecho coloca bloques, abre cofres y come.', h4: 'En móvil: joystick para moverte, desliza para mirar y usa los botones para romper, colocar y saltar. Toca el mundo para colocar un bloque.',
+  h5: 'Islas del Cielo: saquea tus cofres, construye puentes y sé el último en pie.', h6: 'Defensa del Huevo: junta hierro y oro en tu generador, compra equipo al tendero y protege tu huevo. ¡Mientras viva, reapareces!',
+};
+
+const pt = {
+  play: 'JOGAR', chooseGame: 'Escolha um jogo', skins: 'Visuais', settings: 'Ajustes', howto: 'Como jogar', back: 'Voltar', level: 'Nível {n}', loading: 'Carregando…',
+  sky: 'Ilhas do Céu', skyDesc: 'Saqueie sua ilha, construa pontes e derrube todos no vazio. O último de pé vence!', solo8: 'Solo · 8 jogadores',
+  egg: 'Defesa do Ovo', eggDesc: 'Proteja o ovo do seu time, compre equipamentos com ferro e ouro e quebre os ovos inimigos!', teams4x2: '4 times de 2',
+  soon: 'Em breve', race: 'Corrida de Blocos', raceDesc: 'Parkour sobre blocos flutuantes.', spleef: 'Arena Spleef', spleefDesc: 'Quebre o chão debaixo dos rivais.',
+  finding: 'Procurando jogadores…', starting: 'Começa em {n}', cancel: 'Cancelar', you: 'Você', yourTeam: 'Seu time: {team}',
+  go: 'JÁ!', alive: 'Restam {n} jogadores', refillIn: 'Baús recarregam {t}', borderIn: 'Borda {t}', borderNow: 'A borda está fechando!', refilled: 'Baús recarregados!', borderMsg: 'A borda está se fechando!',
+  suddenIn: 'Ovos caem {t}', sudden: 'Morte súbita! Todos os ovos se foram!', eggGone: 'Ovo {team} destruído!', yourEgg: 'Seu ovo foi destruído!', noRespawn: 'Você não vai mais renascer', teamOut: 'Time {team} eliminado!',
+  died: 'Você morreu!', respawnIn: 'Renascendo em {n}', fell: 'caiu no vazio', border: 'foi pego pela borda', diedMsg: 'morreu',
+  victory: 'VITÓRIA!', gameOver: 'FIM DE JOGO', placeOf: 'Você ficou em #{n} de {m}', teamWins: 'Time {team} vence!', winnerIs: '{name} venceu!',
+  kills: 'Abates', reward: 'Moedas', xp: 'XP', playAgain: 'Jogar de novo', changeGame: 'Trocar jogo', doubleCoins: 'Dobrar moedas', spectate: 'Assistir', spectating: 'Assistindo {name}', leave: 'Sair',
+  paused: 'Pausado', resume: 'Continuar', leaveMatch: 'Sair da partida', clickToPlay: 'Clique para jogar',
+  sens: 'Sensibilidade', fov: 'Campo de visão', quality: 'Gráficos', qAuto: 'Auto', qLow: 'Baixo', qHigh: 'Alto', volume: 'Som', music: 'Música', language: 'Idioma', invert: 'Inverter visão', on: 'Sim', off: 'Não', auto: 'Auto',
+  chest: 'Baú', takeAll: 'Pegar tudo', inventory: 'Inventário', shop: 'Loja', cBlocks: 'Blocos', cCombat: 'Combate', cArmor: 'Armadura', cTools: 'Ferramentas', cUtility: 'Utilidades',
+  wool: 'Lã', chainSet: 'Armadura de malha', ironSet: 'Armadura de ferro', diamondSet: 'Armadura de diamante', notEnough: 'Insuficiente', bought: 'Comprado!',
+  equip: 'Usar', equipped: 'Em uso', levelUp: 'Subiu de nível! +25 moedas', kill1: '+1 abate',
+  team_0: 'Vermelho', team_1: 'Azul', team_2: 'Verde', team_3: 'Amarelo', team_4: 'Roxo', team_5: 'Laranja', team_6: 'Ciano', team_7: 'Rosa',
+  h1: 'Mova-se com WASD, pule com Espaço, corra com Ctrl ou toque duplo no W.', h2: 'Segure Shift para agachar: você não cai das bordas, perfeito para construir pontes.', h3: 'Clique esquerdo quebra blocos e ataca. Clique direito coloca blocos, abre baús e come.', h4: 'No celular: analógico para andar, arraste para olhar e use os botões para quebrar, colocar e pular. Toque no mundo para colocar um bloco.',
+  h5: 'Ilhas do Céu: saqueie seus baús, construa pontes e seja o último de pé.', h6: 'Defesa do Ovo: colete ferro e ouro no gerador, compre equipamentos com o lojista e proteja seu ovo. Enquanto ele existir, você renasce!',
+};
+
+const fr = {
+  play: 'JOUER', chooseGame: 'Choisis un jeu', skins: 'Skins', settings: 'Options', howto: 'Comment jouer', back: 'Retour', level: 'Niveau {n}', loading: 'Chargement…',
+  sky: 'Îles Célestes', skyDesc: 'Pille ton île, construis des ponts et pousse tout le monde dans le vide. Le dernier debout gagne !', solo8: 'Solo · 8 joueurs',
+  egg: 'Défense de l’Œuf', eggDesc: 'Protège l’œuf de ton équipe, achète de l’équipement avec du fer et de l’or, puis casse les œufs ennemis !', teams4x2: '4 équipes de 2',
+  soon: 'Bientôt', race: 'Course de Blocs', raceDesc: 'Parkour sur des blocs flottants.', spleef: 'Arène Spleef', spleefDesc: 'Creuse le sol sous tes rivaux.',
+  finding: 'Recherche de joueurs…', starting: 'Début dans {n}', cancel: 'Annuler', you: 'Toi', yourTeam: 'Ton équipe : {team}',
+  go: 'GO !', alive: '{n} joueurs restants', refillIn: 'Recharge des coffres {t}', borderIn: 'Bordure {t}', borderNow: 'La bordure se resserre !', refilled: 'Coffres rechargés !', borderMsg: 'La bordure se resserre !',
+  suddenIn: 'Fin des œufs {t}', sudden: 'Mort subite ! Plus aucun œuf !', eggGone: 'Œuf {team} détruit !', yourEgg: 'Ton œuf a été détruit !', noRespawn: 'Tu ne réapparaîtras plus', teamOut: 'Équipe {team} éliminée !',
+  died: 'Tu es mort !', respawnIn: 'Réapparition dans {n}', fell: 'est tombé dans le vide', border: 'a été pris par la bordure', diedMsg: 'est mort',
+  victory: 'VICTOIRE !', gameOver: 'PARTIE TERMINÉE', placeOf: 'Tu es #{n} sur {m}', teamWins: 'L’équipe {team} gagne !', winnerIs: '{name} gagne !',
+  kills: 'Éliminations', reward: 'Pièces', xp: 'XP', playAgain: 'Rejouer', changeGame: 'Changer de jeu', doubleCoins: 'Doubler les pièces', spectate: 'Regarder', spectating: 'Tu regardes {name}', leave: 'Quitter',
+  paused: 'Pause', resume: 'Reprendre', leaveMatch: 'Quitter la partie', clickToPlay: 'Clique pour jouer',
+  sens: 'Sensibilité', fov: 'Champ de vision', quality: 'Graphismes', qAuto: 'Auto', qLow: 'Bas', qHigh: 'Haut', volume: 'Son', music: 'Musique', language: 'Langue', invert: 'Inverser la vue', on: 'Oui', off: 'Non', auto: 'Auto',
+  chest: 'Coffre', takeAll: 'Tout prendre', inventory: 'Inventaire', shop: 'Boutique', cBlocks: 'Blocs', cCombat: 'Combat', cArmor: 'Armure', cTools: 'Outils', cUtility: 'Divers',
+  wool: 'Laine', chainSet: 'Armure de mailles', ironSet: 'Armure de fer', diamondSet: 'Armure de diamant', notEnough: 'Pas assez', bought: 'Acheté !',
+  equip: 'Choisir', equipped: 'Choisi', levelUp: 'Niveau supérieur ! +25 pièces', kill1: '+1 élimination',
+  team_0: 'Rouge', team_1: 'Bleue', team_2: 'Verte', team_3: 'Jaune', team_4: 'Violette', team_5: 'Orange', team_6: 'Cyan', team_7: 'Rose',
+  h1: 'Déplace-toi avec ZQSD/WASD, saute avec Espace, cours avec Ctrl ou double appui sur avancer.', h2: 'Maintiens Maj pour t’accroupir : tu ne tomberas pas des bords, parfait pour construire des ponts.', h3: 'Clic gauche casse les blocs et attaque. Clic droit pose des blocs, ouvre les coffres et mange.', h4: 'Sur mobile : joystick pour bouger, glisse pour regarder, boutons pour casser, poser et sauter. Touche le monde pour poser un bloc.',
+  h5: 'Îles Célestes : pille tes coffres, construis des ponts et sois le dernier debout.', h6: 'Défense de l’Œuf : récupère du fer et de l’or au générateur, achète de l’équipement au marchand et protège ton œuf. Tant qu’il vit, tu réapparais !',
+};
+
+export const LANGS = { en, es, pt, fr };
+export const LANG_NAMES = { en: 'English', es: 'Español', pt: 'Português', fr: 'Français' };
+let cur = en;
+export function setLang(l) { cur = LANGS[l] || en; return LANGS[l] ? l : 'en'; }
+export function t(k, v) { let s = cur[k] ?? en[k] ?? k; if (v) for (const n in v) s = s.replace(`{${n}}`, v[n]); return s; }

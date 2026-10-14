@@ -197,7 +197,7 @@ export function nameTag(text, color = '#ffffff') {
   g.fillStyle = color; g.textBaseline = 'middle'; g.fillText(text, 10, 22);
   const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthWrite: false, transparent: true }));
-  s.scale.set(w / 100, 0.42, 1);
+  s.scale.set(w / 190, 0.22, 1);
   s.renderOrder = 5;
   return s;
 }
