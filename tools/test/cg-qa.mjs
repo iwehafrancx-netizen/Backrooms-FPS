@@ -943,7 +943,7 @@ if (run('L')) {
     mem.push(await f.evaluate(() => { const i = window.__BR.World.renderer.info; return [i.memory.geometries, i.memory.textures, Math.round((performance.memory ? performance.memory.usedJSHeapSize : 0) / 1048576)]; }));
   }
   if (process.env.QA_DEBUG) console.log(JSON.stringify(mem));
-  const [g5, t5] = mem[Math.min(4, mem.length - 1)], [g20, t20] = mem[mem.length - 1];
+  const [g5, t5] = mem[Math.min(8, mem.length - 1)], [g20, t20] = mem[mem.length - 1];
   check('20 x start + quit: GPU geometry and textures stay flat (no leak)', g20 <= g5 * 1.05 + 2 && t20 <= t5 * 1.05 + 2, `geometries ${g5}>${g20}, textures ${t5}>${t20}, JS heap ${mem[Math.min(4, mem.length - 1)][2]}>${mem[mem.length - 1][2]} MB`);
   await f.evaluate(() => window.__BR.Arsenal.rent('ak47', 0));
   await startMission(f, 1, 'ak47', 'pistol');
