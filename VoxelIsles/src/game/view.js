@@ -58,6 +58,7 @@ export class View {
     for (const m of this.projMeshes.values()) this.scene.remove(m);
     for (const e of this.eggs) this.scene.remove(e.mesh);
     for (const n of this.npcs) this.scene.remove(n.ch.root);
+    if (this.voidPlane) { this.scene.remove(this.voidPlane); this.voidPlane = null; }
     this.chars.clear(); this.dropMeshes.clear(); this.projMeshes.clear(); this.eggs = []; this.npcs = []; this.particles = []; this.pMesh.count = 0;
   }
   buildViewmodelArm() {
@@ -122,6 +123,10 @@ export class View {
       if (ch.armorSig !== sig) { ch.armorSig = sig; setArmor(ch, a.inv); }
       if (ch.mat.color) ch.mat.color.setRGB(a.hurtT > 0.25 ? 1 : 1, a.hurtT > 0.25 ? 0.45 : 1, a.hurtT > 0.25 ? 0.45 : 1);
       ch.tag.visible = cam ? Math.hypot(cam.position.x - a.pos.x, cam.position.z - a.pos.z) < 40 : true;
+    }
+    if (m.mode.rising) {
+      if (!this.voidPlane) { this.voidPlane = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({ color: 0x1a0a2a, transparent: true, opacity: 0.82, fog: false, depthWrite: false })); this.voidPlane.rotation.x = -Math.PI / 2; this.voidPlane.renderOrder = 3; this.scene.add(this.voidPlane); }
+      this.voidPlane.position.y = m.map.voidY + Math.sin(t * 2) * 0.05;
     }
     for (const { n, ch } of this.npcs) { ch.head.rotation.y = Math.sin(t * 0.7 + n.team) * 0.4; }
     for (const e of this.eggs) { e.mesh.visible = e.t.eggAlive; e.mesh.rotation.y = t * 0.6; e.mesh.position.y = e.t.egg.y + 0.03 + Math.sin(t * 2) * 0.03; }

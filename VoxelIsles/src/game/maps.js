@@ -136,7 +136,7 @@ export function buildEggIslands(seed, theme = 'snow', teams = 4) {
     const ux = Math.cos(a), uz = Math.sin(a);
     const cx = Math.round(ux * ring), cz = Math.round(uz * ring);
     const cells = island(w, n, cx, cz, TOP, 7.5, pal, { depth: 8, rough: 0.3, flat: true });
-    decorate(w, r, cells.filter(([x, , z]) => Math.hypot(x - cx, z - cz) > 4), pal, 0.08, 1);
+    decorate(w, r, cells.filter(([x, , z]) => Math.hypot(x - cx, z - cz) > 5 && (x - cx) * cx + (z - cz) * cz > 0), pal, 0.08, 1);
     const tc = TEAM_COLORS[i];
     for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) { w.set(cx + dx, TOP, cz + dz, tc.wool, MAPBLOCK, true); for (let y = TOP + 1; y < TOP + 5; y++) w.set(cx + dx, y, cz + dz, 0, 0, true); }
     const ex = Math.round(cx + ux * 5), ez = Math.round(cz + uz * 5);

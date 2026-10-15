@@ -218,7 +218,7 @@ export class UI {
     else if (m.mode.id === 'sky') {
       info = `<div><b>${t('alive', { n: mi.alive })}</b></div>`;
       if (mi.refillIn > 0) info += `<div>${t('refillIn', { t: clock(mi.refillIn) })}</div>`;
-      info += mi.borderIn > 0 ? `<div>${t('borderIn', { t: clock(mi.borderIn) })}</div>` : `<div class="warn">${t('borderNow')}</div>`;
+      info += mi.rising ? `<div class="warn">${t('voidRise')}</div>` : mi.borderIn > 0 ? `<div>${t('borderIn', { t: clock(mi.borderIn) })}</div>` : `<div class="warn">${t('borderNow')}</div>`;
     } else {
       if (mi.suddenIn > 0) info = `<div>${t('suddenIn', { t: clock(mi.suddenIn) })}</div>`;
       const cur = inv.count(170) + ':' + inv.count(171) + ':' + inv.count(172);

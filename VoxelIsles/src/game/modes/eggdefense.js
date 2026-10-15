@@ -23,7 +23,7 @@ export const SHOP = [
 ];
 
 export class EggDefense {
-  constructor() { this.id = 'egg'; this.dropsOnDeath = false; this.suddenAt = 420; this.timeLimit = 600; }
+  constructor() { this.id = 'egg'; this.dropsOnDeath = false; this.suddenAt = 360; this.timeLimit = 540; }
   attach(m) {
     this.m = m; this.radius = m.map.radius; this.border = this.radius;
     this.teams = m.map.teams.map((t) => ({ ...t, eggAlive: true, out: false }));

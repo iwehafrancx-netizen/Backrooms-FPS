@@ -23,8 +23,8 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 class App {
   async boot() {
-    try { Platform.loadingStart(); } catch (e) {}
     await Platform.init();
+    try { Platform.loadingStart(); } catch (e) {}
     this.save = new Save(Platform);
     await this.save.load();
     if (!this.save.data.name) { this.save.data.name = botName(); this.save.persist(); }
@@ -347,6 +347,7 @@ class App {
           else ui.toast(t('eggGone', { team: t('team_' + e.team) }), 'bad');
           break;
         }
+        case 'voidrise': ui.toast(t('voidRise'), 'bad'); A.beep(false); break;
         case 'sudden': ui.toast(t('sudden'), 'bad'); A.setMusicStyle('tense'); break;
         case 'teamout': ui.feed(`<b style="color:${TEAM_COLORS[e.team].hex}">${t('teamOut', { team: t('team_' + e.team) })}</b>`); break;
         case 'respawning': if (e.a === me) ui.title(t('died'), t('respawnIn', { n: 5 }), 0, 'bad'); break;

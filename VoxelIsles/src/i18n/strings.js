@@ -1,4 +1,5 @@
 const en = {
+  voidRise: 'The void is rising!',
   play: 'PLAY', chooseGame: 'Choose a game', skins: 'Skins', settings: 'Settings', howto: 'How to play', back: 'Back', level: 'Level {n}', loading: 'Loading…',
   sky: 'Sky Islands', skyDesc: 'Loot your island, bridge across the sky and knock everyone into the void. Last one standing wins!', solo8: 'Solo · 8 players',
   egg: 'Egg Defense', eggDesc: 'Guard your team egg, buy gear with iron & gold, then go break the enemy eggs!', teams4x2: '4 teams of 2',
@@ -20,6 +21,7 @@ const en = {
 };
 
 const es = {
+  voidRise: '¡El vacío está subiendo!',
   play: 'JUGAR', chooseGame: 'Elige un juego', skins: 'Aspectos', settings: 'Ajustes', howto: 'Cómo jugar', back: 'Volver', level: 'Nivel {n}', loading: 'Cargando…',
   sky: 'Islas del Cielo', skyDesc: 'Saquea tu isla, construye puentes y tira a todos al vacío. ¡Gana el último en pie!', solo8: 'Solo · 8 jugadores',
   egg: 'Defensa del Huevo', eggDesc: 'Protege el huevo de tu equipo, compra equipo con hierro y oro y rompe los huevos rivales.', teams4x2: '4 equipos de 2',
@@ -41,6 +43,7 @@ const es = {
 };
 
 const pt = {
+  voidRise: 'O vazio está subindo!',
   play: 'JOGAR', chooseGame: 'Escolha um jogo', skins: 'Visuais', settings: 'Ajustes', howto: 'Como jogar', back: 'Voltar', level: 'Nível {n}', loading: 'Carregando…',
   sky: 'Ilhas do Céu', skyDesc: 'Saqueie sua ilha, construa pontes e derrube todos no vazio. O último de pé vence!', solo8: 'Solo · 8 jogadores',
   egg: 'Defesa do Ovo', eggDesc: 'Proteja o ovo do seu time, compre equipamentos com ferro e ouro e quebre os ovos inimigos!', teams4x2: '4 times de 2',
@@ -62,6 +65,7 @@ const pt = {
 };
 
 const fr = {
+  voidRise: 'Le vide monte !',
   play: 'JOUER', chooseGame: 'Choisis un jeu', skins: 'Skins', settings: 'Options', howto: 'Comment jouer', back: 'Retour', level: 'Niveau {n}', loading: 'Chargement…',
   sky: 'Îles Célestes', skyDesc: 'Pille ton île, construis des ponts et pousse tout le monde dans le vide. Le dernier debout gagne !', solo8: 'Solo · 8 joueurs',
   egg: 'Défense de l’Œuf', eggDesc: 'Protège l’œuf de ton équipe, achète de l’équipement avec du fer et de l’or, puis casse les œufs ennemis !', teams4x2: '4 équipes de 2',

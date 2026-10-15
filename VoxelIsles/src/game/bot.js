@@ -16,7 +16,7 @@ export class Bot {
     this.path = null; this.pi = 0; this.repath = 0; this.goal = null; this.goalT = 0;
     this.bridge = null; this.clickT = 0; this.strafe = Math.random() < 0.5 ? 1 : -1; this.strafeT = 0;
     this.pause = 0; this.stuckT = 0; this.lastPos = { ...actor.pos }; this.noticeT = 0; this.target = null;
-    this.jumpT = 0; this.throwT = 2 + Math.random() * 3; this.mineT = 0; this.wanderT = 0; this.patience = 20 + Math.random() * 45;
+    this.jumpT = 0; this.throwT = 2 + Math.random() * 3; this.mineT = 0; this.wanderT = 0; this.patience = 50 + Math.random() * 70;
     this.ctlObj = { mx: 0, mz: 0, yaw: actor.yaw, pitch: actor.pitch, jump: false, crouch: false, sprint: false, attack: false, attackPressed: false, use: false, useHeld: false, sel: null };
     actor.ctl = (dt) => this.tick(dt);
   }
@@ -69,7 +69,7 @@ export class Bot {
       this.pathReached = r.reached;
       if (!r.reached && allowBridge) {
         const e = r.end, remain = Math.hypot(e.x - gx, e.z - gz);
-        if (remain > 2 && this.a.inv.blocks() > 0) {
+        if (remain > 2 && this.a.inv.blocks() > 0 && !(this.noBridge > 0)) {
           if (Math.hypot(e.x - c.x, e.z - c.z) < 1.5) { this.startBridge(gx, gy, gz); return this.doBridge(dt); }
         }
       }
@@ -79,7 +79,7 @@ export class Bot {
     const d = this.steer(p.x + 0.5, p.z + 0.5, dt, true, true);
     if (p.y > a.pos.y + 0.4 && a.onGround && d < 1.4) this.ctlObj.jump = true;
     if (d < 0.32 && Math.abs(p.y - a.pos.y) < 1.2) this.pi++;
-    if (this.pi >= this.path.length && !this.pathReached && allowBridge && this.a.inv.blocks() > 0) { this.startBridge(gx, gy, gz); return false; }
+    if (this.pi >= this.path.length && !this.pathReached && allowBridge && this.a.inv.blocks() > 0 && !(this.noBridge > 0)) { this.startBridge(gx, gy, gz); return false; }
     return this.pi >= this.path.length && this.pathReached;
   }
 
@@ -92,13 +92,29 @@ export class Bot {
   doBridge(dt) {
     const a = this.a, w = this.m.world, b = this.bridge, ctl = this.ctlObj;
     b.t += dt;
-    if (b.t > 40 || a.pos.y < b.y - 3) { this.bridge = null; return false; }
+    if (b.i !== b.lastI) { b.lastI = b.i; b.prog = b.t; }
+    if (b.t - (b.prog || 0) > 6 || a.pos.y < b.y - 3) { this.bridge = null; this.goal = null; this.noBridge = 5; return false; }
     const here = cell(a.pos);
+    if (a.onGround && here.y !== b.y && Math.abs(here.y - b.y) <= 2) b.y = here.y;
     const next = b.cells[b.i];
     if (!next) { this.bridge = null; return true; }
     const [nx, nz] = next;
     const rise = b.gy - b.y;
     const needUp = rise >= 2 && b.i % 2 === 1;
+    if (!standable(w, nx, b.y, nz) && standable(w, nx, b.y + 1, nz)) {
+      this.steer(nx + 0.5, nz + 0.5, dt, false, true);
+      if (a.onGround) ctl.jump = true;
+      if (Math.abs(a.pos.x - (nx + 0.5)) < 0.35 && Math.abs(a.pos.z - (nz + 0.5)) < 0.35 && a.pos.y > b.y + 0.9) { b.y += 1; b.i++; }
+      return false;
+    }
+    if (isSolid(w.get(nx, b.y, nz)) || isSolid(w.get(nx, b.y + 1, nz))) {
+      const by = isSolid(w.get(nx, b.y + 1, nz)) ? b.y + 1 : b.y;
+      ctl.mx = 0; ctl.mz = 0;
+      if (!this.m.mode.canBreak(a, nx, by, nz, w.get(nx, by, nz))) { this.bridge = null; this.goal = null; this.noBridge = 5; return false; }
+      this.selectKind('pick') || this.selectKind('axe');
+      if (this.aimAt(nx + 0.5, by + 0.5, nz + 0.5, dt) < 0.3) ctl.attack = true;
+      return false;
+    }
     if (standable(w, nx, b.y, nz)) {
       ctl.crouch = true;
       this.steer(nx + 0.5, nz + 0.5, dt, false);
@@ -219,6 +235,7 @@ export class Bot {
 
   tick(dt) {
     const a = this.a, m = this.m, ctl = this.ctlObj;
+    this.noBridge = (this.noBridge || 0) - dt;
     ctl.jump = false; ctl.attack = false; ctl.attackPressed = false; ctl.use = false; ctl.useHeld = false; ctl.crouch = false; ctl.mx = 0; ctl.mz = 0;
     if (m.state !== 'play') return ctl;
     this.clutch();
@@ -234,7 +251,8 @@ export class Bot {
     if (ne) {
       this.noticeT += dt;
       const vis = ne.d < 3 || this.visible(ne.o);
-      const engage = ne.d < (this.bridge ? 4 : 9 + this.brave * 8) && vis && Math.abs(ne.o.pos.y - a.pos.y) < 5;
+      const early = m.mode.id === 'sky' && m.time < 100 && !ne.o.local;
+      const engage = ne.d < (this.bridge ? 4 : early ? 4 + this.brave * 3 : 9 + this.brave * 8) && vis && Math.abs(ne.o.pos.y - a.pos.y) < 5;
       if (engage && this.noticeT > this.react) {
         if (!(ne.d < 3.5) && this.heal(dt)) return ctl;
         if (this.tryThrow(ne.o, ne.d, dt)) return ctl;
@@ -249,6 +267,7 @@ export class Bot {
 
   planSky(dt) {
     const a = this.a, m = this.m, ctl = this.ctlObj, mode = m.mode;
+    if (mode.rising && a.pos.y < m.map.voidY + 5 && this.tower(dt)) return ctl;
     if (mode.border < mode.radius && Math.hypot(a.pos.x, a.pos.z) > mode.border - 5) { this.goal = { t: 'center' }; this.goTo(0, m.map.center.y - 2, 0, dt, 3); return ctl; }
     const home = a.home;
     const own = this.nearestChest(14, (ch) => Math.hypot(ch.x - home.x, ch.z - home.z) < 9);
@@ -264,8 +283,8 @@ export class Bot {
       this.goalT = 6 + Math.random() * 6;
       const midLeft = m.map.chests.some((c) => c.tier === 'mid' && !c.looted && c.items.length);
       const ne = this.nearestEnemy(999);
-      if (m.time < this.patience && geared < 10) this.goal = { t: 'idle' };
-      else if (midLeft && (this.greed > 0.45 || geared < 6) && m.time < 150) this.goal = { t: 'mid' };
+      if (m.time < this.patience * (geared < 10 ? 1 : 0.75)) this.goal = { t: midLeft && m.time > 25 && this.greed > 0.8 ? 'mid' : 'idle' };
+      else if (midLeft && (this.greed > 0.6 || geared < 5) && (m.time < 150 || (mode.refilled && m.time < mode.borderAt && Math.random() < 0.5))) this.goal = { t: 'mid' };
       else if (ne) this.goal = { t: 'hunt', o: ne.o };
       else this.goal = { t: 'mid' };
     }
@@ -279,12 +298,29 @@ export class Bot {
     if (this.goal.t === 'hunt') {
       const o = this.goal.o;
       if (!o || !o.alive) { this.goal = null; return ctl; }
+      if (o.pos.y - a.pos.y > 1.8 && Math.hypot(o.pos.x - a.pos.x, o.pos.z - a.pos.z) < 5 && this.tower(dt)) return ctl;
       const c = cell(o.pos);
       const g = groundBelow(m.world, c.x, c.y, c.z, 6);
       this.goTo(c.x, g ?? c.y, c.z, dt, 1);
       return ctl;
     }
     return ctl;
+  }
+
+  tower(dt) {
+    const a = this.a, ctl = this.ctlObj, w = this.m.world;
+    if (!this.selectBlocks()) return false;
+    const cx = Math.floor(a.pos.x), cz = Math.floor(a.pos.z), fy = Math.floor(a.pos.y + 0.01);
+    if (isSolid(w.get(cx, fy + 2, cz))) return false;
+    ctl.mx = (cx + 0.5 - a.pos.x) * 2; ctl.mz = (cz + 0.5 - a.pos.z) * 2;
+    this.aimAt(cx + 0.5, a.pos.y - 1, cz + 0.5 + 0.001, dt);
+    if (a.onGround) { ctl.jump = true; this.towerY = fy; return true; }
+    if (this.towerY != null && a.pos.y >= this.towerY + 1.05 && !w.get(cx, this.towerY, cz)) {
+      const slot = a.inv.slots[ctl.sel ?? a.sel];
+      if (slot) { a.sel = ctl.sel ?? a.sel; this.m.place(a, cx, this.towerY, cz, slot.id); }
+      this.towerY = null;
+    }
+    return true;
   }
 
   steerOrPath(x, y, z, dt) {
@@ -316,7 +352,7 @@ export class Bot {
     const a = this.a, w = this.m.world, c = cell(a.pos);
     if (!this.mineTarget || !w.get(this.mineTarget.x, this.mineTarget.y, this.mineTarget.z)) {
       this.mineTarget = null;
-      outer: for (let r = 1; r <= 3; r++) for (let dy = 0; dy <= 2; dy++) for (let dz = -r; dz <= r; dz++) for (let dx = -r; dx <= r; dx++) {
+      outer: for (let r = 1; r <= 5; r++) for (let dy = 0; dy <= 2; dy++) for (let dz = -r; dz <= r; dz++) for (let dx = -r; dx <= r; dx++) {
         const x = c.x + dx, y = c.y + dy - (dy === 2 ? 3 : 0), z = c.z + dz;
         if (dx === 0 && dz === 0) continue;
         const id = w.get(x, y, z);

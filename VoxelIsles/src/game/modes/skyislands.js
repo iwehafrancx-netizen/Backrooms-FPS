@@ -85,6 +85,10 @@ export class SkyIslands {
         for (const a of m.actors) if (a.alive && Math.hypot(a.pos.x, a.pos.z) > this.border) m.damage(a, 1.5, m.recentAttacker(a, 10), 'border');
       }
     }
+    if (m.time >= this.borderAt + this.borderDur - 20) {
+      if (!this.rising) { this.rising = true; this.voidBase = m.map.voidY; m.emit({ t: 'voidrise' }); }
+      m.map.voidY = Math.min(m.map.top + 6, m.map.voidY + dt * 0.3);
+    }
     const alive = m.actors.filter((a) => a.alive);
     if (alive.length <= 1 && !m.over) { if (alive[0]) alive[0].rank = 1; m.finish(alive[0] || null); }
   }
@@ -94,5 +98,5 @@ export class SkyIslands {
   onBreak() {}
   onDeath(t) { t.eliminated = true; t.rank = this.m.actors.filter((a) => a.alive).length + 1; }
   respawn() {}
-  info() { const m = this.m; return { alive: m.actors.filter((a) => a.alive).length, total: m.actors.length, refillIn: this.refilled ? 0 : Math.max(0, this.refillAt - m.time), borderIn: Math.max(0, this.borderAt - m.time), border: this.border }; }
+  info() { const m = this.m; return { rising: !!this.rising, alive: m.actors.filter((a) => a.alive).length, total: m.actors.length, refillIn: this.refilled ? 0 : Math.max(0, this.refillAt - m.time), borderIn: Math.max(0, this.borderAt - m.time), border: this.border }; }
 }
