@@ -30,4 +30,29 @@ const copyWeb = () => {
   fs.copyFileSync(path.join(root, 'web/style.css'), path.join(out, 'style.css'));
 };
 if (watch) { const ctx = await esbuild.context(opts); await ctx.watch(); copyWeb(); console.log('watching', out); }
+else if (platform === 'youtube') {
+  const r = await esbuild.build({ ...opts, format: 'esm', minify: false, minifyIdentifiers: true, minifySyntax: true, write: false });
+  let code = r.outputFiles[0].text.replace(/[\w$.]+\.visibilityState\s*!==\s*"visible-blurred"/g, '!0');
+  if (/visibilitychange|visibilityState|document\.hidden|onvisibilitychange/.test(code)) throw new Error('Page Visibility API text in youtube build');
+  const lines = code.split('\n'), parts = [];
+  let cur = [], size = 0;
+  const top = /^(var|let|const|function|async function|class|new|\(|[A-Za-z_$][\w$]*\s*\()/;
+  for (let i = 0; i < lines.length; i++) {
+    const ln = lines[i];
+    if (size > 300000 && top.test(ln) && /[;}]\s*$/.test(lines[i - 1] || '')) { parts.push(cur.join('\n')); cur = []; size = 0; }
+    cur.push(ln); size += ln.length + 1;
+  }
+  if (cur.length) parts.push(cur.join('\n'));
+  for (const f of fs.readdirSync(out)) if (/^game(\.\d+)?\.js$/.test(f)) fs.rmSync(path.join(out, f));
+  const names = [];
+  for (let i = 0; i < parts.length; i++) {
+    const m = await esbuild.transform('"use strict";\n' + parts[i], { minifyWhitespace: true, loader: 'js', target: 'es2020', legalComments: 'none' });
+    const name = `game.${i}.js`; names.push(name);
+    fs.writeFileSync(path.join(out, name), m.code);
+  }
+  copyWeb();
+  const html = fs.readFileSync(path.join(out, 'index.html'), 'utf8').replace('<script src="game.js"></script>', names.map((n) => `<script src="${n}"></script>`).join('\n  '));
+  fs.writeFileSync(path.join(out, 'index.html'), html);
+  console.log('built', path.relative(root, out), names.map((n) => `${n} ${(fs.statSync(path.join(out, n)).size / 1024).toFixed(0)} KiB`).join(', '));
+}
 else { await esbuild.build(opts); copyWeb(); console.log('built', path.relative(root, out), (fs.statSync(path.join(out, 'game.js')).size / 1024).toFixed(0) + ' KiB'); }

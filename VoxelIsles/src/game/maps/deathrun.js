@@ -81,7 +81,7 @@ export function buildDeathRun(seed, opt = {}) {
       trap.button = { x: bx, y: LANE + 1, z: -8 };
       traps.push(trap);
     }
-    if (x - x0 > 0) { const mx = Math.round((x0 + x - 1) / 2); for (const z of [-5, 5]) if (r() < 0.6 && !w.get(mx, y + 1, z)) { set(mx, y - 2, z, S.wall); set(mx, y + 1, z, S.light); } }
+    if (x - x0 > 0) { const mx = Math.round((x0 + x - 1) / 2); for (const z of [-5, 5]) if (r() < 0.6 && !w.get(mx, y + 1, z)) { for (let yy = y - 2; yy <= y; yy++) set(mx, yy, z, S.wall); set(mx, y + 1, z, S.light); } }
   }
   for (let i = 0; i < 8; i++) floorRow(x + i, y);
   for (let z = -2; z <= 2; z++) set(x + 3, y + 1, z, 59);
