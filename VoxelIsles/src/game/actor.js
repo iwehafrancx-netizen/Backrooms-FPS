@@ -34,7 +34,7 @@ export class Actor {
     this.yaw = 0; this.pitch = 0; this.onGround = false; this.crouch = false; this.sprint = false;
     this.inv = new Inventory(9); this.sel = 0;
     this.hp = 20; this.maxHp = 20; this.alive = true; this.eliminated = false;
-    this.hurtT = 0; this.attackCd = 0; this.swingT = 0; this.lastAttacker = null; this.lastAttackT = -99;
+    this.hurtT = 0; this.attackCd = 0; this.swingT = 0; this.swingN = 0; this.lastAttacker = null; this.lastAttackT = -99;
     this.kills = 0; this.deaths = 0; this.placed = 0; this.broken = 0;
     this.mine = null; this.eatT = 0; this.regenT = 0; this.respawnT = 0; this.spawnProtect = 0;
     this.walkPhase = 0; this.moveAmt = 0; this.lastHurt = -99; this.absorb = 0; this.rank = 0;

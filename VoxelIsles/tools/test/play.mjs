@@ -31,7 +31,7 @@ await page.mouse.down(); await page.waitForTimeout(2500); await page.mouse.up();
 const b1 = await ev(() => ({ broken: window.__vi.me.broken, inv: window.__vi.me.inv.slots.filter(Boolean).map((s) => s.id + 'x' + s.count) }));
 check('break block by holding click', b1.broken > b0, JSON.stringify(b1));
 
-await ev(() => { const a = window.__vi; a.me.inv.add(5, 10); a.me.sel = a.me.inv.blockSlot(); a.me.pitch = -0.9; a.me.yaw += 0.6; });
+await ev((p) => { const a = window.__vi; a.me.pos.x = p.x; a.me.pos.y = p.y; a.me.pos.z = p.z; a.me.vel.y = 0; a.me.inv.add(5, 10); a.me.sel = a.me.inv.blockSlot(); a.me.pitch = -0.9; a.me.yaw += 0.6; }, p0);
 await page.waitForTimeout(200);
 const pl0 = await ev(() => window.__vi.me.placed);
 await page.mouse.down({ button: 'right' }); await page.waitForTimeout(80); await page.mouse.up({ button: 'right' });
@@ -77,7 +77,7 @@ await page.waitForTimeout(150);
 const hp1 = await ev(() => window.__vi.m.actors[1].hp);
 check('melee hit damages', hp1 < hp0, `${hp0}->${hp1}`);
 
-await ev(() => { const a = window.__vi; a.me.hp = 10; a.me.lastHurt = a.m.time; a.me.inv.add(130, 1); a.me.sel = a.me.inv.slots.findIndex((s) => s && s.id === 130); });
+await ev(() => { const a = window.__vi; if (a.ui.panelOpen) a.closePanel(); a.me.pitch = 1.3; a.pc.pitch = 1.3; a.me.hp = 10; a.me.lastHurt = a.m.time; a.me.inv.add(130, 1); a.me.sel = a.me.inv.slots.findIndex((s) => s && s.id === 130); });
 await page.mouse.down({ button: 'right' }); await page.waitForTimeout(1300); await page.mouse.up({ button: 'right' });
 check('eat golden apple', (await ev(() => window.__vi.me.hp)) >= 17, String(await ev(() => window.__vi.me.hp)));
 

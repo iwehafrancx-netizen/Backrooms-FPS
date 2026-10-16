@@ -22,6 +22,7 @@ export class World {
     const old = this.data[i];
     this.data[i] = id; this.flags[i] = id ? flag : 0;
     this.markDirty(x, y, z);
+    if (this.light && old !== id) this.light.update(x, y, z, old, id);
     if (!silent) for (const l of this.listeners) l(x, y, z, id, old);
     return true;
   }

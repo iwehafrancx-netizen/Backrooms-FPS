@@ -112,12 +112,12 @@ export class Match {
       if (a.attackCd <= 0 && (pressed || a.bot || a.autoSwing)) this.melee(a, hit.target);
       return;
     }
-    if (pressed) { a.swingT = 0.25; this.emit({ t: 'swing', a }); }
+    if (pressed) { a.swingT = 0.25; a.swingN++; this.emit({ t: 'swing', a }); }
     const bh = this.lookHit(a);
     if (!bh || !isSolid(bh.id) && !BLOCKS[bh.id].cross) { a.mine = null; if (bh && pressed && this.mode.onUse) this.mode.onUse(a, bh); return; }
     if (!this.mode.canBreak(a, bh.x, bh.y, bh.z, bh.id)) { a.mine = null; return; }
     if (!a.mine || a.mine.x !== bh.x || a.mine.y !== bh.y || a.mine.z !== bh.z) a.mine = { x: bh.x, y: bh.y, z: bh.z, p: 0, need: this.breakTime(a, bh.id), snd: 0 };
-    a.mine.p += dt; a.mine.snd += dt; a.swingT = 0.25;
+    a.mine.p += dt; a.mine.snd += dt; if (a.swingT <= 0) { a.swingT = 0.25; a.swingN++; }
     if (a.mine.snd > 0.24) { a.mine.snd = 0; this.emit({ t: 'dig', a, id: bh.id, x: bh.x, y: bh.y, z: bh.z }); }
     if (a.mine.p >= a.mine.need) this.breakBlock(a, bh.x, bh.y, bh.z);
   }
@@ -151,7 +151,7 @@ export class Match {
   }
 
   melee(a, t) {
-    a.attackCd = a.bot ? 0.42 : 0.3; a.swingT = 0.25;
+    a.attackCd = a.bot ? 0.42 : 0.3; a.swingT = 0.25; a.swingN++;
     this.emit({ t: 'swing', a });
     if (!this.enemies(a, t) || t.spawnProtect > 0) return;
     const held = a.held();
@@ -212,14 +212,14 @@ export class Match {
     const s = a.inv.slots[a.sel];
     if (!s || s.id !== block) return false;
     this.world.set(x, y, z, block, PLACED);
-    a.inv.useSlot(a.sel); a.placed++; a.swingT = 0.2;
+    a.inv.useSlot(a.sel); a.placed++; a.swingT = 0.25; a.swingN++;
     this.emit({ t: 'place', a, id: block, x, y, z });
     return true;
   }
 
   throwItem(a, id) {
     if (a.attackCd > 0) return;
-    a.attackCd = 0.3; a.swingT = 0.25;
+    a.attackCd = 0.3; a.swingT = 0.25; a.swingN++;
     const e = a.eye(eyeHeight(a)), d = a.look();
     this.projectiles.push({ id, owner: a, x: e.x + d.x * 0.5, y: e.y + d.y * 0.5, z: e.z + d.z * 0.5, vx: d.x * 22, vy: d.y * 22 + 2, vz: d.z * 22, age: 0 });
     a.inv.useSlot(a.sel);

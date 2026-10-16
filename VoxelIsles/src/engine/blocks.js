@@ -35,7 +35,7 @@ def(15, 'Iron Block', 'iron_block', { hardness: 3, sound: 'metal', color: '#d8d8
 def(16, 'Diamond Block', 'diamond_block', { hardness: 3, sound: 'metal', color: '#5fe0d8' });
 def(17, 'Chest', { top: 'chest_top', side: 'chest_side', bottom: 'chest_top' }, { hardness: 1.5, tool: 'axe', sound: 'wood', unbreakable: true, color: '#9a6a32' });
 def(18, 'Basalt', { top: 'basalt_top', side: 'basalt_side', bottom: 'basalt_top' }, { hardness: 1.4, sound: 'stone', color: '#3e3c42' });
-def(19, 'Magma', 'magma', { hardness: 1, sound: 'stone', light: 1, color: '#c8501e' });
+def(19, 'Magma', 'magma', { hardness: 1, sound: 'stone', light: 10, color: '#c8501e' });
 def(20, 'Moonstone', 'moonstone', { hardness: 2, sound: 'stone', color: '#efe9b8' });
 def(21, 'Bricks', 'bricks', { hardness: 2, sound: 'stone', color: '#a1503a' });
 def(22, 'Terracotta', 'terracotta', { hardness: 1.3, sound: 'stone', color: '#b06a48' });
@@ -43,7 +43,7 @@ def(23, 'Core', 'core', { unbreakable: true, sound: 'stone', color: '#2a2a30' })
 def(24, 'Iron Ore', 'iron_ore', { unbreakable: true, sound: 'stone', color: '#9a8a80' });
 def(25, 'Gold Ore', 'gold_ore', { unbreakable: true, sound: 'stone', color: '#a69a60' });
 def(26, 'Diamond Ore', 'diamond_ore', { unbreakable: true, sound: 'stone', color: '#7fa6a8' });
-def(27, 'Lantern', 'lantern', { hardness: 0.5, sound: 'metal', light: 1, color: '#ffd27a' });
+def(27, 'Lantern', 'lantern', { hardness: 0.5, sound: 'metal', light: 15, color: '#ffd27a' });
 def(28, 'Mossy Stone', 'mossy', { hardness: 1.5, sound: 'stone', color: '#6f8a5a' });
 def(29, 'Pumpkin', { top: 'pumpkin_top', side: 'pumpkin_side', bottom: 'pumpkin_top' }, { hardness: 1, tool: 'axe', sound: 'wood', color: '#e08a1e' });
 for (const t of TEAM_COLORS) def(t.wool, `${t.name} Wool`, `wool_${t.id}`, { hardness: 0.35, tool: 'shears', sound: 'cloth', color: t.hex });
@@ -66,16 +66,35 @@ def(53, 'Roof Tiles', 'roof', { hardness: 1.4, sound: 'stone', color: '#8a3a2e' 
 def(54, 'Iron Bars', 'ironbars', { hardness: 2, transparent: true, sound: 'metal', color: '#9a9a9a' });
 def(55, 'Hay Bale', { top: 'hay_top', side: 'hay_side', bottom: 'hay_top' }, { hardness: 0.5, tool: 'none', sound: 'grass', color: '#d8b43a' });
 def(56, 'Bookshelf', { top: 'planks', side: 'bookshelf', bottom: 'planks' }, { hardness: 1.2, tool: 'axe', sound: 'wood', color: '#8a5a32' });
-def(57, 'Portal', 'portal', { solid: false, trans: true, transparent: true, unbreakable: true, light: 1, sound: 'glass', color: '#9a4fff' });
-def(58, 'Checkpoint', 'checkpoint', { solid: false, transparent: true, unbreakable: true, box: PLATE, pick: true, light: 1, sound: 'metal', color: '#ffd84a' });
-def(59, 'Finish', 'finish', { solid: false, transparent: true, unbreakable: true, box: PLATE, pick: true, light: 1, sound: 'metal', color: '#ffffff' });
+def(57, 'Portal', 'portal', { solid: false, trans: true, transparent: true, unbreakable: true, light: 11, sound: 'glass', color: '#9a4fff' });
+def(58, 'Checkpoint', 'checkpoint', { solid: false, transparent: true, unbreakable: true, box: PLATE, pick: true, light: 6, sound: 'metal', color: '#ffd84a' });
+def(59, 'Finish', 'finish', { solid: false, transparent: true, unbreakable: true, box: PLATE, pick: true, light: 6, sound: 'metal', color: '#ffffff' });
 def(60, 'Trap Button', 'button', { solid: false, transparent: true, unbreakable: true, box: BUTTON, pick: true, sound: 'stone', color: '#d83a2a' });
 def(61, 'Bounce Pad', { top: 'bounce_top', side: 'bounce_side', bottom: 'bounce_side' }, { hardness: 1, unbreakable: true, bounce: 13.5, sound: 'cloth', color: '#5fd34a' });
 def(62, 'Flag Base', { top: 'flagbase_top', side: 'whitestone_side', bottom: 'whitestone_top' }, { unbreakable: true, sound: 'stone', color: '#ece6da' });
 def(63, 'Trap Floor', 'trapfloor', { unbreakable: true, sound: 'wood', color: '#a07a44' });
 def(64, 'Sea Stone', 'seastone', { hardness: 1.6, sound: 'stone', color: '#5aa8a0' });
 def(65, 'Red Sandstone', { top: 'redsand_top', side: 'redsand_side', bottom: 'redsand_top' }, { hardness: 0.9, sound: 'stone', color: '#c86a3a' });
-def(66, 'Lava Rock', 'lavarock', { unbreakable: true, light: 1, sound: 'stone', color: '#ff6a1e' });
+def(66, 'Lava Rock', 'lavarock', { unbreakable: true, light: 12, sound: 'stone', color: '#ff6a1e' });
+
+def(67, 'Gravel', 'gravel', { hardness: 0.6, tool: 'shovel', sound: 'gravel', color: '#7d7874' });
+def(68, 'Dirt Path', { top: 'path_top', side: 'path_side', bottom: 'dirt' }, { hardness: 0.6, tool: 'shovel', sound: 'gravel', color: '#957642' });
+def(69, 'Spruce Planks', 'planks_spruce', { hardness: 1.2, tool: 'axe', sound: 'wood', color: '#7a5a36' });
+def(70, 'Birch Planks', 'planks_birch', { hardness: 1.2, tool: 'axe', sound: 'wood', color: '#d6c48a' });
+def(71, 'Spruce Log', { top: 'log_spruce_top', side: 'log_spruce', bottom: 'log_spruce_top' }, { hardness: 1.6, tool: 'axe', sound: 'wood', color: '#3e2c1a' });
+def(72, 'Birch Log', { top: 'log_top', side: 'log_birch', bottom: 'log_top' }, { hardness: 1.6, tool: 'axe', sound: 'wood', color: '#e8e4da' });
+def(73, 'Barrel', { top: 'barrel_top', side: 'barrel_side', bottom: 'barrel_top' }, { hardness: 1.4, tool: 'axe', sound: 'wood', color: '#8a6236' });
+def(74, 'Workbench', { top: 'workbench_top', side: 'workbench_side', bottom: 'planks' }, { hardness: 1.4, tool: 'axe', sound: 'wood', color: '#9a7040' });
+def(75, 'Furnace', { top: 'furnace_top', side: 'furnace_side', bottom: 'furnace_top' }, { hardness: 2, sound: 'stone', color: '#6a6a6a' });
+def(76, 'Wheat', 'wheat', { solid: false, cross: true, hardness: 0, tool: 'none', sound: 'grass', transparent: true, color: '#d8b43a' });
+def(77, 'Fence', 'planks', { hardness: 1.2, tool: 'axe', sound: 'wood', box: [6 / 16, 0, 6 / 16, 10 / 16, 1, 10 / 16], pick: true, color: '#b08a55' });
+def(78, 'Glow Lamp', 'glowlamp', { hardness: 0.6, sound: 'glass', light: 15, color: '#ffe08a' });
+def(79, 'Coarse Dirt', 'coarse', { hardness: 0.5, tool: 'shovel', sound: 'gravel', color: '#6b4a32' });
+def(80, 'Melon', { top: 'melon_top', side: 'melon_side', bottom: 'melon_top' }, { hardness: 0.8, tool: 'axe', sound: 'wood', color: '#6a9a32' });
+def(81, 'Torch', 'torch', { solid: false, transparent: true, hardness: 0, tool: 'none', box: [7 / 16, 0, 7 / 16, 9 / 16, 10 / 16, 9 / 16], pick: true, light: 14, sound: 'wood', color: '#ffd060' });
+def(82, 'Spruce Leaves', 'leaves_spruce', { hardness: 0.2, transparent: true, tool: 'none', sound: 'grass', color: '#2f5a24' });
+def(83, 'Birch Leaves', 'leaves_birch', { hardness: 0.2, transparent: true, tool: 'none', sound: 'grass', color: '#6a9a3a' });
+def(84, 'Farmland', { top: 'farmland', side: 'dirt', bottom: 'dirt' }, { hardness: 0.5, tool: 'shovel', sound: 'gravel', color: '#4a3220' });
 
 export const BLOCKS = B;
 export const SOLID = new Uint8Array(256);

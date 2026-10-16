@@ -122,6 +122,24 @@ export function poseCharacter(ch, a, t) {
   ch.mat.emissive && ch.mat.emissive.setRGB(hurt ? 0.6 : 0, 0, 0);
 }
 
+const gripCache = new Map();
+export function itemGrip(id, atlas) {
+  if (gripCache.has(id)) return gripCache.get(id);
+  const it = ITEMS[id];
+  let g = [0, 0];
+  if (it && it.kind !== 'block') {
+    const [u0, v0] = atlas.uv(it.icon);
+    const W = atlas.width, x0 = Math.round(u0 * W), y0 = Math.round(v0 * atlas.height);
+    let best = 1e9, bx = 8, by = 8;
+    for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (atlas.data[((y0 + y) * W + x0 + x) * 4 + 3] > 100) { const d = x + (15 - y); if (d < best) { best = d; bx = x; by = y; } }
+    const tool = it.kind === 'sword' || it.kind === 'pick' || it.kind === 'axe' || it.kind === 'shears';
+    if (tool) { bx += 1.5; by -= 1.5; } else { bx = 8; by = 8; }
+    g = [(bx - 7.5) / 16, (7.5 - by) / 16];
+  }
+  gripCache.set(id, g);
+  return g;
+}
+
 const itemMeshCache = new Map();
 export function itemMesh(id, atlas, atlasTex) {
   if (itemMeshCache.has(id)) return itemMeshCache.get(id).clone();
