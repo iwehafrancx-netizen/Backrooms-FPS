@@ -38,13 +38,14 @@ export function island(w, n, cx, cz, top, r, pal, opt = {}) {
     const d = Math.hypot(dx, dz) / r + (n((cx + dx) * 0.13, (cz + dz) * 0.13) - 0.5) * (opt.rough ?? 0.55);
     if (d >= 1) continue;
     const x = cx + dx, z = cz + dz;
-    const bump = opt.flat ? 0 : Math.floor(n(x * 0.21 + 50, z * 0.21) * 2.2 * (1 - d));
+    const bump = opt.hills ? Math.max(0, Math.round((n(x * 0.06 + 30, z * 0.06 - 20, 2) - 0.42) * opt.hills * 2.4 * Math.pow(Math.max(0, 1 - d), 0.6))) : opt.flat ? 0 : Math.floor(n(x * 0.21 + 50, z * 0.21) * 2.2 * (1 - d));
     const ty = top + bump;
+    const rocky = opt.hills && d > 0.8 && n(x * 0.25 + 7, z * 0.25) > 0.55;
     const bottom = Math.round(top - 1 - Math.pow(1 - d, 0.75) * depth * (0.55 + n(x * 0.3, z * 0.3 + 9) * 0.7));
     for (let y = bottom; y <= ty; y++) {
       let id = pal.core;
-      if (y === ty) id = pal.top;
-      else if (y >= ty - 2) id = pal.under;
+      if (y === ty) id = rocky ? pal.rock : pal.top;
+      else if (y >= ty - 2) id = rocky ? pal.rock : pal.under;
       else if (n(x * 0.4, y * 0.4 + z * 0.4) > 0.72) id = pal.accent;
       w.set(x, y, z, id, MAPBLOCK, true);
     }

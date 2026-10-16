@@ -110,7 +110,7 @@ export class CaptureFlag {
       bot.wander(dt); return ctl;
     }
     if (foe.flag.state === 'carried') { const c = foe.flag.carrier; if (c.team === a.team) return go(c.pos.x, c.pos.y, c.pos.z, 2); }
-    if (bot.routeAt !== a.respawnCount) { bot.routeAt = a.respawnCount; bot.route = a.slot === 1 || Math.random() < 0.3 ? null : { x: 0, y: m.map.top + 1, z: (a.slot % 2 ? 1 : -1) * 34 }; }
+    if (bot.routeAt !== a.respawnCount) { bot.routeAt = a.respawnCount; bot.route = a.slot === 1 || Math.random() < 0.3 ? null : { x: 0, y: m.map.top + 1, z: (a.slot % 2 ? 1 : -1) * (m.map.sideZ || 34) }; }
     if (bot.route) { if (bot.dist(bot.route) < 5 || (bot.path && !bot.pathReached && !bot.bridge)) bot.route = null; else return go(bot.route.x, bot.route.y, bot.route.z, 2); }
     return go(foe.flag.x, foe.flag.y, foe.flag.z, 0);
   }
