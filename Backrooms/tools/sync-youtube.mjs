@@ -64,12 +64,32 @@ const tmp = music + '.tmp.mp3';
 execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', path.join(src, 'assets/Audio/music.mp3'), '-map_metadata', '-1', '-ac', '1', '-ar', '32000', '-b:a', '40k', tmp]);
 fs.renameSync(tmp, music);
 
+const PART = 400 * 1000;
+const split = {};
+const walkAll = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walkAll(p) : [p]; });
+for (const f of walkAll(path.join(dst, 'assets'))) {
+  const buf = fs.readFileSync(f);
+  if (buf.length <= PART) continue;
+  const n = Math.ceil(buf.length / PART);
+  for (let i = 0; i < n; i++) fs.writeFileSync(`${f}.part${i}`, buf.subarray(i * PART, (i + 1) * PART));
+  fs.rmSync(f);
+  split[path.relative(dst, f).split(path.sep).join('/')] = n;
+}
+const gamePath = path.join(dst, 'game.js');
+let gameJs = fs.readFileSync(gamePath, 'utf8');
+if (gameJs.split('const SPLIT_FILES = {};').length !== 2) throw new Error('SPLIT_FILES placeholder not found once');
+gameJs = gameJs.replace('const SPLIT_FILES = {};', `const SPLIT_FILES = ${JSON.stringify(split)};`);
+fs.writeFileSync(gamePath, gameJs);
+for (const url of Object.keys(split)) if (!gameJs.includes(`'${url}'`)) throw new Error(`split file not referenced by the game: ${url}`);
+
 const PV = /document\.hidden|visibilityState|visibilitychange|onvisibilitychange/;
 const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
 for (const f of walk(dst)) {
   const rel = path.relative(dst, f);
   if (fs.statSync(f).size > 1.5 * 1048576) throw new Error(`${rel} is over 1.5 MB`);
+  if (rel.startsWith('assets') && fs.statSync(f).size > PART) throw new Error(`${rel} is over 400 KB`);
   if (/\.(js|html|css|json)$/.test(f) && PV.test(fs.readFileSync(f, 'utf8'))) throw new Error(`Page Visibility API text left in ${rel}`);
 }
 
+console.log('split into parts:', JSON.stringify(split));
 console.log('synced YouTube Playables build from the CrazyGames source');

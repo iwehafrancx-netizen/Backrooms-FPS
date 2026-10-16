@@ -857,6 +857,7 @@ const Keys = {
 };
 const LATE_ASSETS = ['shotgun', 'sniper'];
 const MUSIC_FILE = 'assets/Audio/music.mp3';
+const SPLIT_FILES = {"assets/Audio/music.mp3":3,"assets/Guns/ak47.glb":2,"assets/Guns/sniper.glb":2,"assets/Maps/manor.glb":4,"assets/Maps/station.glb":2,"assets/NPCs/operator.glb":4};
 const Loader = {
   total: 0, done: 0, onProgress: null,
   bump(kb) { this.done += kb; if (this.onProgress) this.onProgress(clamp(this.done / this.total, 0, 1)); },
@@ -869,6 +870,13 @@ const Loader = {
   },
   scripts(list) { return Promise.all(list.map(([src, kb]) => this.script(src, kb))); },
   async binary(url, kb) {
+    const n = SPLIT_FILES[url];
+    if (n) {
+      const bufs = await Promise.all(Array.from({ length: n }, (_, i) => this.binary(`${url}.part${i}`, kb / n)));
+      const out = new Uint8Array(bufs.reduce((a, b) => a + b.byteLength, 0)); let o = 0;
+      for (const b of bufs) { out.set(new Uint8Array(b), o); o += b.byteLength; }
+      return out.buffer;
+    }
     const r = await fetch(url);
     if (!r.ok) throw new Error('Failed to load ' + url);
     if (!r.body || !r.body.getReader) { const b = await r.arrayBuffer(); this.bump(kb); return b; }
