@@ -24,14 +24,15 @@ const jy = await ev(() => window.__vi.me.pos.y);
 await page.keyboard.up('Space'); await page.waitForTimeout(800);
 check('jump', jy > p1.y + 0.3, (jy - p1.y).toFixed(2));
 
-await ev(() => { const a = window.__vi; a.me.pitch = -1.45; a.me.inv.clear(); a.me.sel = 0; });
+await ev(() => { const a = window.__vi; a.me.pitch = -1.45; a.me.inv.clear(); a.me.inv.add(112, 1); a.me.sel = 0; });
 await page.waitForTimeout(200);
 const b0 = await ev(() => window.__vi.me.broken);
 await page.mouse.down(); await page.waitForTimeout(2500); await page.mouse.up();
 const b1 = await ev(() => ({ broken: window.__vi.me.broken, inv: window.__vi.me.inv.slots.filter(Boolean).map((s) => s.id + 'x' + s.count) }));
 check('break block by holding click', b1.broken > b0, JSON.stringify(b1));
 
-await ev(() => { const a = window.__vi; a.me.inv.add(5, 10); a.me.sel = a.me.inv.blockSlot(); });
+await ev(() => { const a = window.__vi; a.me.inv.add(5, 10); a.me.sel = a.me.inv.blockSlot(); a.me.pitch = -0.9; a.me.yaw += 0.6; });
+await page.waitForTimeout(200);
 const pl0 = await ev(() => window.__vi.me.placed);
 await page.mouse.down({ button: 'right' }); await page.waitForTimeout(80); await page.mouse.up({ button: 'right' });
 await page.waitForTimeout(200);

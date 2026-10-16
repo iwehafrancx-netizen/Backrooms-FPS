@@ -18,6 +18,7 @@ export function botName(r = Math.random) {
 export const MODES = {
   sky: { id: 'sky', players: 8, teams: 0, maps: [{ id: 'meadow', theme: 'meadow', seed: 7 }, { id: 'dunes', theme: 'desert', seed: 12 }, { id: 'frostfort', theme: 'snow', seed: 4 }, { id: 'emberruins', theme: 'volcano', seed: 6, sky: 'volcano' }, { id: 'dusk', theme: 'meadow', seed: 21, sky: 'dusk', style: 'village', spawn: 'house', bridges: 'partial' }] },
   ctf: { id: 'ctf', players: 8, teams: 2, teamSize: 4, maps: [{ id: 'twincastles', theme: 'meadow', seed: 3 }, { id: 'frostkeep', theme: 'snow', seed: 8, style: 'fort' }, { id: 'sunfort', theme: 'desert', seed: 5, style: 'temple' }] },
+  bridge: { id: 'bridge', players: 4, teams: 2, teamSize: 2, maps: [{ id: 'skybridge', theme: 'meadow', seed: 2 }, { id: 'sandbridge', theme: 'desert', seed: 3, style: 'temple' }, { id: 'icebridge', theme: 'snow', seed: 4, style: 'fort' }, { id: 'lavabridge', theme: 'volcano', seed: 5, style: 'ruins', sky: 'volcano' }] },
   egg: { id: 'egg', players: 8, teams: 4, teamSize: 2, maps: [{ id: 'frost', theme: 'snow', seed: 4 }, { id: 'ember', theme: 'volcano', seed: 6, sky: 'volcano' }, { id: 'greenkeep', theme: 'meadow', seed: 9 }, { id: 'sandhold', theme: 'desert', seed: 15 }] },
 };
 

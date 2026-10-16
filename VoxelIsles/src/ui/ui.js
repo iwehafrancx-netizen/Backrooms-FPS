@@ -8,7 +8,7 @@ import { SKINS, levelXp } from '../game/save.js';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 export const clock = (s) => { s = Math.max(0, Math.ceil(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 const teamName = (i) => t('team_' + i);
-const MAP_NAMES = { meadow: 'Meadow Castles', dunes: 'Desert Temples', frostfort: 'Frost Fort', emberruins: 'Ember Ruins', dusk: 'Dusk Village', frost: 'Frostbite', ember: 'Ember Rock', greenkeep: 'Green Keep', sandhold: 'Sandhold', twincastles: 'Twin Castles', frostkeep: 'Frost Keep', sunfort: 'Sun Fort' };
+const MAP_NAMES = { meadow: 'Meadow Castles', dunes: 'Desert Temples', frostfort: 'Frost Fort', emberruins: 'Ember Ruins', dusk: 'Dusk Village', frost: 'Frostbite', ember: 'Ember Rock', greenkeep: 'Green Keep', sandhold: 'Sandhold', twincastles: 'Twin Castles', frostkeep: 'Frost Keep', sunfort: 'Sun Fort', skybridge: 'Sky Bridge', sandbridge: 'Sand Bridge', icebridge: 'Ice Bridge', lavabridge: 'Lava Bridge' };
 export { MAP_NAMES };
 const OFFER_NAME = { wool: 'wool', chain_set: 'chainSet', iron_set: 'ironSet', diamond_set: 'diamondSet' };
 const CATS = [['blocks', 'cBlocks'], ['combat', 'cCombat'], ['armor', 'cArmor'], ['tools', 'cTools'], ['utility', 'cUtility']];

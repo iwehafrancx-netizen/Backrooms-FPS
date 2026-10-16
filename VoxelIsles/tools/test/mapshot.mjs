@@ -22,7 +22,7 @@ for (const [kind, theme, seed, opt, views] of list) {
   }, [kind, theme, seed, opt]);
   console.log(kind, theme, JSON.stringify(info), `${Date.now() - t0}ms`);
   const vs = views || ['over', 'spawn', 'inside', 'mid'];
-  for (const v of vs) {
+  for (const [vi, v] of vs.entries()) {
     await page.evaluate((v) => {
       const a = window.__vi, m = window.__map, c = a.R.camera, s = m.spawns[0] || { x: 0, y: m.top + 1, z: 0 };
       a.camHold = true;
@@ -35,7 +35,7 @@ for (const [kind, theme, seed, opt, views] of list) {
       c.fov = 75; c.updateProjectionMatrix();
     }, v);
     await page.waitForTimeout(250);
-    await page.screenshot({ path: `${out}${kind}-${theme}-${opt.style || ''}-${typeof v === 'string' ? v : 'cam'}.png` });
+    await page.screenshot({ path: `${out}${kind}-${theme}-${opt.style || ''}-${typeof v === 'string' ? v : 'cam' + vi}.png` });
   }
 }
 await browser.close();

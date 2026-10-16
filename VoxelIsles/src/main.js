@@ -55,7 +55,7 @@ class App {
     this.last = performance.now();
     requestAnimationFrame((n) => this.frame(n));
     window.__vi = this;
-    this.maps = { buildSkyIslands, buildEggIslands };
+    this.maps = { buildSkyIslands, buildEggIslands, ...Object.fromEntries(Object.entries(REGISTRY).map(([k, v]) => [k, (seed, opt) => v.build({ seed, ...opt })])) };
   }
 
   available(id) { return !!REGISTRY[id] || (id === 'parkour' && !!REGISTRY.race); }
