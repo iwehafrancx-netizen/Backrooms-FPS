@@ -1,0 +1,16 @@
+import { open, sleep } from './harness.mjs';
+const { browser, page, log } = await open({ query: '?debug&menu=1' });
+await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 120000 });
+await page.click('#boot-enter');
+await page.waitForFunction(() => window.__BR.Audio.musicLoaded, null, { timeout: 60000 }).catch(() => {});
+await sleep(3000);
+const r = await page.evaluate(() => ({ loaded: window.__BR.Audio.musicLoaded, on: window.__BR.Audio.musicOn }));
+console.log(`${r.loaded && r.on ? 'PASS' : 'FAIL'}  menu music decodes and plays from the smaller mp3  — ${JSON.stringify(r)}`);
+await page.evaluate(() => window.__yt.pauseCbs.forEach((f) => f()));
+await sleep(1700);
+const p = await page.evaluate(() => window.__BR.Audio.musicOn);
+console.log(`${!p ? 'PASS' : 'FAIL'}  ytgame onPause stops the music`);
+await page.evaluate(() => window.__yt.resumeCbs.forEach((f) => f()));
+await sleep(500);
+console.log(`${log.errors.length ? 'FAIL' : 'PASS'}  no page errors ${log.errors.join(' | ')}`);
+await browser.close();

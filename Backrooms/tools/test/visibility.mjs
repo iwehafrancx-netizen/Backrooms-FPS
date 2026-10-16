@@ -17,15 +17,16 @@ await page.addInitScript(() => {
   Object.defineProperty(Document.prototype, 'hidden', { configurable: true, get: () => window.__vis.state === 'hidden' });
   window.__setVis = (s) => { window.__vis.state = s; document.dispatchEvent(new Event('visibilitychange')); };
 });
-await page.route('https://www.youtube.com/game_api/v1', (r) => r.fulfill({ contentType: 'text/javascript', body: fs.readFileSync(path.join(here, 'mock-ytgame.js'), 'utf8') }));
+await page.addInitScript(() => { window.__cgConfig = { fast: true, mirrorYt: true }; });
+await page.route('https://sdk.crazygames.com/crazygames-sdk-v3.js', (r) => r.fulfill({ contentType: 'text/javascript', body: fs.readFileSync(path.join(here, '../crazygames-test-sdk.js'), 'utf8') }));
 let bytes = 0, gameReadyAt = null;
 const early = [];
 page.on('response', async (r) => {
   if (!r.url().startsWith('http://localhost:8765/')) return;
   const len = +(r.headers()['content-length'] || 0) || (await r.body().catch(() => Buffer.alloc(0))).length;
-  if (gameReadyAt == null) { bytes += len; early.push([decodeURIComponent(r.url().split('/Backrooms%20FPS/')[1] || r.url()), len]); }
+  if (gameReadyAt == null) { bytes += len; early.push([decodeURIComponent(r.url().split('/Backrooms%20FPS%20CrazyGames/')[1] || r.url()), len]); }
 });
-await page.goto('http://localhost:8765/Backrooms%20FPS/index.html?debug&menu=1');
+await page.goto('http://localhost:8765/Backrooms%20FPS%20CrazyGames/index.html?debug&menu=1');
 await page.waitForFunction(() => window.__vis.regs.length > 0, null, { timeout: 5000 }).catch(() => {});
 await page.evaluate(() => window.__setVis('hidden'));
 await page.waitForTimeout(150);
@@ -33,7 +34,7 @@ await page.evaluate(() => window.__setVis('visible'));
 await page.waitForFunction(() => window.__yt && window.__yt.calls.some((c) => c[0] === 'gameReady'), null, { timeout: 120000 });
 gameReadyAt = Date.now();
 const MiB = (b) => (b / 1048576).toFixed(2) + ' MiB';
-const rt = await page.evaluate(() => { const gr = window.__yt.calls.find((c) => c[0] === 'gameReady')[2]; const all = performance.getEntriesByType('resource').filter((e) => e.name.startsWith(location.origin)); const before = all.filter((e) => e.responseEnd <= gr); return { gr, first: window.__vis.regs[0], before: before.map((e) => [decodeURIComponent(e.name.split('/Backrooms%20FPS/')[1] || e.name), e.encodedBodySize]), after: all.filter((e) => e.responseEnd > gr).map((e) => decodeURIComponent(e.name.split('/Backrooms%20FPS/')[1] || e.name)) }; });
+const rt = await page.evaluate(() => { const gr = window.__cg.calls.find((c) => c[0] === 'loadingStop')[2]; const all = performance.getEntriesByType('resource').filter((e) => e.name.startsWith(location.origin)); const before = all.filter((e) => e.responseEnd <= gr); return { gr, first: window.__vis.regs[0], before: before.map((e) => [decodeURIComponent(e.name.split('/Backrooms%20FPS%20CrazyGames/')[1] || e.name), e.encodedBodySize]), after: all.filter((e) => e.responseEnd > gr).map((e) => decodeURIComponent(e.name.split('/Backrooms%20FPS%20CrazyGames/')[1] || e.name)) }; });
 check('Page Visibility listener is registered as soon as the game script loads, long before gameReady', rt.first != null && rt.first < rt.gr, `listener at ${rt.first.toFixed(0)} ms, gameReady at ${rt.gr.toFixed(0)} ms`);
 const ib = rt.before.reduce((a, b) => a + b[1], 0) + 1053;
 check('Initial bundle (downloaded before gameReady) < 15 MiB', ib < 15 * 1048576, `${MiB(ib)} in ${rt.before.length + 1} files; loaded after gameReady: ${rt.after.join(', ')}`);

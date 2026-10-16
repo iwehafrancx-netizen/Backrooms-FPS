@@ -333,20 +333,7 @@ function t(key, vars) {
 }
 const mt = (m) => (MTEXT[LANG] && MTEXT[LANG][m.id]) || MTEXT.en[m.id];
 
-const PageVisibility = (() => {
-  const subs = [];
-  const isHidden = () => document.visibilityState === 'hidden';
-  let hidden = isHidden();
-  const api = { wired: false, get hidden() { return hidden; }, on(f) { subs.push(f); } };
-  document.addEventListener('visibilitychange', () => {
-    const h = isHidden();
-    if (h === hidden) return;
-    hidden = h;
-    if (!api.wired) { try { Audio.setSuspended(h); } catch (e) {} }
-    for (const f of subs.slice()) f(h);
-  });
-  return api;
-})();
+const PageVisibility = { wired: false, hidden: false, on() {} };
 
 const Platform = (() => {
   const safe = (fn, fallback) => { try { return fn(); } catch (e) { return fallback; } };
@@ -369,8 +356,8 @@ const Platform = (() => {
     },
     isAudioEnabled() { return inPlayables ? safe(() => yt.system.isAudioEnabled(), true) : true; },
     onAudioEnabledChange(cb) { if (inPlayables) safe(() => yt.system.onAudioEnabledChange(cb)); },
-    onPause(cb) { if (inPlayables) safe(() => yt.system.onPause(cb)); PageVisibility.on((h) => { if (h) cb(); }); },
-    onResume(cb) { if (inPlayables) safe(() => yt.system.onResume(cb)); PageVisibility.on((h) => { if (!h) cb(); }); },
+    onPause(cb) { if (inPlayables) safe(() => yt.system.onPause(cb)); },
+    onResume(cb) { if (inPlayables) safe(() => yt.system.onResume(cb)); },
     async loadData() {
       if (inPlayables) return safe(() => yt.game.loadData(), Promise.resolve('')).catch(() => { api.logWarning(); return ''; });
       return safe(() => localStorage.getItem(KEY) || '', '');
