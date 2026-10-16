@@ -253,7 +253,7 @@ export class Bot {
       const vis = ne.d < 3 || this.visible(ne.o);
       const early = m.mode.id === 'sky' && m.time < 100 && !ne.o.local;
       const engage = ne.d < (this.bridge ? 4 : early ? 4 + this.brave * 3 : 9 + this.brave * 8) && vis && Math.abs(ne.o.pos.y - a.pos.y) < 5;
-      if (engage && this.noticeT > this.react) {
+      if (engage && this.noticeT > this.react && (!m.mode.botEngage || m.mode.botEngage(this, ne))) {
         if (!(ne.d < 3.5) && this.heal(dt)) return ctl;
         if (this.tryThrow(ne.o, ne.d, dt)) return ctl;
         this.fight(ne.o, ne.d, dt);
@@ -261,7 +261,7 @@ export class Bot {
       }
     } else this.noticeT = 0;
     if (this.heal(dt)) return ctl;
-    const plan = m.mode.id === 'egg' ? this.planEgg(dt) : this.planSky(dt);
+    const plan = m.mode.botPlan ? m.mode.botPlan(this, dt) : this.planSky(dt);
     return plan || ctl;
   }
 

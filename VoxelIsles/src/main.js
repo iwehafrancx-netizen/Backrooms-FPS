@@ -58,6 +58,8 @@ class App {
     this.maps = { buildSkyIslands, buildEggIslands };
   }
 
+  available(id) { return !!REGISTRY[id] || (id === 'parkour' && !!REGISTRY.race); }
+
   async applyLang() {
     const s = this.save.settings.lang;
     let l = s;
@@ -343,6 +345,11 @@ class App {
           A.egg(m.mode.teams[e.team].egg);
           if (e.team === me.team) ui.title(t('yourEgg'), t('noRespawn'), 3.5, 'bad');
           else ui.toast(t('eggGone', { team: t('team_' + e.team) }), 'bad');
+          break;
+        }
+        case 'notice': {
+          if (e.big) ui.title(e.text, '', 3, e.team === me.team ? 'go' : 'bad'); else ui.toast(e.text, e.cls || '');
+          if (e.sound === 'win') { if (e.team === me.team) A.win(); else A.beep(false); } else if (e.sound === 'egg') A.egg(me.pos); else if (e.sound) A.beep(e.sound === 'hi');
           break;
         }
         case 'voidrise': ui.toast(t('voidRise'), 'bad'); A.beep(false); break;

@@ -86,6 +86,31 @@ const fr = {
   h5: 'Îles Célestes : pille tes coffres, construis des ponts et sois le dernier debout.', h6: 'Défense de l’Œuf : récupère du fer et de l’or au générateur, achète de l’équipement au marchand et protège ton œuf. Tant qu’il vit, tu réapparais !',
 };
 
+Object.assign(en, {
+  zombie: 'Zombie Apocalypse', zombieDesc: 'Hold out against waves of the undead with your friends.', oitc: 'One In The Chamber', oitcDesc: 'One shot, one kill. Make every arrow count.', survival: 'Survival Games', survivalDesc: 'Loot, survive and outlast everyone in a big arena.',
+  draw: 'Draw!', ctf: 'Capture the Flag', ctfDesc: 'Two castles, two flags. Steal the enemy flag and carry it back to your stand while yours is home.', teams4v4: 'Teams · 4 vs 4',
+  ctfGoal: 'Capture the enemy flag {n} times', youHaveFlag: 'You have the flag! Run home!', yourFlagTaken: 'Your flag was taken!',
+  flagTaken: '{name} took the {team} flag!', flagCaptured: '{name} captured a flag for {team}!', flagDropped: 'The {team} flag was dropped!', flagReturned: 'The {team} flag is back home',
+});
+Object.assign(es, {
+  zombie: 'Apocalipsis Zombi', zombieDesc: 'Resiste oleadas de no muertos con tus amigos.', oitc: 'Una en la Recámara', oitcDesc: 'Un disparo, una baja. Haz que cada flecha cuente.', survival: 'Juegos de Supervivencia', survivalDesc: 'Saquea, sobrevive y aguanta más que todos en una gran arena.',
+  draw: '¡Empate!', ctf: 'Captura la Bandera', ctfDesc: 'Dos castillos, dos banderas. Roba la bandera enemiga y llévala a tu base mientras la tuya está en casa.', teams4v4: 'Equipos · 4 vs 4',
+  ctfGoal: 'Captura la bandera enemiga {n} veces', youHaveFlag: '¡Tienes la bandera! ¡Corre a casa!', yourFlagTaken: '¡Robaron tu bandera!',
+  flagTaken: '¡{name} tomó la bandera {team}!', flagCaptured: '¡{name} capturó una bandera para {team}!', flagDropped: '¡La bandera {team} cayó!', flagReturned: 'La bandera {team} volvió a casa',
+});
+Object.assign(pt, {
+  zombie: 'Apocalipse Zumbi', zombieDesc: 'Resista a ondas de mortos-vivos com seus amigos.', oitc: 'Uma na Agulha', oitcDesc: 'Um tiro, um abate. Faça cada flecha valer.', survival: 'Jogos de Sobrevivência', survivalDesc: 'Saqueie, sobreviva e dure mais que todos numa grande arena.',
+  draw: 'Empate!', ctf: 'Capture a Bandeira', ctfDesc: 'Dois castelos, duas bandeiras. Roube a bandeira inimiga e leve até a sua base enquanto a sua está em casa.', teams4v4: 'Times · 4 vs 4',
+  ctfGoal: 'Capture a bandeira inimiga {n} vezes', youHaveFlag: 'Você está com a bandeira! Corra para casa!', yourFlagTaken: 'Roubaram sua bandeira!',
+  flagTaken: '{name} pegou a bandeira {team}!', flagCaptured: '{name} capturou uma bandeira para o time {team}!', flagDropped: 'A bandeira {team} caiu!', flagReturned: 'A bandeira {team} voltou para casa',
+});
+Object.assign(fr, {
+  zombie: 'Apocalypse Zombie', zombieDesc: 'Résiste aux vagues de morts-vivants avec tes amis.', oitc: 'Une Seule Balle', oitcDesc: 'Un tir, une élimination. Chaque flèche compte.', survival: 'Jeux de Survie', survivalDesc: 'Pille, survis et tiens plus longtemps que tous dans une grande arène.',
+  draw: 'Égalité !', ctf: 'Capture du Drapeau', ctfDesc: 'Deux châteaux, deux drapeaux. Vole le drapeau ennemi et ramène-le à ton socle pendant que le tien est à la maison.', teams4v4: 'Équipes · 4 contre 4',
+  ctfGoal: 'Capture le drapeau ennemi {n} fois', youHaveFlag: 'Tu as le drapeau ! Cours à ta base !', yourFlagTaken: 'Ton drapeau a été volé !',
+  flagTaken: '{name} a pris le drapeau {team} !', flagCaptured: '{name} a capturé un drapeau pour l’équipe {team} !', flagDropped: 'Le drapeau {team} est tombé !', flagReturned: 'Le drapeau {team} est rentré',
+});
+
 export const LANGS = { en, es, pt, fr };
 export const LANG_NAMES = { en: 'English', es: 'Español', pt: 'Português', fr: 'Français' };
 let cur = en;

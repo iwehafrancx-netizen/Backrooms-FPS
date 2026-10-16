@@ -41,7 +41,16 @@ export class View {
       this.chars.set(a.id, ch);
       if (a === local) ch.root.visible = false;
     }
-    if (m.mode.teams) for (const t of m.mode.teams) { const e = makeEgg(t.i); e.position.set(t.egg.x + 0.5, t.egg.y, t.egg.z + 0.5); this.scene.add(e); this.eggs.push({ t, mesh: e }); }
+    this.flags = [];
+    if (m.mode.flags) for (const f of m.mode.flags) {
+      const g = new THREE.Group();
+      const pole = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.2, 0.08), new THREE.MeshLambertMaterial({ color: 0xdcdcdc }));
+      pole.position.y = 1.1; g.add(pole);
+      const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.6, 0.04), new THREE.MeshLambertMaterial({ color: TEAM_COLORS[f.team].hex, emissive: TEAM_COLORS[f.team].hex, emissiveIntensity: 0.25 }));
+      cloth.position.set(0.47, 1.85, 0); g.add(cloth);
+      this.scene.add(g); this.flags.push({ f, g, cloth });
+    }
+    if (m.mode.id === 'egg' && m.mode.teams) for (const t of m.mode.teams) { const e = makeEgg(t.i); e.position.set(t.egg.x + 0.5, t.egg.y, t.egg.z + 0.5); this.scene.add(e); this.eggs.push({ t, mesh: e }); }
     for (const n of m.npcs) {
       const ch = makeCharacter(4242 + n.team * 7, -1);
       ch.root.position.set(n.x, n.y, n.z); ch.root.rotation.y = n.yaw;
@@ -57,6 +66,8 @@ export class View {
     for (const m of this.dropMeshes.values()) this.scene.remove(m);
     for (const m of this.projMeshes.values()) this.scene.remove(m);
     for (const e of this.eggs) this.scene.remove(e.mesh);
+    for (const fl of this.flags || []) this.scene.remove(fl.g);
+    this.flags = [];
     for (const n of this.npcs) this.scene.remove(n.ch.root);
     if (this.voidPlane) { this.scene.remove(this.voidPlane); this.voidPlane = null; }
     this.chars.clear(); this.dropMeshes.clear(); this.projMeshes.clear(); this.eggs = []; this.npcs = []; this.particles = []; this.pMesh.count = 0;
@@ -129,6 +140,13 @@ export class View {
       this.voidPlane.position.y = m.map.voidY + Math.sin(t * 2) * 0.05;
     }
     for (const { n, ch } of this.npcs) { ch.head.rotation.y = Math.sin(t * 0.7 + n.team) * 0.4; }
+    for (const fl of this.flags || []) {
+      const f = fl.f;
+      fl.g.visible = !(f.state === 'carried' && f.carrier === this.local && !this.thirdPerson);
+      if (f.state === 'carried' && f.carrier) { fl.g.position.set(f.carrier.pos.x - Math.sin(f.carrier.yaw) * 0.2, f.carrier.pos.y + 0.5, f.carrier.pos.z - Math.cos(f.carrier.yaw) * 0.2); fl.g.scale.setScalar(0.7); fl.g.rotation.y = f.carrier.yaw; }
+      else { fl.g.position.set(f.x + 0.5, f.y, f.z + 0.5); fl.g.scale.setScalar(1); fl.g.rotation.y = t * 0.5; }
+      fl.cloth.rotation.y = Math.sin(t * 4 + f.team) * 0.25;
+    }
     for (const e of this.eggs) { e.mesh.visible = e.t.eggAlive; e.mesh.rotation.y = t * 0.6; e.mesh.position.y = e.t.egg.y + 0.03 + Math.sin(t * 2) * 0.03; }
     const live = new Set();
     for (const d of m.drops) {

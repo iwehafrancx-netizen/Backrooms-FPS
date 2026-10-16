@@ -1,5 +1,7 @@
 import { MAPBLOCK, chestAt } from './common.js';
 
+const FOLIAGE = new Set([6, 7, 10, 40, 41, 42, 43, 44, 18, 19]);
+
 const mixWall = (f, r, s, lx, ly, lz) => { const v = r(); f.set(lx, ly, lz, v < 0.12 ? s.wall3 : v < 0.32 ? s.wall2 : s.wall); };
 
 function chest(f, chests, lx, ly, lz, tier, group) {
@@ -163,6 +165,10 @@ export function stoneBridge(w, s, x0, z0, x1, z1, y, broken = 0, rng = Math.rand
     const t = i / n;
     if (broken && t > 0.5 - broken / 2 && t < 0.5 + broken / 2) continue;
     const cx = x0 + dx * t, cz = z0 + dz * t;
+    for (let k = -2; k <= 2; k++) {
+      const x = Math.round(cx + px * k), z = Math.round(cz + pz * k);
+      for (let yy = y + 1; yy <= y + 4; yy++) { const id = w.get(x, yy, z); if (FOLIAGE.has(id)) w.set(x, yy, z, 0, 0, true); }
+    }
     for (let k = -1; k <= 1; k++) {
       const x = Math.round(cx + px * k), z = Math.round(cz + pz * k);
       if (!w.get(x, y, z)) w.set(x, y, z, k ? s.floor : s.path, MAPBLOCK, true);
