@@ -59,6 +59,7 @@ export class Audio {
   win() { [523, 659, 784, 1046, 784, 1046].forEach((f, i) => this.tone(f, 0.22, 'square', 0.09, 1, i * 0.13)); }
   egg(p) { this.noise(0.5, 900, 3, 0.7 * Math.max(0.35, this.att(p))); [300, 200, 120].forEach((f, i) => this.tone(f, 0.3, 'sawtooth', 0.12, 0.6, i * 0.1)); }
   throwS() { this.noise(0.15, 1400, 1, 0.25, null, 'highpass'); }
+  trap() { this.noise(0.45, 500, 2, 0.5); this.tone(140, 0.4, 'sawtooth', 0.12, 0.5); this.tone(90, 0.5, 'square', 0.08, 0.6, 0.08); }
   warp() { this.tone(300, 0.4, 'sine', 0.14, 4); this.tone(450, 0.4, 'triangle', 0.08, 3); }
   levelUp() { [523, 784, 1046, 1568].forEach((f, i) => this.tone(f, 0.18, 'triangle', 0.1, 1, i * 0.09)); }
 

@@ -4,11 +4,12 @@ import { ITEMS } from '../game/items.js';
 import { TEAM_COLORS } from '../engine/blocks.js';
 import { SHOP } from '../game/modes/eggdefense.js';
 import { SKINS, levelXp } from '../game/save.js';
+import { fmtTime } from '../game/modes/parkour.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 export const clock = (s) => { s = Math.max(0, Math.ceil(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 const teamName = (i) => t('team_' + i);
-const MAP_NAMES = { meadow: 'Meadow Castles', dunes: 'Desert Temples', frostfort: 'Frost Fort', emberruins: 'Ember Ruins', dusk: 'Dusk Village', frost: 'Frostbite', ember: 'Ember Rock', greenkeep: 'Green Keep', sandhold: 'Sandhold', twincastles: 'Twin Castles', frostkeep: 'Frost Keep', sunfort: 'Sun Fort', skybridge: 'Sky Bridge', sandbridge: 'Sand Bridge', icebridge: 'Ice Bridge', lavabridge: 'Lava Bridge' };
+const MAP_NAMES = { meadow: 'Meadow Castles', dunes: 'Desert Temples', frostfort: 'Frost Fort', emberruins: 'Ember Ruins', dusk: 'Dusk Village', frost: 'Frostbite', ember: 'Ember Rock', greenkeep: 'Green Keep', sandhold: 'Sandhold', twincastles: 'Twin Castles', frostkeep: 'Frost Keep', sunfort: 'Sun Fort', skybridge: 'Sky Bridge', sandbridge: 'Sand Bridge', icebridge: 'Ice Bridge', lavabridge: 'Lava Bridge', castlerun: 'Castle Dash', templerun: 'Sun Temple Dash', frostrun: 'Frost Dash', lavarun: 'Lava Dash', skyrace: 'Sky Steps', sandrace: 'Sand Steps', icerace: 'Ice Steps', lavarace: 'Lava Steps', duskrace: 'Dusk Steps' };
 export { MAP_NAMES };
 const OFFER_NAME = { wool: 'wool', chain_set: 'chainSet', iron_set: 'ironSet', diamond_set: 'diamondSet' };
 const CATS = [['blocks', 'cBlocks'], ['combat', 'cCombat'], ['armor', 'cArmor'], ['tools', 'cTools'], ['utility', 'cUtility']];
@@ -65,10 +66,30 @@ export class UI {
       <button class="btn back" data-act="menu">${t('back')}</button>`);
   }
 
+  parkourPick() {
+    this.show('pkpick', `${this.profileHtml()}<h1>${t('parkour')}</h1>
+      <div class="cards">
+        <button class="card c-parkour" data-act="pkSolo"><div class="art"><img class="pix" src="${icon(58)}"></div><h2>${t('pkSolo')}</h2><div class="tag">${t('levels10')}</div><p>${t('pkSoloDesc')}</p></button>
+        <button class="card c-race" data-act="pkRace"><div class="art"><img class="pix" src="${icon(61)}"></div><h2>${t('parkourRace')}</h2><div class="tag">${t('players6')}</div><p>${t('pkRaceDesc')}</p></button>
+      </div>
+      <button class="btn back" data-act="modes">${t('back')}</button>`);
+  }
+
+  parkourLevels(pk) {
+    pk = pk || { best: {}, stars: {}, unlocked: 1 };
+    const cells = [];
+    for (let L = 1; L <= 10; L++) {
+      const open = L <= (pk.unlocked || 1), st = (pk.stars && pk.stars[L]) || 0, best = pk.best && pk.best[L];
+      cells.push(`<button class="lvl ${open ? '' : 'locked'} ${st ? 'done' : ''}" ${open ? `data-act="level" data-level="${L}"` : 'disabled'}><b>${L}</b><span class="st">${[1, 2, 3].map((k) => `<i class="${k <= st ? 'on' : ''}"></i>`).join('')}</span><em>${open ? (best ? fmtTime(best) : t('newLevel')) : '—'}</em></button>`);
+    }
+    this.show('pklevels', `${this.profileHtml()}<h1>${t('pkSolo')}</h1><div class="lvls">${cells.join('')}</div>
+      <button class="btn back" data-act="pkBack">${t('back')}</button>`);
+  }
+
   lobby(L) {
-    const mode = L.mode, egg = mode.id === 'egg';
-    this.show('lobby', `<div class="lpanel"><h1>${t(mode.id)}</h1><div class="mapname">${MAP_NAMES[L.map.id] || ''}</div>
-      <div class="status"></div><div class="slots ${egg ? 'teams' : ''}"></div>
+    const mode = L.mode, teamed = mode.teams > 0;
+    this.show('lobby', `<div class="lpanel"><h1>${t(mode.id === 'race' ? 'parkourRace' : mode.id)}</h1><div class="mapname">${MAP_NAMES[L.map.id] || ''}</div>
+      <div class="status"></div><div class="slots ${teamed ? 'teams t' + mode.teams : ''}"></div>
       <button class="btn small" data-act="cancelLobby">${t('cancel')}</button></div>`);
     this.sig.lobby = '';
     this.updateLobby(L);
@@ -81,15 +102,15 @@ export class UI {
     const st = this.screenEl.querySelector('.status');
     st.innerHTML = L.state === 'search' ? `<span class="spin"></span>${t('finding')} <b>${L.slots.length}/${L.mode.players}</b>` : `<b class="cd">${t('starting', { n: Math.max(1, Math.ceil(L.cd)) })}</b>`;
     const slots = [];
-    const egg = L.mode.id === 'egg';
+    const teamed = L.mode.teams > 0, ts = L.mode.teamSize || 2;
     for (let i = 0; i < L.mode.players; i++) {
       const p = L.slots[i];
-      const team = egg ? Math.floor(i / 2) : -1;
+      const team = teamed ? Math.floor(i / ts) : -1;
       const col = team >= 0 ? TEAM_COLORS[team].hex : '';
       slots.push(p ? `<div class="slot ${p.bot ? '' : 'me'} pop" style="${col ? `--tc:${col}` : ''}"><img class="pix" src="${skinFront(p.skinSeed ?? p.skin, team)}"><span>${esc(p.name)}</span></div>` : `<div class="slot empty" style="${col ? `--tc:${col}` : ''}"><i></i><span>…</span></div>`);
     }
     const box = this.screenEl.querySelector('.slots');
-    box.innerHTML = egg ? [0, 1, 2, 3].map((tm) => `<div class="tcol" style="--tc:${TEAM_COLORS[tm].hex}"><div class="tname">${teamName(tm)}</div>${slots[tm * 2]}${slots[tm * 2 + 1]}</div>`).join('') : slots.join('');
+    box.innerHTML = teamed ? Array.from({ length: L.mode.teams }, (_, tm) => `<div class="tcol" style="--tc:${TEAM_COLORS[tm].hex}"><div class="tname">${teamName(tm)}</div>${slots.slice(tm * ts, tm * ts + ts).join('')}</div>`).join('') : slots.join('');
   }
 
   results(r) {
@@ -97,11 +118,12 @@ export class UI {
     this.show('results', `<div class="rpanel ${r.win ? 'won' : ''}">
       <h1>${r.win ? t('victory') : t('gameOver')}</h1>
       <div class="sub">${esc(r.sub)}</div>
-      <div class="rows"><div><span>${t('kills')}</span><b>${r.kills}</b></div><div><span>${t('reward')}</span><b>${this.coinsHtml('+' + r.coins)}</b></div><div><span>${t('xp')}</span><b>+${r.xp}</b></div></div>
+      ${r.stars ? `<div class="bigstars">${[1, 2, 3].map((k) => `<i class="${k <= r.stars ? 'on' : ''}"></i>`).join('')}</div>` : ''}
+      <div class="rows">${r.time ? `<div><span>${t('time')}</span><b>${fmtTime(r.time)}</b></div>` : `<div><span>${t('kills')}</span><b>${r.kills}</b></div>`}<div><span>${t('reward')}</span><b>${this.coinsHtml('+' + r.coins)}</b></div><div><span>${t('xp')}</span><b>+${r.xp}</b></div></div>
       ${this.profileHtml()}
       <div class="btns">
-        <button class="btn green" data-act="again">${t('playAgain')}</button>
-        <button class="btn" data-act="modes">${t('changeGame')}</button>
+        ${r.next ? `<button class="btn green" data-act="nextLevel">${t('nextLevel')}</button><button class="btn" data-act="again">${t('retry')}</button>` : `<button class="btn green" data-act="again">${r.solo ? t('retry') : t('playAgain')}</button>`}
+        <button class="btn" data-act="${r.solo ? 'pkLevels' : 'modes'}">${r.solo ? t('levels') : t('changeGame')}</button>
         ${canDouble ? `<button class="btn gold" data-act="double"><i class="ad"></i>${t('doubleCoins')}</button>` : ''}
         ${r.canSpectate ? `<button class="btn" data-act="spectate">${t('spectate')}</button>` : ''}
       </div></div>`);
@@ -141,7 +163,7 @@ export class UI {
   }
 
   howto() {
-    this.show('howto', `<div class="spanel how"><h1>${t('howto')}</h1>${['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((k) => `<p>${t(k)}</p>`).join('')}<button class="btn" data-act="back">${t('back')}</button></div>`);
+    this.show('howto', `<div class="spanel how"><h1>${t('howto')}</h1>${['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9', 'h10'].map((k) => `<p>${t(k)}</p>`).join('')}<button class="btn" data-act="back">${t('back')}</button></div>`);
   }
 
   buildHud(touch) {
@@ -179,6 +201,7 @@ export class UI {
 
   updateHud(m, me, view) {
     const H = this.h, sig = this.sig;
+    if (sig.nobar !== !!m.mode.hideBar) { sig.nobar = !!m.mode.hideBar; this.hudEl.classList.toggle('nobar', sig.nobar); }
     const inv = me.inv;
     const hs = inv.slots.map((s) => (s ? s.id + 'x' + s.count : '-')).join(',') + '|' + me.sel;
     if (hs !== sig.hot) {

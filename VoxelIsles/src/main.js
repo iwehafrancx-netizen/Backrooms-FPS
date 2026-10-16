@@ -125,10 +125,27 @@ class App {
 
   startMatch() {
     const L = this.lobby;
+    this.lastSolo = 0;
     const mode = REGISTRY[L.mode.id].make({ save: this.save.data, slots: L.slots });
-    const m = new Match(L.built, mode, { seed: (Math.random() * 1e9) | 0, countdown: 5 });
-    const actors = L.slots.map((s, i) => {
-      const a = m.add(new Actor({ name: s.name, bot: s.bot, skin: s.skin, team: L.mode.teams ? Math.floor(i / (L.mode.teamSize || 2)) : -1, local: !s.bot }));
+    this.beginMatch(L.built, mode, L.slots, L.mode, 5);
+  }
+
+  startSolo(level) {
+    this.endMatch();
+    this.lastSolo = level; this.lastMode = 'parkour';
+    const themes = ['meadow', 'meadow', 'desert', 'snow', 'meadow', 'volcano', 'desert', 'snow', 'meadow', 'volcano'];
+    const skies = [0, 0, 0, 0, 'dusk', 'volcano', 0, 0, 'dusk', 'volcano'];
+    const th = themes[level - 1], built = REGISTRY.parkour.build({ level, theme: th });
+    this.setScene(built, skies[level - 1] || th);
+    const d = this.save.data;
+    const mode = REGISTRY.parkour.make({ save: d });
+    this.beginMatch(built, mode, [{ name: d.name, bot: false, skin: SKINS[d.skin].seed }], { teams: 0 }, 3);
+  }
+
+  beginMatch(built, mode, slots, cfg, countdown) {
+    const m = new Match(built, mode, { seed: (Math.random() * 1e9) | 0, countdown });
+    const actors = slots.map((s, i) => {
+      const a = m.add(new Actor({ name: s.name, bot: s.bot, skin: s.skin, team: cfg.teams ? Math.floor(i / (cfg.teamSize || 2)) : -1, local: !s.bot }));
       if (s.bot) new Bot(a, m, s.skill);
       return a;
     });
@@ -177,7 +194,19 @@ class App {
       case 'modes':
         if (this.state === 'results') { this.state = 'busy'; await this.ad('mid'); }
         this.toMenu('modes'); break;
-      case 'mode': this.startLobby(d.mode); break;
+      case 'mode': if (d.mode === 'parkour') this.ui.parkourPick(); else this.startLobby(d.mode); break;
+      case 'pkSolo': this.ui.parkourLevels(this.save.data.parkour); break;
+      case 'pkBack': this.ui.parkourPick(); break;
+      case 'pkLevels':
+        if (this.state === 'busy') break;
+        if (this.state === 'results') { this.state = 'busy'; await this.ad('mid'); }
+        this.toMenu('modes'); this.ui.parkourLevels(this.save.data.parkour); break;
+      case 'pkRace': this.startLobby('race'); break;
+      case 'level': this.startSolo(+d.level); break;
+      case 'nextLevel':
+        if (this.state === 'busy') break;
+        this.state = 'busy'; await this.ad('mid');
+        this.startSolo(this.lastResult.next); break;
       case 'cancelLobby': this.lobby = null; this.toMenu('modes'); break;
       case 'skins': case 'settings': case 'howto':
         this.screens.push(this.ui.screen);
@@ -198,7 +227,7 @@ class App {
       case 'again':
         if (this.state === 'busy') break;
         this.state = 'busy'; await this.ad('mid');
-        this.startLobby(this.lastMode); break;
+        if (this.lastSolo) this.startSolo(this.lastSolo); else this.startLobby(this.lastMode); break;
       case 'double': {
         const ok = await this.ad('reward');
         if (ok && this.lastResult && !this.lastResult.doubled) { this.lastResult.doubled = true; this.save.data.coins += this.lastResult.coins; this.lastResult.coins *= 2; this.save.persist(); this.audio.levelUp(); }
@@ -297,7 +326,7 @@ class App {
       this.save.persist();
       if (up) { this.audio.levelUp(); this.ui.toast(t('levelUp'), 'gold'); }
       if (win) { try { Platform.happytime(); } catch (e) {} }
-      this.lastResult = { win, coins, xp, kills: me.kills, sub: res.sub, title: res.title, stat: res.stat };
+      this.lastResult = { win, coins, xp, kills: me.kills, sub: res.sub, title: res.title, stat: res.stat, stars: res.stars, time: res.time, next: res.next, solo: !!this.lastSolo };
     }
     const r = this.lastResult;
     r.canDouble = (() => { try { return Platform.ads.canReward(); } catch (e) { return false; } })();
@@ -352,6 +381,8 @@ class App {
           if (e.sound === 'win') { if (e.team === me.team) A.win(); else A.beep(false); } else if (e.sound === 'egg') A.egg(me.pos); else if (e.sound) A.beep(e.sound === 'hi');
           break;
         }
+        case 'trap': A.trap(); V.sparks(e.x + 0.5, e.y + 1.2, e.z + 0.5, 0xff5a30, 30); if (me.role === 'runner' && Math.abs(e.x - me.pos.x) < 12) this.shake = 0.18; break;
+        case 'cpback': A.beep(false); break;
         case 'voidrise': ui.toast(t('voidRise'), 'bad'); A.beep(false); break;
         case 'sudden': ui.toast(t('sudden'), 'bad'); A.setMusicStyle('tense'); break;
         case 'teamout': ui.feed(`<b style="color:${TEAM_COLORS[e.team].hex}">${t('teamOut', { team: t('team_' + e.team) })}</b>`); break;

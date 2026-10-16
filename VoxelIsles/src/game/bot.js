@@ -307,6 +307,35 @@ export class Bot {
     return ctl;
   }
 
+  followRoute(nodes, dt) {
+    const a = this.a, ctl = this.ctlObj, w = this.m.world;
+    if (this.rI == null) this.rI = 0;
+    let n = nodes[this.rI];
+    const reachedNode = (q) => (a.onGround || !(q.jump || q.tight)) && Math.hypot(q.x + 0.5 - a.pos.x, q.z + 0.5 - a.pos.z) < (q.tight ? 0.6 : 0.85) && a.pos.y > q.y - 0.6 && a.pos.y < q.y + 1.4;
+    while (n && reachedNode(n)) { this.lastTight = !!n.tight; this.rI++; n = nodes[this.rI]; }
+    if (!n) { ctl.mx = ctl.mz = 0; return true; }
+    if (this.waitT > 0) { this.waitT -= dt; ctl.mx = ctl.mz = 0; return false; }
+    const dx = n.x + 0.5 - a.pos.x, dz = n.z + 0.5 - a.pos.z, d = Math.hypot(dx, dz) || 1;
+    ctl.mx = dx / d; ctl.mz = dz / d;
+    ctl.yaw = Math.atan2(-dx, -dz); ctl.pitch = -0.15;
+    const gapJump = n.jump || n.y > Math.floor(a.pos.y + 0.01);
+    ctl.sprint = n.tight ? d > 2.6 : gapJump || d > 1.5;
+    if (a.onGround && this.lastTight && n.jump && n.y <= Math.floor(a.pos.y + 0.01)) { this.lastTight = false; ctl.jump = true; return false; }
+    if (d < 0.35 && !gapJump) { ctl.mx *= 0.4; ctl.mz *= 0.4; }
+    if (a.onGround) {
+      const fy = Math.floor(a.pos.y + 0.01) - 1;
+      const px = Math.floor(a.pos.x + ctl.mx * 0.42), pz = Math.floor(a.pos.z + ctl.mz * 0.42);
+      const edge = !w.solidAt(px, fy, pz) && !w.solidAt(px, fy - 1, pz);
+      if (n.y > fy + 1 && (d < 1.7 || a.blocked)) ctl.jump = true;
+      else if (edge && (n.jump || n.y >= fy + 1 || d > 1.2)) {
+        if (this.slip == null) this.slip = Math.random() < (1 - this.skill) * 0.12 ? 0.08 + Math.random() * 0.12 : 0;
+        if (this.slip > 0) { this.slip -= dt; if (this.slip <= 0) ctl.jump = true; }
+        else ctl.jump = true;
+      } else this.slip = null;
+    }
+    return false;
+  }
+
   tower(dt) {
     const a = this.a, ctl = this.ctlObj, w = this.m.world;
     if (!this.selectBlocks()) return false;
