@@ -1,3 +1,5 @@
+import { BLOCKS } from '../engine/blocks.js';
+
 export const GRAVITY = 30;
 export const JUMP_V = 8.6;
 export const HW = 0.3;
@@ -38,7 +40,7 @@ function moveAxis(w, a, axis, d) {
 }
 
 export function stepActor(w, a, dt, ctl) {
-  const speed = ctl.crouch ? 1.4 : ctl.sprint ? 5.7 : 4.3;
+  const speed = (ctl.crouch ? 1.4 : ctl.sprint ? 5.7 : 4.3) * (a.speedMul || 1);
   const wish = Math.hypot(ctl.mx, ctl.mz);
   const tx = wish > 0 ? (ctl.mx / Math.max(1, wish)) * speed : 0, tz = wish > 0 ? (ctl.mz / Math.max(1, wish)) * speed : 0;
   const acc = a.onGround ? 40 : 10;
@@ -63,6 +65,11 @@ export function stepActor(w, a, dt, ctl) {
   if (hitY) a.vel.y = 0;
   a.onGround = hitY && vy <= 0;
   let landed = 0;
+  if (a.onGround) {
+    const bid = w.get(Math.floor(a.pos.x), Math.floor(a.pos.y - 0.05), Math.floor(a.pos.z));
+    const bb = bid && BLOCKS[bid];
+    if (bb && bb.bounce) { a.vel.y = bb.bounce; a.onGround = false; a.airTop = a.pos.y; a.bounced = true; return { landed: 0 }; }
+  }
   if (!a.onGround) a.airTop = Math.max(a.airTop ?? startY, a.pos.y);
   else if (!was) { landed = (a.airTop ?? a.pos.y) - a.pos.y; a.airTop = null; }
   else a.airTop = null;

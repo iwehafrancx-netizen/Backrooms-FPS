@@ -30,7 +30,7 @@ export class Match {
   emit(e) { this.events.push(e); if (this.events.length > 400) this.events.splice(0, 100); }
   add(a) { this.actors.push(a); a.match = this; return a; }
   teamOf(a) { return a.team; }
-  enemies(a, b) { return a !== b && (a.team < 0 || a.team !== b.team); }
+  enemies(a, b) { return a !== b && !this.mode.noPvp && (a.team < 0 || a.team !== b.team) && !(this.mode.allied && this.mode.allied(a, b)); }
   alive() { return this.actors.filter((a) => a.alive); }
 
   update(dt) {
@@ -70,7 +70,7 @@ export class Match {
     a.sprint = !!c.sprint && !c.crouch;
     const r = this.stepPhysics(a, dt, c, false);
     a.hurtT = Math.max(0, a.hurtT - dt); a.attackCd = Math.max(0, a.attackCd - dt); a.swingT = Math.max(0, a.swingT - dt); a.spawnProtect = Math.max(0, a.spawnProtect - dt);
-    if (r && r.landed > 3.5) this.damage(a, Math.floor(r.landed - 3), this.recentAttacker(a, 5), 'fall');
+    if (r && r.landed > 3.5 && !this.mode.noFall) this.damage(a, Math.floor(r.landed - 3), this.recentAttacker(a, 5), 'fall');
     if (!a.alive) return;
     if (a.pos.y < this.map.voidY) { this.kill(a, this.recentAttacker(a, 10), 'void'); return; }
     if (a.hp < a.maxHp && this.time - a.lastHurt > 5) { a.regenT += dt; if (a.regenT > 2.5) { a.regenT = 0; a.hp = Math.min(a.maxHp, a.hp + 1); } }
@@ -86,7 +86,7 @@ export class Match {
 
   lookHit(a, reach = REACH_BLOCK) {
     const e = a.eye(eyeHeight(a)), d = a.look();
-    return this.world.raycast(e.x, e.y, e.z, d.x, d.y, d.z, reach, (id) => id !== 0 && (BLOCKS[id].solid || BLOCKS[id].cross));
+    return this.world.raycast(e.x, e.y, e.z, d.x, d.y, d.z, reach, (id) => id !== 0 && (BLOCKS[id].solid || BLOCKS[id].pick));
   }
   lookActor(a, reach = REACH_HIT) {
     const e = a.eye(eyeHeight(a)), d = a.look();
@@ -114,7 +114,7 @@ export class Match {
     }
     if (pressed) { a.swingT = 0.25; this.emit({ t: 'swing', a }); }
     const bh = this.lookHit(a);
-    if (!bh || !isSolid(bh.id) && !BLOCKS[bh.id].cross) { a.mine = null; return; }
+    if (!bh || !isSolid(bh.id) && !BLOCKS[bh.id].cross) { a.mine = null; if (bh && pressed && this.mode.onUse) this.mode.onUse(a, bh); return; }
     if (!this.mode.canBreak(a, bh.x, bh.y, bh.z, bh.id)) { a.mine = null; return; }
     if (!a.mine || a.mine.x !== bh.x || a.mine.y !== bh.y || a.mine.z !== bh.z) a.mine = { x: bh.x, y: bh.y, z: bh.z, p: 0, need: this.breakTime(a, bh.id), snd: 0 };
     a.mine.p += dt; a.mine.snd += dt; a.swingT = 0.25;
@@ -194,6 +194,7 @@ export class Match {
     const npc = this.lookActor(a, 4);
     if (npc && npc.target.npc) { this.emit({ t: 'npc', a, npc: npc.target }); return; }
     const bh = this.lookHit(a);
+    if (bh && this.mode.onUse && this.mode.onUse(a, bh)) return;
     if (bh && bh.id === 17) { const ch = this.chestAt(bh.x, bh.y, bh.z); if (ch) { this.emit({ t: 'chest', a, chest: ch }); return; } }
     if (held && held.kind === 'block' && bh) {
       const x = bh.x + bh.nx, y = bh.y + bh.ny, z = bh.z + bh.nz;

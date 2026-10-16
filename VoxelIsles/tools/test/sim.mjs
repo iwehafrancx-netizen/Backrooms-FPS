@@ -8,7 +8,7 @@ const mode = process.argv[2] || 'sky', seeds = (process.argv[3] || '7').split(',
 for (const seed of seeds) {
   const t0 = Date.now();
   let map, m;
-  if (mode === 'sky') { map = buildSkyIslands(seed, ['meadow', 'desert'][seed % 2]); m = new Match(map, new SkyIslands(), { seed }); }
+  if (mode === 'sky') { map = buildSkyIslands(seed, ['meadow', 'desert', 'snow', 'volcano'][seed % 4]); m = new Match(map, new SkyIslands(), { seed }); }
   else { const { buildEggIslands } = await import('../../src/game/maps.js'); const { EggDefense } = await import('../../src/game/modes/eggdefense.js'); map = buildEggIslands(seed, ['snow', 'volcano'][seed % 2]); m = new Match(map, new EggDefense(), { seed }); }
   const n = mode === 'sky' ? 8 : 8;
   const actors = [];

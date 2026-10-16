@@ -56,6 +56,7 @@ class App {
     this.last = performance.now();
     requestAnimationFrame((n) => this.frame(n));
     window.__vi = this;
+    this.maps = { buildSkyIslands, buildEggIslands };
   }
 
   async applyLang() {
@@ -380,6 +381,7 @@ class App {
   }
 
   camera(dt, inp) {
+    if (this.camHold) return;
     const cam = this.R.camera, s = this.save.settings;
     let fov = s.fov;
     if (this.m && this.me && this.state !== 'lobby') {
@@ -412,9 +414,9 @@ class App {
     } else {
       const map = this.bgMap || this.menuMap;
       this.orbit += dt * 0.05;
-      const r = map === this.menuMap ? 74 : 80;
-      cam.position.set(Math.cos(this.orbit) * r, map.top + 26, Math.sin(this.orbit) * r);
-      cam.lookAt(0, map.top - 2, 0);
+      const r = (map.radius || 60) * (map === this.menuMap ? 1.05 : 1.15);
+      cam.position.set(Math.cos(this.orbit) * r, map.top + r * 0.42, Math.sin(this.orbit) * r);
+      cam.lookAt(0, map.top - 4, 0);
     }
     this.fov += (fov - this.fov) * Math.min(1, dt * 8);
     if (Math.abs(cam.fov - this.fov) > 0.05) { cam.fov = this.fov; cam.updateProjectionMatrix(); }

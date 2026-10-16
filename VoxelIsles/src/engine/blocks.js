@@ -12,8 +12,10 @@ export const TEAM_COLORS = [
 const B = [];
 const def = (id, name, tex, o = {}) => {
   const t = typeof tex === 'string' ? { top: tex, side: tex, bottom: tex } : tex;
-  B[id] = { id, name, tex: t, solid: o.solid !== false, transparent: !!o.transparent, cross: !!o.cross, hardness: o.hardness ?? 1, tool: o.tool || 'pick', unbreakable: !!o.unbreakable, light: o.light || 0, sound: o.sound || 'stone', color: o.color || '#888', invisible: !!o.invisible };
+  B[id] = { id, name, tex: t, solid: o.solid !== false, transparent: !!o.transparent, cross: !!o.cross, hardness: o.hardness ?? 1, tool: o.tool || 'pick', unbreakable: !!o.unbreakable, light: o.light || 0, sound: o.sound || 'stone', color: o.color || '#888', invisible: !!o.invisible, box: o.box || null, pick: !!(o.pick || o.cross), trans: !!o.trans, bounce: o.bounce || 0 };
 };
+export const PLATE = [1 / 16, 0, 1 / 16, 15 / 16, 1 / 16, 15 / 16];
+export const BUTTON = [5 / 16, 0, 5 / 16, 11 / 16, 3 / 16, 11 / 16];
 
 def(1, 'Grass', { top: 'grass_top', side: 'grass_side', bottom: 'dirt' }, { hardness: 0.6, tool: 'shovel', sound: 'grass', color: '#5fa83a' });
 def(2, 'Dirt', 'dirt', { hardness: 0.5, tool: 'shovel', sound: 'gravel', color: '#8a5a36' });
@@ -54,8 +56,30 @@ def(44, 'Cactus', { top: 'cactus_top', side: 'cactus_side', bottom: 'cactus_top'
 
 def(45, 'Egg', 'core', { invisible: true, transparent: true, hardness: 1.2, tool: 'none', sound: 'egg', color: '#c86ae0' });
 def(46, 'Barrier', 'glass', { invisible: true, transparent: true, unbreakable: true, sound: 'glass', color: '#ffffff' });
+def(47, 'Stone Bricks', 'stonebrick', { hardness: 1.8, sound: 'stone', color: '#8a8a8e' });
+def(48, 'Mossy Stone Bricks', 'stonebrick_mossy', { hardness: 1.8, sound: 'stone', color: '#6f8466' });
+def(49, 'Cracked Stone Bricks', 'stonebrick_cracked', { hardness: 1.6, sound: 'stone', color: '#7e7e82' });
+def(50, 'Dark Planks', 'planks_dark', { hardness: 1.2, tool: 'axe', sound: 'wood', color: '#5a3c22' });
+def(51, 'White Stone', { top: 'whitestone_top', side: 'whitestone_side', bottom: 'whitestone_top' }, { hardness: 1.6, sound: 'stone', color: '#ece6da' });
+def(52, 'Polished Stone', 'polished', { hardness: 1.6, sound: 'stone', color: '#9a9c9e' });
+def(53, 'Roof Tiles', 'roof', { hardness: 1.4, sound: 'stone', color: '#8a3a2e' });
+def(54, 'Iron Bars', 'ironbars', { hardness: 2, transparent: true, sound: 'metal', color: '#9a9a9a' });
+def(55, 'Hay Bale', { top: 'hay_top', side: 'hay_side', bottom: 'hay_top' }, { hardness: 0.5, tool: 'none', sound: 'grass', color: '#d8b43a' });
+def(56, 'Bookshelf', { top: 'planks', side: 'bookshelf', bottom: 'planks' }, { hardness: 1.2, tool: 'axe', sound: 'wood', color: '#8a5a32' });
+def(57, 'Portal', 'portal', { solid: false, trans: true, transparent: true, unbreakable: true, light: 1, sound: 'glass', color: '#9a4fff' });
+def(58, 'Checkpoint', 'checkpoint', { solid: false, transparent: true, unbreakable: true, box: PLATE, pick: true, light: 1, sound: 'metal', color: '#ffd84a' });
+def(59, 'Finish', 'finish', { solid: false, transparent: true, unbreakable: true, box: PLATE, pick: true, light: 1, sound: 'metal', color: '#ffffff' });
+def(60, 'Trap Button', 'button', { solid: false, transparent: true, unbreakable: true, box: BUTTON, pick: true, sound: 'stone', color: '#d83a2a' });
+def(61, 'Bounce Pad', { top: 'bounce_top', side: 'bounce_side', bottom: 'bounce_side' }, { hardness: 1, unbreakable: true, bounce: 13.5, sound: 'cloth', color: '#5fd34a' });
+def(62, 'Flag Base', { top: 'flagbase_top', side: 'whitestone_side', bottom: 'whitestone_top' }, { unbreakable: true, sound: 'stone', color: '#ece6da' });
+def(63, 'Trap Floor', 'trapfloor', { unbreakable: true, sound: 'wood', color: '#a07a44' });
+def(64, 'Sea Stone', 'seastone', { hardness: 1.6, sound: 'stone', color: '#5aa8a0' });
+def(65, 'Red Sandstone', { top: 'redsand_top', side: 'redsand_side', bottom: 'redsand_top' }, { hardness: 0.9, sound: 'stone', color: '#c86a3a' });
+def(66, 'Lava Rock', 'lavarock', { unbreakable: true, light: 1, sound: 'stone', color: '#ff6a1e' });
 
 export const BLOCKS = B;
+export const SOLID = new Uint8Array(256);
+for (let i = 1; i < 256; i++) if (B[i] && B[i].solid) SOLID[i] = 1;
 export const AIR = 0;
 export const isSolid = (id) => id !== 0 && B[id] && B[id].solid;
 export const isOpaque = (id) => id !== 0 && B[id] && B[id].solid && !B[id].transparent;

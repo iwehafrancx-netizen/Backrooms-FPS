@@ -51,7 +51,19 @@ export function meshChunk(world, atlas, cx, cy, cz) {
           bufs.plant.quad([[cxp - r, y, czp + r], [cxp + r, y, czp - r], [cxp + r, y + 0.9, czp - r], [cxp - r, y + 0.9, czp + r]], uv, sh, false);
           continue;
         }
-        const bucket = id === 11 ? bufs.trans : b.transparent ? bufs.cutout : bufs.solid;
+        if (b.box) {
+          const [bx0, by0, bz0, bx1, by1, bz1] = b.box;
+          for (const f of FACES) {
+            if (f.n[1] === -1 && opaque(x, y - 1, z)) continue;
+            const [u0, v0, du, dv] = tileUV(b.tex[f.t]);
+            const p = f.c.map((c) => [x + (c[0] ? bx1 : bx0), y + (c[1] ? by1 : by0), z + (c[2] ? bz1 : bz0)]);
+            const uv = CUV.map(([a, c]) => [u0 + pad + a * (du - 2 * pad), v0 + pad + c * (dv - 2 * pad)]);
+            const s = (b.light ? 1.1 : 1) * f.s;
+            bufs.cutout.quad(p, uv, [s, s, s, s], false);
+          }
+          continue;
+        }
+        const bucket = id === 11 || b.trans ? bufs.trans : b.transparent ? bufs.cutout : bufs.solid;
         for (const f of FACES) {
           const nx = x + f.n[0], ny = y + f.n[1], nz = z + f.n[2];
           const nid = world.get(nx, ny, nz);

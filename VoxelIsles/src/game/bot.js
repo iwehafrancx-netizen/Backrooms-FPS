@@ -65,7 +65,7 @@ export class Bot {
     if (this.bridge) return this.doBridge(dt);
     if (!this.path || this.pathKey !== goalKey || this.repath <= 0 || this.pi >= this.path.length) {
       const r = findPath(this.m.world, c.x, c.y, c.z, gx, gy, gz, { near, limit: 2200 });
-      this.path = r.path; this.pi = 1; this.pathKey = goalKey; this.repath = 1.2 + Math.random() * 0.6;
+      this.path = r.path; this.pi = 1; this.pathKey = goalKey; this.repath = r.reached ? 1.2 + Math.random() * 0.6 : 2.6 + Math.random() * 1.2;
       this.pathReached = r.reached;
       if (!r.reached && allowBridge) {
         const e = r.end, remain = Math.hypot(e.x - gx, e.z - gz);

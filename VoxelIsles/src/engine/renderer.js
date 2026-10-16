@@ -15,7 +15,7 @@ export class Renderer {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', alpha: false, stencil: false });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, 1, 0.08, 260);
+    this.camera = new THREE.PerspectiveCamera(75, 1, 0.08, 420);
     this.scene.add(this.camera);
     this.hemi = new THREE.HemisphereLight(0xffffff, 0x666666, 1.6);
     this.sun = new THREE.DirectionalLight(0xffffff, 1.4);
@@ -60,16 +60,16 @@ export class Renderer {
   setTheme(name) {
     const t = THEMES[name] || THEMES.meadow;
     this.theme = t;
-    this.scene.fog = new THREE.Fog(t.fog, 60, 190);
+    this.scene.fog = new THREE.Fog(t.fog, 80, 240);
     this.hemi.color.set(t.hemiSky); this.hemi.groundColor.set(t.hemiGround);
     this.sun.color.set(t.sun);
     if (this.sky) { this.scene.remove(this.sky); this.sky.geometry.dispose(); }
-    const sg = new THREE.SphereGeometry(200, 24, 16);
+    const sg = new THREE.SphereGeometry(340, 24, 16);
     const top = new THREE.Color(t.skyTop), hor = new THREE.Color(t.skyHorizon), bot = new THREE.Color(t.void);
     const cols = [];
     const p = sg.attributes.position;
     for (let i = 0; i < p.count; i++) {
-      const h = p.getY(i) / 200;
+      const h = p.getY(i) / 340;
       const c = h > 0 ? hor.clone().lerp(top, Math.pow(h, 0.6)) : hor.clone().lerp(bot, Math.min(1, -h * 2.2));
       cols.push(c.r, c.g, c.b);
     }
@@ -82,14 +82,14 @@ export class Renderer {
   buildClouds(color) {
     if (this.clouds) { this.scene.remove(this.clouds); this.clouds.geometry.dispose(); }
     const geo = new THREE.BoxGeometry(1, 1, 1);
-    const n = 46;
+    const n = 70;
     const inst = new THREE.InstancedMesh(geo, new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.85, fog: false }), n);
     const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), v = new THREE.Vector3();
     let seed = 7;
     const r = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
     for (let i = 0; i < n; i++) {
-      v.set((r() - 0.5) * 320, 70 + r() * 10, (r() - 0.5) * 320);
-      s.set(8 + r() * 22, 2.5, 6 + r() * 16);
+      v.set((r() - 0.5) * 560, 112 + r() * 14, (r() - 0.5) * 560);
+      s.set(12 + r() * 30, 3, 8 + r() * 22);
       m.compose(v, q, s); inst.setMatrixAt(i, m);
     }
     this.clouds = inst; this.scene.add(inst);
@@ -139,7 +139,7 @@ export class Renderer {
     this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
   }
   render(dt) {
-    if (this.clouds) this.clouds.position.x = (this.clouds.position.x + dt * 0.6) % 160;
+    if (this.clouds) this.clouds.position.x = (this.clouds.position.x + dt * 0.6) % 240;
     if (this.sky) this.sky.position.copy(this.camera.position);
     this.renderer.render(this.scene, this.camera);
   }

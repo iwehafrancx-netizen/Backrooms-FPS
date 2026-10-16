@@ -42,7 +42,7 @@ export function lootFor(r, tier, guarantee = false) {
 }
 
 export class SkyIslands {
-  constructor() { this.id = 'sky'; this.dropsOnDeath = true; this.refillAt = 180; this.borderAt = 300; this.borderDur = 90; this.refilled = false; this.cages = []; this.ranks = []; }
+  constructor() { this.id = 'sky'; this.dropsOnDeath = true; this.refillAt = 180; this.borderAt = 300; this.borderDur = 120; this.refilled = false; this.cages = []; this.ranks = []; }
   attach(m) {
     this.m = m; this.radius = m.map.radius; this.border = this.radius;
     this.fillChests(false);
@@ -50,7 +50,7 @@ export class SkyIslands {
   fillChests(refill) {
     const r = this.m.rand, seen = new Set();
     for (const c of this.m.map.chests) {
-      const key = `${Math.round(c.x / 12)},${Math.round(c.z / 12)}`;
+      const key = c.group ?? `${Math.round(c.x / 12)},${Math.round(c.z / 12)}`;
       const first = !seen.has(key); seen.add(key);
       const items = lootFor(r, c.tier, first && c.tier === 'spawn' && !refill);
       c.items = refill ? [...c.items, ...items].slice(0, 12) : items;

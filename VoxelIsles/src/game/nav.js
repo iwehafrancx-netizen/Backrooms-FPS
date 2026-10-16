@@ -1,6 +1,7 @@
-import { isSolid } from '../engine/blocks.js';
+import { isSolid, SOLID } from '../engine/blocks.js';
 
-export const standable = (w, x, y, z) => isSolid(w.get(x, y - 1, z)) && !isSolid(w.get(x, y, z)) && !isSolid(w.get(x, y + 1, z)) && w.get(x, y - 1, z) !== 45;
+const at = (w, x, y, z) => (y >= 0 && y < w.sy && x + w.ox >= 0 && x + w.ox < w.sx && z + w.oz >= 0 && z + w.oz < w.sz ? w.data[((y * w.sz) + (z + w.oz)) * w.sx + (x + w.ox)] : 0);
+export const standable = (w, x, y, z) => { const b = at(w, x, y - 1, z); return SOLID[b] === 1 && b !== 45 && !SOLID[at(w, x, y, z)] && !SOLID[at(w, x, y + 1, z)]; };
 
 export function groundBelow(w, x, y, z, depth = 6) {
   for (let yy = y; yy > y - depth; yy--) if (standable(w, x, yy, z)) return yy;
@@ -18,7 +19,7 @@ const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -
 
 export function findPath(w, sx, sy, sz, gx, gy, gz, opts = {}) {
   const limit = opts.limit || 2400, near = opts.near ?? 0;
-  const key = (x, y, z) => `${x},${y},${z}`;
+  const key = (x, y, z) => ((y + 4) * (w.sz + 8) + (z + w.oz + 4)) * (w.sx + 8) + (x + w.ox + 4);
   const h = (x, y, z) => Math.hypot(x - gx, z - gz) + Math.abs(y - gy) * 0.6;
   const open = new Heap(), seen = new Map();
   const start = { x: sx, y: sy, z: sz, g: 0, f: h(sx, sy, sz), p: null };
@@ -34,8 +35,8 @@ export function findPath(w, sx, sy, sz, gx, gy, gz, opts = {}) {
       let ny = null, cost = dx && dz ? 1.414 : 1;
       if (standable(w, nx, c.y, nz)) ny = c.y;
       else if (!dx || !dz) {
-        if (standable(w, nx, c.y + 1, nz) && !isSolid(w.get(c.x, c.y + 2, c.z))) { ny = c.y + 1; cost += 0.8; }
-        else if (!isSolid(w.get(nx, c.y, nz)) && !isSolid(w.get(nx, c.y + 1, nz))) { for (let d = 1; d <= 3; d++) if (standable(w, nx, c.y - d, nz)) { ny = c.y - d; cost += d * 0.3; break; } }
+        if (standable(w, nx, c.y + 1, nz) && !SOLID[at(w, c.x, c.y + 2, c.z)]) { ny = c.y + 1; cost += 0.8; }
+        else if (!SOLID[at(w, nx, c.y, nz)] && !SOLID[at(w, nx, c.y + 1, nz)]) { for (let d = 1; d <= 3; d++) if (standable(w, nx, c.y - d, nz)) { ny = c.y - d; cost += d * 0.3; break; } }
       }
       if (ny == null) continue;
       const k = key(nx, ny, nz), g = c.g + cost;
