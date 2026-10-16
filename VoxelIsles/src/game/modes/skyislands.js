@@ -1,5 +1,7 @@
 import { BLOCKS } from '../../engine/blocks.js';
 import { ARMOR_ID } from '../items.js';
+import { t } from '../../i18n/strings.js';
+import { clock } from './common.js';
 
 const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
 const between = (r, a, b) => a + Math.floor(r() * (b - a + 1));
@@ -98,5 +100,17 @@ export class SkyIslands {
   onBreak() {}
   onDeath(t) { t.eliminated = true; t.rank = this.m.actors.filter((a) => a.alive).length + 1; }
   respawn() {}
+  hud(me) {
+    const i = this.info(), lines = [{ text: t('alive', { n: i.alive }), b: true }];
+    if (i.refillIn > 0) lines.push({ text: t('refillIn', { t: clock(i.refillIn) }) });
+    lines.push(i.rising ? { text: t('voidRise'), cls: 'warn' } : i.borderIn > 0 ? { text: t('borderIn', { t: clock(i.borderIn) }) } : { text: t('borderNow'), cls: 'warn' });
+    return { lines };
+  }
+  result(me) {
+    const m = this.m, win = m.over && m.winner === me, total = m.actors.length;
+    const rank = win ? 1 : me.rank || m.actors.filter((a) => a.alive).length + 1;
+    return { win, rank, total, sub: t('placeOf', { n: rank, m: total }) };
+  }
+  winnerText(w) { return w ? t('winnerIs', { name: w.name }) : t('gameOver'); }
   info() { const m = this.m; return { rising: !!this.rising, alive: m.actors.filter((a) => a.alive).length, total: m.actors.length, refillIn: this.refilled ? 0 : Math.max(0, this.refillAt - m.time), borderIn: Math.max(0, this.borderAt - m.time), border: this.border }; }
 }

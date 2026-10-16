@@ -1,5 +1,5 @@
 import { t, LANG_NAMES } from '../i18n/strings.js';
-import { icon, skinFront, pixIcon, eggIcon } from './icons.js';
+import { icon, skinFront, pixIcon, eggIcon, flagIcon } from './icons.js';
 import { ITEMS } from '../game/items.js';
 import { TEAM_COLORS } from '../engine/blocks.js';
 import { SHOP } from '../game/modes/eggdefense.js';
@@ -8,7 +8,8 @@ import { SKINS, levelXp } from '../game/save.js';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 export const clock = (s) => { s = Math.max(0, Math.ceil(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 const teamName = (i) => t('team_' + i);
-const MAP_NAMES = { meadow: 'Meadow Isles', dunes: 'Sun Dunes', dusk: 'Dusk Peaks', frost: 'Frostbite', ember: 'Ember Rock' };
+const MAP_NAMES = { meadow: 'Meadow Castles', dunes: 'Desert Temples', frostfort: 'Frost Fort', emberruins: 'Ember Ruins', dusk: 'Dusk Village', frost: 'Frostbite', ember: 'Ember Rock', greenkeep: 'Green Keep', sandhold: 'Sandhold' };
+export { MAP_NAMES };
 const OFFER_NAME = { wool: 'wool', chain_set: 'chainSet', iron_set: 'ironSet', diamond_set: 'diamondSet' };
 const CATS = [['blocks', 'cBlocks'], ['combat', 'cCombat'], ['armor', 'cArmor'], ['tools', 'cTools'], ['utility', 'cUtility']];
 
@@ -213,20 +214,14 @@ export class UI {
       H.armor.innerHTML = out;
     }
     let info = '';
-    const mi = m.mode.info();
-    if (m.state === 'countdown') info = '';
-    else if (m.mode.id === 'sky') {
-      info = `<div><b>${t('alive', { n: mi.alive })}</b></div>`;
-      if (mi.refillIn > 0) info += `<div>${t('refillIn', { t: clock(mi.refillIn) })}</div>`;
-      info += mi.rising ? `<div class="warn">${t('voidRise')}</div>` : mi.borderIn > 0 ? `<div>${t('borderIn', { t: clock(mi.borderIn) })}</div>` : `<div class="warn">${t('borderNow')}</div>`;
-    } else {
-      if (mi.suddenIn > 0) info = `<div>${t('suddenIn', { t: clock(mi.suddenIn) })}</div>`;
-      const cur = inv.count(170) + ':' + inv.count(171) + ':' + inv.count(172);
-      const [fe, au, di] = cur.split(':');
-      info += `<div class="cur"><span><img src="${icon(170)}">${fe}</span><span><img src="${icon(171)}">${au}</span><span><img src="${icon(172)}">${di}</span></div>`;
-      const eg = mi.teams.map((tm) => `<div class="eg ${tm.out ? 'out' : ''} ${tm.i === me.team ? 'mine' : ''}" style="--tc:${TEAM_COLORS[tm.i].hex}"><img src="${eggIcon(TEAM_COLORS[tm.i].hex)}" class="${tm.egg ? '' : 'gone'}"><b>${tm.out ? '✕' : tm.alive}</b></div>`).join('');
+    const hd = m.state === 'countdown' && !m.mode.hudInCountdown ? null : m.mode.hud ? m.mode.hud(me) : null;
+    if (hd) {
+      for (const l of hd.lines || []) info += `<div class="${l.cls || ''}">${l.b ? `<b>${esc(l.text)}</b>` : esc(l.text)}</div>`;
+      if (hd.cur) info += `<div class="cur"><span><img src="${icon(170)}">${inv.count(170)}</span><span><img src="${icon(171)}">${inv.count(171)}</span><span><img src="${icon(172)}">${inv.count(172)}</span></div>`;
+      const chipIcon = (c) => (c.icon === 'egg' || c.icon === 'eggGone' ? `<img src="${eggIcon(c.color)}" class="${c.icon === 'eggGone' ? 'gone' : ''}">` : c.icon === 'flag' || c.icon === 'flagGone' ? `<img src="${flagIcon(c.color)}" class="${c.icon === 'flagGone' ? 'gone' : ''}">` : '');
+      const eg = (hd.chips || []).map((c) => `<div class="eg ${c.dim ? 'out' : ''} ${c.mine ? 'mine' : ''} ${c.big ? 'big' : ''}" style="--tc:${c.color}">${chipIcon(c)}<b>${esc(c.label)}</b></div>`).join('');
       if (eg !== sig.eggs) { sig.eggs = eg; H.eggs.innerHTML = eg; }
-    }
+    } else if (sig.eggs) { sig.eggs = ''; H.eggs.innerHTML = ''; }
     if (info !== sig.info) { sig.info = info; H.info.innerHTML = info; }
   }
 

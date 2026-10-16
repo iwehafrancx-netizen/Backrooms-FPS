@@ -16,8 +16,8 @@ export function botName(r = Math.random) {
 }
 
 export const MODES = {
-  sky: { id: 'sky', players: 8, teams: 0, maps: [{ id: 'meadow', theme: 'meadow', seed: 7 }, { id: 'dunes', theme: 'desert', seed: 12 }, { id: 'dusk', theme: 'meadow', seed: 21, sky: 'dusk' }] },
-  egg: { id: 'egg', players: 8, teams: 4, teamSize: 2, maps: [{ id: 'frost', theme: 'snow', seed: 4 }, { id: 'ember', theme: 'volcano', seed: 6 }] },
+  sky: { id: 'sky', players: 8, teams: 0, maps: [{ id: 'meadow', theme: 'meadow', seed: 7 }, { id: 'dunes', theme: 'desert', seed: 12 }, { id: 'frostfort', theme: 'snow', seed: 4 }, { id: 'emberruins', theme: 'volcano', seed: 6, sky: 'volcano' }, { id: 'dusk', theme: 'meadow', seed: 21, sky: 'dusk', style: 'village', spawn: 'house', bridges: 'partial' }] },
+  egg: { id: 'egg', players: 8, teams: 4, teamSize: 2, maps: [{ id: 'frost', theme: 'snow', seed: 4 }, { id: 'ember', theme: 'volcano', seed: 6, sky: 'volcano' }, { id: 'greenkeep', theme: 'meadow', seed: 9 }, { id: 'sandhold', theme: 'desert', seed: 15 }] },
 };
 
 export class Lobby {

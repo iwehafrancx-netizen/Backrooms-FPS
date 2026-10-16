@@ -89,3 +89,17 @@ export function eggIcon(color) {
   cache.set(key, url);
   return url;
 }
+
+export function flagIcon(color) {
+  const key = 'flag' + color;
+  if (cache.has(key)) return cache.get(key);
+  const c = document.createElement('canvas'); c.width = 24; c.height = 28;
+  const g = c.getContext('2d');
+  g.fillStyle = '#111'; g.fillRect(3, 1, 5, 27); g.fillRect(6, 2, 17, 14);
+  g.fillStyle = '#d8d8d8'; g.fillRect(4, 2, 3, 25);
+  g.fillStyle = color; g.fillRect(7, 3, 15, 12);
+  g.fillStyle = 'rgba(255,255,255,0.35)'; g.fillRect(7, 3, 15, 3);
+  const url = c.toDataURL();
+  cache.set(key, url);
+  return url;
+}

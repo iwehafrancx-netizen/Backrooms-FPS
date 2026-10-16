@@ -2,6 +2,8 @@ import { TEAM_COLORS } from '../../engine/blocks.js';
 import { ARMOR_ID, ITEMS } from '../items.js';
 import { PLACED } from '../maps.js';
 import { groundBelow } from '../nav.js';
+import { t } from '../../i18n/strings.js';
+import { clock, teamName, teamColor } from './common.js';
 
 export const SHOP = [
   { id: 'wool', cat: 'blocks', give: [['wool', 16]], cost: [170, 4] },
@@ -74,6 +76,7 @@ export class EggDefense {
   breakEgg(t, by) {
     if (!t.eggAlive) return;
     t.eggAlive = false;
+    if (by) by.eggs = (by.eggs || 0) + 1;
     if (this.m.world.get(t.egg.x, t.egg.y, t.egg.z) === 45) this.m.world.set(t.egg.x, t.egg.y, t.egg.z, 0);
     this.m.emit({ t: 'egg', team: t.i, by });
   }
@@ -108,6 +111,19 @@ export class EggDefense {
     return true;
   }
   nearShop(a) { return this.m.npcs.find((n) => n.team === a.team && Math.hypot(n.x - a.pos.x, n.z - a.pos.z) < 3.6 && Math.abs(n.y - a.pos.y) < 2); }
+  hud(me) {
+    const i = this.info(), lines = [];
+    if (i.suddenIn > 0) lines.push({ text: t('suddenIn', { t: clock(i.suddenIn) }) });
+    return { lines, cur: true, chips: i.teams.map((tm) => ({ color: teamColor(tm.i), icon: tm.egg ? 'egg' : 'eggGone', label: tm.out ? '✕' : String(tm.alive), dim: tm.out, mine: tm.i === me.team })) };
+  }
+  result(me) {
+    const m = this.m, win = m.over && m.winner === me.team, n = this.teams.length;
+    const rank = win ? 1 : me.rank || this.teams.filter((x) => !x.out).length;
+    const eggs = me.eggs || 0;
+    return { win, rank, total: n, sub: win ? t('teamWins', { team: teamName(me.team) }) : t('placeOf', { n: rank, m: n }), coins: eggs * 15, xp: eggs * 20 };
+  }
+  winnerText(w) { return w != null ? t('teamWins', { team: teamName(w) }) : t('gameOver'); }
+  startTitle(me) { return t('yourTeam', { team: teamName(me.team) }); }
   info() { return { teams: this.teams.map((t) => ({ i: t.i, egg: t.eggAlive, out: t.out, alive: this.m.actors.filter((a) => a.team === t.i && a.alive).length })), suddenIn: Math.max(0, this.suddenAt - this.m.time) }; }
 
   botPlan(bot, dt) {

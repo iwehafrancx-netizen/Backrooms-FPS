@@ -7,8 +7,7 @@ import { BLOCKS, TEAM_COLORS } from './engine/blocks.js';
 import { itemTiles, ITEMS } from './game/items.js';
 import { buildSkyIslands, buildEggIslands } from './game/maps.js';
 import { Match } from './game/match.js';
-import { SkyIslands } from './game/modes/skyislands.js';
-import { EggDefense } from './game/modes/eggdefense.js';
+import { REGISTRY } from './game/modes/index.js';
 import { Actor } from './game/actor.js';
 import { Bot } from './game/bot.js';
 import { View } from './game/view.js';
@@ -117,17 +116,17 @@ class App {
     setTimeout(() => {
       if (this.lobby !== L) return;
       const mp = L.map;
-      L.built = L.mode.id === 'sky' ? buildSkyIslands(mp.seed, mp.theme) : buildEggIslands(mp.seed, mp.theme);
+      L.built = REGISTRY[L.mode.id].build(mp);
       this.setScene(L.built, mp.sky || mp.theme);
     }, 40);
   }
 
   startMatch() {
     const L = this.lobby;
-    const mode = L.mode.id === 'sky' ? new SkyIslands() : new EggDefense();
+    const mode = REGISTRY[L.mode.id].make({ save: this.save.data, slots: L.slots });
     const m = new Match(L.built, mode, { seed: (Math.random() * 1e9) | 0, countdown: 5 });
     const actors = L.slots.map((s, i) => {
-      const a = m.add(new Actor({ name: s.name, bot: s.bot, skin: s.skin, team: L.mode.teams ? Math.floor(i / 2) : -1, local: !s.bot }));
+      const a = m.add(new Actor({ name: s.name, bot: s.bot, skin: s.skin, team: L.mode.teams ? Math.floor(i / (L.mode.teamSize || 2)) : -1, local: !s.bot }));
       if (s.bot) new Bot(a, m, s.skill);
       return a;
     });
@@ -135,13 +134,13 @@ class App {
     me.autoSwing = true;
     me.ctl = () => this.pc;
     mode.setup(actors);
-    this.m = m; this.me = me; this.lobby = null; this.awarded = false; this.myEggs = 0; this.lastCd = -1; this.resultT = 0;
+    this.m = m; this.me = me; this.lobby = null; this.awarded = false; this.lastCd = -1; this.resultT = 0;
     this.pc.yaw = me.yaw; this.pc.pitch = me.pitch;
     this.view.setMatch(m, me);
     this.state = 'play';
     this.ui.show(null); this.ui.hud(true); this.ui.sig = {};
     this.input.enable(true); this.input.requestLock();
-    if (m.mode.id === 'egg') this.ui.title(t('yourTeam', { team: t('team_' + me.team) }), '', 3, 'team');
+    if (m.mode.startTitle) this.ui.title(m.mode.startTitle(me), m.mode.startSub ? m.mode.startSub(me) : '', 3.5, 'team');
     this.audio.setMusicStyle('calm');
     try { Platform.gameplayStart(); } catch (e) {}
   }
@@ -283,21 +282,20 @@ class App {
   showResults() {
     const m = this.m, me = this.me;
     if (!m) return;
-    const egg = m.mode.id === 'egg';
     if (!this.awarded) {
       this.awarded = true;
-      const win = m.over && (egg ? m.winner === me.team : m.winner === me);
-      const total = egg ? m.mode.teams.length : m.actors.length;
-      const rank = win ? 1 : me.rank || (egg ? m.mode.teams.filter((x) => !x.out).length : m.actors.filter((a) => a.alive).length + 1);
-      const coins = 10 + me.kills * 5 + this.myEggs * 15 + (win ? 50 : rank <= 3 ? 15 : 0);
-      const xp = 25 + me.kills * 15 + this.myEggs * 20 + (win ? 60 : 0);
+      const res = m.mode.result(me);
+      const win = res.win, rank = res.rank;
+      const coins = 10 + me.kills * 5 + (res.coins || 0) + (win ? 50 : rank <= 3 ? 15 : 0);
+      const xp = 25 + me.kills * 15 + (res.xp || 0) + (win ? 60 : 0);
       const d = this.save.data;
-      d.coins += coins; d.stats.games++; d.stats.kills += me.kills; d.stats.deaths += me.deaths; d.stats.eggs += this.myEggs; if (win) d.stats.wins++;
+      d.coins += coins; d.stats.games++; d.stats.kills += me.kills; d.stats.deaths += me.deaths; d.stats.eggs += me.eggs || 0; if (win) d.stats.wins++;
+      if (res.save) res.save(d);
       const up = this.save.addXp(xp);
       this.save.persist();
       if (up) { this.audio.levelUp(); this.ui.toast(t('levelUp'), 'gold'); }
       if (win) { try { Platform.happytime(); } catch (e) {} }
-      this.lastResult = { win, coins, xp, kills: me.kills, sub: win ? (egg ? t('teamWins', { team: t('team_' + me.team) }) : t('placeOf', { n: 1, m: total })) : t('placeOf', { n: rank, m: total }) };
+      this.lastResult = { win, coins, xp, kills: me.kills, sub: res.sub, title: res.title, stat: res.stat };
     }
     const r = this.lastResult;
     r.canDouble = (() => { try { return Platform.ads.canReward(); } catch (e) { return false; } })();
@@ -343,7 +341,6 @@ class App {
         case 'border': ui.toast(t('borderMsg'), 'bad'); A.beep(false); A.setMusicStyle('tense'); break;
         case 'egg': {
           A.egg(m.mode.teams[e.team].egg);
-          if (e.by === me) this.myEggs++;
           if (e.team === me.team) ui.title(t('yourEgg'), t('noRespawn'), 3.5, 'bad');
           else ui.toast(t('eggGone', { team: t('team_' + e.team) }), 'bad');
           break;
@@ -355,10 +352,9 @@ class App {
         case 'respawn': if (e.a === me) { ui.clearTitle(); me.pitch = -0.1; } break;
         case 'start': ui.title(t('go'), '', 1.2, 'go'); A.beep(true); break;
         case 'over': {
-          const egg = m.mode.id === 'egg';
-          const win = egg ? e.winner === me.team : e.winner === me;
+          const win = m.mode.result(me).win;
           if (win) A.win();
-          const big = win ? t('victory') : egg ? (e.winner != null ? t('teamWins', { team: t('team_' + e.winner) }) : t('gameOver')) : e.winner ? t('winnerIs', { name: e.winner.name }) : t('gameOver');
+          const big = win ? t('victory') : m.mode.winnerText ? m.mode.winnerText(e.winner) : t('gameOver');
           if (this.state === 'play') ui.title(big, '', 3, win ? 'go' : '');
           this.resultT = 3;
           break;
