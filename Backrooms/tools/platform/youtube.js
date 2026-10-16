@@ -19,8 +19,8 @@ const Platform = (() => {
     },
     isAudioEnabled() { return inPlayables ? safe(() => yt.system.isAudioEnabled(), true) : true; },
     onAudioEnabledChange(cb) { if (inPlayables) safe(() => yt.system.onAudioEnabledChange(cb)); },
-    onPause(cb) { if (inPlayables) safe(() => yt.system.onPause(cb)); document.addEventListener('visibilitychange', () => { if (document.hidden) cb(); }); },
-    onResume(cb) { if (inPlayables) safe(() => yt.system.onResume(cb)); document.addEventListener('visibilitychange', () => { if (!document.hidden) cb(); }); },
+    onPause(cb) { if (inPlayables) safe(() => yt.system.onPause(cb)); PageVisibility.on((h) => { if (h) cb(); }); },
+    onResume(cb) { if (inPlayables) safe(() => yt.system.onResume(cb)); PageVisibility.on((h) => { if (!h) cb(); }); },
     async loadData() {
       if (inPlayables) return safe(() => yt.game.loadData(), Promise.resolve('')).catch(() => { api.logWarning(); return ''; });
       return safe(() => localStorage.getItem(KEY) || '', '');

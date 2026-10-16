@@ -56,8 +56,8 @@ const platform = `const Platform = (() => {
     },
     isAudioEnabled() { return audioOn; },
     onAudioEnabledChange(cb) { audioCbs.push(cb); },
-    onPause(cb) { pauseCbs.push(cb); document.addEventListener('visibilitychange', () => { if (document.hidden) cb(); }); },
-    onResume(cb) { resumeCbs.push(cb); document.addEventListener('visibilitychange', () => { if (!document.hidden) cb(); }); },
+    onPause(cb) { pauseCbs.push(cb); PageVisibility.on((h) => { if (h) cb(); }); },
+    onResume(cb) { resumeCbs.push(cb); PageVisibility.on((h) => { if (!h) cb(); }); },
     async loadData() {
       if (ready) { const v = await Promise.resolve(safe(() => B.storage.get(KEY, false), null)).catch(() => null); if (v != null && v !== '') return String(v); }
       return safe(() => localStorage.getItem(KEY) || '', '');

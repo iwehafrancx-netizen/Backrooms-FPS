@@ -333,6 +333,21 @@ function t(key, vars) {
 }
 const mt = (m) => (MTEXT[LANG] && MTEXT[LANG][m.id]) || MTEXT.en[m.id];
 
+const PageVisibility = (() => {
+  const subs = [];
+  const isHidden = () => document.visibilityState === 'hidden';
+  let hidden = isHidden();
+  const api = { wired: false, get hidden() { return hidden; }, on(f) { subs.push(f); } };
+  document.addEventListener('visibilitychange', () => {
+    const h = isHidden();
+    if (h === hidden) return;
+    hidden = h;
+    if (!api.wired) { try { Audio.setSuspended(h); } catch (e) {} }
+    for (const f of subs.slice()) f(h);
+  });
+  return api;
+})();
+
 const Platform = (() => {
   const safe = (fn, fallback) => { try { return fn(); } catch (e) { return fallback; } };
   const KEY = 'backrooms.save';
@@ -359,8 +374,8 @@ const Platform = (() => {
     },
     isAudioEnabled() { return !(ready && safe(() => SDK.game.settings.muteAudio, false)); },
     onAudioEnabledChange(cb) { call(() => SDK.game.addSettingsChangeListener((st) => cb(!(st && st.muteAudio)))); },
-    onPause(cb) { document.addEventListener('visibilitychange', () => { if (document.hidden) cb(); }); },
-    onResume(cb) { document.addEventListener('visibilitychange', () => { if (!document.hidden) cb(); }); },
+    onPause(cb) { PageVisibility.on((h) => { if (h) cb(); }); },
+    onResume(cb) { PageVisibility.on((h) => { if (!h) cb(); }); },
     async loadData() {
       if (ready) { const v = safe(() => SDK.data.getItem(KEY), null); if (v != null) return String(v); }
       return safe(() => localStorage.getItem(KEY) || '', '');
@@ -4176,6 +4191,7 @@ function blockPageScroll() {
 }
 
 function wirePlatform() {
+  PageVisibility.wired = true;
   blockPageScroll();
   Audio.setPlatformEnabled(Platform.isAudioEnabled());
   Platform.onAudioEnabledChange((on) => Audio.setPlatformEnabled(on));
