@@ -119,7 +119,7 @@ class App {
       if (this.lobby !== L) return;
       const mp = L.map;
       L.built = REGISTRY[L.mode.id].build(mp);
-      this.setScene(L.built, mp.sky || mp.theme);
+      this.setScene(L.built, mp.sky || mp.theme || L.built.theme);
     }, 40);
   }
 
@@ -383,6 +383,7 @@ class App {
         }
         case 'trap': A.trap(); V.sparks(e.x + 0.5, e.y + 1.2, e.z + 0.5, 0xff5a30, 30); if (me.role === 'runner' && Math.abs(e.x - me.pos.x) < 12) this.shake = 0.18; break;
         case 'cpback': A.beep(false); break;
+        case 'taunt': A.taunt(pos(e.a) || e); V.sparks(e.x, e.y + 0.9, e.z, e.pulse ? 0xff4040 : 0xffd84a, e.pulse ? 14 : 26); if (e.a !== me && !e.pulse && me.role === 'hider') ui.toast(t('hiderTaunted', { name: e.a.name }), ''); break;
         case 'voidrise': ui.toast(t('voidRise'), 'bad'); A.beep(false); break;
         case 'sudden': ui.toast(t('sudden'), 'bad'); A.setMusicStyle('tense'); break;
         case 'teamout': ui.feed(`<b style="color:${TEAM_COLORS[e.team].hex}">${t('teamOut', { team: t('team_' + e.team) })}</b>`); break;
@@ -432,6 +433,13 @@ class App {
         const k = hit ? 1 : Math.min(1, dt * 5);
         cam.position.x += (tx - cam.position.x) * k; cam.position.y += (ty - cam.position.y) * k; cam.position.z += (tz - cam.position.z) * k;
         cam.lookAt(sp.pos.x, sp.pos.y + 1.4, sp.pos.z);
+      } else if (me.alive && this.view.thirdPerson) {
+        const yaw = me.yaw, p = me.pitch, hx = me.pos.x, hy = me.pos.y + (me.disguise ? 1.1 : 1.6), hz = me.pos.z;
+        const fx = -Math.sin(yaw) * Math.cos(p), fy = Math.sin(p), fz = -Math.cos(yaw) * Math.cos(p), dist = me.disguise ? 3.6 : 4.2;
+        const hit = m.world.raycast(hx, hy, hz, -fx, -fy, -fz, dist, (id) => id && BLOCKS[id].solid);
+        const k = hit ? Math.max(0.6, hit.t - 0.25) : dist;
+        cam.position.set(hx - fx * k, hy - fy * k, hz - fz * k);
+        cam.rotation.set(p, yaw, 0, 'YXZ');
       } else if (me.alive || this.deathT < 0.01) {
         this.camEye += (eyeHeight(me) - this.camEye) * Math.min(1, dt * 14);
         let bob = 0;
@@ -491,6 +499,8 @@ class App {
         if (this.ui.panelOpen && (!me.alive || (this.chest && Math.hypot(this.chest.x + 0.5 - me.pos.x, this.chest.z + 0.5 - me.pos.z) > 6))) this.closePanel();
       } else this.updatePlayer(dt, { lookX: 0, lookY: 0, mx: 0, my: 0, pressed: new Set() });
       if (this.state === 'play' && inp.pressed.has('Escape') && !this.input.locked && !this.ui.panelOpen && me.alive) this.pause();
+      if (this.state === 'play' && inp.pressed.has('KeyV')) this.tp = !this.tp;
+      this.view.thirdPerson = !!(me.alive && !this.spectating && (me.disguise || this.tp));
       m.update(dt);
       if (m.state === 'countdown') { const n = Math.ceil(m.countdown); if (n !== this.lastCd && n > 0) { this.lastCd = n; this.audio.beep(false); if (this.state === 'play') this.ui.title(String(n), '', 0.9, 'count'); } }
       this.events();
@@ -513,7 +523,7 @@ class App {
     }
     this.R.flush(this.state === 'play' ? 4 : 16);
     this.R.render(dt);
-    if (m && me && me.alive && !this.spectating && this.state === 'play') {
+    if (m && me && me.alive && !this.spectating && this.state === 'play' && !this.view.thirdPerson) {
       this.view.updateViewmodel(dt, me, inp);
       const r = this.R.renderer;
       r.autoClear = false; r.clearDepth(); r.render(this.view.vmScene, this.view.vmCam); r.autoClear = true;

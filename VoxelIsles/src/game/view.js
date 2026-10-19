@@ -87,7 +87,7 @@ export class View {
     this.buildViewmodelArm();
   }
   clear() {
-    for (const ch of this.chars.values()) this.scene.remove(ch.root);
+    for (const ch of this.chars.values()) { this.scene.remove(ch.root); if (ch.disg) this.scene.remove(ch.disg); }
     for (const m of this.dropMeshes.values()) this.scene.remove(m);
     for (const m of this.projMeshes.values()) this.scene.remove(m);
     for (const e of this.eggs) this.scene.remove(e.mesh);
@@ -154,12 +154,28 @@ export class View {
     for (const a of m.actors) {
       const ch = this.chars.get(a.id);
       if (!ch) continue;
-      if (a === this.local && !this.thirdPerson) { ch.root.visible = false; continue; }
+      if (a === this.local && !this.thirdPerson) { ch.root.visible = false; if (ch.disg) ch.disg.visible = false; continue; }
       if (!a.alive) {
+        if (ch.disg) ch.disg.visible = false;
         if (ch.root.visible) { ch.deathT = (ch.deathT || 0) + dt; ch.root.rotation.z = Math.min(Math.PI / 2, ch.deathT * 6); if (ch.deathT > 0.6) ch.root.visible = false; }
         continue;
       }
       ch.deathT = 0; ch.root.rotation.z = 0; ch.root.visible = true;
+      if (a.disguise || ch.disg) {
+        if (ch.disgId !== a.disguise) {
+          if (ch.disg) { this.scene.remove(ch.disg); ch.disg = null; }
+          if (a.disguise) { ch.disg = itemMesh(a.disguise, this.atlas, this.R.atlasTex); ch.disg.scale.setScalar(0.998); ch.disg.material = ch.disg.material.clone(); this.scene.add(ch.disg); }
+          ch.disgId = a.disguise;
+        }
+        if (a.disguise) {
+          ch.body.visible = false; ch.tag.visible = !!(this.local && this.local.team === a.team && a !== this.local);
+          ch.disg.visible = !a.solid;
+          ch.disg.position.set(a.pos.x, a.pos.y + 0.5, a.pos.z);
+          ch.disg.material.color.setScalar(this.R.lightAt(a.pos.x, a.pos.y + 0.5, a.pos.z) * (a.hurtT > 0.25 ? 0.6 : 1));
+          continue;
+        }
+        ch.body.visible = true;
+      }
       ch.root.position.set(a.pos.x, a.pos.y, a.pos.z);
       ch.root.rotation.y = a.yaw;
       const held = a.inv.slots[a.sel];

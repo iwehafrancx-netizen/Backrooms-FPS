@@ -46,6 +46,10 @@ export class Match {
     for (const a of this.actors) {
       if (!a.alive) { if (a.respawnT > 0) { a.respawnT -= dt; if (a.respawnT <= 0) this.mode.respawn(a); } continue; }
       const ctl = a.ctl ? a.ctl(dt, this) : null;
+      a.lastCtl = ctl;
+      const fz = this.mode.frozen ? this.mode.frozen(a) : false;
+      if (fz === 'solid') { if (ctl) { if (ctl.yaw != null) a.yaw = ctl.yaw; if (ctl.pitch != null) a.pitch = Math.max(-1.55, Math.min(1.55, ctl.pitch)); if (ctl.sel != null && ctl.sel >= 0 && ctl.sel < 9) a.sel = ctl.sel; if (ctl.use) this.use(a, ctl); } a.moveAmt = 0; continue; }
+      if (fz) { this.stepPhysics(a, dt, ctl, true); continue; }
       this.tickActor(a, dt, ctl);
     }
     this.updateDrops(dt);
@@ -92,9 +96,9 @@ export class Match {
     const e = a.eye(eyeHeight(a)), d = a.look();
     let best = null, bt = reach;
     for (const o of this.actors) {
-      if (o === a || !o.alive) continue;
-      const h = height(o);
-      const t = rayBox(e, d, o.pos.x - HW - 0.1, o.pos.y - 0.1, o.pos.z - HW - 0.1, o.pos.x + HW + 0.1, o.pos.y + h + 0.1, o.pos.z + HW + 0.1);
+      if (o === a || !o.alive || o.solid) continue;
+      const h = height(o), r = o.disguise ? 0.5 : HW + 0.1;
+      const t = rayBox(e, d, o.pos.x - r, o.pos.y - (o.disguise ? 0 : 0.1), o.pos.z - r, o.pos.x + r, o.pos.y + (o.disguise ? 1 : h + 0.1), o.pos.z + r);
       if (t >= 0 && t < bt) { bt = t; best = o; }
     }
     for (const n of this.npcs) {
@@ -114,6 +118,7 @@ export class Match {
     }
     if (pressed) { a.swingT = 0.25; a.swingN++; this.emit({ t: 'swing', a }); }
     const bh = this.lookHit(a);
+    if (bh && pressed && this.mode.onBlockHit && this.mode.onBlockHit(a, bh)) { a.mine = null; return; }
     if (!bh || !isSolid(bh.id) && !BLOCKS[bh.id].cross) { a.mine = null; if (bh && pressed && this.mode.onUse) this.mode.onUse(a, bh); return; }
     if (!this.mode.canBreak(a, bh.x, bh.y, bh.z, bh.id)) { a.mine = null; return; }
     if (!a.mine || a.mine.x !== bh.x || a.mine.y !== bh.y || a.mine.z !== bh.z) a.mine = { x: bh.x, y: bh.y, z: bh.z, p: 0, need: this.breakTime(a, bh.id), snd: 0 };
@@ -191,6 +196,7 @@ export class Match {
 
   use(a, c) {
     const held = a.held();
+    if (held && this.mode.onItem && this.mode.onItem(a, held, c)) return;
     const npc = this.lookActor(a, 4);
     if (npc && npc.target.npc) { this.emit({ t: 'npc', a, npc: npc.target }); return; }
     const bh = this.lookHit(a);

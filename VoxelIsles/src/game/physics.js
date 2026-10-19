@@ -6,8 +6,8 @@ export const HW = 0.3;
 
 const EPS = 1e-4;
 
-export function height(a) { return a.crouch ? 1.5 : 1.8; }
-export function eyeHeight(a) { return a.crouch ? 1.28 : 1.62; }
+export function height(a) { return a.disguise ? 0.98 : a.crouch ? 1.5 : 1.8; }
+export function eyeHeight(a) { return a.disguise ? 0.8 : a.crouch ? 1.28 : 1.62; }
 
 function hits(w, x, y, z, h) { return w.boxHits(x - HW, y, z - HW, x + HW, y + h, z + HW); }
 

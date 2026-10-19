@@ -10,6 +10,8 @@ import { DeathRun } from './deathrun.js';
 import { buildDeathRun } from '../maps/deathrun.js';
 import { Parkour } from './parkour.js';
 import { buildParkour } from '../maps/parkour.js';
+import { HideSeek } from './hideseek.js';
+import { buildHideSeek } from '../maps/hideseek.js';
 
 export const REGISTRY = {
   sky: { make: () => new SkyIslands(), build: (mp) => buildSkyIslands(mp.seed, mp.theme, 8, mp) },
@@ -18,5 +20,6 @@ export const REGISTRY = {
   bridge: { make: () => new BridgeBattle(), build: (mp) => buildBridge(mp.seed, mp) },
   deathrun: { make: (ctx) => new DeathRun(ctx), build: (mp) => buildDeathRun(mp.seed, mp) },
   race: { make: (ctx) => new Parkour(ctx), build: (mp) => buildParkour(mp.seed, mp) },
+  hideseek: { make: (ctx) => new HideSeek(ctx), build: (mp) => buildHideSeek(mp.seed, mp) },
   parkour: { make: (ctx) => new Parkour({ ...ctx, solo: true }), build: (mp) => buildParkour(mp.level, mp) },
 };

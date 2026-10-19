@@ -9,7 +9,7 @@ import { fmtTime } from '../game/modes/parkour.js';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 export const clock = (s) => { s = Math.max(0, Math.ceil(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 const teamName = (i) => t('team_' + i);
-const MAP_NAMES = { meadow: 'Meadow Castles', dunes: 'Desert Temples', frostfort: 'Frost Fort', emberruins: 'Ember Ruins', dusk: 'Dusk Village', frost: 'Frostbite', ember: 'Ember Rock', greenkeep: 'Green Keep', sandhold: 'Sandhold', twincastles: 'Twin Castles', frostkeep: 'Frost Keep', sunfort: 'Sun Fort', skybridge: 'Sky Bridge', sandbridge: 'Sand Bridge', icebridge: 'Ice Bridge', lavabridge: 'Lava Bridge', castlerun: 'Castle Dash', templerun: 'Sun Temple Dash', frostrun: 'Frost Dash', lavarun: 'Lava Dash', skyrace: 'Sky Steps', sandrace: 'Sand Steps', icerace: 'Ice Steps', lavarace: 'Lava Steps', duskrace: 'Dusk Steps' };
+const MAP_NAMES = { meadow: 'Meadow Castles', dunes: 'Desert Temples', frostfort: 'Frost Fort', emberruins: 'Ember Ruins', dusk: 'Dusk Village', frost: 'Frostbite', ember: 'Ember Rock', greenkeep: 'Green Keep', sandhold: 'Sandhold', twincastles: 'Twin Castles', frostkeep: 'Frost Keep', sunfort: 'Sun Fort', skybridge: 'Sky Bridge', sandbridge: 'Sand Bridge', icebridge: 'Ice Bridge', lavabridge: 'Lava Bridge', castlerun: 'Castle Dash', templerun: 'Sun Temple Dash', frostrun: 'Frost Dash', lavarun: 'Lava Dash', skyrace: 'Sky Steps', sandrace: 'Sand Steps', icerace: 'Ice Steps', lavarace: 'Lava Steps', duskrace: 'Dusk Steps', markettown: 'Market Town', castlehall: 'Castle Town', bazaar: 'Desert Bazaar', snowlodge: 'Snowy Lodge' };
 export { MAP_NAMES };
 const OFFER_NAME = { wool: 'wool', chain_set: 'chainSet', iron_set: 'ironSet', diamond_set: 'diamondSet' };
 const CATS = [['blocks', 'cBlocks'], ['combat', 'cCombat'], ['armor', 'cArmor'], ['tools', 'cTools'], ['utility', 'cUtility']];
@@ -56,7 +56,7 @@ export class UI {
   modes() {
     const cards = [
       ['sky', () => icon(1), 'solo8'], ['egg', () => eggIcon(TEAM_COLORS[1].hex), 'teams4x2'], ['ctf', () => flagIcon(TEAM_COLORS[0].hex), 'teams4v4'],
-      ['bridge', () => icon(57), 'teams2v2'], ['deathrun', () => icon(60), 'death1v7'], ['parkour', () => icon(61), 'soloRace'],
+      ['bridge', () => icon(57), 'teams2v2'], ['deathrun', () => icon(60), 'death1v7'], ['parkour', () => icon(61), 'soloRace'], ['hideseek', () => icon(73), 'hs12'],
     ].filter(([id]) => this.app.available(id));
     const soon = [['zombie', () => icon(28)], ['oitc', () => icon(101)], ['survival', () => icon(17)]];
     const card = ([id, img, tag]) => `<button class="card c-${id}" data-act="mode" data-mode="${id}"><div class="art"><img class="pix" src="${img()}"></div><h2>${t(id)}</h2><div class="tag">${t(tag)}</div><p>${t(id + 'Desc')}</p></button>`;
@@ -163,7 +163,7 @@ export class UI {
   }
 
   howto() {
-    this.show('howto', `<div class="spanel how"><h1>${t('howto')}</h1>${['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9', 'h10'].map((k) => `<p>${t(k)}</p>`).join('')}<button class="btn" data-act="back">${t('back')}</button></div>`);
+    this.show('howto', `<div class="spanel how"><h1>${t('howto')}</h1>${['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9', 'h10', 'h11'].map((k) => `<p>${t(k)}</p>`).join('')}<button class="btn" data-act="back">${t('back')}</button></div>`);
   }
 
   buildHud(touch) {
@@ -243,6 +243,8 @@ export class UI {
     }
     let info = '';
     const hd = m.state === 'countdown' && !m.mode.hudInCountdown ? null : m.mode.hud ? m.mode.hud(me) : null;
+    const blind = !!(hd && hd.blind);
+    if (sig.blind !== blind) { sig.blind = blind; this.hudEl.classList.toggle('blind', blind); }
     if (hd) {
       for (const l of hd.lines || []) info += `<div class="${l.cls || ''}">${l.b ? `<b>${esc(l.text)}</b>` : esc(l.text)}</div>`;
       if (hd.cur) info += `<div class="cur"><span><img src="${icon(170)}">${inv.count(170)}</span><span><img src="${icon(171)}">${inv.count(171)}</span><span><img src="${icon(172)}">${inv.count(172)}</span></div>`;

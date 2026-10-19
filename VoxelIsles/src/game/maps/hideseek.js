@@ -10,7 +10,8 @@ const KINDS = {
   bazaar: { theme: 'desert', style: 'temple', plots: ['stalls', 'cottage', 'market', 'stalls', 'cottage', 'well', 'stalls', 'cottage', 'temple', 'camp', 'stalls', 'cottage', 'market', 'cottage', 'stalls', 'well'] },
   lodge: { theme: 'snow', style: 'fort', plots: ['cottage', 'cottage', 'watchtower', 'cottage', 'camp', 'cottage', 'stalls', 'cottage', 'farm', 'cottage', 'chapel', 'cottage', 'well', 'cottage', 'cottage', 'stalls'] },
 };
-const CANDIDATES = [55, 73, 56, 74, 75, 80, 29, 5, 69, 70, 6, 71, 72, 4, 47, 48, 7, 82, 38, 9, 51, 21, 27, 78, 67, 22, 50, 77];
+const CANDIDATES = [55, 73, 56, 74, 75, 80, 29, 5, 69, 70, 6, 71, 72, 4, 47, 48, 7, 82, 38, 9, 51, 21, 27, 78, 67, 22, 50];
+const PROPS = new Set([55, 73, 56, 74, 75, 80, 29]);
 
 export function buildHideSeek(seed, opt = {}) {
   const K = KINDS[opt.kind || 'market'], theme = opt.theme || K.theme, pal = PALETTES[theme];
@@ -53,7 +54,7 @@ export function buildHideSeek(seed, opt = {}) {
   for (let k = 0; k < 30; k++) { const a = r() * Math.PI * 2, d = 50 + r() * 5, x = Math.round(Math.cos(a) * d), z = Math.round(Math.sin(a) * d); if (!w.get(x, TOP + 1, z) && w.get(x, TOP, z)) treeAt(x, TOP, z); }
   for (let z = -64; z <= 64; z++) for (let x = -64; x <= 64; x++) { const d = Math.hypot(x, z); if (d >= 56.5 && d < 57.6) { if (!w.get(x, TOP + 1, z)) w.set(x, TOP + 1, z, 77, MAPBLOCK, true); for (let y = TOP + 2; y < TOP + 8; y++) if (!w.get(x, y, z)) w.set(x, y, z, 46, MAPBLOCK, true); } }
   const count = new Map();
-  for (let y = TOP + 1; y < TOP + 10; y++) for (let z = -56; z <= 56; z++) for (let x = -56; x <= 56; x++) { const id = w.get(x, y, z); if (id && CANDIDATES.includes(id)) count.set(id, (count.get(id) || 0) + 1); }
+  for (let y = TOP + 1; y < TOP + 10; y++) for (let z = -56; z <= 56; z++) for (let x = -56; x <= 56; x++) { const id = w.get(x, y, z); if (id && CANDIDATES.includes(id)) count.set(id, (count.get(id) || 0) + (PROPS.has(id) ? 3 : 1)); }
   const disguises = [...count].filter(([, c]) => c >= 6).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([id]) => id);
   const hiderSpawns = [], seekerSpawns = [];
   for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; hiderSpawns.push({ x: Math.round(Math.cos(a) * 7) + 0.5, y: TOP + 1, z: Math.round(Math.sin(a) * 7) + 0.5, yaw: Math.atan2(Math.cos(a), Math.sin(a)) }); }

@@ -87,6 +87,12 @@ const fr = {
 };
 
 Object.assign(en, {
+  hideseek: 'Hide and Seek', hideseekDesc: 'Turn into a block and blend into the town. Seekers hunt you down; found hiders join the seekers.', hs12: '12 players',
+  hideNow: 'Hide! Seekers are released in {n}s', seekersReleased: 'The seekers are coming!', youAreSolid: 'You are solid. Do not move!', tauntCooling: 'Taunt ready in {n}s', disguisedAs: 'You are now {b}',
+  hiderSpotted: '{name} was spotted!', hiderFound: '{name} was found!', nowSeeker: 'You are now a seeker!', seekersIn: 'Seekers in {t}', hidersLeft: 'Hiders left: {n}', youHide: 'You are a Hider', youSeek: 'You are a Seeker',
+  disguise: 'Disguise', solidNow: 'Solid: hidden as a block', solidIn: 'Stand still', taunt: 'Taunt', youSurvived: 'You stayed hidden!', youWereFound: 'You were found', allFound: 'Every hider was found', hidersSurvived: 'Some hiders stayed hidden',
+  seekersWin: 'Seekers win!', hidersWin: 'Hiders win!', hideHint: 'Right click a block to copy it, stand still for 3 seconds to turn solid', seekHint: 'Hit blocks that look out of place to find the hiders', hiderTaunted: '{name} taunted!',
+  h11: 'Hide and Seek: hiders become a block of the map, stand still to turn solid and taunt for coins. Seekers hit suspicious blocks. Press V to switch to third person.',
   bridge: 'Bridge Battle', bridgeDesc: 'Two teams, one narrow bridge. Build across, fight, and jump into the enemy portal to score.', teams2v2: 'Teams · 2 vs 2',
   goalScored: '{name} scored for {team}!', roundStarts: 'Round starts in {n}', bridgeGoal: 'Jump into the enemy portal · first to {n}',
   deathrun: 'Death Run', deathrunDesc: 'Run the trap course and reach the finish. One player is the Death and springs the traps.', death1v7: '1 Death vs 7 runners',
@@ -105,6 +111,12 @@ Object.assign(en, {
   flagTaken: '{name} took the {team} flag!', flagCaptured: '{name} captured a flag for {team}!', flagDropped: 'The {team} flag was dropped!', flagReturned: 'The {team} flag is back home',
 });
 Object.assign(es, {
+  hideseek: 'Escondite', hideseekDesc: 'Conviértete en un bloque y camúflate en el pueblo. Los buscadores te cazan; quien es encontrado se une a ellos.', hs12: '12 jugadores',
+  hideNow: '¡Escóndete! Los buscadores salen en {n}s', seekersReleased: '¡Vienen los buscadores!', youAreSolid: 'Eres sólido. ¡No te muevas!', tauntCooling: 'Burla lista en {n}s', disguisedAs: 'Ahora eres {b}',
+  hiderSpotted: '¡{name} fue visto!', hiderFound: '¡{name} fue encontrado!', nowSeeker: '¡Ahora eres buscador!', seekersIn: 'Buscadores en {t}', hidersLeft: 'Escondidos: {n}', youHide: 'Te escondes', youSeek: 'Eres Buscador',
+  disguise: 'Disfraz', solidNow: 'Sólido: oculto como bloque', solidIn: 'Quédate quieto', taunt: 'Burla', youSurvived: '¡No te encontraron!', youWereFound: 'Te encontraron', allFound: 'Encontraron a todos', hidersSurvived: 'Algunos siguieron escondidos',
+  seekersWin: '¡Ganan los buscadores!', hidersWin: '¡Ganan los escondidos!', hideHint: 'Clic derecho en un bloque para copiarlo, quédate quieto 3 segundos para ser sólido', seekHint: 'Golpea los bloques que parezcan fuera de lugar', hiderTaunted: '¡{name} se burló!',
+  h11: 'Escondite: los escondidos se vuelven un bloque del mapa, se quedan quietos para ser sólidos y se burlan para ganar monedas. Los buscadores golpean bloques sospechosos. Pulsa V para tercera persona.',
   bridge: 'Batalla del Puente', bridgeDesc: 'Dos equipos, un puente estrecho. Construye, pelea y salta al portal enemigo para marcar.', teams2v2: 'Equipos · 2 vs 2',
   goalScored: '¡{name} marcó para {team}!', roundStarts: 'La ronda empieza en {n}', bridgeGoal: 'Salta al portal enemigo · gana quien llegue a {n}',
   deathrun: 'Carrera Mortal', deathrunDesc: 'Recorre el circuito de trampas y llega a la meta. Un jugador es la Muerte y activa las trampas.', death1v7: '1 Muerte vs 7 corredores',
@@ -123,6 +135,12 @@ Object.assign(es, {
   flagTaken: '¡{name} tomó la bandera {team}!', flagCaptured: '¡{name} capturó una bandera para {team}!', flagDropped: '¡La bandera {team} cayó!', flagReturned: 'La bandera {team} volvió a casa',
 });
 Object.assign(pt, {
+  hideseek: 'Esconde-Esconde', hideseekDesc: 'Vire um bloco e se misture à cidade. Os caçadores te procuram; quem é achado vira caçador.', hs12: '12 jogadores',
+  hideNow: 'Esconda-se! Os caçadores saem em {n}s', seekersReleased: 'Os caçadores estão vindo!', youAreSolid: 'Você está sólido. Não se mexa!', tauntCooling: 'Provocação pronta em {n}s', disguisedAs: 'Agora você é {b}',
+  hiderSpotted: '{name} foi visto!', hiderFound: '{name} foi encontrado!', nowSeeker: 'Agora você é caçador!', seekersIn: 'Caçadores em {t}', hidersLeft: 'Escondidos: {n}', youHide: 'Você se esconde', youSeek: 'Você é Caçador',
+  disguise: 'Disfarce', solidNow: 'Sólido: escondido como bloco', solidIn: 'Fique parado', taunt: 'Provocar', youSurvived: 'Ninguém te achou!', youWereFound: 'Você foi encontrado', allFound: 'Todos foram encontrados', hidersSurvived: 'Alguns continuaram escondidos',
+  seekersWin: 'Os caçadores venceram!', hidersWin: 'Os escondidos venceram!', hideHint: 'Clique direito num bloco para copiá-lo, fique parado 3 segundos para ficar sólido', seekHint: 'Bata nos blocos que parecem fora do lugar', hiderTaunted: '{name} provocou!',
+  h11: 'Esconde-Esconde: quem se esconde vira um bloco do mapa, fica parado para ficar sólido e provoca para ganhar moedas. Os caçadores batem em blocos suspeitos. Aperte V para terceira pessoa.',
   bridge: 'Batalha da Ponte', bridgeDesc: 'Dois times, uma ponte estreita. Construa, lute e pule no portal inimigo para marcar.', teams2v2: 'Times · 2 vs 2',
   goalScored: '{name} marcou para o time {team}!', roundStarts: 'A rodada começa em {n}', bridgeGoal: 'Pule no portal inimigo · vence quem chegar a {n}',
   deathrun: 'Corrida Mortal', deathrunDesc: 'Atravesse o circuito de armadilhas e chegue ao final. Um jogador é a Morte e ativa as armadilhas.', death1v7: '1 Morte vs 7 corredores',
@@ -141,6 +159,12 @@ Object.assign(pt, {
   flagTaken: '{name} pegou a bandeira {team}!', flagCaptured: '{name} capturou uma bandeira para o time {team}!', flagDropped: 'A bandeira {team} caiu!', flagReturned: 'A bandeira {team} voltou para casa',
 });
 Object.assign(fr, {
+  hideseek: 'Cache-Cache', hideseekDesc: 'Deviens un bloc et fonds-toi dans la ville. Les chercheurs te traquent ; ceux qui sont trouvés les rejoignent.', hs12: '12 joueurs',
+  hideNow: 'Cache-toi ! Les chercheurs arrivent dans {n}s', seekersReleased: 'Les chercheurs arrivent !', youAreSolid: 'Tu es solide. Ne bouge pas !', tauntCooling: 'Provocation prête dans {n}s', disguisedAs: 'Tu es maintenant {b}',
+  hiderSpotted: '{name} a été repéré !', hiderFound: '{name} a été trouvé !', nowSeeker: 'Tu es maintenant chercheur !', seekersIn: 'Chercheurs dans {t}', hidersLeft: 'Cachés : {n}', youHide: 'Tu te caches', youSeek: 'Tu es Chercheur',
+  disguise: 'Déguisement', solidNow: 'Solide : caché en bloc', solidIn: 'Reste immobile', taunt: 'Provoquer', youSurvived: 'Personne ne t’a trouvé !', youWereFound: 'Tu as été trouvé', allFound: 'Tout le monde a été trouvé', hidersSurvived: 'Certains sont restés cachés',
+  seekersWin: 'Les chercheurs gagnent !', hidersWin: 'Les cachés gagnent !', hideHint: 'Clic droit sur un bloc pour le copier, reste immobile 3 secondes pour devenir solide', seekHint: 'Frappe les blocs qui semblent déplacés', hiderTaunted: '{name} provoque !',
+  h11: 'Cache-Cache : les cachés deviennent un bloc de la carte, restent immobiles pour devenir solides et provoquent pour gagner des pièces. Les chercheurs frappent les blocs suspects. Appuie sur V pour la troisième personne.',
   bridge: 'Bataille du Pont', bridgeDesc: 'Deux équipes, un pont étroit. Construis, combats et saute dans le portail ennemi pour marquer.', teams2v2: 'Équipes · 2 contre 2',
   goalScored: '{name} a marqué pour l’équipe {team} !', roundStarts: 'La manche commence dans {n}', bridgeGoal: 'Saute dans le portail ennemi · premier à {n}',
   deathrun: 'Course Mortelle', deathrunDesc: 'Traverse le parcours piégé jusqu’à l’arrivée. Un joueur est la Mort et déclenche les pièges.', death1v7: '1 Mort contre 7 coureurs',

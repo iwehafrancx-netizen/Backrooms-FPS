@@ -17,6 +17,8 @@ item(130, { name: 'Golden Apple', kind: 'food', heal: 8, stack: 16, icon: 'gappl
 item(131, { name: 'Snowball', kind: 'throw', stack: 16, icon: 'snowball' });
 item(132, { name: 'Warp Orb', kind: 'warp', stack: 8, icon: 'orb' });
 item(133, { name: 'Apple', kind: 'food', heal: 4, stack: 16, icon: 'apple' });
+item(134, { name: 'Taunt', kind: 'taunt', stack: 1, icon: 'taunt' });
+item(135, { name: 'Disguise', kind: 'disguise', stack: 1, icon: 'mask' });
 ARMOR_TIERS.forEach((t, ti) => ARMOR_SLOTS.forEach((s, si) => item(150 + ti * 4 + si, { name: `${t[0].toUpperCase() + t.slice(1)} ${s[0].toUpperCase() + s.slice(1)}`, kind: 'armor', tier: ti, slot: si, points: ARMOR_PTS[t][si], stack: 1, icon: `armor_${t}_${s}` })));
 item(170, { name: 'Iron', kind: 'currency', stack: 64, icon: 'ingot_iron' });
 item(171, { name: 'Gold', kind: 'currency', stack: 64, icon: 'ingot_gold' });
@@ -42,6 +44,8 @@ export function itemTiles() {
   T.apple = (t, h) => apple(t, h, '#e23c3c', '#a01e1e');
   function apple(t, h, a, b) { t.clear(); for (let y = 4; y < 14; y++) for (let x = 3; x < 13; x++) { const d = Math.hypot(x - 7.5, (y - 8.8) * 1.05); if (d < 5) t.set(x, y, h.hex(d > 3.6 || (x > 8 && y > 9) ? b : a)); } t.set(6, 6, h.hex('#ffffff')); t.set(7, 2, h.hex('#5a3a1a')); t.set(7, 3, h.hex('#5a3a1a')); t.set(8, 2, h.hex('#3f8f2a')); t.set(9, 1, h.hex('#3f8f2a')); }
   T.snowball = (t, h) => { t.clear(); for (let y = 3; y < 13; y++) for (let x = 3; x < 13; x++) { const d = Math.hypot(x - 7.5, y - 7.5); if (d < 4.8) t.set(x, y, h.hex(d > 3.8 || (x > 8 && y > 8) ? '#b8c8d8' : '#f4faff')); } };
+  T.taunt = (t, h) => { t.clear(); for (let y = 5; y < 13; y++) for (let x = 6; x < 10; x++) t.set(x, y, h.hex(y % 3 === 0 ? '#f2f2f2' : '#e2453c')); for (const [x, y] of [[7, 2], [8, 2], [6, 3], [9, 3], [7, 4], [8, 4], [5, 4], [10, 4]]) t.set(x, y, h.hex('#ffd84a')); t.set(7, 13, h.hex('#6a4a2a')); t.set(8, 14, h.hex('#6a4a2a')); t.set(7, 15, h.hex('#6a4a2a')); };
+  T.mask = (t, h) => { t.clear(); for (let y = 4; y < 12; y++) for (let x = 2; x < 14; x++) { const e = (x === 5 || x === 10) && y >= 6 && y <= 7; if (!e && !(y > 9 && (x < 4 || x > 11))) t.set(x, y, h.hex(y < 6 ? '#b4874c' : y < 9 ? '#9a6a32' : '#7a4e2e')); } t.set(7, 10, h.hex('#5a3a1a')); t.set(8, 10, h.hex('#5a3a1a')); };
   T.orb = (t, h) => { t.clear(); for (let y = 3; y < 13; y++) for (let x = 3; x < 13; x++) { const d = Math.hypot(x - 7.5, y - 7.5); if (d < 4.8) t.set(x, y, h.hex(d > 3.8 ? '#1a5a5a' : d > 2 ? '#2aa8a0' : '#9ff0e8')); } t.set(6, 6, h.hex('#ffffff')); };
   for (const tier of ARMOR_TIERS) {
     const [a, b] = TIER_COL[tier];
