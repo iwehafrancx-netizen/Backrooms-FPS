@@ -134,7 +134,7 @@ export class EggDefense {
     const iron = a.inv.count(170), gold = a.inv.count(171);
     const s0 = m.npcs.find((n) => n.team === a.team);
     const atHome = Math.hypot(team.spawn.x - a.pos.x, team.spawn.z - a.pos.z) < 11 && Math.abs(team.spawn.y - a.pos.y) < 3;
-    const basics = a.inv.blocks() >= 16 && a.inv.slots.some((s) => s && s.id >= 101 && s.id <= 103);
+    const basics = a.inv.blocks() >= (bot.role === 'rush' ? 40 : 16) && a.inv.slots.some((s) => s && s.id >= 101 && s.id <= 103);
     const canAfford = SHOP.some((o) => this.wanted(a, o.id) && this.canBuy(a, o));
     if (atHome && canAfford && !shop) { bot.goTo(Math.floor(s0.x), s0.y, Math.floor(s0.z), dt, 1, false); return ctl; }
     if (atHome && (!basics || (bot.role === 'defend' && !this.botGeared(a))) && m.time < 600) {
@@ -144,6 +144,11 @@ export class EggDefense {
       return ctl;
     }
     if (a.inv.blocks() < 4 && !atHome) { if (bot.giveUp(dt)) return ctl; }
+    if (team.eggAlive && a.inv.blocks() >= 4 && (bot.role === 'defend' || m.time < 60) && this.dist2(a, team.egg) < 18) {
+      const e = team.egg, ring1 = [[0, 1, 0], [1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]], ring2 = [[0, 2, 0], [1, 1, 0], [-1, 1, 0], [0, 1, 1], [0, 1, -1], [2, 0, 0], [-2, 0, 0], [0, 0, 2], [0, 0, -2], [1, 0, 1], [1, 0, -1], [-1, 0, 1], [-1, 0, -1]];
+      const cells = [...ring1, ...(a.inv.blocks() >= 12 ? ring2 : [])].map(([dx, dy, dz]) => [e.x + dx, e.y + dy, e.z + dz]);
+      if (bot.buildCells(cells, dt)) return ctl;
+    }
     if (bot.role === 'defend' && team.eggAlive && m.time < 420) {
       const e = team.egg;
       if (bot.dist({ x: e.x, y: e.y, z: e.z }) > 4) bot.goTo(e.x, e.y - 1, e.z - 1, dt, 2, false);
@@ -165,6 +170,12 @@ export class EggDefense {
         if (cover) { const err2 = bot.aimAt(cover.x + 0.5, cover.y + 0.5, cover.z + 0.5, dt); if (err2 < 0.3) ctl.attack = true; }
         return ctl;
       }
+      const onMid = Math.hypot(a.pos.x, a.pos.z) < 23;
+      if (onMid && Math.hypot(e.x - a.pos.x, e.z - a.pos.z) > 50) {
+        const ang = Math.atan2(e.z, e.x), ex = Math.round(Math.cos(ang) * 17), ez = Math.round(Math.sin(ang) * 17);
+        if (Math.hypot(ex + 0.5 - a.pos.x, ez + 0.5 - a.pos.z) > 2.2 && !bot.bridge) { const ey = groundBelow(m.world, ex, m.map.top + 8, ez, 12) ?? m.map.top + 3; bot.goTo(ex, ey, ez, dt, 1, false); return ctl; }
+      }
+      if (Math.hypot(e.x - a.pos.x, e.z - a.pos.z) > 66 && !onMid) { const my = groundBelow(m.world, 2, m.map.top + 8, 2, 12) ?? m.map.top + 3; bot.goTo(2, my, 2, dt, 3); return ctl; }
       const g = groundBelow(m.world, e.x + 1, e.y, e.z, 4) ?? e.y - 1;
       bot.goTo(e.x + 1, g, e.z, dt, 1);
       return ctl;
@@ -173,13 +184,14 @@ export class EggDefense {
     if (prey) { const c = { x: Math.floor(prey.pos.x), y: Math.floor(prey.pos.y), z: Math.floor(prey.pos.z) }; bot.goTo(c.x, groundBelow(m.world, c.x, c.y, c.z, 6) ?? c.y, c.z, dt, 1); }
     return ctl;
   }
+  dist2(a, e) { return Math.hypot(e.x + 0.5 - a.pos.x, e.z + 0.5 - a.pos.z); }
   coverOf(e) {
     const w = this.m.world;
     for (const [dx, dy, dz] of [[0, 1, 0], [1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]) if (w.flag(e.x + dx, e.y + dy, e.z + dz) === PLACED) return { x: e.x + dx, y: e.y + dy, z: e.z + dz };
     return null;
   }
   wanted(a, id) {
-    if (id === 'wool') return a.inv.blocks() < 24;
+    if (id === 'wool') return a.inv.blocks() < (a.botRef && a.botRef.role === 'rush' ? 64 : 24);
     if (id === 'stone_sword') return !a.inv.slots.some((s) => s && s.id >= 101 && s.id <= 103);
     if (id === 'iron_sword') return !a.inv.slots.some((s) => s && s.id >= 102 && s.id <= 103);
     if (id === 'diamond_sword') return !a.inv.slots.some((s) => s && s.id === 103);

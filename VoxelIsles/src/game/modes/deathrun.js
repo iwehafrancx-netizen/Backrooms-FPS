@@ -99,7 +99,7 @@ export class DeathRun {
     const lead = runners.reduce((p, o) => (o.pos.x > p.pos.x ? o : p));
     const target = this.traps.find((tr) => tr.cd <= 0 && runners.some((o) => o.pos.x >= tr.x0 - 0.5 && o.pos.x <= tr.x1 + 1)) || this.traps.find((tr) => tr.x1 >= lead.pos.x - 2) || this.traps[this.traps.length - 1];
     const bx = target.button.x + 0.5, dx = bx - a.pos.x;
-    if (Math.abs(dx) > 1.2) { ctl.mx = Math.sign(dx); ctl.mz = (m.map.lane.z + 0.5 - a.pos.z) * 0.8; ctl.sprint = Math.abs(dx) > 4; ctl.yaw = dx > 0 ? -Math.PI / 2 : Math.PI / 2; ctl.pitch = -0.2; bot.pressT = 0; return ctl; }
+    if (Math.abs(dx) > 1.2) { ctl.mx = Math.sign(dx); ctl.mz = (m.map.lane.z + 0.5 - a.pos.z) * 0.8; ctl.sprint = Math.abs(dx) > 4; bot.lookToward(a.pos.x + Math.sign(dx) * 8, a.pos.y + 1.1, m.map.lane.z + 0.5, dt, 0.7); bot.pressT = 0; return ctl; }
     ctl.mx = ctl.mz = 0;
     bot.aimAt(bx, target.button.y + 0.1, target.button.z + 0.5, dt);
     const inZone = runners.filter((o) => o.pos.x >= target.x0 - 0.5 && o.pos.x <= target.x1 + 1).length;

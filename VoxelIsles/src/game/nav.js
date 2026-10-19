@@ -8,48 +8,48 @@ export function groundBelow(w, x, y, z, depth = 6) {
   return null;
 }
 
-class Heap {
-  constructor() { this.a = []; }
-  push(n) { const a = this.a; a.push(n); let i = a.length - 1; while (i > 0) { const p = (i - 1) >> 1; if (a[p].f <= a[i].f) break; [a[p], a[i]] = [a[i], a[p]]; i = p; } }
-  pop() { const a = this.a, top = a[0], last = a.pop(); if (a.length) { a[0] = last; let i = 0; for (;;) { const l = i * 2 + 1, r = l + 1; let m = i; if (l < a.length && a[l].f < a[m].f) m = l; if (r < a.length && a[r].f < a[m].f) m = r; if (m === i) break; [a[m], a[i]] = [a[i], a[m]]; i = m; } } return top; }
-  get size() { return this.a.length; }
-}
-
+const CAP = 40000;
+const NX = new Int32Array(CAP), NY = new Int32Array(CAP), NZ = new Int32Array(CAP), NG = new Float32Array(CAP), NF = new Float32Array(CAP), NP = new Int32Array(CAP), HEAP = new Int32Array(CAP * 8);
 const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
 
 export function findPath(w, sx, sy, sz, gx, gy, gz, opts = {}) {
-  const limit = opts.limit || 2400, near = opts.near ?? 0;
-  const key = (x, y, z) => ((y + 4) * (w.sz + 8) + (z + w.oz + 4)) * (w.sx + 8) + (x + w.ox + 4);
-  const h = (x, y, z) => Math.hypot(x - gx, z - gz) + Math.abs(y - gy) * 0.6;
-  const open = new Heap(), seen = new Map();
-  const start = { x: sx, y: sy, z: sz, g: 0, f: h(sx, sy, sz), p: null };
-  open.push(start); seen.set(key(sx, sy, sz), 0);
-  let best = start, n = 0;
-  while (open.size && n++ < limit) {
-    const c = open.pop();
-    if (Math.abs(c.x - gx) <= near && Math.abs(c.z - gz) <= near && Math.abs(c.y - gy) <= Math.max(1, near)) { best = c; break; }
-    if (h(c.x, c.y, c.z) < h(best.x, best.y, best.z)) best = c;
-    for (const [dx, dz] of DIRS) {
-      const nx = c.x + dx, nz = c.z + dz;
-      if (dx && dz && !(standable(w, c.x + dx, c.y, c.z) && standable(w, c.x, c.y, c.z + dz))) continue;
-      let ny = null, cost = dx && dz ? 1.414 : 1;
-      if (standable(w, nx, c.y, nz)) ny = c.y;
+  const limit = Math.min(CAP - 16, opts.limit || 2400), near = opts.near ?? 0;
+  const SX = w.sx + 8, SZ = w.sz + 8, OX = w.ox + 4, OZ = w.oz + 4;
+  const key = (x, y, z) => ((y + 4) * SZ + (z + OZ)) * SX + (x + OX);
+  const h = (x, y, z) => { const dx = Math.abs(x - gx), dz = Math.abs(z - gz); return (dx > dz ? dx + dz * 0.414 : dz + dx * 0.414) + Math.abs(y - gy) * 0.6; };
+  const seen = new Map();
+  let nn = 0, hn = 0;
+  const push = (i) => { let k = hn++; HEAP[k] = i; while (k > 0) { const p = (k - 1) >> 1; if (NF[HEAP[p]] <= NF[HEAP[k]]) break; const t = HEAP[p]; HEAP[p] = HEAP[k]; HEAP[k] = t; k = p; } };
+  const pop = () => { const top = HEAP[0]; hn--; if (hn > 0) { HEAP[0] = HEAP[hn]; let k = 0; for (;;) { const l = k * 2 + 1, r = l + 1; let m = k; if (l < hn && NF[HEAP[l]] < NF[HEAP[m]]) m = l; if (r < hn && NF[HEAP[r]] < NF[HEAP[m]]) m = r; if (m === k) break; const t = HEAP[m]; HEAP[m] = HEAP[k]; HEAP[k] = t; k = m; } } return top; };
+  const node = (x, y, z, g, p) => { const i = nn++; NX[i] = x; NY[i] = y; NZ[i] = z; NG[i] = g; NF[i] = g + h(x, y, z); NP[i] = p; return i; };
+  push(node(sx, sy, sz, 0, -1)); seen.set(key(sx, sy, sz), 0);
+  let best = 0, bh = h(sx, sy, sz), n = 0, found = false;
+  while (hn && n++ < limit && nn < CAP - 16) {
+    const c = pop(), cx = NX[c], cy = NY[c], cz = NZ[c], cg = NG[c];
+    if (Math.abs(cx - gx) <= near && Math.abs(cz - gz) <= near && Math.abs(cy - gy) <= Math.max(1, near)) { best = c; found = true; break; }
+    const ch = NF[c] - cg;
+    if (ch < bh) { bh = ch; best = c; }
+    for (let d = 0; d < 8; d++) {
+      const dx = DIRS[d][0], dz = DIRS[d][1], nx = cx + dx, nz = cz + dz;
+      if (dx && dz && !(standable(w, cx + dx, cy, cz) && standable(w, cx, cy, cz + dz))) continue;
+      let ny = -999, cost = dx && dz ? 1.414 : 1;
+      if (standable(w, nx, cy, nz)) ny = cy;
       else if (!dx || !dz) {
-        if (standable(w, nx, c.y + 1, nz) && !SOLID[at(w, c.x, c.y + 2, c.z)]) { ny = c.y + 1; cost += 0.8; }
-        else if (!SOLID[at(w, nx, c.y, nz)] && !SOLID[at(w, nx, c.y + 1, nz)]) { for (let d = 1; d <= 3; d++) if (standable(w, nx, c.y - d, nz)) { ny = c.y - d; cost += d * 0.3; break; } }
+        if (standable(w, nx, cy + 1, nz) && !SOLID[at(w, cx, cy + 2, cz)]) { ny = cy + 1; cost += 0.8; }
+        else if (!SOLID[at(w, nx, cy, nz)] && !SOLID[at(w, nx, cy + 1, nz)]) { for (let k = 1; k <= 3; k++) if (standable(w, nx, cy - k, nz)) { ny = cy - k; cost += k * 0.3; break; } }
       }
-      if (ny == null) continue;
-      const k = key(nx, ny, nz), g = c.g + cost;
-      if (seen.has(k) && seen.get(k) <= g) continue;
+      if (ny === -999) continue;
+      const k = key(nx, ny, nz), g = cg + cost, old = seen.get(k);
+      if (old !== undefined && old <= g) continue;
       seen.set(k, g);
-      open.push({ x: nx, y: ny, z: nz, g, f: g + h(nx, ny, nz), p: c });
+      push(node(nx, ny, nz, g, c));
     }
   }
-  const reached = Math.abs(best.x - gx) <= Math.max(near, 0) && Math.abs(best.z - gz) <= Math.max(near, 0) && Math.abs(best.y - gy) <= Math.max(1, near);
+  const reached = found || (Math.abs(NX[best] - gx) <= Math.max(near, 0) && Math.abs(NZ[best] - gz) <= Math.max(near, 0) && Math.abs(NY[best] - gy) <= Math.max(1, near));
   const path = [];
-  for (let c = best; c; c = c.p) path.push({ x: c.x, y: c.y, z: c.z });
+  for (let c = best; c >= 0; c = NP[c]) path.push({ x: NX[c], y: NY[c], z: NZ[c] });
   path.reverse();
-  return { path, reached, end: best };
+  return { path, reached, end: path[path.length - 1], nodes: n };
 }
 
 export function lineCells(x0, z0, x1, z1) {

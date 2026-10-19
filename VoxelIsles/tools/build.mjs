@@ -39,7 +39,12 @@ else if (platform === 'youtube') {
   const top = /^(var|let|const|function|async function|class|new|\(|[A-Za-z_$][\w$]*\s*\()/;
   for (let i = 0; i < lines.length; i++) {
     const ln = lines[i];
-    if (size > 300000 && top.test(ln) && /[;}]\s*$/.test(lines[i - 1] || '')) { parts.push(cur.join('\n')); cur = []; size = 0; }
+    if (size > 300000 && top.test(ln) && /[;}]\s*$/.test(lines[i - 1] || '')) {
+      const chunk = cur.join('\n');
+      let ok = true;
+      try { esbuild.transformSync(chunk, { loader: 'js', minifyWhitespace: true }); } catch (e) { ok = false; }
+      if (ok) { parts.push(chunk); cur = []; size = 0; }
+    }
     cur.push(ln); size += ln.length + 1;
   }
   if (cur.length) parts.push(cur.join('\n'));
