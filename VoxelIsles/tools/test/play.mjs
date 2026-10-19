@@ -47,8 +47,10 @@ check('hotbar wheel', (await ev(() => window.__vi.me.sel)) === 3);
 const edge = await ev(() => {
   const a = window.__vi, w = a.m.world, me = a.me;
   const x = Math.floor(me.pos.x), z = Math.floor(me.pos.z), y = Math.floor(me.pos.y) - 1;
-  for (let d = 1; d < 12; d++) for (const [dx, dz, yaw] of [[1, 0, -Math.PI / 2], [-1, 0, Math.PI / 2], [0, 1, Math.PI], [0, -1, 0]]) {
-    if (!w.get(x + dx * d, y, z + dz * d) && !w.get(x + dx * d, y - 1, z + dz * d) && !w.get(x + dx * d, y - 2, z + dz * d)) { me.yaw = yaw; me.pitch = 0; return { d, yaw }; }
+  const open = (xx, yy, zz) => !w.get(xx, yy, zz) && !w.get(xx, yy + 1, zz);
+  for (let d = 3; d < 30; d++) for (const [dx, dz, yaw] of [[1, 0, -Math.PI / 2], [-1, 0, Math.PI / 2], [0, 1, Math.PI], [0, -1, 0]]) {
+    const gx = x + dx * d, gz = z + dz * d, sx = x + dx * (d - 2), sz = z + dz * (d - 2), mx = x + dx * (d - 1), mz = z + dz * (d - 1);
+    if (!w.get(gx, y, gz) && !w.get(gx, y - 1, gz) && !w.get(gx, y - 2, gz) && w.get(sx, y, sz) && w.get(mx, y, mz) && open(sx, y + 1, sz) && open(mx, y + 1, mz) && open(gx, y + 1, gz)) { me.pos.x = sx + 0.5; me.pos.y = y + 1; me.pos.z = sz + 0.5; me.vel.x = me.vel.y = me.vel.z = 0; me.yaw = yaw; me.pitch = 0; return { d: 2, yaw }; }
   }
   return null;
 });
