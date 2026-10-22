@@ -48,7 +48,7 @@ for (const p of targets) {
   check('lobby fills with bots and match starts', await page.evaluate(() => window.__vi.m.actors.length === 8));
   if (p.startsWith('crazygames')) check('gameplayStart on match', (await calls()).includes('gameplayStart'));
   if (p === 'playgama') check('gameplay_started sent', sent.includes('gameplay_started'), sent.join(','));
-  await page.evaluate(() => { const a = window.__vi; a.m.kill(a.me, null, 'void'); });
+  await page.evaluate(() => { const a = window.__vi; a.me.lives = 1; a.m.kill(a.me, null, 'void'); });
   await page.waitForFunction(() => window.__vi.state === 'results', null, { timeout: 15000 });
   if (p.startsWith('crazygames')) check('gameplayStop on results', (await calls()).includes('gameplayStop'));
   if (p === 'playgama') check('gameplay_stopped sent', sent.includes('gameplay_stopped'), sent.join(','));

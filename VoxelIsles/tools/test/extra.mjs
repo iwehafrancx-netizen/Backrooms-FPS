@@ -61,5 +61,30 @@ const check = (n, ok, i = '') => { results.push(!!ok); console.log(`${ok ? 'PASS
   await page.screenshot({ path: out + 'fr-egg.png' });
   check('no errors (lang)', !errors.length, errors.join('|'));
 }
+for (const touch of [false, true]) {
+  const tag = touch ? '(touch)' : '(mouse)';
+  const pg = await (await browser.newContext({ viewport: { width: 900, height: 500 }, hasTouch: touch, isMobile: touch })).newPage();
+  await pg.goto('http://localhost:8766/dev/index.html'); await pg.waitForTimeout(1500);
+  await pg.evaluate(() => window.__vi.startLobby('sky', { fast: true, countdown: 0, firstWait: 0 }));
+  await pg.waitForFunction(() => window.__vi.m && window.__vi.m.state === 'play', null, { timeout: 30000 });
+  const press = async (act) => { const loc = pg.locator(`[data-act=${act}]`).first(); await loc.scrollIntoViewIfNeeded(); const b = await loc.boundingBox(); const x = b.x + b.width / 2, y = b.y + b.height / 2; const top = await pg.evaluate(([x, y, act]) => { const e = document.elementFromPoint(x, y); return !!(e && e.closest(`[data-act=${act}]`)); }, [x, y, act]); if (touch) await pg.touchscreen.tap(x, y); else await pg.mouse.click(x, y); await pg.waitForTimeout(300); return top; };
+  const st = () => pg.evaluate(() => window.__vi.state);
+  const doPause = async () => { if (touch) return press('pause'); await pg.evaluate(() => document.exitPointerLock()); await pg.waitForTimeout(300); if ((await st()) !== 'paused') await pg.evaluate(() => window.__vi.act('pause', {})); await pg.waitForTimeout(200); return true; };
+  const pauseTop = await doPause();
+  check(`pause ${touch ? 'button' : 'with Esc'} ${tag}`, pauseTop && (await st()) === 'paused');
+  const resTop = await press('resume');
+  check(`resume button ${tag}`, resTop && (await st()) === 'play');
+  await doPause();
+  const setTop = await press('settings');
+  check(`settings from pause ${tag}`, setTop && (await pg.evaluate(() => window.__vi.ui.screen)) === 'settings');
+  const backTop = await press('back');
+  check(`back to pause ${tag}`, backTop && (await pg.evaluate(() => window.__vi.ui.screen)) === 'pause');
+  const howTop = await press('howto');
+  await press('back');
+  check(`how to play from pause ${tag}`, howTop && (await pg.evaluate(() => window.__vi.ui.screen)) === 'pause');
+  const leaveTop = await press('leave');
+  check(`leave to menu ${tag}`, leaveTop && (await st()) === 'menu');
+  await pg.context().close();
+}
 console.log(results.every(Boolean) ? 'ALL PASS' : 'SOME FAILED');
 await browser.close();

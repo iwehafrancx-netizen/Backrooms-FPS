@@ -17,7 +17,7 @@ const en = {
   equip: 'Equip', equipped: 'Equipped', levelUp: 'Level up! +25 coins', kill1: '+1 kill',
   team_0: 'Red', team_1: 'Blue', team_2: 'Green', team_3: 'Yellow', team_4: 'Purple', team_5: 'Orange', team_6: 'Cyan', team_7: 'Pink',
   h1: 'Move with WASD, jump with Space, sprint with Ctrl or double-tap W.', h2: 'Hold Shift to sneak: you will not fall off edges, perfect for bridging.', h3: 'Left click breaks blocks and attacks. Right click places blocks, opens chests and eats.', h4: 'On mobile: left stick to move, drag to look, buttons to break, place and jump. Tap the world to place a block.',
-  h5: 'Sky Islands: loot your chests, build bridges to other islands, be the last one standing.', h6: 'Egg Defense: collect iron and gold at your generator, buy gear from the shopkeeper and protect your egg. While your egg survives, you respawn!',
+  h5: 'Sky Islands: loot your chests, build bridges to other islands, be the last one standing. You have 3 lives until the border starts closing in.', h6: 'Egg Defense: collect iron and gold at your generator, buy gear from the shopkeeper and protect your egg. While your egg survives, you respawn!',
 };
 
 const es = {
@@ -39,7 +39,7 @@ const es = {
   equip: 'Usar', equipped: 'En uso', levelUp: '¡Subiste de nivel! +25 monedas', kill1: '+1 baja',
   team_0: 'Rojo', team_1: 'Azul', team_2: 'Verde', team_3: 'Amarillo', team_4: 'Morado', team_5: 'Naranja', team_6: 'Cian', team_7: 'Rosa',
   h1: 'Muévete con WASD, salta con Espacio, corre con Ctrl o doble toque en W.', h2: 'Mantén Shift para agacharte: no caerás por los bordes, ideal para construir puentes.', h3: 'Clic izquierdo rompe bloques y ataca. Clic derecho coloca bloques, abre cofres y come.', h4: 'En móvil: joystick para moverte, desliza para mirar y usa los botones para romper, colocar y saltar. Toca el mundo para colocar un bloque.',
-  h5: 'Islas del Cielo: saquea tus cofres, construye puentes y sé el último en pie.', h6: 'Defensa del Huevo: junta hierro y oro en tu generador, compra equipo al tendero y protege tu huevo. ¡Mientras viva, reapareces!',
+  h5: 'Islas del Cielo: saquea tus cofres, construye puentes y sé el último en pie. Tienes 3 vidas hasta que el borde empiece a cerrarse.', h6: 'Defensa del Huevo: junta hierro y oro en tu generador, compra equipo al tendero y protege tu huevo. ¡Mientras viva, reapareces!',
 };
 
 const pt = {
@@ -61,7 +61,7 @@ const pt = {
   equip: 'Usar', equipped: 'Em uso', levelUp: 'Subiu de nível! +25 moedas', kill1: '+1 abate',
   team_0: 'Vermelho', team_1: 'Azul', team_2: 'Verde', team_3: 'Amarelo', team_4: 'Roxo', team_5: 'Laranja', team_6: 'Ciano', team_7: 'Rosa',
   h1: 'Mova-se com WASD, pule com Espaço, corra com Ctrl ou toque duplo no W.', h2: 'Segure Shift para agachar: você não cai das bordas, perfeito para construir pontes.', h3: 'Clique esquerdo quebra blocos e ataca. Clique direito coloca blocos, abre baús e come.', h4: 'No celular: analógico para andar, arraste para olhar e use os botões para quebrar, colocar e pular. Toque no mundo para colocar um bloco.',
-  h5: 'Ilhas do Céu: saqueie seus baús, construa pontes e seja o último de pé.', h6: 'Defesa do Ovo: colete ferro e ouro no gerador, compre equipamentos com o lojista e proteja seu ovo. Enquanto ele existir, você renasce!',
+  h5: 'Ilhas do Céu: saqueie seus baús, construa pontes e seja o último de pé. Você tem 3 vidas até a borda começar a fechar.', h6: 'Defesa do Ovo: colete ferro e ouro no gerador, compre equipamentos com o lojista e proteja seu ovo. Enquanto ele existir, você renasce!',
 };
 
 const fr = {
@@ -83,10 +83,11 @@ const fr = {
   equip: 'Choisir', equipped: 'Choisi', levelUp: 'Niveau supérieur ! +25 pièces', kill1: '+1 élimination',
   team_0: 'Rouge', team_1: 'Bleue', team_2: 'Verte', team_3: 'Jaune', team_4: 'Violette', team_5: 'Orange', team_6: 'Cyan', team_7: 'Rose',
   h1: 'Déplace-toi avec ZQSD/WASD, saute avec Espace, cours avec Ctrl ou double appui sur avancer.', h2: 'Maintiens Maj pour t’accroupir : tu ne tomberas pas des bords, parfait pour construire des ponts.', h3: 'Clic gauche casse les blocs et attaque. Clic droit pose des blocs, ouvre les coffres et mange.', h4: 'Sur mobile : joystick pour bouger, glisse pour regarder, boutons pour casser, poser et sauter. Touche le monde pour poser un bloc.',
-  h5: 'Îles Célestes : pille tes coffres, construis des ponts et sois le dernier debout.', h6: 'Défense de l’Œuf : récupère du fer et de l’or au générateur, achète de l’équipement au marchand et protège ton œuf. Tant qu’il vit, tu réapparais !',
+  h5: 'Îles Célestes : pille tes coffres, construis des ponts et sois le dernier debout. Tu as 3 vies jusqu’à ce que la bordure se referme.', h6: 'Défense de l’Œuf : récupère du fer et de l’or au générateur, achète de l’équipement au marchand et protège ton œuf. Tant qu’il vit, tu réapparais !',
 };
 
 Object.assign(en, {
+  lives: 'Lives', livesLeft: '{n} lives left', finalLife: 'Last life!', respawnsOff: 'Respawns are off!',
   hideseek: 'Hide and Seek', hideseekDesc: 'Turn into a block and blend into the town. Seekers hunt you down; found hiders join the seekers.', hs12: '12 players',
   hideNow: 'Hide! Seekers are released in {n}s', seekersReleased: 'The seekers are coming!', youAreSolid: 'You are solid. Do not move!', tauntCooling: 'Taunt ready in {n}s', disguisedAs: 'You are now {b}',
   hiderSpotted: '{name} was spotted!', hiderFound: '{name} was found!', nowSeeker: 'You are now a seeker!', seekersIn: 'Seekers in {t}', hidersLeft: 'Hiders left: {n}', youHide: 'You are a Hider', youSeek: 'You are a Seeker',
@@ -111,6 +112,7 @@ Object.assign(en, {
   flagTaken: '{name} took the {team} flag!', flagCaptured: '{name} captured a flag for {team}!', flagDropped: 'The {team} flag was dropped!', flagReturned: 'The {team} flag is back home',
 });
 Object.assign(es, {
+  lives: 'Vidas', livesLeft: 'Te quedan {n} vidas', finalLife: '¡Última vida!', respawnsOff: '¡Ya no se reaparece!',
   hideseek: 'Escondite', hideseekDesc: 'Conviértete en un bloque y camúflate en el pueblo. Los buscadores te cazan; quien es encontrado se une a ellos.', hs12: '12 jugadores',
   hideNow: '¡Escóndete! Los buscadores salen en {n}s', seekersReleased: '¡Vienen los buscadores!', youAreSolid: 'Eres sólido. ¡No te muevas!', tauntCooling: 'Burla lista en {n}s', disguisedAs: 'Ahora eres {b}',
   hiderSpotted: '¡{name} fue visto!', hiderFound: '¡{name} fue encontrado!', nowSeeker: '¡Ahora eres buscador!', seekersIn: 'Buscadores en {t}', hidersLeft: 'Escondidos: {n}', youHide: 'Te escondes', youSeek: 'Eres Buscador',
@@ -135,6 +137,7 @@ Object.assign(es, {
   flagTaken: '¡{name} tomó la bandera {team}!', flagCaptured: '¡{name} capturó una bandera para {team}!', flagDropped: '¡La bandera {team} cayó!', flagReturned: 'La bandera {team} volvió a casa',
 });
 Object.assign(pt, {
+  lives: 'Vidas', livesLeft: 'Restam {n} vidas', finalLife: 'Última vida!', respawnsOff: 'Sem mais renascimentos!',
   hideseek: 'Esconde-Esconde', hideseekDesc: 'Vire um bloco e se misture à cidade. Os caçadores te procuram; quem é achado vira caçador.', hs12: '12 jogadores',
   hideNow: 'Esconda-se! Os caçadores saem em {n}s', seekersReleased: 'Os caçadores estão vindo!', youAreSolid: 'Você está sólido. Não se mexa!', tauntCooling: 'Provocação pronta em {n}s', disguisedAs: 'Agora você é {b}',
   hiderSpotted: '{name} foi visto!', hiderFound: '{name} foi encontrado!', nowSeeker: 'Agora você é caçador!', seekersIn: 'Caçadores em {t}', hidersLeft: 'Escondidos: {n}', youHide: 'Você se esconde', youSeek: 'Você é Caçador',
@@ -159,6 +162,7 @@ Object.assign(pt, {
   flagTaken: '{name} pegou a bandeira {team}!', flagCaptured: '{name} capturou uma bandeira para o time {team}!', flagDropped: 'A bandeira {team} caiu!', flagReturned: 'A bandeira {team} voltou para casa',
 });
 Object.assign(fr, {
+  lives: 'Vies', livesLeft: 'Il te reste {n} vies', finalLife: 'Dernière vie !', respawnsOff: 'Plus de réapparition !',
   hideseek: 'Cache-Cache', hideseekDesc: 'Deviens un bloc et fonds-toi dans la ville. Les chercheurs te traquent ; ceux qui sont trouvés les rejoignent.', hs12: '12 joueurs',
   hideNow: 'Cache-toi ! Les chercheurs arrivent dans {n}s', seekersReleased: 'Les chercheurs arrivent !', youAreSolid: 'Tu es solide. Ne bouge pas !', tauntCooling: 'Provocation prête dans {n}s', disguisedAs: 'Tu es maintenant {b}',
   hiderSpotted: '{name} a été repéré !', hiderFound: '{name} a été trouvé !', nowSeeker: 'Tu es maintenant chercheur !', seekersIn: 'Chercheurs dans {t}', hidersLeft: 'Cachés : {n}', youHide: 'Tu te caches', youSeek: 'Tu es Chercheur',

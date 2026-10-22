@@ -101,6 +101,7 @@ class App {
   }
   endMatch() {
     if (this.m) { try { Platform.gameplayStop(); } catch (e) {} }
+    this.ui.hudEl.classList.remove('paused');
     this.m = null; this.me = null; this.spectating = null; this.ui.spectate(null);
     this.view.clear(); this.R.outline.visible = false; this.R.setCrack(0, 0, 0, -1);
     this.input.enable(false); this.input.exitLock(); this.ui.clearTitle();
@@ -168,12 +169,14 @@ class App {
     if (this.state !== 'play') return;
     this.state = 'paused';
     this.input.enable(false); this.input.exitLock();
+    this.ui.hudEl.classList.add('paused');
     this.ui.closePanel(); this.ui.pause();
     try { Platform.gameplayStop(); } catch (e) {}
   }
   resume() {
     if (this.state !== 'paused') return;
     this.state = 'play';
+    this.ui.hudEl.classList.remove('paused');
     this.ui.show(null);
     this.input.enable(true); this.input.requestLock();
     try { Platform.gameplayStart(); } catch (e) {}
