@@ -39,6 +39,8 @@ class App {
     this.ui = new UI(document.getElementById('ui'), this);
     this.input.wireTouch(this.ui.buildHud(this.input.touch));
     this.input.onTouch = () => this.ui.setTouch(true);
+    this.input.wantLock = () => this.state === 'play' && !!this.m && !this.ui.panelOpen && ((this.input.enabled && this.me && this.me.alive) || !!this.spectating);
+    this.input.onNoLock = () => this.ui.lockHint(false);
     this.input.onUnlock = () => { if (this.state === 'play' && !this.ui.panelOpen && !this.spectating && this.me && this.me.alive) this.pause(); };
     const unlock = () => { this.audio.unlock(); if (!this.audio.musicOn && this.save.settings.music > 0) this.audio.startMusic('calm'); };
     for (const ev of ['pointerdown', 'keydown', 'touchstart']) addEventListener(ev, unlock, { capture: true, passive: true });
@@ -192,6 +194,7 @@ class App {
 
   async act(a, d) {
     this.audio.unlock(); this.audio.click();
+    if (['mode', 'pkRace', 'level', 'resume'].includes(a) && !(a === 'mode' && d.mode === 'parkour')) this.input.requestLock();
     switch (a) {
       case 'menu': this.ui.menu(); break;
       case 'modes':
@@ -304,7 +307,7 @@ class App {
     this.state = 'play';
     this.ui.show(null); this.ui.hud(true);
     this.pickSpecTarget();
-    this.input.enable(false); this.input.exitLock();
+    this.input.enable(false); this.input.requestLock();
   }
   pickSpecTarget() {
     const alive = this.m.actors.filter((a) => a.alive && a !== this.me);
@@ -519,7 +522,7 @@ class App {
       this.overlays();
       if (this.state === 'play') {
         this.ui.updateHud(m, me, this.view);
-        const lockNeeded = !this.input.touch && !this.input.locked && !this.ui.panelOpen && !this.spectating && me.alive;
+        const lockNeeded = !this.input.touch && !this.input.locked && !this.input.noLock && !this.ui.panelOpen && !this.spectating && me.alive;
         this.ui.lockHint(lockNeeded);
         if (this.hitmark > 0) { this.hitmark -= dt; this.ui.h.xhair.classList.toggle('hit', this.hitmark > 0); }
       }

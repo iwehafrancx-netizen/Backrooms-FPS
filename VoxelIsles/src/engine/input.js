@@ -2,7 +2,7 @@ export class Input {
   constructor(canvas, ui) {
     this.canvas = canvas; this.ui = ui;
     this.keys = new Set(); this.pressed = new Set(); this.mouse = { l: false, r: false, lp: false, rp: false };
-    this.look = { x: 0, y: 0 }; this.wheel = 0; this.locked = false; this.enabled = false;
+    this.look = { x: 0, y: 0 }; this.wheel = 0; this.locked = false; this.enabled = false; this.wantLock = () => false; this.lockFails = 0; this.noLock = false;
     this.touch = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window && navigator.maxTouchPoints > 0;
     this.t = { moveId: null, mx: 0, my: 0, ox: 0, oy: 0, lookId: null, lx: 0, ly: 0, attack: false, attackP: false, place: false, jump: false, crouch: false, sprint: false };
     this.pad = null;
@@ -15,6 +15,8 @@ export class Input {
       if (!this.keys.has(e.code)) this.pressed.add(e.code);
       this.keys.add(e.code);
     });
+    const grab = (e) => { if (this.touch || this.locked || this.noLock || !this.wantLock()) return; if (e.type === 'keydown' && e.code === 'Escape') return; if (e.type !== 'keydown' && e.target && e.target.closest && e.target.closest('[data-act]')) return; this.requestLock(); };
+    addEventListener('keydown', grab, true); addEventListener('mousedown', grab, true);
     addEventListener('keyup', (e) => this.keys.delete(e.code));
     addEventListener('blur', () => { this.keys.clear(); this.mouse.l = this.mouse.r = false; });
     this.canvas.addEventListener('mousedown', (e) => {
@@ -25,12 +27,25 @@ export class Input {
     });
     addEventListener('mouseup', (e) => { if (e.button === 0) this.mouse.l = false; if (e.button === 2) this.mouse.r = false; });
     addEventListener('contextmenu', (e) => e.preventDefault());
-    addEventListener('mousemove', (e) => { if (this.locked) { this.look.x += e.movementX; this.look.y += e.movementY; } });
+    addEventListener('mousemove', (e) => { if (this.locked || (this.noLock && this.enabled && !this.touch)) { this.look.x += e.movementX; this.look.y += e.movementY; } });
     addEventListener('wheel', (e) => { if (this.locked) this.wheel += Math.sign(e.deltaY); }, { passive: true });
-    document.addEventListener('pointerlockchange', () => { const was = this.locked; this.locked = document.pointerLockElement === this.canvas; if (was && !this.locked && this.onUnlock) this.onUnlock(); });
+    document.addEventListener('pointerlockchange', () => { const was = this.locked; this.locked = document.pointerLockElement === this.canvas; this.lockPending = false; if (this.locked) { this.lockFails = 0; this.everLocked = true; } if (was && !this.locked && this.onUnlock) this.onUnlock(); });
+    document.addEventListener('pointerlockerror', () => { this.lockPending = false; this.lockFailed(); });
     addEventListener('touchstart', () => { if (!this.touch) { this.touch = true; if (this.onTouch) this.onTouch(); } }, { passive: true, capture: true });
   }
-  requestLock() { if (this.touch) return; try { const p = this.canvas.requestPointerLock({ unadjustedMovement: true }); if (p && p.catch) p.catch((e) => { if (e && e.name === 'NotSupportedError') try { const q = this.canvas.requestPointerLock(); if (q && q.catch) q.catch(() => {}); } catch (er) {} }); } catch (e) { try { this.canvas.requestPointerLock(); } catch (er) {} } }
+  lockFailed() {
+    this.lockPending = false;
+    if (this.locked || this.everLocked) return;
+    this.lockFails++;
+    if (this.lockFails >= 3 && !this.noLock) { this.noLock = true; this.canvas.style.cursor = 'none'; if (this.onNoLock) this.onNoLock(); }
+  }
+  requestLock() {
+    if (this.touch || this.locked || this.noLock || (this.lockPending && performance.now() - this.lockAt < 600)) return;
+    this.lockPending = true; this.lockAt = performance.now();
+    if (!this.canvas.requestPointerLock) { this.lockFails = 2; this.lockFailed(); return; }
+    const fail = (e) => { if (e && e.name === 'NotSupportedError') { try { const q = this.canvas.requestPointerLock(); if (q && q.catch) q.catch(() => this.lockFailed()); } catch (er) { this.lockFailed(); } } else this.lockFailed(); };
+    try { const p = this.canvas.requestPointerLock({ unadjustedMovement: true }); if (p && p.catch) p.catch(fail); } catch (e) { try { this.canvas.requestPointerLock(); } catch (er) { this.lockFailed(); } }
+  }
   exitLock() { if (document.pointerLockElement) document.exitPointerLock(); }
   enable(on) { this.enabled = on; if (!on) { this.keys.clear(); this.mouse.l = this.mouse.r = false; this.t.attack = this.t.place = this.t.jump = false; } }
 
