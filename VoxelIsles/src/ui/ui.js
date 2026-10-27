@@ -58,7 +58,7 @@ export class UI {
       ['sky', () => icon(1), 'solo8'], ['egg', () => eggIcon(TEAM_COLORS[1].hex), 'teams4x2'], ['ctf', () => flagIcon(TEAM_COLORS[0].hex), 'teams4v4'],
       ['bridge', () => icon(57), 'teams2v2'], ['deathrun', () => icon(60), 'death1v7'], ['parkour', () => icon(61), 'soloRace'], ['hideseek', () => icon(73), 'hs12'],
     ].filter(([id]) => this.app.available(id));
-    const soon = [['zombie', () => icon(28)], ['oitc', () => icon(101)], ['survival', () => icon(17)]];
+    const soon = [['zerog', () => icon(20)], ['zombie', () => icon(28)], ['oitc', () => icon(101)], ['survival', () => icon(17)]];
     const card = ([id, img, tag]) => `<button class="card c-${id}" data-act="mode" data-mode="${id}"><div class="art"><img class="pix" src="${img()}"></div><h2>${t(id)}</h2><div class="tag">${t(tag)}</div><p>${t(id + 'Desc')}</p></button>`;
     const soonCard = ([id, img]) => `<div class="card soon"><div class="art"><img class="pix" src="${img()}"></div><h2>${t(id)}</h2><div class="tag">${t('soon')}</div><p>${t(id + 'Desc')}</p></div>`;
     this.show('modes', `${this.profileHtml()}<h1>${t('chooseGame')}</h1>

@@ -8,7 +8,9 @@ export function buildDeathRun(seed, opt = {}) {
   const w = new World(336, 64, 40), TOP = 30, LANE = TOP + 5;
   const set = (x, y, z, id) => w.set(x, y, z, id, id ? MAPBLOCK : 0, true);
   const box = (x0, y0, z0, x1, y1, z1, id) => { for (let y = Math.min(y0, y1); y <= Math.max(y0, y1); y++) for (let z = Math.min(z0, z1); z <= Math.max(z0, z1); z++) for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) set(x, y, z, id); };
-  const route = [], traps = [];
+  const route = [], traps = [], checkpoints = [];
+  const SAFE = ['run', 'gaps', 'beam', 'stairs', 'bounce'];
+  let pendingCp = false;
   const node = (x, y, z = 0, o = {}) => route.push({ x, y, z, ...o });
   const floorRow = (x, y = TOP, id = S.floor) => { for (let z = -3; z <= 3; z++) set(x, y, z, Math.abs(z) === 3 ? S.trim : id); set(x, y - 1, 0, S.wall); };
   const rails = (x0, x1, y = TOP) => { for (let x = x0; x <= x1; x++) for (const z of [-4, 4]) { set(x, y, z, S.wall); set(x, y + 1, z, x % 3 === 0 ? S.wall2 : S.wall); } };
@@ -26,6 +28,8 @@ export function buildDeathRun(seed, opt = {}) {
   x = startX + 6;
   for (const kind of PLAN) {
     const x0 = x;
+    if (pendingCp && SAFE.includes(kind)) { pendingCp = false; checkpoints.push({ x: x0 + 0.5, y: y + 1, z: 0.5, i: route.length }); }
+    if (!SAFE.includes(kind)) pendingCp = true;
     if (kind === 'run') { for (let i = 0; i < 6; i++) floorRow(x + i, y); rails(x, x + 5, y + 1); node(x + 5, y + 1); x += 6; }
     else if (kind === 'gaps') {
       for (let t = 0; t < 4; t++) { floorRow(x, y); floorRow(x + 1, y); node(x + 1, y + 1, 0, { jump: t > 0 }); x += t < 3 ? 4 : 2; }
@@ -83,6 +87,7 @@ export function buildDeathRun(seed, opt = {}) {
     }
     if (x - x0 > 0) { const mx = Math.round((x0 + x - 1) / 2); for (const z of [-5, 5]) if (r() < 0.6 && !w.get(mx, y + 1, z)) { for (let yy = y - 2; yy <= y; yy++) set(mx, yy, z, S.wall); set(mx, y + 1, z, S.light); } }
   }
+  for (const c of checkpoints) for (let z = -1; z <= 1; z++) if (!w.get(Math.floor(c.x), c.y, z)) set(Math.floor(c.x), c.y, z, 58);
   for (let i = 0; i < 8; i++) floorRow(x + i, y);
   for (let z = -2; z <= 2; z++) set(x + 3, y + 1, z, 59);
   box(x + 7, y + 1, -4, x + 7, y + 4, 4, S.wall);
@@ -96,5 +101,5 @@ export function buildDeathRun(seed, opt = {}) {
   for (const z of [-9, -8, -7]) { set(laneX0, LANE + 1, z, S.wall); set(laneX1, LANE + 1, z, S.wall); }
   for (const tr of traps) { set(tr.button.x, LANE, -8, S.wall2); set(tr.button.x, LANE + 1, tr.button.z, 60); }
   const deathSpawn = { x: laneX0 + 2.5, y: LANE + 1, z: -7.5, yaw: -Math.PI / 2 };
-  return { world: w, theme: opt.theme || 'meadow', top: TOP, voidY: TOP - 10, center: { x: 0, y: TOP + 1, z: 0 }, radius: 170, chests: [], spawns: runnerSpawns, runnerSpawns, deathSpawn, traps, route, finish, gate, lane: { y: LANE + 1, z: -8, x0: laneX0 + 1, x1: laneX1 - 1 } };
+  return { world: w, theme: opt.theme || 'meadow', top: TOP, voidY: TOP - 10, center: { x: 0, y: TOP + 1, z: 0 }, radius: 170, chests: [], spawns: runnerSpawns, runnerSpawns, deathSpawn, traps, route, checkpoints, finish, gate, lane: { y: LANE + 1, z: -8, x0: laneX0 + 1, x1: laneX1 - 1 } };
 }

@@ -18,8 +18,8 @@ export class DeathRun {
       a.team = a === this.death ? 1 : 0;
       if (a === this.death) { spawnAt(a, this.m.map.deathSpawn, 0); a.role = 'death'; }
       else { spawnAt(a, this.m.map.runnerSpawns[k++ % 8], 0); a.role = 'runner'; }
-      kit(a, []); a.finished = 0;
-      a.home = { x: a.pos.x, z: a.pos.z };
+      kit(a, []); a.finished = 0; a.cp = 0;
+      a.home = { x: a.pos.x, z: a.pos.z }; a.start = { x: a.pos.x, y: a.pos.y, z: a.pos.z, yaw: a.yaw };
     }
   }
   allied() { return true; }
@@ -45,37 +45,51 @@ export class DeathRun {
       if (tr.cd > 0) tr.cd -= dt;
       if (tr.active > 0) { tr.active -= dt; if (tr.active <= 0) for (const [x, y, z, id] of tr.cells) w.set(x, y, z, id); }
     }
+    const cps = m.map.checkpoints || [];
     for (const a of m.actors) {
       if (!a.alive || a.role !== 'runner' || a.finished) continue;
+      for (let k = a.cp; k < cps.length; k++) {
+        const c = cps[k];
+        if (a.pos.x >= c.x - 0.5 && Math.abs(a.pos.y - c.y) < 3) { a.cp = k + 1; if (a.local) m.emit({ t: 'notice', text: t('checkpointN', { n: a.cp, total: cps.length }), cls: 'gold', sound: 'hi' }); }
+      }
       const under = w.get(Math.floor(a.pos.x), Math.floor(a.pos.y - 0.05), Math.floor(a.pos.z));
       if (under === 66 && a.onGround) m.damage(a, 20, this.death, 'trap');
       const at = w.get(Math.floor(a.pos.x), Math.floor(a.pos.y + 0.05), Math.floor(a.pos.z));
       const fin = m.map.finish;
       if (at === 59 || (a.pos.x >= fin.x && Math.abs(a.pos.z) < 5 && Math.abs(a.pos.y - fin.y) < 3)) {
         a.finished = this.finishers.length + 1; this.finishers.push(a); a.rank = a.finished;
+        if (!this.firstFinishT) this.firstFinishT = m.time;
         m.emit({ t: 'notice', text: t('finishedPlace', { name: a.name, n: a.finished }), cls: 'gold', sound: a.local ? 'win' : 'hi', team: a.local ? 0 : -1, big: !!a.local });
         a.alive = false; a.eliminated = true;
       }
     }
     const runners = m.actors.filter((a) => a.role === 'runner');
-    const running = runners.filter((a) => a.alive && !a.finished);
-    if (!m.over && (!running.length || m.time >= this.timeLimit)) m.finish(this.finishers.length ? 0 : 1);
+    const running = runners.filter((a) => !a.finished);
+    if (!m.over && (!running.length || m.time >= this.timeLimit || (this.firstFinishT && m.time - this.firstFinishT > 45))) m.finish(this.finishers.length ? 0 : 1);
   }
   canBreak() { return false; }
   canPlace() { return false; }
   dropFor() { return 0; }
   onBreak() {}
-  onDeath(a) { a.eliminated = true; if (a.role === 'runner') a.rank = 0; }
-  respawn() {}
+  onDeath(a) { if (a.role === 'runner' && !a.finished) a.respawnT = 2; }
+  respawn(a) {
+    const cps = this.m.map.checkpoints || [], c = a.cp > 0 ? cps[a.cp - 1] : null;
+    spawnAt(a, c ? { x: c.x, y: c.y, z: c.z, yaw: -Math.PI / 2 } : a.start, 1);
+    const b = a.botRef;
+    if (b) { b.rI = c ? c.i : 0; b.waitT = 0.4; b.lastTight = false; b.path = null; b.slip = null; }
+    this.m.emit({ t: 'respawn', a });
+    if (a.local) this.m.emit({ t: 'cpback', a });
+  }
   hudInCountdown = true;
   hud(me) {
-    const m = this.m, running = m.actors.filter((a) => a.role === 'runner' && a.alive && !a.finished).length;
+    const m = this.m, running = m.actors.filter((a) => a.role === 'runner' && !a.finished).length;
     const lines = [{ text: clock(this.timeLimit - m.time) }, { text: t('runnersLeft', { n: running }), b: true }];
     if (me.role === 'death') {
       lines.unshift({ text: t('youAreDeath'), cls: 'warn' });
       const near = this.traps.filter((tr) => Math.abs(tr.button.x + 0.5 - me.pos.x) < 14).slice(0, 3);
       for (const tr of near) lines.push({ text: `${t('trap_' + tr.kind)}: ${tr.cd > 0 ? Math.ceil(tr.cd) + 's' : t('ready')}`, cls: tr.cd > 0 ? '' : 'gold' });
     } else if (me.finished) lines.push({ text: t('finishedPlace', { name: me.name, n: me.finished }), cls: 'gold' });
+    else lines.push({ text: t('checkpointN', { n: me.cp || 0, total: (m.map.checkpoints || []).length }) });
     return { lines };
   }
   result(me) {

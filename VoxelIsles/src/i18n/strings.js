@@ -1,4 +1,5 @@
 const en = {
+  zerog: 'Zero Gravity', zerogDesc: 'Float, flip and fight on islands where gravity switches off.',
   netSearching: 'Looking for online players…', netCount: '{n} online', netJoined: '{name} joined', netLeft: '{name} left · a bot took over', netHost: 'New host: {name}', netHosting: 'Online · {n} players · hosting', netOnline: 'Online · {n} players · {ms} ms', onlinePlay: 'Online play',
   voidRise: 'The void is rising!',
   play: 'PLAY', chooseGame: 'Choose a game', skins: 'Skins', settings: 'Settings', howto: 'How to play', back: 'Back', level: 'Level {n}', loading: 'Loading…',
@@ -22,6 +23,7 @@ const en = {
 };
 
 const es = {
+  zerog: 'Gravedad Cero', zerogDesc: 'Flota, gira y lucha en islas donde la gravedad se apaga.',
   netSearching: 'Buscando jugadores en línea…', netCount: '{n} en línea', netJoined: '{name} se unió', netLeft: '{name} salió · un bot tomó su lugar', netHost: 'Nuevo anfitrión: {name}', netHosting: 'En línea · {n} jugadores · anfitrión', netOnline: 'En línea · {n} jugadores · {ms} ms', onlinePlay: 'Juego en línea',
   voidRise: '¡El vacío está subiendo!',
   play: 'JUGAR', chooseGame: 'Elige un juego', skins: 'Aspectos', settings: 'Ajustes', howto: 'Cómo jugar', back: 'Volver', level: 'Nivel {n}', loading: 'Cargando…',
@@ -45,6 +47,7 @@ const es = {
 };
 
 const pt = {
+  zerog: 'Gravidade Zero', zerogDesc: 'Flutue, gire e lute em ilhas onde a gravidade desliga.',
   netSearching: 'Procurando jogadores online…', netCount: '{n} online', netJoined: '{name} entrou', netLeft: '{name} saiu · um bot assumiu', netHost: 'Novo anfitrião: {name}', netHosting: 'Online · {n} jogadores · anfitrião', netOnline: 'Online · {n} jogadores · {ms} ms', onlinePlay: 'Jogo online',
   voidRise: 'O vazio está subindo!',
   play: 'JOGAR', chooseGame: 'Escolha um jogo', skins: 'Visuais', settings: 'Ajustes', howto: 'Como jogar', back: 'Voltar', level: 'Nível {n}', loading: 'Carregando…',
@@ -68,6 +71,7 @@ const pt = {
 };
 
 const fr = {
+  zerog: 'Gravité Zéro', zerogDesc: 'Flotte, tourne et combats sur des îles où la gravité disparaît.',
   netSearching: 'Recherche de joueurs en ligne…', netCount: '{n} en ligne', netJoined: '{name} a rejoint', netLeft: '{name} est parti · un bot le remplace', netHost: 'Nouvel hôte : {name}', netHosting: 'En ligne · {n} joueurs · hôte', netOnline: 'En ligne · {n} joueurs · {ms} ms', onlinePlay: 'Jeu en ligne',
   voidRise: 'Le vide monte !',
   play: 'JOUER', chooseGame: 'Choisis un jeu', skins: 'Skins', settings: 'Options', howto: 'Comment jouer', back: 'Retour', level: 'Niveau {n}', loading: 'Chargement…',
