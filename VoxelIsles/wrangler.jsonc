@@ -1,8 +1,0 @@
-{
-  "name": "voxel-isles",
-  "compatibility_date": "2025-09-01",
-  "assets": {
-    "directory": "./builds/web",
-    "not_found_handling": "single-page-application"
-  }
-}
