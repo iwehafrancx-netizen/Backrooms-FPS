@@ -17,8 +17,10 @@ import { Save, SKINS } from './game/save.js';
 import { UI } from './ui/ui.js';
 import { initIcons, icon } from './ui/icons.js';
 import { setLang, t } from './i18n/strings.js';
+import { createNet } from '@net';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const IDLE = { lookX: 0, lookY: 0, mx: 0, my: 0, pressed: new Set() };
 
 class App {
   async boot() {
@@ -53,11 +55,25 @@ class App {
     this.pixel = 1; this.ft = []; this.camEye = 1.62; this.fov = 75; this.orbit = 0; this.useT = 0; this.lastW = -1;
     addEventListener('resize', () => this.resize());
     this.applyQuality();
+    this.net = createNet(this);
+    if (this.net) this.bgLoop();
     this.toMenu();
-    this.last = performance.now();
+    this.last = this.lastFrameT = performance.now();
     requestAnimationFrame((n) => this.frame(n));
     window.__vi = this;
     this.maps = { buildSkyIslands, buildEggIslands, ...Object.fromEntries(Object.entries(REGISTRY).map(([k, v]) => [k, (seed, opt) => v.build({ seed, ...opt })])) };
+  }
+
+  netOn() { return !!this.net && this.save.settings.online !== false; }
+  bgLoop() {
+    try {
+      const w = new Worker(URL.createObjectURL(new Blob(['setInterval(() => postMessage(0), 50)'], { type: 'text/javascript' })));
+      w.onmessage = () => { const n = performance.now(); if (n - this.lastFrameT > 250 && (this.ng || (this.lobby && this.lobby.isNet))) this.step(n, false); };
+    } catch (e) {}
+  }
+  netToast(kind, name) {
+    if (this.state !== 'lobby' && this.state !== 'play' && this.state !== 'paused') return;
+    this.ui.toast(t(kind === 'joined' ? 'netJoined' : kind === 'left' ? 'netLeft' : 'netHost', { name }), kind === 'left' ? 'bad' : '');
   }
 
   available(id) { return !!REGISTRY[id] || (id === 'parkour' && !!REGISTRY.race); }
@@ -94,15 +110,19 @@ class App {
   setScene(map, theme) { this.R.setTheme(theme); this.R.setWorld(map.world); this.bgMap = map; }
 
   toMenu(screen = 'menu') {
+    this.leaveLobby();
     this.endMatch();
     this.state = 'menu'; this.lobby = null;
     this.ui.hud(false); this.ui.closePanel();
     if (this.bgMap !== this.menuMap) this.setScene(this.menuMap, 'meadow');
     this.screens = [];
+    if (screen === 'modes' && this.netOn()) this.net.warm();
     screen === 'modes' ? this.ui.modes() : this.ui.menu();
   }
+  leaveLobby() { if (this.lobby && this.lobby.isNet) this.lobby.leave(); }
   endMatch() {
     if (this.m) { try { Platform.gameplayStop(); } catch (e) {} }
+    if (this.ng) { this.ng.close(); this.ng = null; this.net.game = null; }
     this.ui.hudEl.classList.remove('paused');
     this.m = null; this.me = null; this.spectating = null; this.ui.spectate(null);
     this.view.clear(); this.R.outline.visible = false; this.R.setCrack(0, 0, 0, -1);
@@ -110,25 +130,36 @@ class App {
   }
 
   startLobby(mode, opts) {
+    this.leaveLobby();
     this.endMatch();
     this.lastMode = mode;
-    const d = this.save.data;
-    this.lobby = new Lobby(mode, { name: d.name, bot: false, skin: SKINS[d.skin].seed }, opts);
+    const d = this.save.data, me = { name: d.name, bot: false, skin: SKINS[d.skin].seed };
+    this.lobby = mode === 'sky' && !opts && this.netOn() ? this.net.lobby(me) : new Lobby(mode, me, opts);
+    if (this.net && !this.lobby.isNet) this.net.cool();
     this.state = 'lobby';
     this.ui.hud(false);
     this.ui.lobby(this.lobby);
-    const L = this.lobby;
-    setTimeout(() => {
-      if (this.lobby !== L) return;
-      const mp = L.map;
-      L.built = REGISTRY[L.mode.id].build(mp);
-      this.setScene(L.built, mp.sky || mp.theme || L.built.theme);
-    }, 40);
+  }
+  buildLobbyMap(L, now) {
+    if (!L.map || L.builtFor === L.map) return;
+    if (!now) { if (!L.buildQ) { L.buildQ = true; setTimeout(() => { L.buildQ = false; if (this.lobby === L) this.buildLobbyMap(L, true); }, 40); } return; }
+    const mp = L.map;
+    L.built = REGISTRY[L.mode.id].build(mp); L.builtFor = mp;
+    this.setScene(L.built, mp.sky || mp.theme || L.built.theme);
   }
 
   startMatch() {
     const L = this.lobby;
     this.lastSolo = 0;
+    if (L.isNet) {
+      this.buildLobbyMap(L, true);
+      const slots = L.matchSlots(), mode = REGISTRY.sky.make({ save: this.save.data, slots });
+      const net = L.ppl && L.phase !== 'off', meIdx = net ? Math.max(0, L.ppl.findIndex((p) => p.id === this.net.id)) : 0;
+      const client = net && L.role !== 'host';
+      this.beginMatch(L.built, mode, slots, L.mode, 5, { meIdx, seed: L.seed, client });
+      this.ng = L.game(this, this.m);
+      return;
+    }
     const mode = REGISTRY[L.mode.id].make({ save: this.save.data, slots: L.slots });
     this.beginMatch(L.built, mode, L.slots, L.mode, 5);
   }
@@ -145,14 +176,14 @@ class App {
     this.beginMatch(built, mode, [{ name: d.name, bot: false, skin: SKINS[d.skin].seed }], { teams: 0 }, 3);
   }
 
-  beginMatch(built, mode, slots, cfg, countdown) {
-    const m = new Match(built, mode, { seed: (Math.random() * 1e9) | 0, countdown });
+  beginMatch(built, mode, slots, cfg, countdown, o = {}) {
+    const m = new Match(built, mode, { seed: o.seed ?? ((Math.random() * 1e9) | 0), countdown });
     const actors = slots.map((s, i) => {
       const a = m.add(new Actor({ name: s.name, bot: s.bot, skin: s.skin, team: cfg.teams ? Math.floor(i / (cfg.teamSize || 2)) : -1, local: !s.bot }));
-      if (s.bot) new Bot(a, m, s.skill);
+      if (s.bot && !o.client) new Bot(a, m, s.skill);
       return a;
     });
-    const me = actors[0];
+    const me = actors[o.meIdx || 0];
     me.autoSwing = true;
     me.ctl = () => this.pc;
     mode.setup(actors);
@@ -213,7 +244,7 @@ class App {
         if (this.state === 'busy') break;
         this.state = 'busy'; await this.ad('mid');
         this.startSolo(this.lastResult.next); break;
-      case 'cancelLobby': this.lobby = null; this.toMenu('modes'); break;
+      case 'cancelLobby': this.toMenu('modes'); break;
       case 'skins': case 'settings': case 'howto':
         this.screens.push(this.ui.screen);
         this.ui[a](); break;
@@ -246,8 +277,8 @@ class App {
       case 'leave': this.toMenu(); break;
       case 'sel': if (this.me) { this.me.sel = +d.i; this.me.mine = null; } break;
       case 'closePanel': this.closePanel(); break;
-      case 'take': if (this.chest && this.m.takeFromChest(this.me, this.chest, +d.i)) this.ui.chest(this.chest, this.me); break;
-      case 'takeAll': if (this.chest) { this.m.takeAll(this.me, this.chest); this.ui.chest(this.chest, this.me); } break;
+      case 'take': if (this.chest && this.ng && !this.ng.isHost) this.ng.take(this.chest, +d.i); else if (this.chest && this.m.takeFromChest(this.me, this.chest, +d.i)) this.ui.chest(this.chest, this.me); break;
+      case 'takeAll': if (this.chest && this.ng && !this.ng.isHost) this.ng.takeAll(this.chest); else if (this.chest) { this.m.takeAll(this.me, this.chest); this.ui.chest(this.chest, this.me); } break;
       case 'shopCat': this.ui.shopCat = d.c; this.ui.shop(this.me, this.m.mode); break;
       case 'buy':
         if (this.m && this.m.mode.buy(this.me, d.id)) { this.audio.pickup(); this.ui.shop(this.me, this.m.mode); }
@@ -383,6 +414,8 @@ class App {
           break;
         }
         case 'notice': {
+          if (e.to && e.to !== me) break;
+          if (e.k) e.text = t(e.k, e.p);
           if (e.big) ui.title(e.text, '', 3, e.team === me.team ? 'go' : 'bad'); else ui.toast(e.text, e.cls || '');
           if (e.sound === 'win') { if (e.team === me.team) A.win(); else A.beep(false); } else if (e.sound === 'egg') A.egg(me.pos); else if (e.sound) A.beep(e.sound === 'hi');
           break;
@@ -488,17 +521,25 @@ class App {
 
   frame(now) {
     requestAnimationFrame((n) => this.frame(n));
-    const dt = Math.min(0.05, (now - this.last) / 1000);
+    this.lastFrameT = performance.now();
+    this.step(now, true);
+  }
+
+  step(now, render) {
+    const raw = Math.max(0, (now - this.last) / 1000), dt = Math.min(0.05, raw), rdt = Math.min(0.25, raw);
     this.last = now;
-    const inp = this.input.sample();
-    const m = this.m, me = this.me;
+    if (render && this.state === 'menu') this.perf = this.perf ? this.perf * 0.97 + dt * 30 : dt * 1000;
+    const inp = render ? this.input.sample() : IDLE;
     if (this.lobby && this.state === 'lobby') {
-      this.lobby.update(dt);
-      this.ui.updateLobby(this.lobby);
-      if (this.lobby.state === 'countdown' && this.lobby.built) { const n = Math.ceil(this.lobby.cd); if (n !== this.lobbyBeep) { this.lobbyBeep = n; this.audio.beep(false); } }
-      if (this.lobby.state === 'go' && this.lobby.built) this.startMatch();
+      const L = this.lobby;
+      L.update(L.isNet ? rdt : dt);
+      this.buildLobbyMap(L, false);
+      this.ui.updateLobby(L);
+      if (L.state === 'countdown' && L.built) { const n = Math.ceil(L.cd); if (n !== this.lobbyBeep) { this.lobbyBeep = n; this.audio.beep(false); } }
+      if (L.state === 'go' && (L.built || L.isNet)) this.startMatch();
     }
-    if (m && (this.state === 'play' || this.state === 'results' || this.state === 'busy')) {
+    const m = this.m, me = this.me;
+    if (m && (this.state === 'play' || this.state === 'results' || this.state === 'busy' || (this.state === 'paused' && this.ng))) {
       if (this.state === 'play' && !this.spectating) {
         this.updatePlayer(dt, inp);
         if (this.ui.panelOpen && (inp.pressed.has('Escape') || inp.pressed.has('KeyE'))) this.closePanel();
@@ -507,7 +548,9 @@ class App {
       if (this.state === 'play' && inp.pressed.has('Escape') && !this.input.locked && !this.ui.panelOpen && me.alive) this.pause();
       if (this.state === 'play' && inp.pressed.has('KeyV')) this.tp = !this.tp;
       this.view.thirdPerson = !!(me.alive && !this.spectating && (me.disguise || this.tp));
-      m.update(dt);
+      const ng = this.ng;
+      if (ng) { ng.pre(rdt); for (let r = rdt; r > 1e-4; r -= 0.05) m.update(Math.min(0.05, r)); ng.post(rdt); }
+      else m.update(dt);
       if (m.state === 'countdown') { const n = Math.ceil(m.countdown); if (n !== this.lastCd && n > 0) { this.lastCd = n; this.audio.beep(false); if (this.state === 'play') this.ui.title(String(n), '', 0.9, 'count'); } }
       this.events();
       this.steps();
@@ -515,6 +558,7 @@ class App {
       if (!me.alive && me.eliminated && !this.awarded && this.state === 'play') { this.elimT = (this.elimT || 0) + dt; if (this.elimT > 2) { this.elimT = 0; this.showResults(); } }
       if (m.over && this.resultT > 0) { this.resultT -= dt; if (this.resultT <= 0 && this.state === 'play') this.showResults(); }
     }
+    if (!render) return;
     this.camera(dt, inp);
     this.audio.listener = this.R.camera.position;
     if (m && me) {
@@ -522,6 +566,8 @@ class App {
       this.overlays();
       if (this.state === 'play') {
         this.ui.updateHud(m, me, this.view);
+        this.netT = (this.netT || 0) - dt;
+        if (this.netT <= 0) { this.netT = 0.5; this.ui.netChip(this.ng ? (this.ng.isHost ? t('netHosting', { n: this.ng.online() }) : t('netOnline', { n: this.ng.online(), ms: this.ng.ping() })) : ''); }
         const lockNeeded = !this.input.touch && !this.input.locked && !this.input.noLock && !this.ui.panelOpen && !this.spectating && me.alive;
         this.ui.lockHint(lockNeeded);
         if (this.hitmark > 0) { this.hitmark -= dt; this.ui.h.xhair.classList.toggle('hit', this.hitmark > 0); }

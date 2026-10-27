@@ -24,7 +24,7 @@ export class Match {
     this.time = 0; this.state = 'countdown'; this.countdown = opts.countdown ?? 5;
     this.seed = opts.seed || 1; this.rand = mulberry(this.seed);
     this.winner = null; this.over = false;
-    this.npcs = [];
+    this.npcs = []; this.replica = false; this.net = null;
     mode.attach(this);
   }
   emit(e) { this.events.push(e); if (this.events.length > 400) this.events.splice(0, 100); }
@@ -35,6 +35,7 @@ export class Match {
 
   update(dt) {
     dt = Math.min(dt, 0.05);
+    if (this.replica) return this.replicaUpdate(dt);
     if (this.state === 'countdown') {
       this.countdown -= dt;
       for (const a of this.actors) this.stepPhysics(a, dt, a.ctl ? a.ctl(dt, this) : null, true);
@@ -44,7 +45,7 @@ export class Match {
     if (this.state === 'over') { this.time += dt; for (const a of this.actors) if (a.alive) this.stepPhysics(a, dt, null, true); return; }
     this.time += dt;
     for (const a of this.actors) {
-      if (!a.alive) { if (a.respawnT > 0) { a.respawnT -= dt; if (a.respawnT <= 0) this.mode.respawn(a); } continue; }
+      if (!a.alive) { if (a.respawnT > 0) { a.respawnT -= dt; if (a.respawnT <= 0) { this.mode.respawn(a); if (a.remote && this.net) this.net.tp(a); } } continue; }
       const ctl = a.ctl ? a.ctl(dt, this) : null;
       a.lastCtl = ctl;
       const fz = this.mode.frozen ? this.mode.frozen(a) : false;
@@ -57,8 +58,18 @@ export class Match {
     this.mode.update(dt);
   }
 
+  replicaUpdate(dt) {
+    const me = this.net.me;
+    if (this.state === 'countdown') { this.countdown = Math.max(0, this.countdown - dt); this.stepPhysics(me, dt, me.ctl ? me.ctl(dt, this) : null, true); return; }
+    if (this.state === 'play' && me.alive) { const c = me.ctl ? me.ctl(dt, this) : null; me.lastCtl = c; this.tickActor(me, dt, c); }
+    else if (me.alive) this.stepPhysics(me, dt, null, true);
+    this.updateDrops(dt);
+    this.updateProjectiles(dt);
+  }
+
   stepPhysics(a, dt, ctl, frozen) {
     if (!a.alive) return;
+    if (a.remote && this.net) { const c = ctl || {}; if (c.yaw != null) a.yaw = c.yaw; if (c.pitch != null) a.pitch = c.pitch; return this.net.remoteStep(a, dt, frozen); }
     const c = ctl || {};
     if (c.yaw != null) a.yaw = c.yaw;
     if (c.pitch != null) a.pitch = Math.max(-1.55, Math.min(1.55, c.pitch));
@@ -77,11 +88,11 @@ export class Match {
     if (r && r.landed > 3.5 && !this.mode.noFall) this.damage(a, Math.floor(r.landed - 3), this.recentAttacker(a, 5), 'fall');
     if (!a.alive) return;
     if (a.pos.y < this.map.voidY) { this.kill(a, this.recentAttacker(a, 10), 'void'); return; }
-    if (a.hp < a.maxHp && this.time - a.lastHurt > 5) { a.regenT += dt; if (a.regenT > 2.5) { a.regenT = 0; a.hp = Math.min(a.maxHp, a.hp + 1); } }
+    if (!this.replica && a.hp < a.maxHp && this.time - a.lastHurt > 5) { a.regenT += dt; if (a.regenT > 2.5) { a.regenT = 0; a.hp = Math.min(a.maxHp, a.hp + 1); } }
     const held = a.held();
     if (c.attack) this.attackOrMine(a, dt, c.attackPressed);
     else a.mine = null;
-    if (held && held.kind === 'food' && c.useHeld && a.hp < a.maxHp) { a.eatT += dt; if (a.eatT > 0.9) { a.eatT = 0; a.hp = Math.min(a.maxHp, a.hp + held.heal); if (held.id === 130) a.absorb = 4; a.inv.useSlot(a.sel); this.emit({ t: 'eat', a }); } }
+    if (held && held.kind === 'food' && c.useHeld && a.hp < a.maxHp) { a.eatT += dt; if (a.eatT > 0.9) { a.eatT = 0; if (!this.replica) { a.hp = Math.min(a.maxHp, a.hp + held.heal); if (held.id === 130) a.absorb = 4; a.inv.useSlot(a.sel); this.emit({ t: 'eat', a }); } } }
     else a.eatT = 0;
     if (c.use) this.use(a, c);
   }
@@ -146,6 +157,16 @@ export class Match {
   breakBlock(a, x, y, z) {
     const id = this.world.get(x, y, z);
     if (!id) return;
+    if (this.replica) {
+      this.world.set(x, y, z, 0);
+      a.mine = null;
+      this.emit({ t: 'break', a, id, x, y, z });
+      const drop = this.mode.dropFor(id);
+      if (drop) a.inv.add(drop, 1);
+      this.net.broke(a, x, y, z, drop);
+      for (let yy = y + 1; yy < y + 3; yy++) { const above = this.world.get(x, yy, z); if (above && BLOCKS[above].cross) this.world.set(x, yy, z, 0); else break; }
+      return;
+    }
     this.world.set(x, y, z, 0);
     a.mine = null; a.broken++;
     this.emit({ t: 'break', a, id, x, y, z });
@@ -159,6 +180,7 @@ export class Match {
     a.attackCd = a.bot ? 0.42 : 0.3; a.swingT = 0.25; a.swingN++;
     this.emit({ t: 'swing', a });
     if (!this.enemies(a, t) || t.spawnProtect > 0) return;
+    if (this.replica) { this.net.hit(a, t); return; }
     const held = a.held();
     let dmg = held && held.damage ? held.damage : 1;
     const crit = !a.onGround && a.vel.y < -0.5;
@@ -170,11 +192,12 @@ export class Match {
       t.kb.x = ((t.pos.x - a.pos.x) / d) * k; t.kb.z = ((t.pos.z - a.pos.z) / d) * k;
       if (t.onGround) { t.vel.y = 5.2; t.onGround = false; }
       if (a.sprint) a.sprint = false;
+      if (t.remote && this.net) this.net.kb(t);
     }
   }
 
   damage(t, amount, by, cause, crit = false) {
-    if (!t.alive || t.spawnProtect > 0) return false;
+    if (this.replica || !t.alive || t.spawnProtect > 0) return false;
     if (cause === 'melee' && t.hurtT > 0) return false;
     let dmg = amount * (1 - Math.min(0.8, t.inv.armorPoints() * 0.04));
     if (t.absorb > 0 && cause !== 'border') { const s = Math.min(t.absorb, dmg); t.absorb -= s; dmg -= s; }
@@ -186,7 +209,7 @@ export class Match {
   }
 
   kill(t, killer, cause) {
-    if (!t.alive) return;
+    if (this.replica || !t.alive) return;
     t.alive = false; t.hp = 0; t.deaths++; t.mine = null;
     if (killer && killer !== t) killer.kills++;
     this.emit({ t: 'kill', a: t, by: killer, cause });
@@ -220,12 +243,14 @@ export class Match {
     this.world.set(x, y, z, block, PLACED);
     a.inv.useSlot(a.sel); a.placed++; a.swingT = 0.25; a.swingN++;
     this.emit({ t: 'place', a, id: block, x, y, z });
+    if (this.replica) this.net.placed(a, x, y, z, block);
     return true;
   }
 
   throwItem(a, id) {
     if (a.attackCd > 0) return;
     a.attackCd = 0.3; a.swingT = 0.25; a.swingN++;
+    if (this.replica) { this.net.threw(a); return; }
     const e = a.eye(eyeHeight(a)), d = a.look();
     this.projectiles.push({ id, owner: a, x: e.x + d.x * 0.5, y: e.y + d.y * 0.5, z: e.z + d.z * 0.5, vx: d.x * 22, vy: d.y * 22 + 2, vz: d.z * 22, age: 0 });
     a.inv.useSlot(a.sel);
@@ -238,7 +263,7 @@ export class Match {
       p.age += dt; p.vy -= 18 * dt;
       const nx = p.x + p.vx * dt, ny = p.y + p.vy * dt, nz = p.z + p.vz * dt;
       let hit = null;
-      for (const o of this.actors) {
+      if (!this.replica) for (const o of this.actors) {
         if (!o.alive || o === p.owner && p.age < 0.3) continue;
         if (Math.abs(o.pos.x - nx) < 0.45 && Math.abs(o.pos.z - nz) < 0.45 && ny > o.pos.y && ny < o.pos.y + height(o)) { hit = o; break; }
       }
@@ -247,15 +272,17 @@ export class Match {
         if (p.id === 131 && hit && this.enemies(p.owner, hit)) {
           const d = Math.hypot(p.vx, p.vz) || 1;
           hit.kb.x = (p.vx / d) * 4.5; hit.kb.z = (p.vz / d) * 4.5; if (hit.onGround) { hit.vel.y = 3.5; hit.onGround = false; }
+          if (hit.remote && this.net) this.net.kb(hit);
           this.damage(hit, 0.5, p.owner, 'snowball');
         }
-        if (p.id === 132 && p.owner.alive && (blockHit || hit) && ny > this.map.voidY) {
+        if (!this.replica && p.id === 132 && p.owner && p.owner.alive && (blockHit || hit) && ny > this.map.voidY) {
           const o = p.owner;
           let tx = p.x, ty = p.y, tz = p.z;
           if (blockHit) { ty = Math.floor(ny) + 1; for (let k = 0; k < 3 && this.world.boxHits(tx - HW, ty, tz - HW, tx + HW, ty + 1.8, tz + HW); k++) ty++; }
           o.pos.x = tx; o.pos.y = ty; o.pos.z = tz; o.vel.x = o.vel.y = o.vel.z = 0; o.kb.x = o.kb.z = 0;
           this.damage(o, 2, null, 'warp');
           this.emit({ t: 'warp', a: o });
+          if (o.remote && this.net) this.net.tp(o);
         }
         this.emit({ t: 'impact', id: p.id, x: p.x, y: p.y, z: p.z });
         this.projectiles.splice(i, 1);
@@ -283,7 +310,7 @@ export class Match {
       if (!isSolid(this.world.get(d.x, d.y, nz))) d.z = nz; else d.vz = 0;
       d.vx *= Math.pow(0.3, dt); d.vz *= Math.pow(0.3, dt);
       if (d.y < this.map.voidY - 8 || d.age > 240) { this.drops.splice(i, 1); continue; }
-      if (d.age < 0.4) continue;
+      if (d.age < 0.4 || this.replica) continue;
       for (const a of this.actors) {
         if (!a.alive) continue;
         const dx = a.pos.x - d.x, dy = a.pos.y + 0.6 - d.y, dz = a.pos.z - d.z;

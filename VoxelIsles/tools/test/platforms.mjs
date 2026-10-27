@@ -13,9 +13,10 @@ for (const p of targets) {
   const check = (name, ok, info = '') => { results.push(!!ok); console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${info ? '  ' + info : ''}`); };
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } });
   const page = await ctx.newPage();
-  const errors = [], external = [], sent = [];
+  const errors = [], external = [], sent = [], sockets = [], net = p !== 'youtube' && p !== 'crazygames-basic';
+  page.on('websocket', (w) => sockets.push(w.url()));
   page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => { const tx = m.text(), mm = /sendMessage\(\)\s.*\s(\w+)$/.exec(tx); if (mm) sent.push(mm[1]); if (m.type() === 'error' && !/Failed to load resource/.test(tx)) errors.push(tx); });
+  page.on('console', (m) => { const tx = m.text(), mm = /sendMessage\(\)\s.*\s(\w+)$/.exec(tx); if (mm) sent.push(mm[1]); if (m.type() === 'error' && !/Failed to load resource/.test(tx) && !(net && /supabase\.co/.test(tx))) errors.push(tx); });
   await page.route('https://www.youtube.com/game_api/v1', (r) => r.fulfill({ contentType: 'text/javascript', body: ytMock }));
   await page.route('https://sdk.crazygames.com/crazygames-sdk-v3.js', (r) => r.fulfill({ contentType: 'text/javascript', body: cgMock }));
   page.on('request', (r) => { const u = r.url(); if (!u.startsWith('http://localhost:8766/') && !u.startsWith('data:') && !u.startsWith('blob:') && !/youtube\.com\/game_api|sdk\.crazygames\.com/.test(u)) external.push(u); });
@@ -75,6 +76,7 @@ for (const p of targets) {
   }
   if (p.startsWith('crazygames')) { await page.waitForTimeout(600); check('save via SDK data', (await calls()).some((x) => x.startsWith('data.setItem'))); }
   check('no external requests', !external.length, external.join(' '));
+  check(net ? 'only matchmaking socket allowed' : 'no network sockets', net ? sockets.every((u) => /^wss:\/\/[a-z0-9]+\.supabase\.co\/realtime\//.test(u)) : !sockets.length, sockets.map((u) => u.split('?')[0]).join(' '));
   check('no page errors', !errors.length, errors.slice(0, 3).join(' | '));
   if (!results.every(Boolean)) allOk = false;
   await ctx.close();

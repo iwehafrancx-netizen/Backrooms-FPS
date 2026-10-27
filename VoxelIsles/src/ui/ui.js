@@ -96,18 +96,20 @@ export class UI {
   }
   updateLobby(L) {
     if (this.screen !== 'lobby') return;
-    const s = L.state + L.slots.length + (L.state === 'countdown' ? Math.ceil(L.cd) : '');
+    const s = L.state + L.slots.length + (L.state === 'countdown' ? Math.ceil(L.cd) : '') + (L.isNet ? L.phase + L.online + L.slots.map((p) => (p.net ? p.ping : '')).join() : '');
     if (s === this.sig.lobby) return;
     this.sig.lobby = s;
     const st = this.screenEl.querySelector('.status');
-    st.innerHTML = L.state === 'search' ? `<span class="spin"></span>${t('finding')} <b>${L.slots.length}/${L.mode.players}</b>` : `<b class="cd">${t('starting', { n: Math.max(1, Math.ceil(L.cd)) })}</b>`;
+    const chip = L.isNet && L.phase === 'in' ? ` <em class="onl">${t('netCount', { n: L.online })}</em>` : '';
+    st.innerHTML = (L.state === 'search' ? (L.isNet && (L.phase === 'find' || L.phase === 'join') ? `<span class="spin"></span>${t('netSearching')}` : `<span class="spin"></span>${t('finding')} <b>${L.slots.length}/${L.mode.players}</b>`) : `<b class="cd">${t('starting', { n: Math.max(1, Math.ceil(L.cd)) })}</b>`) + chip;
     const slots = [];
     const teamed = L.mode.teams > 0, ts = L.mode.teamSize || 2;
     for (let i = 0; i < L.mode.players; i++) {
       const p = L.slots[i];
       const team = teamed ? Math.floor(i / ts) : -1;
       const col = team >= 0 ? TEAM_COLORS[team].hex : '';
-      slots.push(p ? `<div class="slot ${p.bot ? '' : 'me'} pop" style="${col ? `--tc:${col}` : ''}"><img class="pix" src="${skinFront(p.skinSeed ?? p.skin, team)}"><span>${esc(p.name)}</span></div>` : `<div class="slot empty" style="${col ? `--tc:${col}` : ''}"><i></i><span>…</span></div>`);
+      const sig = p && p.net ? `<b class="sig s${!p.ping ? 0 : p.ping < 90 ? 3 : p.ping < 180 ? 2 : 1}"><i></i><i></i><i></i></b>` : '';
+      slots.push(p ? `<div class="slot ${p.net ? 'net' : p.bot ? '' : 'me'} pop" style="${col ? `--tc:${col}` : ''}"><img class="pix" src="${skinFront(p.skinSeed ?? p.skin, team)}"><span>${esc(p.name)}</span>${sig}</div>` : `<div class="slot empty" style="${col ? `--tc:${col}` : ''}"><i></i><span>…</span></div>`);
     }
     const box = this.screenEl.querySelector('.slots');
     box.innerHTML = teamed ? Array.from({ length: L.mode.teams }, (_, tm) => `<div class="tcol" style="--tc:${TEAM_COLORS[tm].hex}"><div class="tname">${teamName(tm)}</div>${slots.slice(tm * ts, tm * ts + ts).join('')}</div>`).join('') : slots.join('');
@@ -148,6 +150,7 @@ export class UI {
       ${range('music', 'music', 0, 1, 0.05, (v) => Math.round(v * 100) + '%')}
       ${opt('quality', 'quality', [['auto', t('qAuto')], ['low', t('qLow')], ['high', t('qHigh')]])}
       ${opt('invert', 'invert', [[false, t('off')], [true, t('on')]])}
+      ${this.app.net ? opt('online', 'onlinePlay', [[true, t('on')], [false, t('off')]]) : ''}
       <label><span>${t('language')}</span><select data-set="lang"><option value="auto" ${s.lang === 'auto' ? 'selected' : ''}>${t('auto')}</option>${Object.entries(LANG_NAMES).map(([k, n]) => `<option value="${k}" ${s.lang === k ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
       <button class="btn" data-act="back">${t('back')}</button></div>`);
     this.screenEl.querySelectorAll('input[type=range]').forEach((el) => el.addEventListener('input', () => { const em = el.nextElementSibling; const k = el.dataset.set, v = +el.value; em.textContent = k === 'sens' ? v.toFixed(2) : k === 'fov' ? v : Math.round(v * 100) + '%'; }));
@@ -175,7 +178,7 @@ export class UI {
       <div class="itemname"></div>
       <div class="bottom"><div class="stats"><div class="armor"></div><div class="hearts"></div></div><div class="hotbar">${slots}</div></div>
       <button class="pausebtn" data-act="pause"><i></i><i></i></button>
-      <div class="lockhint">${t('clickToPlay')}</div>
+      <div class="lockhint">${t('clickToPlay')}</div><div class="netchip"></div>
       <div class="spec"><span></span><button class="btn small green" data-act="again">${t('playAgain')}</button><button class="btn small" data-act="leave">${t('leave')}</button></div>
       <div class="touch">
         <div class="look-zone"></div>
@@ -273,6 +276,11 @@ export class UI {
   }
   name(a, me) { const col = a.team >= 0 ? TEAM_COLORS[a.team].hex : a === me ? '#7dff6a' : '#fff'; return `<b style="color:${col}">${esc(a === me ? a.name : a.name)}</b>`; }
 
+  netChip(text) {
+    const el = this.hudEl.querySelector('.netchip');
+    if (!el || el.textContent === text) return;
+    el.textContent = text; el.style.display = text ? 'block' : 'none';
+  }
   toast(msg, cls = '') {
     const el = document.createElement('div');
     el.className = 'toast ' + cls; el.textContent = msg;

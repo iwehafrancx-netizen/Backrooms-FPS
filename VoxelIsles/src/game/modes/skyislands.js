@@ -92,7 +92,7 @@ export class SkyIslands {
       if (!this.rising) { this.rising = true; this.voidBase = m.map.voidY; m.emit({ t: 'voidrise' }); }
       m.map.voidY = Math.min(m.map.top + 6, m.map.voidY + dt * 0.3);
     }
-    if (this.respawnsOn && this.border < this.spawnRing + 3) { this.respawnsOn = false; m.emit({ t: 'notice', text: t('respawnsOff'), cls: 'bad', sound: 'lo' }); }
+    if (this.respawnsOn && this.border < this.spawnRing + 3) { this.respawnsOn = false; m.emit({ t: 'notice', text: t('respawnsOff'), k: 'respawnsOff', cls: 'bad', sound: 'lo' }); }
     const alive = m.actors.filter((a) => !a.eliminated && (a.alive || a.respawnT > 0));
     if (alive.length <= 1 && !m.over) { const w = alive[0] && alive[0].alive ? alive[0] : alive[0] || null; if (w) w.rank = 1; m.finish(w); }
   }
@@ -105,7 +105,7 @@ export class SkyIslands {
     a.lives = Math.max(0, (a.lives ?? 1) - 1);
     if (a.lives > 0 && this.respawnsOn) {
       a.respawnT = 5;
-      if (a.local) m.emit({ t: 'notice', text: a.lives === 1 ? t('finalLife') : t('livesLeft', { n: a.lives }), cls: 'bad' });
+      if (a.local) m.emit({ t: 'notice', text: a.lives === 1 ? t('finalLife') : t('livesLeft', { n: a.lives }), k: a.lives === 1 ? 'finalLife' : 'livesLeft', p: { n: a.lives }, cls: 'bad', to: a });
       return;
     }
     a.eliminated = true; a.lives = 0;

@@ -4,7 +4,7 @@ export const SKINS = [
   { id: 8, seed: 5821, price: 600 }, { id: 9, seed: 7013, price: 600 }, { id: 10, seed: 8888, price: 900 }, { id: 11, seed: 9601, price: 900 },
 ];
 
-export const DEFAULT_SETTINGS = { sens: 1, fov: 75, quality: 'auto', volume: 0.8, music: 0.5, lang: 'auto', invert: false, viewBob: true };
+export const DEFAULT_SETTINGS = { sens: 1, fov: 75, quality: 'auto', volume: 0.8, music: 0.5, lang: 'auto', invert: false, viewBob: true, online: true };
 
 export const levelXp = (lv) => 100 + (lv - 1) * 60;
 

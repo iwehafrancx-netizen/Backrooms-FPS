@@ -15,12 +15,17 @@ const platformAlias = {
   name: 'platform',
   setup(b) { b.onResolve({ filter: /^@platform$/ }, () => ({ path: path.join(root, 'src/platform', `${platform === 'dev' || platform === 'web' ? 'local' : platform === 'crazygames-basic' ? 'crazygames' : platform}.js`) })); },
 };
+const NET_ON = ['dev', 'web', 'crazygames', 'playgama'].includes(platform);
+const netAlias = {
+  name: 'net',
+  setup(b) { b.onResolve({ filter: /^@net$/ }, () => ({ path: path.join(root, 'src/net', NET_ON ? 'index.js' : 'none.js') })); },
+};
 const opts = {
   entryPoints: [path.join(root, 'src/main.js')],
   bundle: true, minify: platform !== 'dev', sourcemap: platform === 'dev' ? 'inline' : false,
   format: 'iife', target: ['es2020'], outfile: path.join(out, 'game.js'), legalComments: 'none',
   define: { __PLATFORM__: JSON.stringify(platform), __CG_ADS__: String(platform !== 'crazygames-basic') },
-  plugins: [platformAlias], logLevel: 'warning', nodePaths: [path.join(here, 'node_modules')],
+  plugins: [platformAlias, netAlias], logLevel: 'warning', nodePaths: [path.join(here, 'node_modules')],
 };
 const copyWeb = () => {
   let html = fs.readFileSync(path.join(root, 'web/index.html'), 'utf8');

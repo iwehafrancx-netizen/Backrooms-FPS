@@ -10,7 +10,7 @@ const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromi
 const page = await (await browser.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch })).newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push('pageerror: ' + e.message + '\n' + e.stack));
-page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
+page.on('console', (m) => { if (m.type() === 'error' && !/supabase\.co/.test(m.text())) errors.push('console: ' + m.text()); });
 const tag = `${mode}-${w}x${h}${touch ? '-touch' : ''}`;
 const shot = (n) => page.screenshot({ path: `${out}${tag}-${n}.png` });
 await page.goto(url);

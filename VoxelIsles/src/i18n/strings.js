@@ -1,4 +1,5 @@
 const en = {
+  netSearching: 'Looking for online players…', netCount: '{n} online', netJoined: '{name} joined', netLeft: '{name} left · a bot took over', netHost: 'New host: {name}', netHosting: 'Online · {n} players · hosting', netOnline: 'Online · {n} players · {ms} ms', onlinePlay: 'Online play',
   voidRise: 'The void is rising!',
   play: 'PLAY', chooseGame: 'Choose a game', skins: 'Skins', settings: 'Settings', howto: 'How to play', back: 'Back', level: 'Level {n}', loading: 'Loading…',
   sky: 'Sky Islands', skyDesc: 'Loot your island, bridge across the sky and knock everyone into the void. Last one standing wins!', solo8: 'Solo · 8 players',
@@ -21,6 +22,7 @@ const en = {
 };
 
 const es = {
+  netSearching: 'Buscando jugadores en línea…', netCount: '{n} en línea', netJoined: '{name} se unió', netLeft: '{name} salió · un bot tomó su lugar', netHost: 'Nuevo anfitrión: {name}', netHosting: 'En línea · {n} jugadores · anfitrión', netOnline: 'En línea · {n} jugadores · {ms} ms', onlinePlay: 'Juego en línea',
   voidRise: '¡El vacío está subiendo!',
   play: 'JUGAR', chooseGame: 'Elige un juego', skins: 'Aspectos', settings: 'Ajustes', howto: 'Cómo jugar', back: 'Volver', level: 'Nivel {n}', loading: 'Cargando…',
   sky: 'Islas del Cielo', skyDesc: 'Saquea tu isla, construye puentes y tira a todos al vacío. ¡Gana el último en pie!', solo8: 'Solo · 8 jugadores',
@@ -43,6 +45,7 @@ const es = {
 };
 
 const pt = {
+  netSearching: 'Procurando jogadores online…', netCount: '{n} online', netJoined: '{name} entrou', netLeft: '{name} saiu · um bot assumiu', netHost: 'Novo anfitrião: {name}', netHosting: 'Online · {n} jogadores · anfitrião', netOnline: 'Online · {n} jogadores · {ms} ms', onlinePlay: 'Jogo online',
   voidRise: 'O vazio está subindo!',
   play: 'JOGAR', chooseGame: 'Escolha um jogo', skins: 'Visuais', settings: 'Ajustes', howto: 'Como jogar', back: 'Voltar', level: 'Nível {n}', loading: 'Carregando…',
   sky: 'Ilhas do Céu', skyDesc: 'Saqueie sua ilha, construa pontes e derrube todos no vazio. O último de pé vence!', solo8: 'Solo · 8 jogadores',
@@ -65,6 +68,7 @@ const pt = {
 };
 
 const fr = {
+  netSearching: 'Recherche de joueurs en ligne…', netCount: '{n} en ligne', netJoined: '{name} a rejoint', netLeft: '{name} est parti · un bot le remplace', netHost: 'Nouvel hôte : {name}', netHosting: 'En ligne · {n} joueurs · hôte', netOnline: 'En ligne · {n} joueurs · {ms} ms', onlinePlay: 'Jeu en ligne',
   voidRise: 'Le vide monte !',
   play: 'JOUER', chooseGame: 'Choisis un jeu', skins: 'Skins', settings: 'Options', howto: 'Comment jouer', back: 'Retour', level: 'Niveau {n}', loading: 'Chargement…',
   sky: 'Îles Célestes', skyDesc: 'Pille ton île, construis des ponts et pousse tout le monde dans le vide. Le dernier debout gagne !', solo8: 'Solo · 8 joueurs',
