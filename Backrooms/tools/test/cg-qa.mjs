@@ -705,7 +705,9 @@ if (run('M')) {
   {
     const strip = (src) => { const a = src.indexOf('const Platform = (() => {'), e = '\n  return api;\n})();\n', b = src.indexOf(e, a); return src.slice(0, a) + src.slice(b + e.length); };
     const cgJs = fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames/game.js'), 'utf8'), ytJs = fs.readFileSync(path.join(ROOT, 'Backrooms FPS/game.js'), 'utf8');
-    const sameAssets = ['assets/NPCs/operator.glb', 'assets/Audio/music.mp3', 'css/style.css', 'LICENSES.txt'].every((f) => fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames', f)).equals(fs.readFileSync(path.join(ROOT, 'Backrooms FPS', f))));
+    // the YouTube build stores big files as .part0, .part1, … (joined again by the game's loader)
+    const readJoined = (p) => { if (fs.existsSync(p)) return fs.readFileSync(p); const parts = []; for (let i = 0; fs.existsSync(p + '.part' + i); i++) parts.push(fs.readFileSync(p + '.part' + i)); return Buffer.concat(parts); };
+    const sameAssets = ['assets/NPCs/operator.glb', 'assets/Audio/music.mp3', 'css/style.css', 'LICENSES.txt'].every((f) => fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames', f)).equals(readJoined(path.join(ROOT, 'Backrooms FPS', f))));
     check('YouTube Playables build is the same game (only the SDK platform layer differs)', strip(cgJs) === strip(ytJs) && sameAssets && /ytgame/.test(ytJs) && !/CrazyGames/.test(ytJs));
   }
   const { browser, page, f, log } = await open({ w: 1280, h: 720, query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, xp: 0, cp: 0, owned: [], played: 3 }) });
