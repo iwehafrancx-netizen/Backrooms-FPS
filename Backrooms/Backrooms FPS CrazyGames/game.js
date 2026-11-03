@@ -675,7 +675,7 @@ const Input = (() => {
       if (c === 'Digit1') press('slot1');
       if (c === 'Digit2') press('slot2');
       if (c === 'KeyE' || c === 'KeyF') press('interact');
-      if (c === 'KeyP' || c === 'Escape') press('pause');
+      if (c === 'KeyP') press('pause');
       if (c === 'KeyC') st.crouchToggle = !st.crouchToggle;
     }
     if (c === 'KeyE' || c === 'KeyF') st.interactHeld = down;
@@ -685,7 +685,7 @@ const Input = (() => {
   }
   window.addEventListener('keydown', (e) => onKey(e, true));
   window.addEventListener('keyup', (e) => onKey(e, false));
-  window.addEventListener('blur', () => { keys.clear(); mouseDown = false; rmb = false; st.interactHeld = false; st.sprintKey = false; });
+  window.addEventListener('blur', () => { keys.clear(); mouseDown = false; rmb = false; st.interactHeld = false; st.sprintKey = false; if (st.enabled) press('pause'); });
 
   let plc = null;
   const lockRefused = () => { lockFails++; if (!lockedOnce && lockFails >= 3) lockFailed = true; };
@@ -702,10 +702,8 @@ const Input = (() => {
     } catch (e) { lockRefused(); }
   }
   document.addEventListener('pointerlockchange', () => {
-    const was = st.locked;
     st.locked = document.pointerLockElement === canvas;
     if (st.locked) { lockFails = 0; lockedOnce = true; lockFailed = false; }
-    if (was && !st.locked && st.enabled) press('pause');
   });
   document.addEventListener('pointerlockerror', lockRefused);
 
@@ -3582,7 +3580,7 @@ const Ui = {
     const s = $('#menu');
     s.innerHTML = `
       <div class="menu-left stagger">
-        <div class="menu-logo">BACKROOMS<small>${t('tagline')}</small></div>
+        <div class="menu-logo">TACTICAL<br>OPERATIONS<small>${t('tagline')}</small></div>
         <button class="btn primary" data-a="play">${ICONS.play}${t('play')}<span class="sub">${t('ofMissions', { a: cleared, b: MISSIONS.length })}</span></button>
         <button class="btn" data-a="settings">${ICONS.gear}${t('settings')}</button>
         <button class="btn" data-a="controls">${ICONS.pad}${t('controls')}</button>
@@ -3911,7 +3909,7 @@ const Ui = {
     const kv = (a, b) => `<div class="kv"><span>${a}</span><kbd>${b}</kbd></div>`;
     m.innerHTML = `<div class="box panel wide"><div class="row"><button class="back" data-a="close">${ICONS.back}</button><h2 class="h-display" style="font-size:28px">${t('controls')}</h2></div>
       <div class="scroll"><div class="controls-grid">
-        <div><h4>${t('ctlDesktop')}</h4>${kv(t('move'), Keys.move())}${kv(t('look'), 'MOUSE')}${kv(t('fire'), 'LMB')}${kv(t('aim'), 'RMB')}${kv(t('reload'), Keys.k('KeyR'))}${kv(t('jump'), 'SPACE')}${kv(t('crouch'), Keys.k('KeyC'))}${kv(t('sprint'), 'SHIFT')}${kv(t('swap'), `${Keys.k('KeyQ')} / 1 / 2 / WHEEL`)}${kv(t('interact'), Keys.k('KeyE'))}${kv(t('getAmmo') + ' (AD)', Keys.k('KeyG'))}${kv(t('pauseK'), `${Keys.k('KeyP')} / ESC`)}</div>
+        <div><h4>${t('ctlDesktop')}</h4>${kv(t('move'), Keys.move())}${kv(t('look'), 'MOUSE')}${kv(t('fire'), 'LMB')}${kv(t('aim'), 'RMB')}${kv(t('reload'), Keys.k('KeyR'))}${kv(t('jump'), 'SPACE')}${kv(t('crouch'), Keys.k('KeyC'))}${kv(t('sprint'), 'SHIFT')}${kv(t('swap'), `${Keys.k('KeyQ')} / 1 / 2 / WHEEL`)}${kv(t('interact'), Keys.k('KeyE'))}${kv(t('getAmmo') + ' (AD)', Keys.k('KeyG'))}${kv(t('pauseK'), Keys.k('KeyP'))}</div>
         <div><h4>${t('ctlTouch')}</h4>${kv(t('move'), t('joystick'))}${kv(t('look'), t('dragRight'))}${kv(t('fire'), '◎')}${kv(t('aim'), '⌖')}${kv(t('reload'), '⟳')}${kv(t('jump'), '▲')}${kv(t('crouch'), '▼')}${kv(t('swap'), '⇄')}${kv(t('interact'), '✋')}</div>
         <div><h4>${t('ctlPad')}</h4>${kv(t('move'), t('leftStick'))}${kv(t('look'), t('rightStick'))}${kv(t('fire'), 'RT')}${kv(t('aim'), 'LT')}${kv(t('reload'), 'X')}${kv(t('jump'), 'A')}${kv(t('crouch'), 'B')}${kv(t('sprint'), 'L3')}${kv(t('swap'), 'Y')}${kv(t('interact'), 'LB / RB')}${kv(t('pauseK'), 'START')}</div>
       </div></div></div>`;

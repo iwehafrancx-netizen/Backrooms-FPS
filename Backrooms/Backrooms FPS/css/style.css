@@ -82,7 +82,7 @@ body.ingame #view canvas { cursor: none; }
 @keyframes flicker { 0%, 100% { opacity: 1 } 7% { opacity: .4 } 8% { opacity: 1 } 46% { opacity: .9 } 47% { opacity: .2 } 49% { opacity: 1 } 80% { opacity: .85 } }
 .boot-center { position: relative; text-align: center; width: min(560px, 90vw); }
 .logo {
-  position: relative; font: 800 clamp(46px, 11vw, 112px)/0.9 var(--f-display); letter-spacing: .08em; color: var(--paper);
+  position: relative; font: 800 clamp(30px, 7vw, 64px)/0.95 var(--f-display); letter-spacing: .08em; color: var(--paper); white-space: pre-line;
   text-shadow: 0 0 18px rgba(242, 194, 48, .45), 0 0 2px #fff;
   animation: logoFlick 5s infinite;
 }

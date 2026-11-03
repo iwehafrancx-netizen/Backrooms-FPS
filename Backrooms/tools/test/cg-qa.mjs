@@ -553,9 +553,16 @@ if (run('H')) {
   });
   check('AZERTY keyboards: Z/Q move forward/left (physical keys), arrow keys also move', az.azerty[0] < -0.5 && az.azerty[1] > 0.5 && az.arrows === 1, JSON.stringify(az));
   check('switching window releases held keys (no stuck movement)', az.afterBlur === 0, JSON.stringify(az));
+  await sleep(300);
+  const bl = await f.evaluate(() => ({ paused: window.__BR.Game.paused, modal: window.__BR.Ui.modal }));
+  check('switching window pauses the game', bl.paused && bl.modal === 'm-pause', JSON.stringify(bl));
+  await f.evaluate(() => window.__BR.Game.resume()); await sleep(300);
   await page.keyboard.press('Escape'); await sleep(500);
   const esc = await f.evaluate(() => ({ paused: window.__BR.Game.paused, modal: window.__BR.Ui.modal, locked: !!document.pointerLockElement }));
-  check('Esc pauses the game and frees the mouse', esc.paused && esc.modal === 'm-pause' && !esc.locked, JSON.stringify(esc));
+  check('Esc frees the mouse but does not pause the game', !esc.paused && !esc.modal && !esc.locked, JSON.stringify(esc));
+  await page.keyboard.press('KeyP'); await sleep(500);
+  const pk = await f.evaluate(() => ({ paused: window.__BR.Game.paused, modal: window.__BR.Ui.modal }));
+  check('P pauses the game', pk.paused && pk.modal === 'm-pause', JSON.stringify(pk));
   await f.evaluate(() => window.__BR.Game.resume());
   await page.evaluate(() => { const fr = document.getElementById('frame'); fr.width = 1280; fr.height = 720; });
   await sleep(1200);
