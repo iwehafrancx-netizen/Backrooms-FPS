@@ -703,11 +703,17 @@ if (run('P')) {
 if (run('M')) {
   section = 'M menu, music, progression, graphics';
   {
-    const strip = (src) => { const a = src.indexOf('const Platform = (() => {'), e = '\n  return api;\n})();\n', b = src.indexOf(e, a); return src.slice(0, a) + src.slice(b + e.length); };
+    // intended YouTube differences (tools/sync-youtube.mjs): its own platform layer, a stub PageVisibility, the split-file list
+    const strip = (src) => {
+      const cut = (s, start, end) => { const a = s.indexOf(start), b = s.indexOf(end, a); return a < 0 || b < 0 ? s : s.slice(0, a) + s.slice(b + end.length); };
+      src = cut(src, 'const Platform = (() => {', '\n  return api;\n})();\n');
+      src = src.indexOf('const PageVisibility = (() => {') >= 0 ? cut(src, 'const PageVisibility = (() => {', '\n})();\n') : src.replace('const PageVisibility = { wired: false, hidden: false, on() {} };', '');
+      return src.replace(/const SPLIT_FILES = \{[^\n]*\};/, '').replace(/\n\s*\n/g, '\n');
+    };
     const cgJs = fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames/game.js'), 'utf8'), ytJs = fs.readFileSync(path.join(ROOT, 'Backrooms FPS/game.js'), 'utf8');
     // the YouTube build stores big files as .part0, .part1, … (joined again by the game's loader)
     const readJoined = (p) => { if (fs.existsSync(p)) return fs.readFileSync(p); const parts = []; for (let i = 0; fs.existsSync(p + '.part' + i); i++) parts.push(fs.readFileSync(p + '.part' + i)); return Buffer.concat(parts); };
-    const sameAssets = ['assets/NPCs/operator.glb', 'assets/Audio/music.mp3', 'css/style.css', 'LICENSES.txt'].every((f) => fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames', f)).equals(readJoined(path.join(ROOT, 'Backrooms FPS', f))));
+    const sameAssets = ['assets/NPCs/operator.glb', 'css/style.css', 'LICENSES.txt'] /* music is re-encoded smaller for YouTube */.every((f) => fs.readFileSync(path.join(ROOT, 'Backrooms FPS CrazyGames', f)).equals(readJoined(path.join(ROOT, 'Backrooms FPS', f))));
     check('YouTube Playables build is the same game (only the SDK platform layer differs)', strip(cgJs) === strip(ytJs) && sameAssets && /ytgame/.test(ytJs) && !/CrazyGames/.test(ytJs));
   }
   const { browser, page, f, log } = await open({ w: 1280, h: 720, query: '?debug&menu=1', save: JSON.stringify({ v: 1, unlocked: 12, missions: {}, xp: 0, cp: 0, owned: [], played: 3 }) });
@@ -803,8 +809,10 @@ if (run('M')) {
     const B = window.__BR, I = B.Input, cv = B.World.renderer.domElement, out = {};
     let mode = 'reject'; const calls = [];
     HTMLCanvasElement.prototype.requestPointerLock = function () { calls.push(mode); return mode === 'reject' ? Promise.reject(new Error('refused')) : Promise.resolve(); };
-    if (document.pointerLockElement) { document.exitPointerLock(); for (let k = 0; k < 60 && !B.Game.paused; k++) await new Promise((r) => setTimeout(r, 100)); }
-    if (B.Game.paused) B.Game.resume();
+    // Esc only frees the mouse now (no pause), so pause with P's action and resume to get the refused request
+    if (document.pointerLockElement) { document.exitPointerLock(); await new Promise((r) => setTimeout(r, 300)); }
+    if (!B.Game.paused) B.Game.openPause();
+    B.Game.resume();
     await new Promise((r) => setTimeout(r, 600));
     out.lockedAtStart = I.st.locked;
     out.giveUpAfterOne = I.lockFailed;
