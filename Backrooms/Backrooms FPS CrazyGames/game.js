@@ -875,7 +875,7 @@ const Keys = {
   k(code) { const v = this.map && this.map.get(code); return v && v.trim().length === 1 ? v.toUpperCase() : code.replace(/^Key|^Digit/, ''); },
   move() { return ['KeyW', 'KeyA', 'KeyS', 'KeyD'].map((c) => this.k(c)).join(' '); },
 };
-const LATE_ASSETS = ['shotgun', 'sniper'];
+const LATE_ASSETS = ['shotgun', 'sniper', 'ak47', 'pistol'];
 const MUSIC_FILE = 'assets/Audio/music.mp3';
 const SPLIT_FILES = {};
 const Loader = {
@@ -980,7 +980,11 @@ const World = {
     const lv = ['high', 'med', 'low'], saved = Save.settings.autoLevel;
     if (lv.includes(saved)) return saved;
     const c = navigator.connection;
-    return c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || '')) ? 'med' : 'high';
+    if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return 'med';
+    // phones, tablets and low-end PCs start without the bloom pass (faster first load and steadier frames);
+    // stronger PCs start on high, and anyone can still pick High in Settings
+    const touch = matchMedia && matchMedia('(pointer: coarse)').matches, mem = navigator.deviceMemory || 8, cores = navigator.hardwareConcurrency || 8;
+    return touch || mem <= 4 || cores <= 2 ? 'med' : 'high';
   },
   adapt(dt) {
     const p = this.perf; p.acc += dt; p.n++; p.t += dt;
@@ -3441,8 +3445,10 @@ const Lobby = {
   showcase(id, anchor = null) {
     if (this.display) { World.scene.remove(this.display); this.display = null; }
     for (const [l] of this.showLights || []) l.intensity = 0;
-    this.anchor = anchor;
+    this.anchor = anchor; this.wantShow = id;
     if (!id) return;
+    // guns that load in the background: show this one as soon as it arrives
+    if (!Assets.guns[WEAPONS[id].model]) { Assets.late.then(() => { if (this.wantShow === id && this.anchor === anchor) this.showcase(id, anchor); }); return; }
     const g = Models.gun(id), box = new THREE.Box3().setFromObject(g), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
     g.position.sub(c);
     const spin = new THREE.Group(); spin.add(g);
