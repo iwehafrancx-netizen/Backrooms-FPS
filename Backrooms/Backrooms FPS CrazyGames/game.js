@@ -687,15 +687,10 @@ const Input = (() => {
   window.addEventListener('keyup', (e) => onKey(e, false));
   window.addEventListener('blur', () => { keys.clear(); mouseDown = false; rmb = false; st.interactHeld = false; st.sprintKey = false; if (st.enabled) press('pause'); });
 
-  let plc = null;
   const lockRefused = () => { lockFails++; if (!lockedOnce && lockFails >= 3) lockFailed = true; };
   function requestLock() {
     if (!canvas || st.touch || lockFailed || st.locked) return;
     if (!canvas.requestPointerLock) { lockFailed = true; return; }
-    if (!plc && THREE.PointerLockControls) {
-      plc = new THREE.PointerLockControls(World.camera, canvas); plc.pointerSpeed = 0;
-      plc.addEventListener('unlock', () => { st.locked = false; });
-    }
     try {
       const p = canvas.requestPointerLock && canvas.requestPointerLock();
       if (p && p.catch) p.catch(lockRefused);

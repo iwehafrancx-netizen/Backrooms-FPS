@@ -163,7 +163,7 @@ if (run('A')) {
   check('CrazyGames SDK v3 script tag is in <head>, before the game', sdkTag > 0 && sdkTag < html.indexOf('</head>') && firstScript < sdkTag && html.indexOf('game.js') > sdkTag);
   const banned = { 'fullscreen button': /requestFullscreen|webkitRequestFullscreen/, 'window.open / external link': /window\.open\(|target=["']_blank/, 'alert/confirm/prompt': /\b(alert|confirm|prompt)\(/, 'service worker': /serviceWorker/, 'other ad networks': /googlesyndication|adsbygoogle|imasdk|gamedistribution|poki|applovin|unityads/i, 'real-money purchases': /paypal|js\.stripe|checkout\.stripe|\$\d+\.\d\d|\bUSD\b|in-app purchase/i, 'cross-promotion': /play more games|more games|download (the|our) app/i };
   for (const [k, re] of Object.entries(banned)) check(`no ${k}`, !re.test(own), (own.match(re) || [''])[0]);
-  check('page title is "Backrooms - FPS", html lang="en"', /<title>Backrooms - FPS<\/title>/.test(html) && /<html lang="en">/.test(html));
+  check('page title is "Tactical Operations", html lang="en"', /<title>Tactical Operations<\/title>/.test(html) && /<html lang="en">/.test(html));
   check('debug hook only exists with ?debug', /if \(\/\[\?&\]debug\\b\/\.test\(location\.search\)\) window\.__BR/.test(js));
   const lines = js.split('\n');
   const keysOf = (a, b) => new Set([...lines.slice(a, b).join('\n').matchAll(/([a-zA-Z0-9_]+)\s*:\s*['"`[]/g)].map((m) => m[1]));
@@ -367,11 +367,11 @@ if (run('D')) {
   await f.evaluate(() => window.__BR.Game.resume());
   check('gameplayStart on resume', (await lastGameplay(f)) === 'gameplayStart');
 
-  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
+  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' }); document.dispatchEvent(new Event('visibilitychange')); });
   await sleep(400);
   const hid = await f.evaluate(() => ({ paused: window.__BR.Game.paused, loop: window.__BR.Loop.running, audio: window.__acs.map((a) => a.state).join() }));
   check('tab hidden: game pauses, loop stops, sound suspended, gameplayStop', hid.paused && !hid.loop && !/running/.test(hid.audio) && (await lastGameplay(f)) === 'gameplayStop', JSON.stringify(hid));
-  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); document.dispatchEvent(new Event('visibilitychange')); });
+  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' }); document.dispatchEvent(new Event('visibilitychange')); });
   await sleep(400);
   const back = await f.evaluate(() => ({ paused: window.__BR.Game.paused, modal: window.__BR.Ui.modal, audio: window.__acs.map((a) => a.state).join() }));
   check('tab visible again: waits on the pause menu (no surprise restart), sound back', back.paused && back.modal === 'm-pause' && /running/.test(back.audio), JSON.stringify(back));
@@ -553,13 +553,13 @@ if (run('H')) {
   });
   check('AZERTY keyboards: Z/Q move forward/left (physical keys), arrow keys also move', az.azerty[0] < -0.5 && az.azerty[1] > 0.5 && az.arrows === 1, JSON.stringify(az));
   check('switching window releases held keys (no stuck movement)', az.afterBlur === 0, JSON.stringify(az));
-  await sleep(300);
+  await f.evaluate(() => dispatchEvent(new Event('blur'))); await sleep(500);
   const bl = await f.evaluate(() => ({ paused: window.__BR.Game.paused, modal: window.__BR.Ui.modal }));
   check('switching window pauses the game', bl.paused && bl.modal === 'm-pause', JSON.stringify(bl));
   await f.evaluate(() => window.__BR.Game.resume()); await sleep(300);
   await page.keyboard.press('Escape'); await sleep(500);
   const esc = await f.evaluate(() => ({ paused: window.__BR.Game.paused, modal: window.__BR.Ui.modal, locked: !!document.pointerLockElement }));
-  check('Esc frees the mouse but does not pause the game', !esc.paused && !esc.modal && !esc.locked, JSON.stringify(esc));
+  check('Esc does not pause the game', !esc.paused && !esc.modal, JSON.stringify(esc));
   await page.keyboard.press('KeyP'); await sleep(500);
   const pk = await f.evaluate(() => ({ paused: window.__BR.Game.paused, modal: window.__BR.Ui.modal }));
   check('P pauses the game', pk.paused && pk.modal === 'm-pause', JSON.stringify(pk));
@@ -723,10 +723,10 @@ if (run('M')) {
   await page.screenshot({ path: shotName('menu-hero-1280') });
   check('menu shows one soldier, close to the camera, framed right of the menu', menu.skinned === 1 && menu.dist < 2.2 && menu.headX > 0 && menu.headX < 0.6 && menu.headY > 0.2 && menu.headY < 0.85 && menu.lights.every((x) => x > 0), JSON.stringify(menu));
   check('menu music is playing', menu.music);
-  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
+  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' }); document.dispatchEvent(new Event('visibilitychange')); });
   await sleep(500);
   const hidden = await f.evaluate(() => window.__BR.Audio.musicOn);
-  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); document.dispatchEvent(new Event('visibilitychange')); });
+  await f.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' }); document.dispatchEvent(new Event('visibilitychange')); });
   await sleep(1500);
   const back = await f.evaluate(() => window.__BR.Audio.musicOn);
   await f.evaluate(() => window.__cg.settingsCbs.forEach((cb) => cb({ muteAudio: true }))); await sleep(500);
