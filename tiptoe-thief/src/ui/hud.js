@@ -10,14 +10,20 @@ export class Hud {
     this.app = app;
     this.t = app.t;
     this.root = root;
+    // The top bar and the message boxes share one column, so messages always
+    // appear below the bar (however it wraps) and never cover it.
     root.innerHTML = `
-      <div class="hud-top">
-        <div class="hud-level"></div>
-        <div class="hud-stats"><span class="hud-target"></span><span class="hud-cash"></span><span class="hud-coins"></span></div>
+      <div class="hud-head">
+        <div class="hud-bar">
+          <div class="hud-info">
+            <div class="hud-level"></div>
+            <div class="hud-stats"><span class="hud-target"></span><span class="hud-cash"></span><span class="hud-coins"></span></div>
+          </div>
+          <button class="btn-pause" aria-label="pause">II</button>
+        </div>
+        <div class="toasts"></div>
       </div>
-      <button class="btn-pause" aria-label="pause">II</button>
       <div class="marks"></div>
-      <div class="toasts"></div>
       <div class="tap-dot"></div>
       <div class="touch-ctl">
         <div class="joy"><i></i></div>
@@ -30,7 +36,7 @@ export class Hud {
       <div class="desk-hint"></div>
       <div class="lockpick hidden"><div class="lp-ring"><div class="lp-zone"></div><div class="lp-needle"></div></div><p></p></div>`;
     const $ = (s) => root.querySelector(s);
-    this.el = { level: $('.hud-level'), target: $('.hud-target'), cash: $('.hud-cash'), coins: $('.hud-coins'), marks: $('.marks'), toasts: $('.toasts'), action: $('.btn-action'), actionLabel: $('.btn-action span'), tap: $('.tap-dot'), lock: $('.lockpick'), hint: $('.desk-hint') };
+    this.el = { head: $('.hud-head'), level: $('.hud-level'), target: $('.hud-target'), cash: $('.hud-cash'), coins: $('.hud-coins'), marks: $('.marks'), toasts: $('.toasts'), action: $('.btn-action'), actionLabel: $('.btn-action span'), tap: $('.tap-dot'), lock: $('.lockpick'), hint: $('.desk-hint'), joy: $('.joy'), btns: $('.btns') };
     this.markEls = new Map();
     this.root.classList.toggle('touch', matchMedia('(pointer: coarse)').matches);
   }
@@ -63,7 +69,8 @@ export class Hud {
     const d = document.createElement('div');
     d.className = 'toast ' + cls; d.textContent = text;
     this.el.toasts.appendChild(d);
-    while (this.el.toasts.children.length > 3) this.el.toasts.firstChild.remove();
+    // at most two at once so the stack stays short on small screens
+    while (this.el.toasts.children.length > 2) this.el.toasts.firstChild.remove();
     setTimeout(() => { d.classList.add('fade'); setTimeout(() => d.remove(), 500); }, ms);
   }
 
@@ -105,14 +112,31 @@ export class Hud {
     grow();
   }
 
-  update(game) {
+  // The part of the screen no HUD element uses: guard marks are kept inside it
+  // (a guard off the edge shows its mark at the edge, like a pointer).
+  freeArea() {
     const now = performance.now();
+    if (this._free && now - this._free.t < 500) return this._free;
+    const W = innerWidth, H = innerHeight;
+    let top = this.el.head.getBoundingClientRect().bottom, bottom = H;
+    for (const e of [this.el.joy, this.el.btns, this.el.hint]) {
+      const r = e.getBoundingClientRect();
+      if (r.height > 0) bottom = Math.min(bottom, r.top);
+    }
+    this._free = { t: now, x0: 18, x1: W - 18, y0: top + 30, y1: Math.max(top + 40, bottom - 8) };
+    return this._free;
+  }
+
+  update(game) {
+    const now = performance.now(), A = this.freeArea();
     for (const [guard, el] of this.markEls) {
       const keep = guard.state === 'chase' || guard.state === 'suspect' || guard.state === 'search' || now < +el.dataset.until;
       if (!keep) { el.remove(); this.markEls.delete(guard); continue; }
       if (guard.state === 'chase' && el.textContent !== '!') { el.textContent = '!'; el.className = 'mark alert'; }
       const s = this.app.R.toScreen(guard.pos.clone().setY(2.2));
-      el.style.transform = `translate(${s.x}px, ${s.y}px)`;
+      // the mark box spans -12..+12 px across and -22..+12 px down from its anchor
+      const x = Math.min(A.x1 - 12, Math.max(A.x0 + 12, s.x)), y = Math.min(A.y1 - 12, Math.max(A.y0, s.y));
+      el.style.transform = `translate(${x}px, ${y}px)`;
       el.style.display = s.visible ? '' : 'none';
     }
     // red screen edge while someone is chasing you
@@ -124,6 +148,7 @@ export class Hud {
   lockpick(rounds, skill, done) {
     const box = this.el.lock, needle = box.querySelector('.lp-needle'), zone = box.querySelector('.lp-zone'), txt = box.querySelector('p');
     box.classList.remove('hidden');
+    this.root.classList.add('picking'); // the dial takes the whole screen while it is open
     this.app.input.enabled = false;
     let hits = 0, ang = 0, zoneAt = 0, finished = false;
     const width = 46 * skill; // degrees of the green notch
@@ -139,7 +164,7 @@ export class Hud {
       requestAnimationFrame(tick);
     };
     const end = (ok) => {
-      finished = true; box.classList.add('hidden');
+      finished = true; box.classList.add('hidden'); this.root.classList.remove('picking');
       removeEventListener('keydown', onKey); box.removeEventListener('pointerdown', press);
       this.app.input.enabled = true;
       done(ok);

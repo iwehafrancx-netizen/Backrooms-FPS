@@ -83,11 +83,13 @@ export class Screens {
       return;
     }
     const line = (ok, key) => `<li class="${ok ? 'ok' : ''}">${ok ? '★' : '☆'} ${esc(t(key))}</li>`;
-    this.show(`<div class="panel small result win"><h2>${esc(t('escaped'))}</h2>${this.stars(r.stars)}
-      <ul>${line(true, 'starEscape')}${line(r.allLoot, 'starAll')}${line(r.unseen, 'starUnseen')}</ul>
-      <p class="sum">${esc(t('loot'))}: $${r.cash} · ${esc(t('coins'))}: <b class="earned">+◎ ${r.earned}</b></p>
-      ${r.canDouble ? `<button data-act="double">${esc(t('doubleCoins'))}</button>` : ''}
-      ${r.hasNext ? `<button class="big" data-act="next">${esc(t('next'))}</button>` : ''}
-      <div class="row"><button data-act="retry">${esc(t('retry'))}</button><button data-act="levels">${esc(t('menu'))}</button></div></div>`, 'result');
+    // two groups - what you got, and what to do next - so short screens can show them side by side
+    this.show(`<div class="panel small result win"><h2>${esc(t('escaped'))}</h2>
+      <div class="r-info">${this.stars(r.stars)}
+        <ul>${line(true, 'starEscape')}${line(r.allLoot, 'starAll')}${line(r.unseen, 'starUnseen')}</ul>
+        <p class="sum">${esc(t('loot'))}: $${r.cash} · ${esc(t('coins'))}: <b class="earned">+◎ ${r.earned}</b></p></div>
+      <div class="r-act">${r.canDouble ? `<button data-act="double">${esc(t('doubleCoins'))}</button>` : ''}
+        ${r.hasNext ? `<button class="big" data-act="next">${esc(t('next'))}</button>` : ''}
+        <div class="row"><button data-act="retry">${esc(t('retry'))}</button><button data-act="levels">${esc(t('menu'))}</button></div></div></div>`, 'result');
   }
 }
