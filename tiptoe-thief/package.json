@@ -1,0 +1,21 @@
+{
+  "name": "tiptoe-thief",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tiptoe Thief - a 3D top-down stealth burglary game for the web.",
+  "scripts": {
+    "assets": "node tools/make-models.mjs && node tools/make-textures.mjs && node tools/make-audio.mjs",
+    "dev": "node tools/build.mjs --platform=dev",
+    "build": "node tools/build-platforms.mjs",
+    "zip": "node tools/package-zip.mjs",
+    "test": "node tools/test/smoke.mjs"
+  },
+  "dependencies": {
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "playwright-core": "1.56.0"
+  }
+}

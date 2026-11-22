@@ -1,0 +1,5 @@
+node_modules/
+dev/
+builds/
+dist/
+tools/test/out/
