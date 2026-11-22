@@ -582,3 +582,79 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
 @keyframes htDrag { 0%, 100% { transform: translateX(-12px); } 50% { transform: translateX(12px); } }
 .ht-ok { align-self: center; min-width: 220px; justify-content: center; }
 @media (max-height: 480px) { .howto { gap: 8px; padding: 12px 14px; } .cap { height: 28px; min-width: 28px; } .ht-joy, .ht-drag { width: 56px; height: 56px; } .ht-joy b { left: 16px; top: 16px; } .ht-mouse { height: 52px; } }
+
+/* ===================================================================
+   Layout fixes for store review: nothing may overlap or be cut off on
+   any screen size (checked by tools/test/layout.mjs on 11 sizes).
+   =================================================================== */
+
+/* Missions / briefing: the title bar is part of the page flow, so a title that
+   wraps to two lines pushes the content down instead of covering it. */
+#missions > .topbar, #briefing > .topbar { position: relative; flex: none; padding: 0 0 12px; }
+#missions .grid { margin-top: 0; }
+#briefing .wrap { margin-top: 0; }
+#briefing > .topbar .h-display { font-size: clamp(22px, 5vw, 44px) !important; }
+
+/* Mission cards grow with their text (nothing is cut off) and the "cleared"
+   ribbon sits on the corner of the card's watermark number, clear of the text. */
+/* rows always as tall as their card's content (the grid itself scrolls) */
+#missions .grid { grid-auto-rows: max-content; }
+.mcard { height: auto; min-height: 120px; }
+.mcard .desc { flex: none; }
+.mcard .tag.mode { margin-right: 30px; }
+.mcard.done::after { right: -44px; top: 10px; padding: 4px 40px; font-size: 9px; }
+
+/* Controls list: long key descriptions wrap instead of running under the action name. */
+.kv { align-items: flex-start; }
+.kv kbd { white-space: normal; text-align: right; max-width: 62%; line-height: 1.3; }
+
+/* Every popup scrolls when it is taller than the screen. */
+.modal .box { overflow-y: auto; }
+
+/* Loading screen on short screens: tighter spacing and the tip in normal flow. */
+@media (max-height: 480px) {
+  .loadbar { margin: 16px auto 8px; }
+  .boot-enter { margin-top: 12px; padding: 12px 44px; }
+  .boot-tip { position: static; margin-top: 12px; padding: 0; }
+}
+
+/* HUD on narrow screens (portrait phones, small windows): the ad button and the
+   kill feed move under the pause button, and the objective stays between the
+   radar (left) and the pause button (right). */
+.objective { max-width: calc(100% - 2 * 150px); }
+.obj-text { overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .ammo-ad { right: 0; top: 50px; }
+  .killfeed { top: 90px; max-width: 70vw; }
+  .objective { max-width: calc(100% - 2 * 140px); }
+  body.touch .objective { max-width: calc(100% - 2 * 104px); }
+  .obj-text { letter-spacing: .08em; font-size: 11px; }
+  .scorebar > div { padding: 6px 9px; }
+  .scorebar .clock { min-width: 64px; font-size: 16px; }
+}
+/* Portrait phones: the top corners hold the radar (left) and pause + ad button
+   (right); the objective gets its own full-width line under them, and the kill
+   feed (and, on touch, health and ammo) start below the objective. */
+@media (orientation: portrait) {
+  .radar, body.touch .radar { width: 96px; height: 96px; }
+  .objective, body.touch .objective { top: 104px; max-width: 100%; width: 100%; }
+  .killfeed, body.touch .killfeed { top: 196px; right: 0; }
+  body.touch .vitals, body.touch .ammo { top: 196px; }
+  body.touch .killfeed { top: 270px; }
+}
+
+/* Results and "all operations complete": centred when they fit, scroll from the
+   top when they do not (never clipped above the screen), compact on short screens. */
+#end, #complete { overflow-y: auto; justify-content: safe center; align-items: safe center; }
+#end > *, #complete > * { margin-top: auto; margin-bottom: auto; }
+@media (max-height: 480px) {
+  .end-title { font-size: 40px; }
+  .end-sub { margin-top: 2px; line-height: 1.3; }
+  .end-stars { margin: 8px 0 2px; } .end-stars i { width: 26px; height: 26px; }
+  .end-score { font-size: 30px; margin: 4px 0 0; }
+  .end-stats { margin: 8px 0; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); }
+  .end-stats > div { padding: 6px; } .end-stats b { font-size: 18px; margin-top: 3px; }
+  .end-actions .btn { min-width: 120px; }
+  .unlock-note { margin-top: 6px; }
+  #complete .medal { width: 70px; height: 70px; margin-bottom: 4px; }
+}
