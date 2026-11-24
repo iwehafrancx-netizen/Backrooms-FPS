@@ -1,6 +1,9 @@
 // UI layout check for store review (Playgama asked for no overlapping elements).
 //
-//   GAME=crazygames node test/layout.mjs [--shots] [--only=568x320,360x640]
+//   GAME=crazygames node test/layout.mjs [--shots] [--only=568x320,360x640] [--lang=en,es,pt,fr] [--modes]
+//
+//   --lang   check every screen in each of these languages (default: en)
+//   --modes  also check the in-game HUD of every mission type (CTF, siege, waves…)
 //
 // On many screen sizes it opens every screen, popup and the in-game HUD, takes
 // every visible text, button and control on it, and reports any two that
@@ -12,6 +15,9 @@ import path from 'node:path';
 
 const shots = process.argv.includes('--shots');
 const only = (process.argv.find((a) => a.startsWith('--only=')) || '').slice(7).split(',').filter(Boolean);
+const LANGS = ((process.argv.find((a) => a.startsWith('--lang=')) || '--lang=en').slice(7)).split(',').filter(Boolean);
+const LOCALE = { en: 'en-US', es: 'es-ES', pt: 'pt-BR', fr: 'fr-FR' };
+const allModes = process.argv.includes('--modes');
 const SIZES = [
   [1920, 1080, false], [1366, 768, false], [1280, 720, false], [1024, 768, false], [800, 600, false],
   [568, 320, true], [667, 375, true], [844, 390, true], [1180, 820, true], [360, 640, true], [390, 844, true],
@@ -69,9 +75,9 @@ function measure() {
 }
 
 let total = 0;
-for (const [w, h, touch] of SIZES) {
-  const { browser, page, log } = await open({ width: w, height: h, touch, save: SAVE });
-  const size = `${w}x${h}`;
+for (const [w, h, touch] of SIZES) for (const lang of LANGS) {
+  const { browser, page, log } = await open({ width: w, height: h, touch, save: SAVE, lang: LOCALE[lang] || lang });
+  const size = `${w}x${h}${lang === 'en' ? '' : '-' + lang}`;
   const check = async (name) => {
     await sleep(700);
     const found = await page.evaluate(measure);
@@ -83,6 +89,8 @@ for (const [w, h, touch] of SIZES) {
     await page.waitForFunction(() => { const b = document.getElementById('boot-enter'); return b && !b.classList.contains('hidden'); }, null, { timeout: 180000 });
     await page.evaluate(() => { document.querySelector('#boot').classList.add('active'); }).catch(() => {});
     await check('boot');
+    // phones and tablets: the game switches to its touch layout on the first touch
+    if (touch) await page.evaluate(() => window.dispatchEvent(new TouchEvent('touchstart')));
     await page.evaluate(() => document.getElementById('boot-enter').click());
     await page.waitForFunction(() => window.__BR.Ui.cur === 'menu', null, { timeout: 30000 });
     await check('menu');
@@ -90,6 +98,7 @@ for (const [w, h, touch] of SIZES) {
     await page.evaluate(() => { const U = window.__BR.Ui; U.selMission = 3; U.show('briefing'); }); await check('briefing');
     for (const m of ['m-settings', 'm-controls', 'm-howto']) { await page.evaluate((m) => window.__BR.Ui.openModal(m), m); await check(m); await page.evaluate(() => window.__BR.Ui.closeModal()); }
     await page.evaluate(() => { window.__BR.Ui.gunOffer('ak47', 2); }); await sleep(1200); await check('m-offer'); await page.evaluate(() => window.__BR.Ui.closeModal());
+    await page.evaluate(() => window.__BR.Ui.confirmReset(() => {})); await check('m-confirm'); await page.evaluate(() => window.__BR.Ui.closeModal());
     // in a mission
     await page.evaluate(() => window.__BR.Game.start(3, 'none', 'shotgun'));
     await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 90000 });
@@ -103,6 +112,10 @@ for (const [w, h, touch] of SIZES) {
     await page.evaluate(() => window.__BR.Game.resume());
     await page.evaluate(() => { const G = window.__BR.Game; G.offerGun = 'sniper'; G.inGameOffer(); }); await sleep(1200);
     if (await page.evaluate(() => window.__BR.Ui.modal)) { await check('m-mini'); await page.evaluate(() => window.__BR.Ui.closeModal()); }
+    // the death card and the spectate line (shown between lives in team modes)
+    await page.evaluate(() => { const B = window.__BR, G = B.Game; B.Hud.death(G.actors.find((a) => a.bot), 3, false); }); await check('death');
+    await page.evaluate(() => { const B = window.__BR; B.Hud.els.death.classList.remove('on'); B.Hud.spectate('VIPER'); }); await check('spectate');
+    await page.evaluate(() => window.__BR.Hud.els.spec.classList.remove('on'));
     await page.evaluate(() => { const B = window.__BR, G = B.Game; G.player.lives = 1; G.player.spawnTime = -99; B.Combat.damage(G.player, 9999, G.actors.find((a) => a.bot), false, 'ak47'); });
     await page.waitForFunction(() => window.__BR.Ui.modal === 'm-out', null, { timeout: 15000 }).catch(() => {});
     if (await page.evaluate(() => window.__BR.Ui.modal === 'm-out')) await check('m-out');
@@ -119,6 +132,19 @@ for (const [w, h, touch] of SIZES) {
     await page.waitForFunction(() => window.__BR.Ui.cur === 'end', null, { timeout: 20000 }); await sleep(2500); await check('end-win');
     await page.evaluate(() => window.__BR.Game.toMenu('complete')); await sleep(1200);
     if (await page.evaluate(() => window.__BR.Ui.cur === 'complete')) await check('complete');
+    // the HUD of every other mission type
+    if (allModes) {
+      const picks = await page.evaluate(() => { const seen = new Set(), out = []; window.__BR.MISSIONS.forEach((m, i) => { if (!seen.has(m.mode)) { seen.add(m.mode); out.push([i, m.mode]); } }); return out; });
+      for (const [i, mode] of picks) {
+        await page.evaluate(() => { const U = window.__BR.Ui; U.closeModal(); window.__BR.Game.toMenu(); });
+        await sleep(600);
+        await page.evaluate((i) => { const B = window.__BR, m = B.MISSIONS[i]; B.Game.start(i, m.primary, m.secondary); }, i);
+        await page.waitForFunction(() => window.__BR.Game.state === 'play' && !window.__BR.Game.starting, null, { timeout: 120000 });
+        await page.evaluate(() => { const B = window.__BR, G = B.Game; G.countdownT = 0; const bot = G.actors.find((a) => a.bot); if (bot) for (let k = 0; k < 3; k++) B.Hud.killfeed(G.player, bot, G.player.slots?.[0]?.id || 'pistol', k === 0); });
+        await sleep(1500);
+        await check('hud-' + mode);
+      }
+    }
   } catch (e) { console.log(`FAIL  ${size}  test error: ${e.message.split('\n')[0]}`); total++; }
   if (log.errors.length) { console.log(`FAIL  ${size}  page errors: ${log.errors.join(' | ')}`); total++; }
   console.log(`done  ${size}`);
