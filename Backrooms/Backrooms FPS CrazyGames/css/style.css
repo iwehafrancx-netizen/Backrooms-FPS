@@ -695,3 +695,8 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
   .banner .big { font-size: 22px; letter-spacing: .08em; padding: 8px 14px; max-width: 100%; }
   .banner .big small { font-size: 11px; letter-spacing: .14em; }
 }
+
+/* Kill feed: at most four lines on any screen, and the announcement banner
+   always starts below them (it never runs into a long feed). */
+.killfeed .kf:nth-child(n+5) { display: none; }
+@media (min-height: 401px) and (orientation: landscape) { .banner { top: max(30%, 190px); } }
