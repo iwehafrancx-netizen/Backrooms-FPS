@@ -330,22 +330,22 @@ body.touch .killfeed { top: 52px; }
 #touch { position: fixed; inset: 0; z-index: 21; display: none; pointer-events: none; }
 body.touch #hud { z-index: 22; }
 body.touch.ingame #touch { display: block; }
-.joy { position: absolute; left: calc(24px + var(--safe-l)); bottom: calc(26px + var(--safe-b)); width: calc(150px * var(--touch-scale)); height: calc(150px * var(--touch-scale)); pointer-events: auto; border-radius: 50%; background: rgba(11,10,7,.28); border: 1.5px solid rgba(233,220,164,.25); }
+.joy { position: absolute; left: calc(24px + var(--safe-l)); bottom: calc(26px + var(--safe-b)); width: calc(150px * var(--ts)); height: calc(150px * var(--ts)); pointer-events: auto; border-radius: 50%; background: rgba(11,10,7,.28); border: 1.5px solid rgba(233,220,164,.25); }
 .joy .knob { position: absolute; left: 50%; top: 50%; width: 42%; height: 42%; margin: -21%; border-radius: 50%; background: rgba(233,220,164,.35); border: 1.5px solid rgba(233,220,164,.6); }
 .joy.sprint .knob { background: rgba(242,194,48,.65); }
 .joy-zone { position: absolute; left: 0; top: 0; bottom: 0; width: 42%; pointer-events: auto; }
 .look-zone { position: absolute; right: 0; top: 0; bottom: 0; width: 58%; pointer-events: auto; }
 .tbtn { position: absolute; pointer-events: auto; border-radius: 50%; display: grid; place-items: center; background: rgba(11,10,7,.42); border: 1.5px solid rgba(233,220,164,.3);
-  font: 800 calc(11px * var(--touch-scale))/1 var(--f-mono); letter-spacing: .08em; color: var(--paper); width: calc(58px * var(--touch-scale)); height: calc(58px * var(--touch-scale)); }
+  font: 800 calc(11px * var(--ts))/1 var(--f-mono); letter-spacing: .08em; color: var(--paper); width: calc(58px * var(--ts)); height: calc(58px * var(--ts)); }
 .tbtn.on { background: rgba(242,194,48,.55); color: var(--ink); }
 .tbtn svg { width: 46%; height: 46%; }
-.tbtn.fire { width: calc(84px * var(--touch-scale)); height: calc(84px * var(--touch-scale)); right: calc(34px + var(--safe-r)); bottom: calc(70px + var(--safe-b)); background: rgba(255,74,61,.38); border-color: rgba(255,120,110,.6); }
-.tbtn.fire2 { right: auto; left: calc(200px * var(--touch-scale) + var(--safe-l)); bottom: calc(150px + var(--safe-b)); width: calc(58px * var(--touch-scale)); height: calc(58px * var(--touch-scale)); }
-.tbtn.ads { right: calc(134px * var(--touch-scale) + 20px + var(--safe-r)); bottom: calc(40px + var(--safe-b)); }
-.tbtn.jump { right: calc(30px + var(--safe-r)); bottom: calc(170px * var(--touch-scale) + var(--safe-b)); }
-.tbtn.crouch { right: calc(30px + var(--safe-r)); bottom: calc(14px + var(--safe-b)); width: calc(48px * var(--touch-scale)); height: calc(48px * var(--touch-scale)); }
-.tbtn.reload { right: calc(130px * var(--touch-scale) + 24px + var(--safe-r)); bottom: calc(120px * var(--touch-scale) + 20px + var(--safe-b)); width: calc(48px * var(--touch-scale)); height: calc(48px * var(--touch-scale)); }
-.tbtn.swap { right: calc(100px * var(--touch-scale) + 10px + var(--safe-r)); bottom: calc(190px * var(--touch-scale) + var(--safe-b)); width: calc(48px * var(--touch-scale)); height: calc(48px * var(--touch-scale)); }
+.tbtn.fire { width: calc(84px * var(--ts)); height: calc(84px * var(--ts)); right: calc(34px + var(--safe-r)); bottom: calc(70px + var(--safe-b)); background: rgba(255,74,61,.38); border-color: rgba(255,120,110,.6); }
+.tbtn.fire2 { right: auto; left: calc(200px * var(--ts) + var(--safe-l)); bottom: calc(150px + var(--safe-b)); width: calc(58px * var(--ts)); height: calc(58px * var(--ts)); }
+.tbtn.ads { right: calc(134px * var(--ts) + 20px + var(--safe-r)); bottom: calc(40px + var(--safe-b)); }
+.tbtn.jump { right: calc(30px + var(--safe-r)); bottom: calc(170px * var(--ts) + var(--safe-b)); }
+.tbtn.crouch { right: calc(30px + var(--safe-r)); bottom: calc(14px + var(--safe-b)); width: calc(48px * var(--ts)); height: calc(48px * var(--ts)); }
+.tbtn.reload { right: calc(130px * var(--ts) + 24px + var(--safe-r)); bottom: calc(120px * var(--ts) + 20px + var(--safe-b)); width: calc(48px * var(--ts)); height: calc(48px * var(--ts)); }
+.tbtn.swap { right: calc(100px * var(--ts) + 10px + var(--safe-r)); bottom: calc(190px * var(--ts) + var(--safe-b)); width: calc(48px * var(--ts)); height: calc(48px * var(--ts)); }
 .tbtn.use { right: 50%; margin-right: -32px; bottom: calc(110px + var(--safe-b)); width: 64px; height: 64px; background: rgba(242,194,48,.5); color: var(--ink); display: none; }
 .tbtn.use.on { display: grid; animation: rise .2s; }
 body.touch .vitals { left: 50%; bottom: 0; width: min(190px, 22vw); transform: translateX(-104%); }
@@ -658,3 +658,45 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
   .unlock-note { margin-top: 6px; }
   #complete .medal { width: 70px; height: 70px; margin-bottom: 4px; }
 }
+
+/* Touch controls on small phones -------------------------------------------
+   --ts = the player's "touch button size" setting x an automatic factor, so the
+   joystick and buttons shrink on short (landscape) and narrow (portrait) screens
+   and leave room for health, ammo and the kill feed. */
+:root { --ts: var(--touch-scale, 1); }
+@media (max-height: 400px), (max-width: 420px) { :root { --ts: calc(var(--touch-scale, 1) * .78); } }
+
+/* Small landscape phones: kill feed on the left under the radar (the right side
+   holds the pause / ad buttons and the button cluster), smaller ammo counter. */
+@media (max-height: 400px) and (orientation: landscape) {
+  body.touch .killfeed { left: 0; right: auto; top: 98px; align-items: flex-start; max-width: 40vw; }
+  body.touch .kf { padding: 4px 8px; }
+  body.touch .killfeed .kf:nth-child(n+2) { display: none; } /* one line: the left fire button sits just below */
+  body.touch .objective { max-width: calc(100% - 2 * 130px); }
+  body.touch .ammo-ad { right: 0; top: 50px; }
+  body.touch .ammo { transform: translateX(4%) scale(.62); }
+}
+
+/* While the death card is up it owns the middle of the screen: health, ammo,
+   the ad button and the kill feed step aside (the card says who got you). */
+#hud:has(.deathcard.on) .vitals, #hud:has(.deathcard.on) .ammo,
+#hud:has(.deathcard.on) .killfeed, #hud:has(.deathcard.on) .ammo-ad { visibility: hidden; }
+
+/* Big announcement banner (alarm, wave, keycard...) on phones: smaller, and in
+   the screen's free middle band so it never lands on the HUD or the buttons.
+   Long translations (fr/pt) wrap inside the band. */
+@media (max-height: 400px) and (orientation: landscape) {
+  .banner { top: 57%; left: 50%; right: auto; transform: translateX(-50%); width: 40vw; }
+  .banner .big { font-size: 18px; letter-spacing: .06em; padding: 6px 12px; max-width: 100%; }
+  .banner .big small { font-size: 10px; letter-spacing: .12em; line-height: 1.4; }
+}
+@media (orientation: portrait) and (max-width: 520px) {
+  .banner { top: 55%; left: 50%; right: auto; transform: translateX(-50%); width: 72vw; }
+  .banner .big { font-size: 22px; letter-spacing: .08em; padding: 8px 14px; max-width: 100%; }
+  .banner .big small { font-size: 11px; letter-spacing: .14em; }
+}
+
+/* Kill feed: at most four lines on any screen, and the announcement banner
+   always starts below them (it never runs into a long feed). */
+.killfeed .kf:nth-child(n+5) { display: none; }
+@media (min-height: 401px) and (orientation: landscape) { .banner { top: max(30%, 190px); } }
