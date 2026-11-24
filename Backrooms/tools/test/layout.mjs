@@ -143,6 +143,15 @@ for (const [w, h, touch] of SIZES) for (const lang of LANGS) {
         await page.evaluate(() => { const B = window.__BR, G = B.Game; G.countdownT = 0; const bot = G.actors.find((a) => a.bot); if (bot) for (let k = 0; k < 3; k++) B.Hud.killfeed(G.player, bot, G.player.slots?.[0]?.id || 'pistol', k === 0); });
         await sleep(1500);
         await check('hud-' + mode);
+        // the longest announcement (title + subtitle) in this language, over this mission's HUD
+        await page.evaluate(() => {
+          const B = window.__BR, t = B.t;
+          const pairs = [['b_alarm', 'b_alarmSub'], ['b_lights', 'b_hunt'], ['b_boss', 'b_exit'], ['b_flagReturned'], ['b_waveClear'], ['b_squadOut'], ['b_caseLost'], ['b_hpMove']];
+          const [a, b] = pairs.sort((p, q) => (t(q[0]) + (q[1] ? t(q[1]) : '')).length - (t(p[0]) + (p[1] ? t(p[1]) : '')).length)[0];
+          B.Hud.banner(t(a), b ? t(b) : undefined);
+        });
+        await sleep(400);
+        await check('banner-' + mode);
       }
     }
   } catch (e) { console.log(`FAIL  ${size}  test error: ${e.message.split('\n')[0]}`); total++; }

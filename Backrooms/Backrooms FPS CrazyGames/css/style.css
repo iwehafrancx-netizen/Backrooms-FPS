@@ -681,3 +681,17 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
    the ad button and the kill feed step aside (the card says who got you). */
 #hud:has(.deathcard.on) .vitals, #hud:has(.deathcard.on) .ammo,
 #hud:has(.deathcard.on) .killfeed, #hud:has(.deathcard.on) .ammo-ad { visibility: hidden; }
+
+/* Big announcement banner (alarm, wave, keycard...) on phones: smaller, and in
+   the screen's free middle band so it never lands on the HUD or the buttons.
+   Long translations (fr/pt) wrap inside the band. */
+@media (max-height: 400px) and (orientation: landscape) {
+  .banner { top: 57%; left: 50%; right: auto; transform: translateX(-50%); width: 40vw; }
+  .banner .big { font-size: 18px; letter-spacing: .06em; padding: 6px 12px; max-width: 100%; }
+  .banner .big small { font-size: 10px; letter-spacing: .12em; line-height: 1.4; }
+}
+@media (orientation: portrait) and (max-width: 520px) {
+  .banner { top: 55%; left: 50%; right: auto; transform: translateX(-50%); width: 72vw; }
+  .banner .big { font-size: 22px; letter-spacing: .08em; padding: 8px 14px; max-width: 100%; }
+  .banner .big small { font-size: 11px; letter-spacing: .14em; }
+}

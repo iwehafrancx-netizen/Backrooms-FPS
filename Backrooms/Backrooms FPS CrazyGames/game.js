@@ -4326,7 +4326,7 @@ async function boot() {
   }
 }
 
-if (/[?&]debug\b/.test(location.search)) window.__BR = { Game, Player, Save, MISSIONS, Ui, World, Nav, Hud, Lobby, Audio, Input, Loop, Combat, rayVsSoldier, FX, Arsenal, Platform, Assets, armorMul };
+if (/[?&]debug\b/.test(location.search)) window.__BR = { Game, Player, Save, MISSIONS, Ui, World, Nav, Hud, Lobby, Audio, Input, Loop, Combat, rayVsSoldier, FX, Arsenal, Platform, Assets, armorMul, t };
 
 boot();
 })();
