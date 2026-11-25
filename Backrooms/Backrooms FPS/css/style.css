@@ -698,7 +698,7 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
 /* Kill feed: at most four lines on any screen, and the announcement banner
    always starts below them (it never runs into a long feed). */
 .killfeed .kf:nth-child(n+5) { display: none; }
-@media (min-height: 401px) and (orientation: landscape) { .banner { top: max(30%, 190px); } }
+@media (min-height: 401px) and (orientation: landscape) { .banner { top: max(30%, 260px); } /* below the kill feed (top 130px, up to 4 lines) */ }
 
 /* Taller landscape screens (keyboard, touch and the one-mouse YouTube build): the kill feed sits below the objective text, which can run
    to two lines in long languages, instead of beside it. */
