@@ -705,3 +705,12 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
 @media (min-height: 401px) and (orientation: landscape) {
   .killfeed, body.touch .killfeed { top: 130px; }
 }
+
+/* End screen stat labels (KILLS / DEATHS / …): tighter letter spacing so long
+   translations such as "ÉLIMINATIONS" fit their column on small screens. */
+.end-stats .h-kicker { letter-spacing: .1em; overflow-wrap: anywhere; }
+@media (max-height: 500px), (max-width: 700px) {
+  .end-stats { grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); }
+  .end-stats > div { padding: 6px 3px; }
+  .end-stats .h-kicker { font-size: 12px; letter-spacing: .04em; }
+}
