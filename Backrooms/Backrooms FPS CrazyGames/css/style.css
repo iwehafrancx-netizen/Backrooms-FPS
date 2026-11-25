@@ -727,3 +727,11 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
   .offer-buy .wbuy { grid-template-columns: 1fr; gap: 4px; }
   .offer-buy .wbuy .or { text-align: center; }
 }
+
+/* Portrait phones: kill-feed rows never run past the screen edge (long names
+   are shortened with "…"). */
+@media (orientation: portrait) {
+  .killfeed, body.touch .killfeed { max-width: calc(100vw - 4px); }
+  .killfeed .kf { max-width: 100%; overflow: hidden; }
+  .killfeed .kf > * { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+}
