@@ -659,6 +659,15 @@ const Audio = (() => {
   };
 })();
 
+/* pointer-lock:start */
+const PL = {
+  get el() { return document.pointerLockElement || null; },
+  request(c) { return c.requestPointerLock ? c.requestPointerLock() : undefined; },
+  can(c) { return !!c.requestPointerLock; },
+  exit() { if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); },
+  on(change, error) { document.addEventListener('pointerlockchange', change); document.addEventListener('pointerlockerror', error); },
+};
+/* pointer-lock:end */
 const Input = (() => {
   const keys = new Set();
   const st = {
@@ -696,17 +705,16 @@ const Input = (() => {
   const lockRefused = () => { lockFails++; if (!lockedOnce && lockFails >= 3) lockFailed = true; };
   function requestLock() {
     if (!canvas || st.touch || lockFailed || st.locked || Platform.mouseOnly) return;
-    if (!canvas.requestPointerLock) { lockFailed = true; return; }
+    if (!PL.can(canvas)) { lockFailed = true; return; }
     try {
-      const p = canvas.requestPointerLock && canvas.requestPointerLock();
+      const p = PL.request(canvas);
       if (p && p.catch) p.catch(lockRefused);
     } catch (e) { lockRefused(); }
   }
-  document.addEventListener('pointerlockchange', () => {
-    st.locked = document.pointerLockElement === canvas;
+  PL.on(() => {
+    st.locked = PL.el === canvas;
     if (st.locked) { lockFails = 0; lockedOnce = true; lockFailed = false; }
-  });
-  document.addEventListener('pointerlockerror', lockRefused);
+  }, lockRefused);
 
   function attach(c) {
     canvas = c;
@@ -881,7 +889,7 @@ const Input = (() => {
     get needsLock() { return !st.touch && !lockFailed && !st.locked; },
     enable(on) {
       st.enabled = on; st.pressed.clear(); st.lookX = st.lookY = 0; mouseDown = false; rmb = false;
-      if (!on) { st.touchFire = false; st.touchAds = false; st.interactHeld = false; $$('#touch .tbtn').forEach((b) => b.classList.remove('on')); if (document.pointerLockElement) document.exitPointerLock(); }
+      if (!on) { st.touchFire = false; st.touchAds = false; st.interactHeld = false; $$('#touch .tbtn').forEach((b) => b.classList.remove('on')); PL.exit(); }
     },
     resetToggles() { st.crouchToggle = false; st.touchAds = false; $$('#touch .tbtn').forEach((b) => b.classList.remove('on')); },
     sample(dt) {
@@ -910,7 +918,7 @@ const Input = (() => {
 })();
 
 const LIBS = [
-  ['lib/three/three.min.js', 700], ['lib/three/GLTFLoader.js', 46], ['lib/three/PointerLockControls.js', 3],
+  ['lib/three/three.min.js', 700], ['lib/three/GLTFLoader.js', 46],
   ['lib/three/SkeletonUtils.js', 5], ['lib/three/postprocessing.js', 19],
   ['lib/ai/yuka.min.js', 123], ['lib/navigation/recast-navigation.js', 790],
 ];
@@ -4026,7 +4034,7 @@ const Game = {
   },
   holdForAd() {
     this.paused = true; Input.enable(false); document.body.classList.remove('ingame');
-    if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
+    PL.exit();
     Platform.gameplayStop();
   },
   releaseAfterAd() {

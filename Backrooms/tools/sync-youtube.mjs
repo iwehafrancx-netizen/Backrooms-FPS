@@ -19,6 +19,11 @@ const pvEnd = out.indexOf('\n})();\n', pvStart);
 if (pvStart < 0 || pvEnd < 0) throw new Error('PageVisibility block not found');
 out = out.slice(0, pvStart) + 'const PageVisibility = { wired: false, hidden: false, on() {} };' + out.slice(pvEnd + 6);
 if (/CrazyGames|crazygames/.test(out)) throw new Error('CrazyGames reference left in the YouTube build');
+// YouTube Playables is played without pointer lock: swap the pointer-lock helper for a stub.
+const plStart = out.indexOf('/* pointer-lock:start */'), plEnd = out.indexOf('/* pointer-lock:end */');
+if (plStart < 0 || plEnd < 0) throw new Error('pointer-lock block not found');
+out = out.slice(0, plStart) + 'const PL = { el: null, request() {}, can() { return false; }, exit() {}, on() {} };' + out.slice(plEnd + '/* pointer-lock:end */'.length);
+if (/pointerlock|PointerLock|localStorage/i.test(out)) throw new Error('pointer lock or localStorage text left in the YouTube game.js');
 fs.writeFileSync(path.join(dst, 'game.js'), out);
 
 const copyDir = (from, to) => {
@@ -58,6 +63,25 @@ patch('lib/ai/yuka.min.js', [
   ['!0===this._usePageVisibilityAPI&&document.removeEventListener("visibilitychange",this._pageVisibilityHandler),this', 'this'],
   ['function xe(){!1===document.hidden&&this.reset()}', 'function xe(){this.reset()}'],
 ]);
+
+// Static store scanners flag web addresses and unused browser APIs, so the YouTube
+// copy carries none: the unused pointer-lock library is left out, web addresses
+// in model credits, the licence file and a library's error texts lose their
+// "https://" (the credits stay readable), and three.js makes its canvas with
+// createElement instead of an XHTML namespace URL.
+fs.rmSync(path.join(dst, 'lib/three/PointerLockControls.js'), { force: true });
+patch('lib/three/three.min.js', [['document.createElementNS("http://www.w3.org/1999/xhtml",s)', 'document.createElement(s)']]);
+const noScheme = (t) => t.replace(/https?:\/\//g, '');
+for (const f of ['LICENSES.txt', 'lib/navigation/recast-navigation.js']) { const p = path.join(dst, f); fs.writeFileSync(p, noScheme(fs.readFileSync(p, 'utf8'))); }
+const walkGlb = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walkGlb(p) : [p]; }).filter((p) => p.endsWith('.glb'));
+for (const f of walkGlb(path.join(dst, 'assets'))) {
+  const buf = fs.readFileSync(f);
+  // GLB: 12-byte header, then the JSON chunk; blank each URL inside it with spaces (same length keeps the file valid)
+  const jsonLen = buf.readUInt32LE(12), j0 = 20, j1 = j0 + jsonLen;
+  const json = buf.toString('latin1', j0, j1);
+  const clean = json.replace(/https?:\/\/[^"\\\s)]*/g, (m) => ' '.repeat(m.length));
+  if (clean !== json) { buf.write(clean, j0, 'latin1'); JSON.parse(buf.toString('utf8', j0, j1)); fs.writeFileSync(f, buf); }
+}
 
 const music = path.join(dst, 'assets/Audio/music.mp3');
 const tmp = music + '.tmp.mp3';

@@ -341,6 +341,7 @@ const PageVisibility = { wired: false, hidden: false, on() {} };
 const Platform = (() => {
   const safe = (fn, fallback) => { try { return fn(); } catch (e) { return fallback; } };
   const KEY = 'backrooms.save';
+  let memSave = '';
   let yt = null, inPlayables = false, firstFrameSent = false, readySent = false, adBusy = false, adCooldownUntil = 0;
   const api = {
     async init() {
@@ -366,11 +367,11 @@ const Platform = (() => {
     onResume(cb) { if (inPlayables) safe(() => yt.system.onResume(cb)); },
     async loadData() {
       if (inPlayables) return safe(() => yt.game.loadData(), Promise.resolve('')).catch(() => { api.logWarning(); return ''; });
-      return safe(() => localStorage.getItem(KEY) || '', '');
+      return memSave; // outside YouTube (local testing) the save lives only in memory
     },
     async saveData(str) {
       if (inPlayables) return safe(() => yt.game.saveData(str), Promise.resolve()).catch(() => api.logWarning());
-      safe(() => localStorage.setItem(KEY, str));
+      memSave = String(str || '');
     },
     sendScore(value) { if (inPlayables) safe(() => yt.engagement.sendScore({ value: Math.floor(value) }).catch(() => {})); },
     logError() { if (inPlayables) safe(() => yt.health.logError()); },
@@ -635,6 +636,7 @@ const Audio = (() => {
   };
 })();
 
+const PL = { el: null, request() {}, can() { return false; }, exit() {}, on() {} };
 const Input = (() => {
   const keys = new Set();
   const st = {
@@ -672,17 +674,16 @@ const Input = (() => {
   const lockRefused = () => { lockFails++; if (!lockedOnce && lockFails >= 3) lockFailed = true; };
   function requestLock() {
     if (!canvas || st.touch || lockFailed || st.locked || Platform.mouseOnly) return;
-    if (!canvas.requestPointerLock) { lockFailed = true; return; }
+    if (!PL.can(canvas)) { lockFailed = true; return; }
     try {
-      const p = canvas.requestPointerLock && canvas.requestPointerLock();
+      const p = PL.request(canvas);
       if (p && p.catch) p.catch(lockRefused);
     } catch (e) { lockRefused(); }
   }
-  document.addEventListener('pointerlockchange', () => {
-    st.locked = document.pointerLockElement === canvas;
+  PL.on(() => {
+    st.locked = PL.el === canvas;
     if (st.locked) { lockFails = 0; lockedOnce = true; lockFailed = false; }
-  });
-  document.addEventListener('pointerlockerror', lockRefused);
+  }, lockRefused);
 
   function attach(c) {
     canvas = c;
@@ -857,7 +858,7 @@ const Input = (() => {
     get needsLock() { return !st.touch && !lockFailed && !st.locked; },
     enable(on) {
       st.enabled = on; st.pressed.clear(); st.lookX = st.lookY = 0; mouseDown = false; rmb = false;
-      if (!on) { st.touchFire = false; st.touchAds = false; st.interactHeld = false; $$('#touch .tbtn').forEach((b) => b.classList.remove('on')); if (document.pointerLockElement) document.exitPointerLock(); }
+      if (!on) { st.touchFire = false; st.touchAds = false; st.interactHeld = false; $$('#touch .tbtn').forEach((b) => b.classList.remove('on')); PL.exit(); }
     },
     resetToggles() { st.crouchToggle = false; st.touchAds = false; $$('#touch .tbtn').forEach((b) => b.classList.remove('on')); },
     sample(dt) {
@@ -886,7 +887,7 @@ const Input = (() => {
 })();
 
 const LIBS = [
-  ['lib/three/three.min.js', 700], ['lib/three/GLTFLoader.js', 46], ['lib/three/PointerLockControls.js', 3],
+  ['lib/three/three.min.js', 700], ['lib/three/GLTFLoader.js', 46],
   ['lib/three/SkeletonUtils.js', 5], ['lib/three/postprocessing.js', 19],
   ['lib/ai/yuka.min.js', 123], ['lib/navigation/recast-navigation.js', 790],
 ];
@@ -4002,7 +4003,7 @@ const Game = {
   },
   holdForAd() {
     this.paused = true; Input.enable(false); document.body.classList.remove('ingame');
-    if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
+    PL.exit();
     Platform.gameplayStop();
   },
   releaseAfterAd() {

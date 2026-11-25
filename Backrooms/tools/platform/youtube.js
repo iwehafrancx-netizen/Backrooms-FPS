@@ -1,6 +1,7 @@
 const Platform = (() => {
   const safe = (fn, fallback) => { try { return fn(); } catch (e) { return fallback; } };
   const KEY = 'backrooms.save';
+  let memSave = '';
   let yt = null, inPlayables = false, firstFrameSent = false, readySent = false, adBusy = false, adCooldownUntil = 0;
   const api = {
     async init() {
@@ -26,11 +27,11 @@ const Platform = (() => {
     onResume(cb) { if (inPlayables) safe(() => yt.system.onResume(cb)); },
     async loadData() {
       if (inPlayables) return safe(() => yt.game.loadData(), Promise.resolve('')).catch(() => { api.logWarning(); return ''; });
-      return safe(() => localStorage.getItem(KEY) || '', '');
+      return memSave; // outside YouTube (local testing) the save lives only in memory
     },
     async saveData(str) {
       if (inPlayables) return safe(() => yt.game.saveData(str), Promise.resolve()).catch(() => api.logWarning());
-      safe(() => localStorage.setItem(KEY, str));
+      memSave = String(str || '');
     },
     sendScore(value) { if (inPlayables) safe(() => yt.engagement.sendScore({ value: Math.floor(value) }).catch(() => {})); },
     logError() { if (inPlayables) safe(() => yt.health.logError()); },
