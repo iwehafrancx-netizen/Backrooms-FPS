@@ -714,3 +714,16 @@ body:not(.ingame) #hud .crosshair { opacity: 0; }
   .end-stats > div { padding: 6px 3px; }
   .end-stats .h-kicker { font-size: 12px; letter-spacing: .04em; }
 }
+
+/* Portrait phones: the main menu (logo, tagline, buttons, rank card) fits the
+   height in every language; the weapon offer stacks BUY / OR / WATCH AN AD so a
+   long "watch an ad" label never runs into "OR". */
+@media (orientation: portrait) and (max-width: 700px) {
+  .menu-logo { font-size: 34px; }
+  .menu-left { gap: 7px; }
+  .menu-logo small { margin-top: 6px; }
+}
+@media (max-width: 480px) {
+  .offer-buy .wbuy { grid-template-columns: 1fr; gap: 4px; }
+  .offer-buy .wbuy .or { text-align: center; }
+}
