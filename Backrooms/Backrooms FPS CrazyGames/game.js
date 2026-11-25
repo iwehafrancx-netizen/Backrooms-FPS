@@ -15,6 +15,9 @@ const fmtTime = (s) => { s = Math.max(0, Math.ceil(s)); return `${Math.floor(s /
 const fmtNum = (n) => Math.round(n).toLocaleString('en-US');
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+// A timer that waits while the game is paused (pause menu or a platform pause),
+// so nothing in a match happens behind the pause screen.
+const later = (fn, ms) => setTimeout(function go() { if (typeof Game !== 'undefined' && (Game.paused || Game.sysPaused)) setTimeout(go, 150); else fn(); }, ms);
 const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -152,15 +155,15 @@ const STR = {
     campaignComplete: 'CAMPAIGN COMPLETE', campaignText: 'You walked out of Level 0. Every operation is cleared and every mission stays open to replay. Want the full climb again?', startOver: 'Start over', keepPlaying: 'Keep playing',
     confirmReset: 'Reset the campaign? Mission progress and best scores are wiped. Settings are kept.', yes: 'Yes, reset', cancel: 'Cancel',
     paused: 'PAUSED',
-    sens: 'Look sensitivity', invert: 'Invert look (Y)', fov: 'Field of view', quality: 'Graphics quality', volume: 'Master volume', music: 'Music volume', language: 'Language', credits: 'Credits', showFps: 'Show FPS', touchSize: 'Touch button size', aimAssist: 'Aim assist (touch/gamepad)', autoFire: 'Auto-fire (touch)', resetCampaign: 'Reset campaign', auto: 'AUTO', low: 'LOW', med: 'MED', high: 'HIGH',
-    ctlDesktop: 'KEYBOARD & MOUSE', ctlTouch: 'TOUCH', ctlPad: 'GAMEPAD',
+    sens: 'Look sensitivity', invert: 'Invert look (Y)', fov: 'Field of view', quality: 'Graphics quality', volume: 'Master volume', music: 'Music volume', language: 'Language', credits: 'Credits', touchSize: 'Touch button size', aimAssist: 'Aim assist (touch/gamepad)', autoFire: 'Auto-fire (touch)', resetCampaign: 'Reset campaign', auto: 'AUTO', low: 'LOW', med: 'MED', high: 'HIGH',
+    ctlDesktop: 'KEYBOARD & MOUSE', ctlTouch: 'TOUCH', ctlMouse: 'MOUSE / TOUCH', ctlPad: 'GAMEPAD',
     move: 'Move', look: 'Look', fire: 'Fire', aim: 'Aim down sights', reload: 'Reload', jump: 'Jump', crouch: 'Crouch', sprint: 'Sprint', swap: 'Swap weapon', interact: 'Interact / hold', pauseK: 'Pause',
     leftStick: 'Left stick', rightStick: 'Right stick', dragRight: 'Drag right side', joystick: 'Left joystick (push to edge = sprint)',
     eliminated: 'ELIMINATED', headshot: 'HEADSHOT', youDied: 'K.I.A.', killedBy: 'KILLED BY {n}', respawnIn: 'REDEPLOY IN {s}', outOfLives: 'NO LIVES LEFT', spectating: 'SPECTATING {n}', youAreOut: 'YOU ARE OUT — YOUR SQUAD FIGHTS ON',
     reloading: 'RELOADING', noAmmo: 'NO AMMO', lives: 'LIVES {n}', you: 'YOU',
     pressHold: 'HOLD', pickUp: 'PICK UP', useExit: 'EXTRACT', pressButton: 'OVERRIDE',
     insertion: 'INSERTION', go: 'GO',
-    fpsWord: 'FPS',
+   
     o_ctf: 'CAPTURE THE ENEMY FLAG — <b>{a}</b> / {t}', o_ctfCarry: 'YOU HAVE THE FLAG — <b>RUN IT HOME</b>', o_ctfTaken: 'YOUR FLAG IS TAKEN — <b>STOP THE CARRIER</b>', o_ctfWait: 'GET YOUR FLAG BACK — <b>YOU CANNOT SCORE</b>', o_lss: 'LAST SQUAD STANDING — <b>{n}</b> SQUADS LEFT', b_flagYou: 'YOU HAVE THE FLAG', b_flagAlly: 'WE HAVE THEIR FLAG', b_flagTaken: 'OUR FLAG IS TAKEN', b_flagDropped: 'FLAG DROPPED', b_flagReturned: 'OUR FLAG IS BACK', b_flagReset: 'ENEMY FLAG RESET', b_capture: 'FLAG CAPTURED', b_enemyCapture: 'THEY CAPTURED OUR FLAG', b_zone: 'THE ZONE IS CLOSING', b_outside: 'GET BACK IN THE ZONE', f_ours: 'OUR FLAG', f_theirs: 'ENEMY FLAG', f_home: 'CAPTURE', f_dropped: 'DROPPED', r_ctfLost: 'The enemy captured three flags.',
     o_ext: 'ELIMINATE HOSTILES — <b>{k}</b> / {t}', o_tdm: 'FIRST TEAM TO <b>{t}</b> ELIMINATIONS', o_key: 'RECOVER KEYCARDS — <b>{k}</b> / 3', o_exit: 'KEYCARDS SECURED — <b>REACH THE LIFT</b>', o_duel: 'FIRST TO <b>{t}</b> — TAKE DOWN THE MIMIC',
     o_surv: 'SQUADS REMAINING — <b>{n}</b>', o_brief: '<b>{h}</b> HAS THE BRIEFCASE — TAKE IT BACK', o_briefNone: 'GRAB THE BRIEFCASE', o_briefYou: '<b>YOU HAVE THE BRIEFCASE</b> — HOLD IT UNTIL TIME RUNS OUT',
@@ -180,11 +183,11 @@ const STR = {
     kills: 'BAJAS', deaths: 'MUERTES', accuracy: 'PRECISIÓN', headshots: 'TIROS A LA CABEZA', time: 'TIEMPO',
     unlocked: 'NUEVA OPERACIÓN DESBLOQUEADA', campaignComplete: 'CAMPAÑA COMPLETADA', campaignText: 'Escapaste del Nivel 0. Todas las operaciones superadas, y puedes repetir cualquier misión. ¿Empezar la escalada otra vez?', startOver: 'Empezar de nuevo', keepPlaying: 'Seguir jugando',
     confirmReset: '¿Reiniciar la campaña? Se borran el progreso y los récords. Los ajustes se conservan.', yes: 'Sí, reiniciar', cancel: 'Cancelar', paused: 'PAUSA',
-    sens: 'Sensibilidad', invert: 'Invertir eje Y', fov: 'Campo de visión', quality: 'Calidad gráfica', volume: 'Volumen general', music: 'Volumen de la música', language: 'Idioma', credits: 'Créditos', showFps: 'Mostrar FPS', touchSize: 'Tamaño de botones', aimAssist: 'Asistencia de apuntado', autoFire: 'Disparo automático (táctil)', resetCampaign: 'Reiniciar campaña', auto: 'AUTO', low: 'BAJA', med: 'MEDIA', high: 'ALTA',
-    ctlDesktop: 'TECLADO Y RATÓN', ctlTouch: 'TÁCTIL', ctlPad: 'MANDO', move: 'Mover', look: 'Mirar', fire: 'Disparar', aim: 'Apuntar', reload: 'Recargar', jump: 'Saltar', crouch: 'Agacharse', sprint: 'Correr', swap: 'Cambiar arma', interact: 'Interactuar / mantener', pauseK: 'Pausa',
+    sens: 'Sensibilidad', invert: 'Invertir eje Y', fov: 'Campo de visión', quality: 'Calidad gráfica', volume: 'Volumen general', music: 'Volumen de la música', language: 'Idioma', credits: 'Créditos', touchSize: 'Tamaño de botones', aimAssist: 'Asistencia de apuntado', autoFire: 'Disparo automático (táctil)', resetCampaign: 'Reiniciar campaña', auto: 'AUTO', low: 'BAJA', med: 'MEDIA', high: 'ALTA',
+    ctlDesktop: 'TECLADO Y RATÓN', ctlTouch: 'TÁCTIL', ctlMouse: 'RATÓN / TÁCTIL', ctlPad: 'MANDO', move: 'Mover', look: 'Mirar', fire: 'Disparar', aim: 'Apuntar', reload: 'Recargar', jump: 'Saltar', crouch: 'Agacharse', sprint: 'Correr', swap: 'Cambiar arma', interact: 'Interactuar / mantener', pauseK: 'Pausa',
     leftStick: 'Stick izquierdo', rightStick: 'Stick derecho', dragRight: 'Arrastra a la derecha', joystick: 'Joystick izquierdo (al borde = correr)',
     eliminated: 'ELIMINADO', headshot: 'A LA CABEZA', youDied: 'CAÍDO', killedBy: 'ELIMINADO POR {n}', respawnIn: 'REAPARECES EN {s}', outOfLives: 'SIN VIDAS', spectating: 'OBSERVANDO A {n}', youAreOut: 'ESTÁS FUERA — TU EQUIPO SIGUE LUCHANDO',
-    reloading: 'RECARGANDO', noAmmo: 'SIN MUNICIÓN', lives: 'VIDAS {n}', you: 'TÚ', pressHold: 'MANTÉN', pickUp: 'RECOGER', useExit: 'EXTRAER', pressButton: 'ANULAR', insertion: 'INSERCIÓN', go: 'YA', fpsWord: 'FPS',
+    reloading: 'RECARGANDO', noAmmo: 'SIN MUNICIÓN', lives: 'VIDAS {n}', you: 'TÚ', pressHold: 'MANTÉN', pickUp: 'RECOGER', useExit: 'EXTRAER', pressButton: 'ANULAR', insertion: 'INSERCIÓN', go: 'YA',
     o_ctf: 'CAPTURA LA BANDERA ENEMIGA — <b>{a}</b> / {t}', o_ctfCarry: 'TIENES LA BANDERA — <b>LLÉVALA A TU BASE</b>', o_ctfTaken: 'TE ROBARON LA BANDERA — <b>DETÉN AL PORTADOR</b>', o_ctfWait: 'RECUPERA TU BANDERA — <b>NO PUEDES ANOTAR</b>', o_lss: 'ÚLTIMO ESCUADRÓN EN PIE — QUEDAN <b>{n}</b>', b_flagYou: 'TIENES LA BANDERA', b_flagAlly: 'TENEMOS SU BANDERA', b_flagTaken: 'NOS ROBARON LA BANDERA', b_flagDropped: 'BANDERA SOLTADA', b_flagReturned: 'NUESTRA BANDERA VOLVIÓ', b_flagReset: 'BANDERA ENEMIGA REINICIADA', b_capture: 'BANDERA CAPTURADA', b_enemyCapture: 'CAPTURARON NUESTRA BANDERA', b_zone: 'LA ZONA SE CIERRA', b_outside: 'VUELVE A LA ZONA', f_ours: 'NUESTRA BANDERA', f_theirs: 'BANDERA ENEMIGA', f_home: 'CAPTURAR', f_dropped: 'SOLTADA', r_ctfLost: 'El enemigo capturó tres banderas.',
     o_ext: 'ELIMINA HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PRIMER EQUIPO EN <b>{t}</b> BAJAS', o_key: 'RECUPERA TARJETAS — <b>{k}</b> / 3', o_exit: 'TARJETAS LISTAS — <b>LLEGA AL ASCENSOR</b>', o_duel: 'PRIMERO A <b>{t}</b> — DERRIBA AL MIMIC',
     o_surv: 'EQUIPOS RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> TIENE EL MALETÍN — RECUPÉRALO', o_briefNone: 'COGE EL MALETÍN', o_briefYou: '<b>TIENES EL MALETÍN</b> — AGUANTA HASTA QUE ACABE EL TIEMPO', o_siege: 'ANULA LOS DOS INTERRUPTORES ENEMIGOS — <b>{a}</b> / 2',
@@ -203,11 +206,11 @@ const STR = {
     kills: 'ABATES', deaths: 'MORTES', accuracy: 'PRECISÃO', headshots: 'NA CABEÇA', time: 'TEMPO',
     unlocked: 'NOVA OPERAÇÃO LIBERADA', campaignComplete: 'CAMPANHA CONCLUÍDA', campaignText: 'Você saiu do Nível 0. Todas as operações foram concluídas e qualquer missão pode ser jogada de novo. Encarar a subida outra vez?', startOver: 'Recomeçar', keepPlaying: 'Continuar jogando',
     confirmReset: 'Reiniciar a campanha? O progresso e os recordes serão apagados. As configurações são mantidas.', yes: 'Sim, reiniciar', cancel: 'Cancelar', paused: 'PAUSADO',
-    sens: 'Sensibilidade', invert: 'Inverter eixo Y', fov: 'Campo de visão', quality: 'Qualidade gráfica', volume: 'Volume geral', music: 'Volume da música', language: 'Idioma', credits: 'Créditos', showFps: 'Mostrar FPS', touchSize: 'Tamanho dos botões', aimAssist: 'Assistência de mira', autoFire: 'Disparo automático (toque)', resetCampaign: 'Reiniciar campanha', auto: 'AUTO', low: 'BAIXA', med: 'MÉDIA', high: 'ALTA',
-    ctlDesktop: 'TECLADO E MOUSE', ctlTouch: 'TOQUE', ctlPad: 'CONTROLE', move: 'Mover', look: 'Olhar', fire: 'Atirar', aim: 'Mirar', reload: 'Recarregar', jump: 'Pular', crouch: 'Agachar', sprint: 'Correr', swap: 'Trocar arma', interact: 'Interagir / segurar', pauseK: 'Pausar',
+    sens: 'Sensibilidade', invert: 'Inverter eixo Y', fov: 'Campo de visão', quality: 'Qualidade gráfica', volume: 'Volume geral', music: 'Volume da música', language: 'Idioma', credits: 'Créditos', touchSize: 'Tamanho dos botões', aimAssist: 'Assistência de mira', autoFire: 'Disparo automático (toque)', resetCampaign: 'Reiniciar campanha', auto: 'AUTO', low: 'BAIXA', med: 'MÉDIA', high: 'ALTA',
+    ctlDesktop: 'TECLADO E MOUSE', ctlTouch: 'TOQUE', ctlMouse: 'MOUSE / TOQUE', ctlPad: 'CONTROLE', move: 'Mover', look: 'Olhar', fire: 'Atirar', aim: 'Mirar', reload: 'Recarregar', jump: 'Pular', crouch: 'Agachar', sprint: 'Correr', swap: 'Trocar arma', interact: 'Interagir / segurar', pauseK: 'Pausar',
     leftStick: 'Analógico esquerdo', rightStick: 'Analógico direito', dragRight: 'Arraste à direita', joystick: 'Joystick esquerdo (na borda = correr)',
     eliminated: 'ELIMINADO', headshot: 'NA CABEÇA', youDied: 'ABATIDO', killedBy: 'ABATIDO POR {n}', respawnIn: 'RETORNO EM {s}', outOfLives: 'SEM VIDAS', spectating: 'ASSISTINDO {n}', youAreOut: 'VOCÊ ESTÁ FORA — SEU ESQUADRÃO CONTINUA',
-    reloading: 'RECARREGANDO', noAmmo: 'SEM MUNIÇÃO', lives: 'VIDAS {n}', you: 'VOCÊ', pressHold: 'SEGURE', pickUp: 'PEGAR', useExit: 'EXTRAIR', pressButton: 'SOBRESCREVER', insertion: 'INSERÇÃO', go: 'VAI', fpsWord: 'FPS',
+    reloading: 'RECARREGANDO', noAmmo: 'SEM MUNIÇÃO', lives: 'VIDAS {n}', you: 'VOCÊ', pressHold: 'SEGURE', pickUp: 'PEGAR', useExit: 'EXTRAIR', pressButton: 'SOBRESCREVER', insertion: 'INSERÇÃO', go: 'VAI',
     o_ctf: 'CAPTURE A BANDEIRA INIMIGA — <b>{a}</b> / {t}', o_ctfCarry: 'VOCÊ ESTÁ COM A BANDEIRA — <b>LEVE PARA A BASE</b>', o_ctfTaken: 'ROUBARAM SUA BANDEIRA — <b>PARE O PORTADOR</b>', o_ctfWait: 'RECUPERE SUA BANDEIRA — <b>NÃO DÁ PARA PONTUAR</b>', o_lss: 'ÚLTIMO ESQUADRÃO DE PÉ — RESTAM <b>{n}</b>', b_flagYou: 'A BANDEIRA É SUA', b_flagAlly: 'PEGAMOS A BANDEIRA DELES', b_flagTaken: 'ROUBARAM NOSSA BANDEIRA', b_flagDropped: 'BANDEIRA CAIU', b_flagReturned: 'NOSSA BANDEIRA VOLTOU', b_flagReset: 'BANDEIRA INIMIGA VOLTOU', b_capture: 'BANDEIRA CAPTURADA', b_enemyCapture: 'CAPTURARAM NOSSA BANDEIRA', b_zone: 'A ZONA ESTÁ FECHANDO', b_outside: 'VOLTE PARA A ZONA', f_ours: 'NOSSA BANDEIRA', f_theirs: 'BANDEIRA INIMIGA', f_home: 'CAPTURAR', f_dropped: 'CAÍDA', r_ctfLost: 'O inimigo capturou três bandeiras.',
     o_ext: 'ELIMINE HOSTIS — <b>{k}</b> / {t}', o_tdm: 'PRIMEIRA EQUIPE A <b>{t}</b> ABATES', o_key: 'RECUPERE CARTÕES — <b>{k}</b> / 3', o_exit: 'CARTÕES OK — <b>VÁ ATÉ O ELEVADOR</b>', o_duel: 'PRIMEIRO A <b>{t}</b> — DERRUBE O MIMIC',
     o_surv: 'ESQUADRÕES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> ESTÁ COM A MALETA — RECUPERE', o_briefNone: 'PEGUE A MALETA', o_briefYou: '<b>VOCÊ ESTÁ COM A MALETA</b> — SEGURE ATÉ O TEMPO ACABAR', o_siege: 'SOBRESCREVA OS DOIS INTERRUPTORES INIMIGOS — <b>{a}</b> / 2',
@@ -226,11 +229,11 @@ const STR = {
     kills: 'ÉLIMINATIONS', deaths: 'MORTS', accuracy: 'PRÉCISION', headshots: 'TIRS À LA TÊTE', time: 'TEMPS',
     unlocked: 'NOUVELLE OPÉRATION DÉBLOQUÉE', campaignComplete: 'CAMPAGNE TERMINÉE', campaignText: 'Vous êtes sorti du Niveau 0. Toutes les opérations sont terminées et chaque mission peut être rejouée. Repartir de zéro ?', startOver: 'Recommencer', keepPlaying: 'Continuer',
     confirmReset: 'Réinitialiser la campagne ? La progression et les records seront effacés. Les options sont conservées.', yes: 'Oui, réinitialiser', cancel: 'Annuler', paused: 'PAUSE',
-    sens: 'Sensibilité', invert: 'Inverser l’axe Y', fov: 'Champ de vision', quality: 'Qualité graphique', volume: 'Volume général', music: 'Volume de la musique', language: 'Langue', credits: 'Crédits', showFps: 'Afficher les FPS', touchSize: 'Taille des boutons', aimAssist: 'Aide à la visée', autoFire: 'Tir automatique (tactile)', resetCampaign: 'Réinitialiser la campagne', auto: 'AUTO', low: 'BAS', med: 'MOY', high: 'HAUT',
-    ctlDesktop: 'CLAVIER ET SOURIS', ctlTouch: 'TACTILE', ctlPad: 'MANETTE', move: 'Se déplacer', look: 'Regarder', fire: 'Tirer', aim: 'Viser', reload: 'Recharger', jump: 'Sauter', crouch: 'S’accroupir', sprint: 'Sprinter', swap: 'Changer d’arme', interact: 'Interagir / maintenir', pauseK: 'Pause',
+    sens: 'Sensibilité', invert: 'Inverser l’axe Y', fov: 'Champ de vision', quality: 'Qualité graphique', volume: 'Volume général', music: 'Volume de la musique', language: 'Langue', credits: 'Crédits', touchSize: 'Taille des boutons', aimAssist: 'Aide à la visée', autoFire: 'Tir automatique (tactile)', resetCampaign: 'Réinitialiser la campagne', auto: 'AUTO', low: 'BAS', med: 'MOY', high: 'HAUT',
+    ctlDesktop: 'CLAVIER ET SOURIS', ctlTouch: 'TACTILE', ctlMouse: 'SOURIS / TACTILE', ctlPad: 'MANETTE', move: 'Se déplacer', look: 'Regarder', fire: 'Tirer', aim: 'Viser', reload: 'Recharger', jump: 'Sauter', crouch: 'S’accroupir', sprint: 'Sprinter', swap: 'Changer d’arme', interact: 'Interagir / maintenir', pauseK: 'Pause',
     leftStick: 'Stick gauche', rightStick: 'Stick droit', dragRight: 'Glisser à droite', joystick: 'Joystick gauche (au bord = sprint)',
     eliminated: 'ÉLIMINÉ', headshot: 'TIR À LA TÊTE', youDied: 'TOMBÉ', killedBy: 'ÉLIMINÉ PAR {n}', respawnIn: 'RETOUR DANS {s}', outOfLives: 'PLUS DE VIES', spectating: 'SPECTATEUR : {n}', youAreOut: 'VOUS ÊTES HORS JEU — VOTRE ESCOUADE CONTINUE',
-    reloading: 'RECHARGEMENT', noAmmo: 'PLUS DE MUNITIONS', lives: 'VIES {n}', you: 'VOUS', pressHold: 'MAINTENIR', pickUp: 'RAMASSER', useExit: 'EXTRAIRE', pressButton: 'FORCER', insertion: 'INSERTION', go: 'GO', fpsWord: 'FPS',
+    reloading: 'RECHARGEMENT', noAmmo: 'PLUS DE MUNITIONS', lives: 'VIES {n}', you: 'VOUS', pressHold: 'MAINTENIR', pickUp: 'RAMASSER', useExit: 'EXTRAIRE', pressButton: 'FORCER', insertion: 'INSERTION', go: 'GO',
     o_ctf: 'CAPTUREZ LE DRAPEAU ENNEMI — <b>{a}</b> / {t}', o_ctfCarry: 'VOUS AVEZ LE DRAPEAU — <b>RAMENEZ-LE</b>', o_ctfTaken: 'VOTRE DRAPEAU EST PRIS — <b>ARRÊTEZ LE PORTEUR</b>', o_ctfWait: 'RÉCUPÉREZ VOTRE DRAPEAU — <b>IMPOSSIBLE DE MARQUER</b>', o_lss: 'DERNIÈRE ESCOUADE — <b>{n}</b> RESTANTES', b_flagYou: 'VOUS AVEZ LE DRAPEAU', b_flagAlly: 'NOUS AVONS LEUR DRAPEAU', b_flagTaken: 'NOTRE DRAPEAU EST PRIS', b_flagDropped: 'DRAPEAU LÂCHÉ', b_flagReturned: 'NOTRE DRAPEAU EST REVENU', b_flagReset: 'DRAPEAU ENNEMI REPLACÉ', b_capture: 'DRAPEAU CAPTURÉ', b_enemyCapture: 'ILS ONT CAPTURÉ NOTRE DRAPEAU', b_zone: 'LA ZONE SE RÉDUIT', b_outside: 'REVENEZ DANS LA ZONE', f_ours: 'NOTRE DRAPEAU', f_theirs: 'DRAPEAU ENNEMI', f_home: 'CAPTURER', f_dropped: 'LÂCHÉ', r_ctfLost: 'L’ennemi a capturé trois drapeaux.',
     o_ext: 'ÉLIMINEZ LES HOSTILES — <b>{k}</b> / {t}', o_tdm: 'PREMIÈRE ÉQUIPE À <b>{t}</b> ÉLIMINATIONS', o_key: 'RÉCUPÉREZ LES CARTES — <b>{k}</b> / 3', o_exit: 'CARTES OK — <b>REJOIGNEZ L’ASCENSEUR</b>', o_duel: 'PREMIER À <b>{t}</b> — ABATTEZ LE MIMIC',
     o_surv: 'ESCOUADES RESTANTES — <b>{n}</b>', o_brief: '<b>{h}</b> A LA MALLETTE — REPRENEZ-LA', o_briefNone: 'PRENEZ LA MALLETTE', o_briefYou: '<b>VOUS AVEZ LA MALLETTE</b> — GARDEZ-LA JUSQU’À LA FIN DU TEMPS', o_siege: 'FORCEZ LES DEUX INTERRUPTEURS ENNEMIS — <b>{a}</b> / 2',
@@ -446,7 +449,7 @@ const Ads = {
   },
 };
 
-const DEFAULT_SETTINGS = { sens: 1, invert: false, fov: 80, quality: 'auto', volume: 0.8, music: 0.5, lang: 'auto', fps: false, touchScale: 1, aimAssist: true, autoFire: false };
+const DEFAULT_SETTINGS = { sens: 1, invert: false, fov: 80, quality: 'auto', volume: 0.8, music: 0.5, lang: 'auto', touchScale: 1, aimAssist: true, autoFire: false };
 const Save = {
   data: { v: 1, unlocked: 1, missions: {}, settings: { ...DEFAULT_SETTINGS }, loadout: { primary: 'none', secondary: 'pistol' }, xp: 0, completedOnce: false, sentScore: 0, cp: 0, owned: [], played: 0 },
   async load() {
@@ -519,7 +522,7 @@ const Arsenal = {
 
 const Audio = (() => {
   let ctx = null, master = null, sfx = null, mus = null, noiseBuf = null, musicEl = null, musicSrc = null, wantMusic = false, musicTimer = 0;
-  let platformOn = true, suspended = false, adMuted = false;
+  let platformOn = true, suspended = false, adMuted = false, held = false;
   const listener = { x: 0, z: 0, yaw: 0 };
   function ensure() {
     if (ctx) return ctx;
@@ -533,7 +536,7 @@ const Audio = (() => {
     noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
     const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     applyVolume();
-    if (!platformOn || suspended) ctx.suspend().catch(() => {});
+    if (!platformOn || suspended || held) ctx.suspend().catch(() => {});
     wireMusic();
     return ctx;
   }
@@ -544,11 +547,11 @@ const Audio = (() => {
   }
   function syncMusic() {
     if (!ctx || !musicEl || !musicSrc) return;
-    const on = wantMusic && platformOn && !suspended && !adMuted;
+    const on = wantMusic && platformOn && !suspended && !held && !adMuted;
     mus.gain.setTargetAtTime(on ? Save.settings.music : 0, ctx.currentTime, on ? 0.6 : 0.25);
     clearTimeout(musicTimer);
     if (on) { if (musicEl.paused) musicEl.play().catch(() => {}); }
-    else musicTimer = setTimeout(() => { if (!(wantMusic && platformOn && !suspended && !adMuted)) musicEl.pause(); }, suspended || adMuted || !platformOn ? 0 : 1500);
+    else musicTimer = setTimeout(() => { if (!(wantMusic && platformOn && !suspended && !held && !adMuted)) musicEl.pause(); }, suspended || held || adMuted || !platformOn ? 0 : 1500);
   }
   function loadMusic(buf) {
     if (musicEl) return;
@@ -560,15 +563,17 @@ const Audio = (() => {
   function setMusic(on) { wantMusic = on; syncMusic(); }
   function applyVolume() {
     if (!ctx) return;
-    const on = platformOn && !suspended && !adMuted;
+    const on = platformOn && !suspended && !held && !adMuted;
     master.gain.setTargetAtTime(on ? Save.settings.volume : 0, ctx.currentTime, 0.02);
     if (musicSrc) syncMusic();
   }
-  function unlock() { const c = ensure(); if (c && c.state === 'suspended' && platformOn && !suspended) c.resume().catch(() => {}); syncMusic(); }
-  function setPlatformEnabled(on) { platformOn = on; applyVolume(); if (!ctx) return; if (!on) ctx.suspend().catch(() => {}); else if (!suspended) ctx.resume().catch(() => {}); syncMusic(); }
+  function unlock() { const c = ensure(); if (c && c.state === 'suspended' && platformOn && !suspended && !held) c.resume().catch(() => {}); syncMusic(); }
+  function setPlatformEnabled(on) { platformOn = on; applyVolume(); if (!ctx) return; if (!on) ctx.suspend().catch(() => {}); else if (!suspended && !held) ctx.resume().catch(() => {}); syncMusic(); }
   function setAdMuted(m) { adMuted = m; applyVolume(); }
-  function setSuspended(s) { suspended = s; applyVolume(); if (!ctx) return; if (s) ctx.suspend().catch(() => {}); else if (platformOn) ctx.resume().catch(() => {}); syncMusic(); }
-  const ok = () => ctx && platformOn && !suspended && ctx.state === 'running';
+  function setSuspended(s) { suspended = s; applyVolume(); if (!ctx) return; if (s || held) ctx.suspend().catch(() => {}); else if (platformOn) ctx.resume().catch(() => {}); syncMusic(); }
+  // The in-game pause menu: every game sound and the music stop until the match resumes.
+  function setHeld(h) { held = h; applyVolume(); if (!ctx) return; if (h || suspended) ctx.suspend().catch(() => {}); else if (platformOn) ctx.resume().catch(() => {}); syncMusic(); }
+  const ok = () => ctx && platformOn && !suspended && !held && ctx.state === 'running';
 
   function spatial(pos, maxDist = 60) {
     if (!pos) return [1, 0];
@@ -607,9 +612,10 @@ const Audio = (() => {
     sniper:  { n: [2200, 0.25, 1.2], b: [70, 30, 0.35, 1.3], tail: [450, 1.1, 0.5] },
   };
   return {
-    unlock, setPlatformEnabled, setSuspended, setAdMuted, applyVolume, listener, loadMusic, setMusic,
+    unlock, setPlatformEnabled, setSuspended, setHeld, setAdMuted, applyVolume, listener, loadMusic, setMusic,
     get musicOn() { return !!(musicEl && !musicEl.paused && mus && mus.gain.value > 0.02); },
     get musicLoaded() { return !!musicSrc; },
+    get silent() { return !ctx || ctx.state !== 'running' || !platformOn || suspended || held; },
     get ready() { return ok(); },
     shot(kind, pos, self = false) {
       if (!ok()) return;
@@ -689,7 +695,7 @@ const Input = (() => {
 
   const lockRefused = () => { lockFails++; if (!lockedOnce && lockFails >= 3) lockFailed = true; };
   function requestLock() {
-    if (!canvas || st.touch || lockFailed || st.locked) return;
+    if (!canvas || st.touch || lockFailed || st.locked || Platform.mouseOnly) return;
     if (!canvas.requestPointerLock) { lockFailed = true; return; }
     try {
       const p = canvas.requestPointerLock && canvas.requestPointerLock();
@@ -779,6 +785,48 @@ const Input = (() => {
       }
     };
     root.addEventListener('touchend', endT); root.addEventListener('touchcancel', endT);
+    // One-mouse play: the same on-screen controls work with a mouse (press and drag
+    // the stick to move, press and drag anywhere else to turn, click the buttons).
+    // Each drag adds to the turn, so the view turns as far as you like.
+    const MID = 'mouse';
+    const isMouse = (e) => e.pointerType === 'mouse' && st.touch && e.button === 0;
+    const mDown = (el, fn) => el.addEventListener('pointerdown', (e) => { if (!isMouse(e)) return; e.preventDefault(); e.stopPropagation(); fn({ identifier: MID, clientX: e.clientX, clientY: e.clientY }); });
+    mDown(joyZone, (m) => { if (touchUI.joyId == null) joyStart(m); });
+    mDown(touchUI.joy, (m) => { if (touchUI.joyId == null) joyStart(m); });
+    mDown(lookZone, (m) => { if (touchUI.lookId == null) { touchUI.lookId = MID; touchUI.lookLx = m.clientX; touchUI.lookLy = m.clientY; } });
+    window.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse' || !st.touch) return;
+      const m = { identifier: MID, clientX: e.clientX, clientY: e.clientY };
+      if (touchUI.joyId === MID) joyMove(m);
+      else if (touchUI.lookId === MID || touchUI.fireId === MID) {
+        if (st.enabled) { st.lookX += (m.clientX - touchUI.lookLx) * 2.1; st.lookY += (m.clientY - touchUI.lookLy) * 2.1; }
+        touchUI.lookLx = m.clientX; touchUI.lookLy = m.clientY;
+      }
+    });
+    const mUp = (e) => {
+      if (e.pointerType !== 'mouse') return;
+      endT({ changedTouches: [{ identifier: MID }] });
+      $$('.tbtn', root).forEach((b) => {
+        const a = b.dataset.a;
+        if (!b._mouse) return;
+        b._mouse = false;
+        if (a === 'interact') st.interactHeld = false;
+        if (a !== 'ads' && a !== 'crouch' && a !== 'fire') b.classList.toggle('on', false);
+      });
+    };
+    window.addEventListener('pointerup', mUp); window.addEventListener('pointercancel', mUp);
+    window.addEventListener('blur', () => mUp({ pointerType: 'mouse' }));
+    $$('.tbtn', root).forEach((b) => {
+      const a = b.dataset.a;
+      mDown(b, (m) => {
+        b._mouse = true; b.classList.add('on');
+        if (a === 'fire') { st.touchFire = true; touchUI.fireId = MID; touchUI.lookLx = m.clientX; touchUI.lookLy = m.clientY; return; }
+        if (a === 'ads') { st.touchAds = !st.touchAds; b.classList.toggle('on', st.touchAds); return; }
+        if (a === 'crouch') { st.crouchToggle = !st.crouchToggle; b.classList.toggle('on', st.crouchToggle); return; }
+        if (a === 'interact') st.interactHeld = true;
+        press(a);
+      });
+    });
     $$('.tbtn', root).forEach((b) => {
       const a = b.dataset.a;
       b.addEventListener('touchstart', (e) => {
@@ -799,7 +847,9 @@ const Input = (() => {
     });
   }
   function setTouch(on) {
+    if (Platform.mouseOnly) on = true;
     st.touch = on;
+    document.body.classList.toggle('mouse', !!Platform.mouseOnly);
     document.body.classList.toggle('touch', on);
   }
   window.addEventListener('touchstart', () => { if (!st.touch) setTouch(true); }, { passive: true, capture: true });
@@ -1795,7 +1845,7 @@ const Player = {
     this.bloom = Math.min(0.06, this.bloom + k * 0.35);
     this.kickZ += 0.045 + k; this.kickR += 0.06 + k * 2;
     Hud.weapon(); Hud.crosshairKick();
-    if (slot.mag === 0 && slot.reserve > 0) setTimeout(() => { if (this.a && this.a.alive && this.slot === slot && slot.mag === 0) this.startReload(); }, 260);
+    if (slot.mag === 0 && slot.reserve > 0) later(() => { if (this.a && this.a.alive && this.slot === slot && slot.mag === 0) this.startReload(); }, 260);
   },
   updateViewmodel(dt, inp) {
     const def = this.weapon, g = this.vmGun; if (!g) return;
@@ -2565,7 +2615,7 @@ class Keycard extends Mode {
       b.lives = Infinity;
       this.spawnActor(b, this.safeSpawn(b, null, 18));
     }
-    if (fin) { World.setLightsOut(true); setTimeout(() => Game.active && Hud.banner(t('b_lights'), t('b_hunt')), 600); }
+    if (fin) { World.setLightsOut(true); later(() => Game.active && Hud.banner(t('b_lights'), t('b_hunt')), 600); }
     this.penalty = 0;
   }
   findHidingSpots(start, hard) {
@@ -2613,7 +2663,7 @@ class Keycard extends Mode {
   grab(k) {
     k.got = true; this.got++; this.props.remove(k.obj); Audio.pickup(); this.objectiveScore += 400;
     Hud.banner(t('b_key'), `${this.got} / 3`); Hud.keys();
-    if (this.got === 3) { this.exitBeam.visible = true; setTimeout(() => Game.active && Hud.banner(t('b_exit')), 1200); Audio.alarm(); }
+    if (this.got === 3) { this.exitBeam.visible = true; later(() => Game.active && Hud.banner(t('b_exit')), 1200); Audio.alarm(); }
   }
   get elapsed() { return Game.time + this.penalty; }
   hud() {
@@ -3202,7 +3252,6 @@ const Hud = {
         <div class="vitals"><div class="lbl"><span>HP</span><span class="lives"></span></div><div class="hpnum">100</div><div class="bar hp"><em></em><i></i></div></div>
         <div class="ammo"><div class="wname"></div><div class="count">30<small>/ 90</small></div><div class="pips"></div><div class="reload"></div><div class="alt"></div></div>
         <div class="hud-pause">${ICONS.pause}</div>
-        <div class="fps hidden"></div>
       </div>
       <div class="markers passthrough" style="position:absolute;inset:0"></div>
       <div class="crosshair"><i></i><i></i><i></i><i></i><b></b></div>
@@ -3223,7 +3272,7 @@ const Hud = {
       hpnum: q('.hpnum'), hpbar: q('.bar.hp'), hpI: q('.bar.hp i'), hpE: q('.bar.hp em'), lives: q('.vitals .lives'),
       wname: q('.wname'), count: q('.ammo .count'), pips: q('.ammo .pips'), reload: q('.ammo .reload'), alt: q('.ammo .alt'),
       cross: q('.crosshair'), hit: q('.hitmarker'), dmg: q('.dmg-dir'), pops: q('.popups'), banner: q('.banner'), cd: q('.countdown'),
-      ammoAd: q('.ammo-ad'), lockHint: q('.lock-hint'), interact: q('.interact'), ring: q('.progress-ring'), ringC: q('.progress-ring .pr'), death: q('.deathcard'), spec: q('.spectate'), markers: q('.markers'), fps: q('.fps'),
+      ammoAd: q('.ammo-ad'), lockHint: q('.lock-hint'), interact: q('.interact'), ring: q('.progress-ring'), ringC: q('.progress-ring .pr'), death: q('.deathcard'), spec: q('.spectate'), markers: q('.markers'),
     });
     q('.hud-pause').addEventListener('click', () => Game.openPause());
     this.els.ammoAd.addEventListener('click', (e) => { e.stopPropagation(); Game.getAmmo(); });
@@ -3292,7 +3341,7 @@ const Hud = {
     row.innerHTML = k && k !== v ? `<span class="${cls(k)}">${name(k)}</span><span class="w">[${WEAPONS[wid] ? WEAPONS[wid].name : '—'}${head ? ' ✛' : ''}]</span><span class="${cls(v)}">${name(v)}</span>` : `<span class="${cls(v)}">${name(v)}</span>`;
     this.els.feed.prepend(row);
     while (this.els.feed.childElementCount > 5) this.els.feed.lastChild.remove();
-    setTimeout(() => { row.classList.add('fade'); setTimeout(() => row.remove(), 650); }, 4500);
+    later(() => { row.classList.add('fade'); setTimeout(() => row.remove(), 650); }, 4500);
   },
   pop(text, pts, head) {
     const p = el('div', 'pop' + (head ? ' head' : ''), `${esc(text)}${pts ? `<small>+${pts}</small>` : ''}`);
@@ -3353,8 +3402,6 @@ const Hud = {
     else if (e.death.classList.contains('on')) { e.death.classList.remove('on'); e.spec.classList.remove('on'); }
     this.drawRadar();
     this.updateMarkers();
-    if (Save.settings.fps) { this._fpsAcc = (this._fpsAcc || 0) + dt; this._fpsN = (this._fpsN || 0) + 1; if (this._fpsAcc > 0.5) { e.fps.textContent = Math.round(this._fpsN / this._fpsAcc) + ' ' + t('fpsWord'); this._fpsAcc = 0; this._fpsN = 0; } }
-    e.fps.classList.toggle('hidden', !Save.settings.fps);
   },
   drawRadar() {
     const g = this.radarCtx, W = 264, p = Game.player, R = this.radarMap;
@@ -3536,6 +3583,7 @@ const Ui = {
       <div id="touch" class="passthrough"></div>
       <div id="wipe" class="passthrough"><div class="wipe-label"></div></div>`;
     Input.buildTouch($('#touch'));
+    if (Platform.mouseOnly) Input.setTouch(true);
     document.documentElement.style.setProperty('--touch-scale', Save.settings.touchScale);
     ui.addEventListener('pointerover', (e) => { const b = e.target.closest('.btn, .mcard:not(.locked), .wcard:not(.locked)'); if (b && b !== this._hov) { this._hov = b; Audio.ui('hover'); } });
     ui.addEventListener('click', (e) => { if (e.target.closest('.btn, .mcard, .wcard, .back, .seg button, .toggle')) Audio.ui(); });
@@ -3653,7 +3701,7 @@ const Ui = {
         </div>
       </div>`;
     const p = $('.typer', s), full = tx[2]; let k = 0; clearInterval(this._typer);
-    this._typer = setInterval(() => { k += 2; p.textContent = full.slice(0, k); if (k >= full.length) { clearInterval(this._typer); p.classList.remove('typer'); } }, 18);
+    this._typer = setInterval(() => { if (Game.sysPaused) return; k += 2; p.textContent = full.slice(0, k); if (k >= full.length) { clearInterval(this._typer); p.classList.remove('typer'); } }, 18);
     const pickW = (id) => {
       const slot = id === 'none' ? 'primary' : WEAPONS[id].slot; this.loadout[slot] = id;
       Save.data.loadout = { primary: this.loadout.primary, secondary: this.loadout.secondary }; Save.persist();
@@ -3772,8 +3820,9 @@ const Ui = {
         ${res.cp ? `<div class="unlock-note cp-earned">◆ ${t('cpEarned', { n: fmtNum(res.cp) })} · ${t('cpBalance')} ${fmtNum(Save.data.cp)}</div>` : ''}
         ${res.unlockedNext ? `<div class="unlock-note">▲ ${t('unlocked')}: ${esc(mt(MISSIONS[Game.missionIndex + 1])[0])}</div>` : ''}
       </div>`;
-    const sc = $('.end-score', s); const t0 = performance.now(), target = res.score;
-    const tick = (now) => { const k = clamp((now - t0) / 1400, 0, 1); sc.textContent = fmtNum(target * (1 - Math.pow(1 - k, 3))); if (k < 1 && this.cur === 'end') requestAnimationFrame(tick); };
+    const sc = $('.end-score', s); let t0 = performance.now(); const target = res.score;
+    let tPrev = 0;
+    const tick = (now) => { if (Game.sysPaused) { t0 += now - (tPrev || now); tPrev = now; requestAnimationFrame(tick); return; } tPrev = now; const k = clamp((now - t0) / 1400, 0, 1); sc.textContent = fmtNum(target * (1 - Math.pow(1 - k, 3))); if (k < 1 && this.cur === 'end') requestAnimationFrame(tick); };
     requestAnimationFrame(tick);
     const go = async (a) => {
       $$('[data-a]', s).forEach((b) => { b.disabled = true; });
@@ -3847,10 +3896,9 @@ const Ui = {
         <div class="setting"><span>${t('quality')}</span>${seg('quality', [['auto', t('auto')], ['low', t('low')], ['med', t('med')], ['high', t('high')]])}</div>
         <div class="setting"><span>${t('volume')}</span>${range('volume', 0, 1, 0.05, (v) => Math.round(v * 100) + '%')}</div>
         <div class="setting"><span>${t('music')}</span>${range('music', 0, 1, 0.05, (v) => Math.round(v * 100) + '%')}</div>
-        <div class="setting"><span>${t('aimAssist')}</span>${tog('aimAssist')}</div>
-        <div class="setting"><span>${t('autoFire')}</span>${tog('autoFire')}</div>
-        <div class="setting"><span>${t('touchSize')}</span>${range('touchScale', 0.8, 1.3, 0.05, (v) => Math.round(v * 100) + '%')}</div>
-        <div class="setting"><span>${t('showFps')}</span>${tog('fps')}</div>
+        ${Input.st.touch || Input.st.gamepad ? `<div class="setting"><span>${t('aimAssist')}</span>${tog('aimAssist')}</div>` : ''}
+        ${Input.st.touch ? `<div class="setting"><span>${t('autoFire')}</span>${tog('autoFire')}</div>
+        <div class="setting"><span>${t('touchSize')}</span>${range('touchScale', 0.8, 1.3, 0.05, (v) => Math.round(v * 100) + '%')}</div>` : ''}
         <div class="setting"><span>${t('language')}</span>${seg('lang', [['auto', t('auto')], ['en', 'EN'], ['es', 'ES'], ['pt', 'PT'], ['fr', 'FR']])}</div>
         ${Game.state !== 'play' ? `<div class="setting"><span>${t('resetCampaign')}</span><button class="btn small danger" data-a="reset">${t('resetCampaign')}</button></div>` : ''}
         <div class="credits"><span>${t('credits')}</span>${CREDITS.map((c) => `<p>${c}</p>`).join('')}</div>
@@ -3910,8 +3958,8 @@ const Ui = {
     const kv = (a, b) => `<div class="kv"><span>${a}</span><kbd>${b}</kbd></div>`;
     m.innerHTML = `<div class="box panel wide"><div class="row"><button class="back" data-a="close">${ICONS.back}</button><h2 class="h-display" style="font-size:28px">${t('controls')}</h2></div>
       <div class="scroll"><div class="controls-grid">
-        <div><h4>${t('ctlDesktop')}</h4>${kv(t('move'), Keys.move())}${kv(t('look'), 'MOUSE')}${kv(t('fire'), 'LMB')}${kv(t('aim'), 'RMB')}${kv(t('reload'), Keys.k('KeyR'))}${kv(t('jump'), 'SPACE')}${kv(t('crouch'), Keys.k('KeyC'))}${kv(t('sprint'), 'SHIFT')}${kv(t('swap'), `${Keys.k('KeyQ')} / 1 / 2 / WHEEL`)}${kv(t('interact'), Keys.k('KeyE'))}${kv(t('getAmmo') + ' (AD)', Keys.k('KeyG'))}${kv(t('pauseK'), Keys.k('KeyP'))}</div>
-        <div><h4>${t('ctlTouch')}</h4>${kv(t('move'), t('joystick'))}${kv(t('look'), t('dragRight'))}${kv(t('fire'), '◎')}${kv(t('aim'), '⌖')}${kv(t('reload'), '⟳')}${kv(t('jump'), '▲')}${kv(t('crouch'), '▼')}${kv(t('swap'), '⇄')}${kv(t('interact'), '✋')}</div>
+        ${Platform.mouseOnly ? '' : `<div><h4>${t('ctlDesktop')}</h4>${kv(t('move'), Keys.move())}${kv(t('look'), 'MOUSE')}${kv(t('fire'), 'LMB')}${kv(t('aim'), 'RMB')}${kv(t('reload'), Keys.k('KeyR'))}${kv(t('jump'), 'SPACE')}${kv(t('crouch'), Keys.k('KeyC'))}${kv(t('sprint'), 'SHIFT')}${kv(t('swap'), `${Keys.k('KeyQ')} / 1 / 2 / WHEEL`)}${kv(t('interact'), Keys.k('KeyE'))}${kv(t('getAmmo') + ' (AD)', Keys.k('KeyG'))}${kv(t('pauseK'), Keys.k('KeyP'))}</div>`}
+        <div><h4>${t(Platform.mouseOnly ? 'ctlMouse' : 'ctlTouch')}</h4>${kv(t('move'), t('joystick'))}${kv(t('look'), t('dragRight'))}${kv(t('fire'), '◎')}${kv(t('aim'), '⌖')}${kv(t('reload'), '⟳')}${kv(t('jump'), '▲')}${kv(t('crouch'), '▼')}${kv(t('swap'), '⇄')}${kv(t('interact'), '✋')}</div>
         <div><h4>${t('ctlPad')}</h4>${kv(t('move'), t('leftStick'))}${kv(t('look'), t('rightStick'))}${kv(t('fire'), 'RT')}${kv(t('aim'), 'LT')}${kv(t('reload'), 'X')}${kv(t('jump'), 'A')}${kv(t('crouch'), 'B')}${kv(t('sprint'), 'L3')}${kv(t('swap'), 'Y')}${kv(t('interact'), 'LB / RB')}${kv(t('pauseK'), 'START')}</div>
       </div></div></div>`;
     $('[data-a=close]', m).onclick = () => this.closeModal();
@@ -3967,7 +4015,7 @@ const Game = {
       Hud.reset(); Hud.show(true);
       Input.resetToggles();
       this.countdownT = 3.2; this.lastCount = 4;
-      this.state = 'play'; this.active = true; this.paused = false;
+      this.state = 'play'; this.active = true; this.paused = false; Audio.setHeld(false);
       document.body.classList.add('ingame');
       await Ui.show(null);
       Input.enable(true);
@@ -3983,7 +4031,7 @@ const Game = {
   },
   releaseAfterAd() {
     if (this.state !== 'play' || this.over) return;
-    this.paused = false; Input.enable(true); document.body.classList.add('ingame');
+    this.paused = false; Audio.setHeld(false); Input.enable(true); document.body.classList.add('ingame');
     if (!Input.st.touch) Input.requestLock();
     Loop.start();
     if (this.player.alive && !this.outCard) Platform.gameplayStart();
@@ -4019,7 +4067,7 @@ const Game = {
     if (this.outCard || this.over) return;
     this.outCard = true;
     Platform.gameplayStop();
-    setTimeout(() => {
+    later(() => {
       if (!this.outCard || this.state !== 'play' || this.over) return;
       this.paused = true; Input.enable(false); document.body.classList.remove('ingame');
       Ui.openModal('m-out'); Loop.stop(); World.render();
@@ -4032,7 +4080,7 @@ const Game = {
     p.out = false; p.lives = 1; p.respawnAt = 0;
     mode.spawnActor(p, mode.safeSpawn(p, zone, 10));
     p.spawnTime = this.time + 0.4;
-    this.outCard = false; this.paused = false;
+    this.outCard = false; this.paused = false; Audio.setHeld(false);
     Hud.els.spec && Hud.els.spec.classList.remove('on');
     Input.enable(true); document.body.classList.add('ingame');
     if (!Input.st.touch) Input.requestLock();
@@ -4049,7 +4097,7 @@ const Game = {
       const n = Math.ceil(this.countdownT);
       if (n !== this.lastCount && n >= 0) {
         this.lastCount = n;
-        if (n > 0) { Hud.countdown(n); Audio.countdown(false); } else { Hud.countdown(t('go')); Audio.countdown(true); setTimeout(() => Hud.countdown(''), 700); }
+        if (n > 0) { Hud.countdown(n); Audio.countdown(false); } else { Hud.countdown(t('go')); Audio.countdown(true); later(() => Hud.countdown(''), 700); }
       }
       inp.mx = 0; inp.my = 0; inp.fire = false; inp.pressed.clear();
       Player.update(rawDt, inp);
@@ -4090,7 +4138,7 @@ const Game = {
     };
     Hud.banner(won ? t('victory') : t('defeat'), t(reason));
     Audio.sting(won);
-    setTimeout(() => {
+    later(() => {
       if (!this.over || this.state !== 'play') return;
       this.state = 'end'; this.active = false;
       Input.enable(false); document.body.classList.remove('ingame');
@@ -4102,11 +4150,11 @@ const Game = {
     if (this.state !== 'play' || this.paused || this.over) return;
     this.paused = true; Input.enable(false); document.body.classList.remove('ingame'); document.body.classList.add('paused');
     Platform.gameplayStop();
-    Ui.openModal('m-pause'); Loop.stop(); World.render();
+    Ui.openModal('m-pause'); Loop.stop(); Audio.setHeld(true); World.render();
   },
   resume() {
     if (!this.paused) return;
-    Ui.closeModal(); this.paused = false; Input.enable(true); document.body.classList.add('ingame'); document.body.classList.remove('paused');
+    Ui.closeModal(); this.paused = false; Audio.setHeld(false); Input.enable(true); document.body.classList.add('ingame'); document.body.classList.remove('paused');
     if (!Input.st.touch) Input.requestLock();
     Loop.start();
     if (this.player && this.player.alive && !this.outCard) Platform.gameplayStart();
@@ -4117,7 +4165,7 @@ const Game = {
     if (screen !== 'briefing') Arsenal.leave();
     await Ui.wipe('');
     this.cleanup();
-    this.state = 'menu'; this.paused = false; document.body.classList.remove('paused');
+    this.state = 'menu'; this.paused = false; Audio.setHeld(false); document.body.classList.remove('paused');
     Hud.show(false); Input.enable(false); document.body.classList.remove('ingame');
     Lobby.show(true); Loop.start();
     await Ui.show(screen);
@@ -4203,12 +4251,14 @@ function wirePlatform() {
   Audio.setPlatformEnabled(Platform.isAudioEnabled());
   Platform.onAudioEnabledChange((on) => Audio.setPlatformEnabled(on));
   Platform.onPause(() => {
+    Game.sysPaused = true;
     Save.persist(true);
     Audio.setSuspended(true);
     if (Game.state === 'play' && !Game.paused && !Game.over) Game.openPause();
     Loop.stop();
   });
   Platform.onResume(() => {
+    Game.sysPaused = false;
     Audio.setSuspended(false);
     if (Game.state === 'play' && Game.paused) { World.render(); return; }
     if (Game.state !== 'play' || !Game.paused) Loop.start();
@@ -4279,7 +4329,11 @@ async function boot() {
     const compileFor = (scene, rt) => {
       const r = World.renderer, prev = r.getRenderTarget();
       r.setRenderTarget(rt);
-      const p = r.compileAsync(scene, World.camera, World.scene);
+      // compileAsync needs KHR_parallel_shader_compile; without it three.js logs a
+      // warning, so compile the normal way on devices that lack it.
+      let p;
+      if (r.extensions && r.extensions.has && !r.extensions.has('KHR_parallel_shader_compile')) { r.compile(scene, World.camera, World.scene); p = Promise.resolve(); }
+      else p = r.compileAsync(scene, World.camera, World.scene);
       r.setRenderTarget(prev);
       return p;
     };

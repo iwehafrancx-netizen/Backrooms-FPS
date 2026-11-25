@@ -8,6 +8,9 @@ const Platform = (() => {
       inPlayables = !!(yt && yt.IN_PLAYABLES_ENV);
     },
     get sdkReady() { return inPlayables; },
+    // YouTube Playables: everything must be playable with one mouse, so the
+    // on-screen controls are used with the mouse and the pointer is never locked.
+    mouseOnly: true,
     loadingStart() { if (firstFrameSent) return; firstFrameSent = true; safe(() => yt && yt.game.firstFrameReady()); },
     gameReady() { if (readySent) return; readySent = true; safe(() => yt && yt.game.gameReady()); },
     gameplayStart() {},
